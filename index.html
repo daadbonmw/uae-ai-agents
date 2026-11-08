@@ -40,9 +40,9 @@ footer{margin-top:28px;color:var(--muted);font-size:14px}
 <h1 data-t="h1">Get things done, with official answers.</h1>
 <p class="lead" data-t="lead">AI agents for life and government services in the UAE.</p>
 <nav class="grid" aria-label="Agents">
-<a class="card" href="answers/"><span class="ic" aria-hidden="true">💬</span><div><b data-t="a1">UAE rules, answered</b><span data-t="a2">Steps, fees and official sources</span></div><span class="go" aria-hidden="true">→</span></a>
-<a class="card" href="city-repairs/"><span class="ic" aria-hidden="true">🛠️</span><div><b data-t="b1">Proven repairs</b><span data-t="b2">Closed only with photo proof</span></div><span class="go" aria-hidden="true">→</span></a>
-<a class="card" href="message-check/"><span class="ic" aria-hidden="true">🛡️</span><div><b data-t="c1">Message check</b><span data-t="c2">Is this SMS a scam?</span></div><span class="go" aria-hidden="true">→</span></a>
+<a class="card" href="answers/"><span class="ic" aria-hidden="true">💬</span><div><b data-t="a1">Inzain</b><span data-t="a2">UAE rules answered, with official sources</span></div><span class="go" aria-hidden="true">→</span></a>
+<a class="card" href="city-repairs/"><span class="ic" aria-hidden="true">🛠️</span><div><b data-t="b1">Wareeni</b><span data-t="b2">City repairs, proven with a photo</span></div><span class="go" aria-hidden="true">→</span></a>
+<a class="card" href="message-check/"><span class="ic" aria-hidden="true">🛡️</span><div><b data-t="c1">Mazboot</b><span data-t="c2">Is this message a scam?</span></div><span class="go" aria-hidden="true">→</span></a>
 <a class="card" href="wages/"><span class="ic" aria-hidden="true">💵</span><div><b data-t="d1">Wage protection</b><span data-t="d2">Spot unpaid salary, build your case</span></div><span class="go" aria-hidden="true">→</span></a>
 <a class="card" href="rent/"><span class="ic" aria-hidden="true">🏠</span><div><b data-t="e1">Rent renewal</b><span data-t="e2">Is your Dubai increase allowed?</span></div><span class="go" aria-hidden="true">→</span></a>
 <a class="card" href="careers/"><span class="ic" aria-hidden="true">🎯</span><div><b data-t="f1">Careers coach</b><span data-t="f2">Interviews and a 90-day plan</span></div><span class="go" aria-hidden="true">→</span></a>
@@ -50,7 +50,7 @@ footer{margin-top:28px;color:var(--muted);font-size:14px}
 <footer data-t="foot">Prototypes · general information, not legal advice.</footer>
 </main>
 <script>
-const T={ar:{brand:'وكلاء الإمارات الذكيون',h1:'أنجز معاملاتك بإجابات رسمية.',lead:'وكلاء ذكاء اصطناعي للحياة والخدمات الحكومية في الإمارات.',a1:'أنظمة الإمارات بوضوح',a2:'الخطوات والرسوم والمصادر الرسمية',b1:'إصلاح مُثبت',b2:'لا تُغلق الحالة إلا بصورة تثبت الإصلاح',c1:'فحص الرسائل',c2:'هل هذه الرسالة احتيال؟',d1:'حماية الأجور',d2:'اكتشف تأخر الراتب وجهّز ملفك',e1:'تجديد الإيجار',e2:'هل زيادة إيجارك في دبي مسموحة؟',f1:'مدرب المهن',f2:'المقابلات وخطة لأول 90 يوماً',foot:'نماذج أولية · معلومات عامة وليست استشارة قانونية.'}};
+const T={ar:{brand:'وكلاء الإمارات الذكيون',h1:'أنجز معاملاتك بإجابات رسمية.',lead:'وكلاء ذكاء اصطناعي للحياة والخدمات الحكومية في الإمارات.',a1:'انزين',a2:'أنظمة الإمارات بوضوح، مع المصادر الرسمية',b1:'ورّيني',b2:'إصلاحات المدينة مُثبتة بصورة',c1:'مضبوط',c2:'هل هذه الرسالة احتيال؟',d1:'حماية الأجور',d2:'اكتشف تأخر الراتب وجهّز ملفك',e1:'تجديد الإيجار',e2:'هل زيادة إيجارك في دبي مسموحة؟',f1:'مدرب المهن',f2:'المقابلات وخطة لأول 90 يوماً',foot:'نماذج أولية · معلومات عامة وليست استشارة قانونية.'}};
 const EN={};document.querySelectorAll('[data-t]').forEach(e=>EN[e.dataset.t]=e.textContent);
 function set(l){const ar=l==='ar';document.documentElement.lang=ar?'ar':'en';document.documentElement.dir=ar?'rtl':'ltr';
 document.querySelectorAll('[data-t]').forEach(e=>{e.textContent=ar?T.ar[e.dataset.t]:EN[e.dataset.t]});
