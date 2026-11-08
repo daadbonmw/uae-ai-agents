@@ -1455,5 +1455,6 @@ applyTheme();loadExample('a',false);renderStatus();
 try{renderAll()}catch(err){hist=seed();saveHist();currentId=hist[0].id;try{renderAll()}catch(_){}}
 if(!/\.github\.io$/.test(location.hostname))scanAll();try{selfCheck()}catch(e){}
 </script>
+<script>(function(){try{var q=new URLSearchParams(location.search).get("q");if(!q)return;function go(){var b=document.getElementById("msg");if(!b)return;b.value=q;b.dispatchEvent(new Event("input",{bubbles:true}));try{b.focus({preventScroll:true})}catch(e){}}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",go);else go()}catch(e){}})();</script>
 </body>
 </html>

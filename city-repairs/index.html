@@ -742,5 +742,6 @@ let resetArmed=false;
 $('reset').addEventListener('click',()=>{if(!resetArmed){resetArmed=true;$('reset').textContent='Tap again to reset';setTimeout(()=>{resetArmed=false;$('reset').textContent='Reset demo'},4000);return}cases=seed();for(const k in drafts)delete drafts[k];busy.clear();save();$('rReply').innerHTML='';tour={};try{localStorage.removeItem(TKEY)}catch(e){}renderTour();for(const k in plans)delete plans[k];resetArmed=false;$('reset').textContent='Reset demo';render()});
 renderStatus();renderTour();render();if(!/\.github\.io$/.test(location.hostname))scanAll();backfillHashes();
 </script>
+<script>(function(){try{var q=new URLSearchParams(location.search).get("q");if(!q)return;function go(){var b=document.getElementById("rText");if(!b)return;b.value=q;b.dispatchEvent(new Event("input",{bubbles:true}));try{b.focus({preventScroll:true})}catch(e){}}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",go);else go()}catch(e){}})();</script>
 </body>
 </html>

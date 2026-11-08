@@ -4,60 +4,124 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
-<title>UAE AI Agents</title>
-<meta name="description" content="AI agents that get things done with UAE government services, with official sources.">
+<title>UAE Agents · وكلاء الإمارات</title>
+<meta name="description" content="One place for everything you need in the UAE: rules, messages, wages, rent, city repairs and careers.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Sans+Arabic:wght@400;600&family=Reem+Kufi:wght@500&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#F6F5F0;--card:#FFFFFF;--ink:#14222E;--muted:#4A5662;--line:#D9D6CC;--accent:#0E7A62;--accent-ink:#FFFFFF;--icon:#E3F1EC}
-@media (prefers-color-scheme:dark){:root{--bg:#0F1A22;--card:#16242F;--ink:#EEF2F0;--muted:#A9BAC0;--line:#2A3F4E;--accent:#4FCFA8;--accent-ink:#0F1A22;--icon:#1D3540}}
+:root{--paper:#F4EFE6;--ink:#1C1B19;--muted:#6B655B;--rule:#D9D0C1;--accent:#1F4E79;--on-accent:#FFFFFF}
+@media (prefers-color-scheme:dark){:root{--paper:#15130F;--ink:#EDE6D8;--muted:#A8A091;--rule:#3A352E;--accent:#9DBBDD;--on-accent:#15130F}}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Segoe UI",system-ui,-apple-system,Roboto,"Noto Sans Arabic",Tahoma,sans-serif}
-.wrap{max-width:980px;margin:0 auto;padding:28px 16px 48px}
-.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:28px}
-.brand{font-weight:800;font-size:18px}
-.lang{background:none;border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:8px 16px;min-height:44px;font:inherit;font-weight:700;cursor:pointer}
-.lang:focus-visible,.card:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
-h1{font-size:clamp(28px,6vw,46px);line-height:1.1;margin:0 0 10px;letter-spacing:-.5px}
-.lead{margin:0 0 28px;color:var(--muted);font-size:18px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
-.card{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;color:inherit;text-decoration:none;min-height:96px;transition:transform .15s,border-color .15s}
-.card:hover{border-color:var(--accent);transform:translateY(-2px)}
-@media (prefers-reduced-motion:reduce){.card{transition:none}.card:hover{transform:none}}
-.ic{flex:none;width:48px;height:48px;border-radius:12px;background:var(--icon);display:grid;place-items:center;font-size:24px}
-.card b{display:block;font-size:17px}
-.card span{color:var(--muted);font-size:15px}
-.go{margin-inline-start:auto;font-size:22px;color:var(--accent)}
-[dir=rtl] .go{transform:scaleX(-1)}
-footer{margin-top:28px;color:var(--muted);font-size:14px}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.5 "IBM Plex Sans","IBM Plex Sans Arabic",system-ui,sans-serif;font-variant-numeric:tabular-nums}
+[dir=rtl] body{font-family:"IBM Plex Sans Arabic","IBM Plex Sans",system-ui,sans-serif}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px 56px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.mast{display:flex;justify-content:space-between;align-items:baseline;padding:22px 0 14px}
+.mark{font-weight:600}
+.mark .k{font-family:"Reem Kufi",serif;font-weight:500;margin-inline-start:8px;color:var(--muted)}
+.lang{background:none;border:0;padding:10px 0;min-height:44px;color:var(--accent);font:inherit;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+.sadu{display:block;width:100%;height:14px;color:var(--ink);opacity:.22}
+h1{font-family:"Instrument Serif",Georgia,serif;font-weight:400;font-size:34px;line-height:1.15;margin:40px 0 18px}
+[dir=rtl] h1{font-family:"Reem Kufi",serif;font-weight:500;font-size:30px}
+form{display:flex;gap:10px;flex-wrap:wrap}
+textarea{flex:1 1 100%;min-height:96px;resize:vertical;font:inherit;color:var(--ink);background:transparent;border:1px solid var(--rule);border-radius:6px;padding:12px 14px}
+textarea:focus-visible,.lang:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.send{background:var(--accent);color:var(--on-accent);border:0;border-radius:6px;padding:0 22px;min-height:46px;font:inherit;font-weight:600;cursor:pointer}
+.route{margin:12px 0 0;color:var(--muted);font-size:15px;min-height:22px}
+.route b{color:var(--ink);font-weight:600}
+h2{font-family:"Instrument Serif",Georgia,serif;font-weight:400;font-size:28px;margin:48px 0 8px}
+[dir=rtl] h2{font-family:"Reem Kufi",serif;font-weight:500;font-size:26px}
+ol{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+li a{display:grid;grid-template-columns:44px 1fr auto;gap:4px 14px;align-items:baseline;padding:18px 0;border-bottom:1px solid var(--rule);color:inherit;text-decoration:none}
+li a:hover .open{text-decoration:underline}
+.no{color:var(--muted);font-size:15px}
+.name{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+.name .ar{font-family:"Reem Kufi",serif;font-weight:500;font-size:22px}
+.name .en{font-family:"Instrument Serif",Georgia,serif;font-size:22px}
+.what{grid-column:2/3;color:var(--muted);font-size:15px}
+.open{color:var(--accent);font-size:15px;align-self:center;grid-row:1/3;grid-column:3}
+footer{margin-top:36px;color:var(--muted);font-size:15px}
+#view{margin-top:20px;border-top:1px solid var(--rule)}
+.viewbar{display:flex;gap:18px;align-items:baseline;padding:10px 0}
+.viewbar #viewName{font-weight:600;margin-inline-end:auto}
+.viewbar a{color:var(--accent);font-size:15px}
+#frame{display:block;width:100%;height:80vh;border:1px solid var(--rule);border-radius:6px;background:var(--paper)}
+@media (max-width:480px){h1{font-size:28px}li a{grid-template-columns:32px 1fr auto}}
 </style>
 </head>
 <body>
-<main class="wrap">
-<div class="top">
-<span class="brand" data-t="brand">UAE AI Agents</span>
-<button class="lang" id="lang" type="button" lang="ar">عربي</button>
-</div>
-<h1 data-t="h1">Get things done, with official answers.</h1>
-<p class="lead" data-t="lead">AI agents for life and government services in the UAE.</p>
-<nav class="grid" aria-label="Agents">
-<a class="card" href="answers/"><span class="ic" aria-hidden="true">💬</span><div><b data-t="a1">Inzain</b><span data-t="a2">UAE rules answered, with official sources</span></div><span class="go" aria-hidden="true">→</span></a>
-<a class="card" href="city-repairs/"><span class="ic" aria-hidden="true">🛠️</span><div><b data-t="b1">Wareeni</b><span data-t="b2">City repairs, proven with a photo</span></div><span class="go" aria-hidden="true">→</span></a>
-<a class="card" href="message-check/"><span class="ic" aria-hidden="true">🛡️</span><div><b data-t="c1">Mazboot</b><span data-t="c2">Is this message a scam?</span></div><span class="go" aria-hidden="true">→</span></a>
-<a class="card" href="wages/"><span class="ic" aria-hidden="true">💵</span><div><b data-t="d1">Bil Tareekh</b><span data-t="d2">Wages on time, with dated proof</span></div><span class="go" aria-hidden="true">→</span></a>
-<a class="card" href="rent/"><span class="ic" aria-hidden="true">🏠</span><div><b data-t="e1">Masmooh</b><span data-t="e2">Is your Dubai rent increase allowed?</span></div><span class="go" aria-hidden="true">→</span></a>
-<a class="card" href="careers/"><span class="ic" aria-hidden="true">🎯</span><div><b data-t="f1">Zaheb</b><span data-t="f2">Ready for the interview and day one</span></div><span class="go" aria-hidden="true">→</span></a>
-</nav>
-<footer data-t="foot">Prototypes · general information, not legal advice.</footer>
+<div class="wrap">
+<header class="mast">
+<span class="mark"><span data-t="brand">UAE Agents</span><span class="k" lang="ar">وكلاء الإمارات</span></span>
+<button class="lang" id="lang" type="button" lang="ar">العربية</button>
+</header>
+<svg class="sadu" aria-hidden="true" focusable="false"><defs><pattern id="s" width="28" height="14" patternUnits="userSpaceOnUse"><path d="M0 14 7 7 14 14ZM14 0l7 7-7 7-7-7ZM21 0h7v1h-7z" fill="currentColor"/></pattern></defs><rect width="100%" height="14" fill="url(#s)"/></svg>
+
+<main>
+<h1 data-t="h1">What do you need help with?</h1>
+<form id="ask">
+<label for="q" class="vh" data-t="label">Your question</label>
+<textarea id="q" dir="auto" maxlength="800" placeholder="Ask anything: a visa, a fine, your salary, your rent, a message you got, a broken streetlight…"></textarea>
+<button class="send" type="submit" data-t="send">Go</button>
+</form>
+<p class="route" id="route" aria-live="polite"></p>
+<section id="view" hidden>
+<div class="viewbar"><span id="viewName"></span><a id="viewFull" href="#" target="_blank" rel="noopener" data-t="full">Full page</a><button type="button" class="lang" id="viewClose" data-t="close">Close</button></div>
+<iframe id="frame" title="Agent"></iframe>
+</section>
+
+<h2 data-t="h2">Or pick one</h2>
+<ol>
+<li><a href="answers/"><span class="no">01</span><span class="name"><span class="ar" lang="ar">انزين</span><span class="en">Inzain</span></span><span class="what" data-t="w1">UAE rules answered, with official sources</span><span class="open" data-t="open">Open</span></a></li>
+<li><a href="message-check/"><span class="no">02</span><span class="name"><span class="ar" lang="ar">مضبوط</span><span class="en">Mazboot</span></span><span class="what" data-t="w2">Is this message a scam?</span><span class="open" data-t="open">Open</span></a></li>
+<li><a href="wages/"><span class="no">03</span><span class="name"><span class="ar" lang="ar">بالتاريخ</span><span class="en">Bil Tareekh</span></span><span class="what" data-t="w3">Wages on time, with dated proof</span><span class="open" data-t="open">Open</span></a></li>
+<li><a href="rent/"><span class="no">04</span><span class="name"><span class="ar" lang="ar">مسموح</span><span class="en">Masmooh</span></span><span class="what" data-t="w4">Is your Dubai rent increase allowed?</span><span class="open" data-t="open">Open</span></a></li>
+<li><a href="city-repairs/"><span class="no">05</span><span class="name"><span class="ar" lang="ar">ورّيني</span><span class="en">Wareeni</span></span><span class="what" data-t="w5">City repairs, proven with a photo</span><span class="open" data-t="open">Open</span></a></li>
+<li><a href="careers/"><span class="no">06</span><span class="name"><span class="ar" lang="ar">زاهب</span><span class="en">Zaheb</span></span><span class="what" data-t="w6">Ready for the interview and day one</span><span class="open" data-t="open">Open</span></a></li>
+</ol>
 </main>
+<footer data-t="foot">Prototypes, updated regularly. General information, not legal advice.</footer>
+</div>
 <script>
-const T={ar:{brand:'وكلاء الإمارات الذكيون',h1:'أنجز معاملاتك بإجابات رسمية.',lead:'وكلاء ذكاء اصطناعي للحياة والخدمات الحكومية في الإمارات.',a1:'انزين',a2:'أنظمة الإمارات بوضوح، مع المصادر الرسمية',b1:'ورّيني',b2:'إصلاحات المدينة مُثبتة بصورة',c1:'مضبوط',c2:'هل هذه الرسالة احتيال؟',d1:'بالتاريخ',d2:'رواتب في وقتها، بإثبات مؤرخ',e1:'مسموح',e2:'هل زيادة إيجارك في دبي مسموحة؟',f1:'زاهب',f2:'جاهز للمقابلة ولأول يوم عمل',foot:'نماذج أولية · معلومات عامة وليست استشارة قانونية.'}};
+const AR={brand:'وكلاء الإمارات',h1:'بماذا نساعدك؟',label:'سؤالك',send:'انطلق',h2:'أو اختر بنفسك',w1:'أنظمة الإمارات بوضوح، مع المصادر الرسمية',w2:'هل هذه الرسالة احتيال؟',w3:'رواتب في وقتها، بإثبات مؤرخ',w4:'هل زيادة إيجارك في دبي مسموحة؟',w5:'إصلاحات المدينة مُثبتة بصورة',w6:'جاهز للمقابلة ولأول يوم عمل',open:'افتح',full:'صفحة كاملة',close:'إغلاق',foot:'نماذج أولية تُحدَّث باستمرار. معلومات عامة وليست استشارة قانونية.',ph:'اسأل عن أي شيء: إقامة، مخالفة، راتبك، إيجارك، رسالة وصلتك، عمود إنارة معطل…'};
 const EN={};document.querySelectorAll('[data-t]').forEach(e=>EN[e.dataset.t]=e.textContent);
+const Q=document.getElementById('q');EN.ph=Q.placeholder;
+const AGENTS={answers:{path:'answers/',en:'Inzain',ar:'انزين'},message:{path:'message-check/',en:'Mazboot',ar:'مضبوط'},wages:{path:'wages/',en:'Bil Tareekh',ar:'بالتاريخ'},rent:{path:'rent/',en:'Masmooh',ar:'مسموح'},repairs:{path:'city-repairs/',en:'Wareeni',ar:'ورّيني'},careers:{path:'careers/',en:'Zaheb',ar:'زاهب'}};
+// Simple router: a few strong words pick the agent; everything else goes to Inzain, which answers any UAE rules question.
+const RULES=[
+ ['message',/(scam|fraud|suspicious|phishing|\botp\b|\bsms\b|whats ?app message|text message|this link|verify (my|your) account|won a prize|احتيال|نصب|رسالة مشبوهة|وصلتني رسالة|رابط|رمز التحقق|مشبوه)/i],
+ ['wages',/(not (been )?paid|unpaid|salary (is )?(late|delayed|not)|late salary|no salary|\bwps\b|withheld|ما استلمت|راتب.{0,12}(متأخر|ما نزل)|تأخر الراتب|بدون راتب)/i],
+ ['rent',/(rent (increase|hike|renewal)|landlord.{0,30}(increase|raise)|increase.{0,20}rent|renewal notice|زيادة الإيجار|رفع الإيجار|تجديد العقد|المالك.{0,20}زيادة)/i],
+ ['repairs',/(broken|leak|pothole|street ?light|lamp ?post|garbage|rubbish|overflow|damaged (road|pavement|bench)|playground|عطل|تسرب|حفرة|إنارة|مكسور|نفايات|حديقة)/i],
+ ['careers',/(interview|\bcv\b|resume|job offer|career|first day at work|new job|مقابلة|سيرة ذاتية|وظيفة جديدة|عرض عمل)/i],
+];
+function pick(t){for(const [k,re] of RULES)if(re.test(t))return k;return 'answers'}
+const isAr=()=>document.documentElement.lang==='ar';
+function showRoute(){const t=Q.value.trim(),r=document.getElementById('route');r.textContent='';if(!t)return;
+ const a=AGENTS[pick(t)],b=document.createElement('b');b.textContent=isAr()?a.ar:a.en;
+ if(isAr())r.append('سيتولى ',b,' هذا السؤال.');else r.append(b,' will take this.')}
+Q.addEventListener('input',showRoute);
+const view=document.getElementById('view'),frame=document.getElementById('frame');
+function fit(){try{const d=frame.contentDocument;if(d&&d.documentElement){const h=d.documentElement.scrollHeight;if(h>200)frame.style.height=(h+8)+'px'}}catch(e){}}
+frame.addEventListener('load',()=>{fit();try{new ResizeObserver(fit).observe(frame.contentDocument.documentElement)}catch(e){}});
+function show(key,t){const a=AGENTS[key];const url=a.path+'?embed=1'+(t?'&q='+encodeURIComponent(t):'');
+ frame.src=url;document.getElementById('viewFull').href=a.path+(t?'?q='+encodeURIComponent(t):'');
+ document.getElementById('viewName').textContent=isAr()?a.ar:a.en;view.hidden=false;view.scrollIntoView({behavior:'smooth',block:'start'})}
+document.getElementById('viewClose').addEventListener('click',()=>{view.hidden=true;frame.src='about:blank';Q.focus()});
+document.getElementById('ask').addEventListener('submit',e=>{e.preventDefault();const t=Q.value.trim();if(!t){Q.focus();return}show(pick(t),t)});
+document.querySelectorAll('ol a').forEach(link=>link.addEventListener('click',e=>{if(e.ctrlKey||e.metaKey||e.shiftKey)return;e.preventDefault();
+ const key=Object.keys(AGENTS).find(k=>link.getAttribute('href')===AGENTS[k].path);if(key)show(key,'')}));
+Q.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();document.getElementById('ask').requestSubmit()}});
 function set(l){const ar=l==='ar';document.documentElement.lang=ar?'ar':'en';document.documentElement.dir=ar?'rtl':'ltr';
-document.querySelectorAll('[data-t]').forEach(e=>{e.textContent=ar?T.ar[e.dataset.t]:EN[e.dataset.t]});
-const b=document.getElementById('lang');b.textContent=ar?'English':'عربي';b.lang=ar?'en':'ar';try{localStorage.setItem('uaeagents-lang',l)}catch(e){}}
+ document.querySelectorAll('[data-t]').forEach(e=>{e.textContent=ar?AR[e.dataset.t]:EN[e.dataset.t]});
+ Q.placeholder=ar?AR.ph:EN.ph;
+ const b=document.getElementById('lang');b.textContent=ar?'English':'العربية';b.lang=ar?'en':'ar';
+ try{localStorage.setItem('uaeagents-lang',l)}catch(e){}showRoute()}
 let saved=null;try{saved=localStorage.getItem('uaeagents-lang')}catch(e){}
 set(saved||((navigator.language||'').toLowerCase().startsWith('ar')?'ar':'en'));
-document.getElementById('lang').addEventListener('click',()=>set(document.documentElement.lang==='ar'?'en':'ar'));
+document.getElementById('lang').addEventListener('click',()=>set(isAr()?'en':'ar'));
 </script>
 </body>
 </html>
