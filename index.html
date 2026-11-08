@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>UAE AI Agents</title>
+<meta name="description" content="Prototype AI agents that help people in the UAE get real things done with government and daily life.">
+<style>
+:root{--bg:#F6F5F0;--card:#FFFFFF;--ink:#14222E;--muted:#4A5662;--line:#D9D6CC;--accent:#0E7A62;--accent-ink:#FFFFFF;--chip:#E3F1EC}
+@media (prefers-color-scheme:dark){:root{--bg:#0F1A22;--card:#16242F;--ink:#EEF2F0;--muted:#A9BAC0;--line:#2A3F4E;--accent:#4FCFA8;--accent-ink:#0F1A22;--chip:#1D3540}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Segoe UI",system-ui,-apple-system,Roboto,"Noto Sans Arabic",Tahoma,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:40px 16px 56px}
+header h1{font-size:clamp(28px,5vw,44px);line-height:1.12;margin:0 0 12px;letter-spacing:-.5px}
+header p{margin:0 0 6px;color:var(--muted);max-width:720px;font-size:18px}
+.ar{direction:rtl;text-align:right;font-family:"Segoe UI","Noto Sans Arabic",Tahoma,sans-serif}
+header .ar{margin-top:10px;font-size:18px;color:var(--muted)}
+.steps{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0 32px;padding:0;list-style:none}
+.steps li{background:var(--chip);border-radius:999px;padding:6px 14px;font-size:14px;font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:10px}
+.card h2{font-size:20px;margin:0}
+.card p{margin:0;color:var(--muted)}
+.card .ar{font-size:15px}
+.card a{margin-top:auto;align-self:flex-start;display:inline-block;background:var(--accent);color:var(--accent-ink);text-decoration:none;font-weight:700;border-radius:10px;padding:11px 18px;min-height:44px}
+.card a:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.note{margin-top:32px;border-top:1px solid var(--line);padding-top:20px;color:var(--muted);font-size:14px}
+.note p{margin:0 0 8px}
+</style>
+</head>
+<body>
+<main class="wrap">
+<header>
+<h1>UAE AI Agents</h1>
+<p>A family of AI agents that help people in the UAE get real things done with government and daily life. Every fact links to an official source, and when an agent isn't sure, it says so.</p>
+<p class="ar" lang="ar">وكلاء ذكاء اصطناعي يساعدون الناس في الإمارات على إنجاز معاملاتهم اليومية والحكومية. كل معلومة مرتبطة بمصدر رسمي، وإذا لم يكن الوكيل متأكداً يقول ذلك بوضوح.</p>
+</header>
+
+<ul class="steps" aria-label="How every agent works">
+<li>Understands Arabic &amp; English</li>
+<li>Asks only what matters</li>
+<li>Finds the right authority</li>
+<li>Builds your plan</li>
+<li>Shows official sources</li>
+<li>Says when it doesn't know</li>
+</ul>
+
+<section class="grid" aria-label="Agents">
+<article class="card">
+<h2>UAE rules, answered</h2>
+<p>Ask about visas, work, rent, business or family rules. Get a personal plan with steps, fees, deadlines and who to contact, with an official source for every fact.</p>
+<p class="ar" lang="ar">اسأل عن أنظمة الإقامة والعمل والإيجار والأعمال والأسرة، واحصل على خطة شخصية بالخطوات والرسوم والمواعيد وجهة التواصل، مع مصدر رسمي لكل معلومة.</p>
+<a href="answers/">Open the demo</a>
+</article>
+<article class="card">
+<h2>City repairs, proven fixed</h2>
+<p>Report a broken streetlight or a leak with a photo. The case closes only when an after-photo proves the repair, and reused or old photos are flagged.</p>
+<p class="ar" lang="ar">بلّغ عن عمود إنارة معطل أو تسرب مياه بصورة. لا تُغلق الحالة إلا بصورة بعد الإصلاح تثبت إنجازه، ويُنبَّه إلى الصور المكررة أو القديمة.</p>
+<a href="city-repairs/">Open the demo</a>
+</article>
+<article class="card">
+<h2>Is this message real?</h2>
+<p>Paste a suspicious SMS or WhatsApp message. See the warning signs and what to do next.</p>
+<p class="ar" lang="ar">الصق رسالة نصية أو رسالة واتساب مشبوهة، واعرف علامات الاحتيال وماذا تفعل بعدها.</p>
+<a href="message-check/">Open the demo</a>
+</article>
+<article class="card">
+<h2>Wage protection</h2>
+<p>Log your paydays, spot late or unpaid salary, and build a dated case file to take to MOHRE.</p>
+<p class="ar" lang="ar">سجّل مواعيد رواتبك، واكتشف التأخير أو عدم الدفع، وجهّز ملفاً مؤرخاً لتقديمه إلى وزارة الموارد البشرية والتوطين.</p>
+<a href="wages/">Open the demo</a>
+</article>
+<article class="card">
+<h2>Dubai rent renewal check</h2>
+<p>Check whether a rent increase at renewal follows the RERA rules, and get a ready message for your landlord.</p>
+<p class="ar" lang="ar">تحقق مما إذا كانت زيادة الإيجار عند التجديد تتبع قواعد مؤسسة التنظيم العقاري، واحصل على رسالة جاهزة للمالك.</p>
+<a href="rent/">Open the demo</a>
+</article>
+<article class="card">
+<h2>Emirati careers coach</h2>
+<p>Interview practice, feedback and a first-90-days plan, in English and Arabic.</p>
+<p class="ar" lang="ar">تدريب على المقابلات وملاحظات وخطة لأول تسعين يوماً، بالعربية والإنجليزية.</p>
+<a href="careers/">Open the demo</a>
+</article>
+</section>
+
+<section class="note">
+<p><strong>Prototypes, updated regularly.</strong> Each demo runs in any browser with nothing to install. Without an AI connected, the built-in rules run and say so. To use AI, open the AI panel inside a demo and connect an AI app on your computer or your own key.</p>
+<p>General information from official sources, not legal advice. Demo data stays in your browser.</p>
+<p class="ar" lang="ar">نماذج أولية تُحدَّث باستمرار. معلومات عامة من مصادر رسمية، وليست استشارة قانونية.</p>
+</section>
+</main>
+</body>
+</html>
