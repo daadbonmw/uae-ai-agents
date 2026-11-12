@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1B1D21" media="(prefers-color-scheme: dark)">
+<title>Test results · نتائج التجربة</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%2392722A' d='M12 2a10 10 0 1 1 0 20H2V12A10 10 0 0 1 12 2z'/%3E%3C/svg%3E">
+<style>
+/* Owner's results page. Same look as the landing page (tools/calm-design.md). Nothing is sent anywhere. */
+:root{
+ --bg:#FFFFFF;--ink:#232528;--muted:#5F646D;--tile:#F7F7F7;--tile-hi:#EDEEF0;--line:#E1E3E5;
+ --brand:#21633E;--on-brand:#FFFFFF;--link:#21633E;--spot:#B68A35;--tint:#F9F7ED;--focus:#21633E;
+ --gold:#B68A35;--gold-ink:#92722A;--gold-line:#D7BC6D;--band-a:#FFFFFF;--band-b:#FAF3E3;
+ --field:#FFFFFF;--field-ink:#232528;--hint:#66686E;
+}
+@media (prefers-color-scheme:dark){:root{
+ --bg:#0E0F12;--ink:#F7F7F7;--muted:#9EA2A9;--tile:#1B1D21;--tile-hi:#232528;--line:#3E4046;
+ --brand:#2F663C;--link:#6FB97F;--spot:#CBA344;--tint:#2A2417;--focus:#A0D5AB;
+ --gold:#CBA344;--gold-ink:#D7BC6D;--gold-line:#7C5E24;--band-a:#1B1D21;--band-b:#19160E;
+ --field:#0E0F12;--field-ink:#F7F7F7;--hint:#9EA2A9;
+}}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;background:var(--bg)}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font:400 17px/1.5 Rubik,system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-wrap:break-word}
+button,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.wrap{max-width:760px;margin-inline:auto}
+.top{background:linear-gradient(180deg,var(--band-a),var(--band-b));box-shadow:inset 0 4px 0 var(--gold);border-end-start-radius:28px;border-end-end-radius:28px}
+.top .wrap{padding:6px 16px 20px}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:600}
+.mark{width:22px;height:22px;flex:none;fill:currentColor}
+[dir=rtl] .mark{transform:scaleX(-1)}
+.lang{min-width:44px;min-height:44px;padding:0 16px;border:1.5px solid var(--muted);border-radius:22px;background:transparent;font-size:15px;font-weight:600;line-height:1;cursor:pointer}
+h1{margin:16px 0 0;font-size:28px;line-height:1.15;font-weight:600;color:var(--gold-ink)}
+main.wrap{padding:20px 16px 40px}
+.tl{display:block;margin:0 0 6px 4px;font-size:15px;line-height:22px;color:var(--muted)}
+#paste{display:block;width:100%;height:132px;padding:12px 16px;border:0;border-radius:22px;background:var(--field);color:var(--field-ink);box-shadow:inset 0 0 0 1.5px var(--gold-line);font-size:17px;line-height:24px;resize:vertical}
+#paste:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.note{margin:10px 4px 0;font-size:15px;line-height:22px;color:var(--muted)}
+.stat{margin:22px 4px 10px;font-weight:600}
+table{width:100%;border-collapse:separate;border-spacing:0;border-radius:22px;background:var(--tile);overflow:hidden}
+th,td{padding:10px 12px;text-align:end;font-size:17px;line-height:24px;font-variant-numeric:tabular-nums}
+th{font-size:15px;font-weight:400;color:var(--muted)}
+th:first-child,td:first-child{text-align:start;padding-inline-start:16px}
+th:last-child,td:last-child{padding-inline-end:16px}
+td:first-child{font-weight:600}
+td:last-child{font-weight:600}
+tbody tr+tr td{border-top:1px solid var(--line)}
+h2{margin:22px 4px 8px;font-size:17px;line-height:24px;font-weight:600}
+ul.notes{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+ul.notes li{padding:10px 16px;border-radius:16px;background:var(--tile)}
+.tbtn{min-height:44px;padding:0 24px;border:0;border-radius:22px;background:var(--brand);color:var(--on-brand);font-weight:600;line-height:1;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.copy{margin-top:22px}
+.own{margin:22px 4px 0;font-size:15px;line-height:22px;color:var(--muted)}
+[hidden]{display:none!important}
+@media (hover:hover){.lang:hover{background:var(--tile)}.tbtn:hover{filter:brightness(1.08)}}
+@media (prefers-reduced-motion:no-preference){.tbtn,.lang{transition:transform .15s}.tbtn:active,.lang:active{transform:scale(.96)}}
+@media (min-width:760px){.top .wrap{padding:12px 32px 28px}main.wrap{padding:28px 32px 56px}h1{font-size:34px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+ <div class="bar">
+  <span class="brand"><svg class="mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2a10 10 0 1 1 0 20H2V12A10 10 0 0 1 12 2z"/></svg><span data-t="brand">UAE Agents</span></span>
+  <button class="lang" id="lang" type="button" lang="ar">عربي</button>
+ </div>
+ <h1 data-t="h1">Test results</h1>
+</div></header>
+
+<main class="wrap">
+ <label class="tl" for="paste" data-t="paste">Paste the messages</label>
+ <textarea id="paste" dir="auto" spellcheck="false" autocomplete="off"></textarea>
+ <p class="note" id="bad" hidden></p>
+ <p class="note" id="none" hidden data-t="none">No results found.</p>
+ <section id="out" hidden>
+  <p class="stat" id="testers"></p>
+  <table>
+   <thead><tr><th scope="col" data-t="agent">Agent</th><th scope="col" data-t="tries">Tries</th><th scope="col" data-t="helped">Helped</th><th scope="col" data-t="share">Share</th></tr></thead>
+   <tbody id="rows"></tbody>
+  </table>
+  <div id="notesBox" hidden><h2 data-t="notes">Notes</h2><ul class="notes" id="notes"></ul></div>
+  <button class="tbtn copy" type="button" id="copy" data-t="copy">Copy summary</button>
+ </section>
+ <p class="own" data-t="own">These are the testers' own answers. Nothing is sent anywhere.</p>
+</main>
+
+<script>
+(function(){
+'use strict';
+const root=document.documentElement;
+const $=id=>document.getElementById(id);
+/*CODE-START*/
+// Result code. This SAME block is in tools/site-index.html and tools/site-results.html (tools/test_results_code.js checks they match).
+// UA1-<tries>.<helped> for the six agents in the order of AG, then E or A (page language), P or C (phone or computer), then a 4-character check.
+// Only capital letters, digits, "-" and "." are used, so it survives WhatsApp. A code with a wrong check is rejected.
+const AG=['answers','message','wages','rent','repairs','careers'];
+const chk=s=>{let h=0x811c9dc5;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0}return (h%1679616).toString(36).toUpperCase().padStart(4,'0')};
+const clamp=(n,a,b)=>Math.min(b,Math.max(a,n|0));
+function makeCode(counts,lang,device){
+ const p=AG.map(k=>{const c=(counts&&counts[k])||[0,0],t=clamp(c[0],0,99);return t+'.'+clamp(c[1],0,t)}).join('-');
+ const body='UA1-'+p+'-'+(lang==='ar'?'A':'E')+(device==='phone'?'P':'C');
+ return body+'-'+chk(body);
+}
+const CODE_RE=/(^|[^A-Z0-9])(UA1(?:-\d{1,2}\.\d{1,2}){6}-[EA][PC]-[0-9A-Z]{4})(?![A-Z0-9])/gi;
+const NOTE_RE=/^\s*(?:Note|ملاحظة)\s*[:：]\s*(.+?)\s*$/i;
+// Finds every valid code in any pasted text. Gives [{counts:{agent:[tries,helped]},lang:'en'|'ar',device:'phone'|'computer',note:''}].
+function readCodes(text){
+ const s=String(text||'').replace(/[‐-―−]/g,'-'),out=[];let m;
+ CODE_RE.lastIndex=0;
+ while((m=CODE_RE.exec(s))){
+  const code=m[2].toUpperCase(),f=code.split('-'),counts={};let ok=chk(code.slice(0,-5))===f[8];
+  AG.forEach((k,i)=>{const [t,h]=f[i+1].split('.').map(Number);if(h>t)ok=false;counts[k]=[t,h]});
+  if(!ok)continue;
+  const lines=s.slice(0,m.index+m[1].length).split(/\r\n|\r|\n/),own=lines.pop().trim(),nm=own===''&&lines.length?NOTE_RE.exec(lines[lines.length-1]):null;
+  out.push({counts,lang:f[7][0]==='A'?'ar':'en',device:f[7][1]==='P'?'phone':'computer',note:nm?nm[1]:''});
+ }
+ return out;
+}
+/*CODE-END*/
+
+const NAMES={answers:['Inzain','انزين'],message:['Mazboot','مضبوط'],wages:['Bil Tareekh','بالتاريخ'],rent:['Masmooh','مسموح'],repairs:['Wareeni','ورّيني'],careers:['Zaheb','زاهب']};
+const TX={
+ en:{brand:'UAE Agents',h1:'Test results',paste:'Paste the messages',none:'No results found.',agent:'Agent',tries:'Tries',helped:'Helped',share:'Share',notes:'Notes',copy:'Copy summary',copied:'Copied',
+  own:"These are the testers' own answers. Nothing is sent anywhere.",testers:'Testers',bad:'{n} damaged, skipped',dup:'{n} repeated, skipped',head:'UAE Agents test',line:'{name}: {t} tried, {h} helped ({p})'},
+ ar:{brand:'وكلاء الإمارات',h1:'نتائج التجربة',paste:'الصق الرسائل',none:'لا توجد نتائج.',agent:'الوكيل',tries:'المحاولات',helped:'ساعد',share:'النسبة',notes:'الملاحظات',copy:'نسخ الملخص',copied:'تم النسخ',
+  own:'هذه إجابات المختبرين أنفسهم. لا يُرسل شيء إلى أي مكان.',testers:'المختبرون',bad:'{n} رمز تالف، تم تجاهله',dup:'{n} مكرر، تم تجاهله',head:'تجربة وكلاء الإمارات',line:'{name}: محاولات {t}، ساعد {h} ({p})'}
+};
+const isAr=()=>root.lang==='ar';
+const D=()=>TX[isAr()?'ar':'en'];
+let last=null,t0=0;
+
+function sum(items){
+ const rows=AG.map(k=>{let t=0,h=0;items.forEach(i=>{t+=i.counts[k][0];h+=i.counts[k][1]});return {k,t,h,p:t?Math.round(100*h/t)+'%':'—'}});
+ return {testers:items.length,rows,notes:items.map(i=>i.note).filter(Boolean)};
+}
+function text(r){
+ const d=D(),i=isAr()?1:0,out=[d.head,d.testers+': '+r.testers];
+ r.rows.forEach(x=>out.push(d.line.replace('{name}',NAMES[x.k][i]).replace('{t}',x.t).replace('{h}',x.h).replace('{p}',x.p)));
+ if(r.notes.length){out.push('',d.notes+':');r.notes.forEach(n=>out.push('- '+n))}
+ out.push('',d.own);
+ return out.join('\n');
+}
+function paint(){
+ const d=D(),raw=$('paste').value,all=readCodes(raw);
+ // The same message pasted twice has the very same code, so an identical code is counted once (the code holds no identifier by design).
+ const seen=new Set(),items=all.filter(x=>{const k=JSON.stringify([x.counts,x.lang,x.device]);if(seen.has(k))return false;seen.add(k);return true});
+ const loose=(raw.match(/(^|[^A-Za-z0-9])UA\d-[0-9A-Za-z.\-]{6,}/gi)||[]).length,bad=Math.max(0,loose-all.length),dup=all.length-items.length;
+ $('bad').hidden=!(bad||dup);$('bad').textContent=[bad?d.bad.replace('{n}',bad):'',dup?d.dup.replace('{n}',dup):''].filter(Boolean).join(' · ');
+ $('none').hidden=!(raw.trim()&&!items.length);
+ $('out').hidden=!items.length;
+ last=items.length?sum(items):null;
+ if(!last)return;
+ $('testers').textContent=d.testers+': '+last.testers;
+ const i=isAr()?1:0;
+ $('rows').replaceChildren(...last.rows.map(x=>{
+  const tr=document.createElement('tr');
+  [NAMES[x.k][i],x.t,x.h,x.p].forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.append(td)});
+  return tr;
+ }));
+ $('notesBox').hidden=!last.notes.length;
+ $('notes').replaceChildren(...last.notes.map(n=>{const li=document.createElement('li');li.textContent=n;li.dir='auto';return li}));
+}
+function set(l){
+ const ar=l==='ar';root.lang=ar?'ar':'en';root.dir=ar?'rtl':'ltr';
+ const d=D();
+ document.querySelectorAll('[data-t]').forEach(e=>{e.textContent=d[e.dataset.t]});
+ const b=$('lang');b.textContent=ar?'English':'عربي';b.lang=ar?'en':'ar';
+ try{localStorage.setItem('uaeagents-lang',l)}catch(e){}
+ paint();
+}
+async function copy(t){
+ try{await navigator.clipboard.writeText(t);return true}catch(e){}
+ try{const a=document.createElement('textarea');a.value=t;a.setAttribute('readonly','');a.style.cssText='position:fixed;opacity:0';document.body.append(a);a.select();const ok=document.execCommand('copy');a.remove();return ok}catch(e){return false}
+}
+$('paste').addEventListener('input',paint);
+$('lang').addEventListener('click',()=>set(isAr()?'en':'ar'));
+$('copy').addEventListener('click',async()=>{
+ if(!last)return;
+ if(!await copy(text(last)))return;
+ const b=$('copy');b.textContent=D().copied;clearTimeout(t0);t0=setTimeout(()=>{b.textContent=D().copy},1800);
+});
+let saved=null;try{saved=localStorage.getItem('uaeagents-lang')}catch(e){}
+set(saved||((navigator.language||'').toLowerCase().startsWith('ar')?'ar':'en'));
+})();
+</script>
+</body>
+</html>

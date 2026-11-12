@@ -124,6 +124,32 @@ main.wrap{padding:16px 16px 24px}
  .agent:hover .s{transform:translate(2px,-2px)}
 }
 
+/* Test mode only (?test=1): the question bar, the send button and the send sheet. Nothing here shows without it. */
+.tbar{position:fixed;inset-inline:0;bottom:0;z-index:5;background:var(--tint);box-shadow:inset 0 1.5px 0 var(--gold-line);border-start-start-radius:22px;border-start-end-radius:22px}
+.tbar .wrap{display:flex;align-items:center;gap:10px;padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
+.tq-t{flex:1;min-width:0;margin:0}
+.tbtn{min-width:64px;min-height:44px;padding:0 20px;border:1.5px solid var(--muted);border-radius:22px;background:transparent;font-weight:600;line-height:1;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.tbtn.main{border-color:transparent;background:var(--brand);color:var(--on-brand)}
+.tbtn.link{border-color:transparent;color:var(--link)}
+.tpill{position:fixed;z-index:5;inset-inline-end:16px;bottom:calc(16px + env(safe-area-inset-bottom))}
+.tbar[hidden],.tpill[hidden]{display:none}
+body.tpad{padding-bottom:88px}
+#tsheet{position:fixed;inset:auto 0 0 0;width:100%;max-width:520px;max-height:calc(100vh - 10px);max-height:calc(100dvh - 10px);margin:0 auto;padding:0;border:0;border-radius:22px 22px 0 0;overflow:auto;background:var(--bg);color:var(--ink)}
+#tsheet::backdrop{background:rgba(8,10,20,.5)}
+.tbody{padding:14px 16px calc(16px + env(safe-area-inset-bottom))}
+.tsum{margin:0 0 14px}
+.tl{display:block;margin:0 0 6px;font-size:15px;line-height:22px;color:var(--muted)}
+#tsNote{display:block;width:100%;height:68px;padding:10px 14px;border:0;border-radius:16px;background:var(--field);color:var(--field-ink);box-shadow:inset 0 0 0 1.5px var(--gold-line);font-size:17px;line-height:24px;resize:none}
+#tsNote:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.tmsg{margin:14px 0;padding:12px 14px;border-radius:16px;background:var(--tile);font-size:15px;line-height:22px;overflow-wrap:anywhere}
+.tmsg .code{direction:ltr;text-align:start}
+.tact{display:grid;gap:6px}
+@media (prefers-reduced-motion:no-preference){
+ #tsheet[open]{animation:sheet .34s cubic-bezier(.2,.85,.25,1)}
+ #tsheet[open]::backdrop{animation:fade .24s ease-out}
+ .tbtn:active{transform:scale(.96)}
+}
+
 /* Desktop */
 @media (min-width:760px){
  .top{border-end-start-radius:40px;border-end-end-radius:40px}
@@ -246,7 +272,7 @@ const RULES={
   any:L('not paid|unpaid for|unpaid salary|unpaid wages|no salary|without salary|withheld salary|salary withheld|didnt pay me|didnt get paid|not paying me|stopped paying me|refuses to pay me|owes me salary|owe me salary|wage theft|wps|wage protection|ما استلمت راتب|راتب ما نزل'),
   pairs:[[
    L('salary|salaries|wage|wages|paycheck|paycheque|راتب|رواتب|معاش|مستحقات|ratib|ratibi|rateb|rateby|ratbi|maash|ma3ash'),
-   L('late|delayed|delay|overdue|unpaid|withheld|withhold|stopped|not received|didnt receive|havent received|didnt get|not credited|not transferred|didnt arrive|not arrived|متاخر|متاخره|تاخر|تاخير|تاخرت|ما نزل|ما نزلت|ما وصل|ما وصلني|ما استلمت|ما استلمنا|ما دفعوا|ما دفع|ما عطوني|ما يعطوني|محتجز|محجوز|موقوف|متوقف|met2akhar|mit2akhar|mta5er|mt2akher|mitakhar|mutakhir|ta2akhar|ta5ar|ma nzal|ma nazal|ma nezal|ma wasal|ma wsal|ma istalamt|ma istlamt|ma estlamt|ma stlamt|ma dafa3o|ma dfa3o')
+   L('late|delayed|delay|overdue|unpaid|withheld|withhold|stopped|hasnt paid|has not paid|havent paid|have not paid|didnt pay|did not pay|not paid|not been paid|hasnt been paid|havent been paid|isnt paying|is not paying|arent paying|not paying|wont pay|refuses to pay|refusing to pay|months without|not received|didnt receive|havent received|didnt get|not credited|not transferred|didnt arrive|not arrived|متاخر|متاخره|تاخر|تاخير|تاخرت|ما نزل|ما نزلت|ما وصل|ما وصلني|ما استلمت|ما استلمنا|ما دفعوا|ما دفع|ما عطوني|ما يعطوني|محتجز|محجوز|موقوف|متوقف|met2akhar|mit2akhar|mta5er|mt2akher|mitakhar|mutakhir|ta2akhar|ta5ar|ma nzal|ma nazal|ma nezal|ma wasal|ma wsal|ma istalamt|ma istlamt|ma estlamt|ma stlamt|ma dafa3o|ma dfa3o')
   ]]},
  rent:{
   any:L('rent increase|rent hike|rent raise|raise the rent|raise my rent|raising the rent|raising my rent|increase my rent|increase the rent|increasing the rent|rent went up|rental increase|rent renewal|renewal notice|evict|eviction|evicting|notice to vacate|vacate|vacating|vacate notice|12 month notice|12 months notice|twelve month notice|kick me out|throw me out|asked me to leave the apartment|asked me to leave the flat|asked me to leave the house|terminate my lease|end my lease|lease termination|زياده الايجار|زياده الاجار|رفع الايجار|رفع الاجار|زياده في الايجار|زياده ايجار|اخلاء|انهاء عقد الايجار|فسخ عقد الايجار|ikhlaa|ikhla2|ikhlaa2|ekhlaa|ekhla2|ikhlae'),
@@ -277,6 +303,34 @@ function pick(raw){
  return found.length===1?found[0]:'answers';
 }
 /*ROUTER-END*/
+/*CODE-START*/
+// Result code. This SAME block is in tools/site-index.html and tools/site-results.html (tools/test_results_code.js checks they match).
+// UA1-<tries>.<helped> for the six agents in the order of AG, then E or A (page language), P or C (phone or computer), then a 4-character check.
+// Only capital letters, digits, "-" and "." are used, so it survives WhatsApp. A code with a wrong check is rejected.
+const AG=['answers','message','wages','rent','repairs','careers'];
+const chk=s=>{let h=0x811c9dc5;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0}return (h%1679616).toString(36).toUpperCase().padStart(4,'0')};
+const clamp=(n,a,b)=>Math.min(b,Math.max(a,n|0));
+function makeCode(counts,lang,device){
+ const p=AG.map(k=>{const c=(counts&&counts[k])||[0,0],t=clamp(c[0],0,99);return t+'.'+clamp(c[1],0,t)}).join('-');
+ const body='UA1-'+p+'-'+(lang==='ar'?'A':'E')+(device==='phone'?'P':'C');
+ return body+'-'+chk(body);
+}
+const CODE_RE=/(^|[^A-Z0-9])(UA1(?:-\d{1,2}\.\d{1,2}){6}-[EA][PC]-[0-9A-Z]{4})(?![A-Z0-9])/gi;
+const NOTE_RE=/^\s*(?:Note|ملاحظة)\s*[:：]\s*(.+?)\s*$/i;
+// Finds every valid code in any pasted text. Gives [{counts:{agent:[tries,helped]},lang:'en'|'ar',device:'phone'|'computer',note:''}].
+function readCodes(text){
+ const s=String(text||'').replace(/[‐-―−]/g,'-'),out=[];let m;
+ CODE_RE.lastIndex=0;
+ while((m=CODE_RE.exec(s))){
+  const code=m[2].toUpperCase(),f=code.split('-'),counts={};let ok=chk(code.slice(0,-5))===f[8];
+  AG.forEach((k,i)=>{const [t,h]=f[i+1].split('.').map(Number);if(h>t)ok=false;counts[k]=[t,h]});
+  if(!ok)continue;
+  const lines=s.slice(0,m.index+m[1].length).split(/\r\n|\r|\n/),own=lines.pop().trim(),nm=own===''&&lines.length?NOTE_RE.exec(lines[lines.length-1]):null;
+  out.push({counts,lang:f[7][0]==='A'?'ar':'en',device:f[7][1]==='P'?'phone':'computer',note:nm?nm[1]:''});
+ }
+ return out;
+}
+/*CODE-END*/
 const isAr=()=>root.lang==='ar';
 const nameOf=a=>isAr()?a.ar:a.en;
 const tiles=[...document.querySelectorAll('.agent')];
@@ -312,7 +366,7 @@ function paintName(){
 }
 function show(key,t,fromHistory){
  const a=AGENTS[key];if(!a)return;
- cur=key;opens++;
+ cur=key;opens++;tVisit(key);
  const ico=tileOf(key).querySelector('.ico');
  document.getElementById('viewIco').replaceChildren(ico.cloneNode(true));
  document.getElementById('loadIco').replaceChildren(ico.cloneNode(true));
@@ -327,7 +381,7 @@ function show(key,t,fromHistory){
  if(!dlg.open){dlg.showModal();root.classList.add('locked')}
  if(!fromHistory){const h='#'+slugOf(a);if(location.hash!==h)history.pushState({sheet:key},'',h)}
 }
-function cleanup(){root.classList.remove('locked');const f=document.getElementById('frame');if(f)f.remove();cur=null}
+function cleanup(){root.classList.remove('locked');const f=document.getElementById('frame');if(f)f.remove();cur=null;tEnd()}
 function closeSheet(){if(dlg.open)dlg.close();cleanup()}
 // Close through history, so the phone's Back button closes the sheet instead of leaving the site.
 function requestClose(){
@@ -351,6 +405,84 @@ form.addEventListener('submit',e=>{e.preventDefault();const t=Q.value.trim();if(
 Q.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();if(form.requestSubmit)form.requestSubmit();else form.dispatchEvent(new Event('submit',{cancelable:true}))}});
 tiles.forEach(link=>link.addEventListener('click',e=>{if(e.ctrlKey||e.metaKey||e.shiftKey||e.altKey)return;const k=keyOf(link);if(!k)return;e.preventDefault();show(k,Q.value.trim())}));
 
+// Test mode (?test=1, kept for the browser session): one question after each agent used for 15 seconds, then "Send my result".
+// "Tries" are answered questions, so the share is honest. Answers stay in this browser until the tester sends them.
+const TEST=(function(){let on=false;try{on=new URLSearchParams(location.search).get('test')==='1';if(on)sessionStorage.setItem('uaeagents-test','1');else on=sessionStorage.getItem('uaeagents-test')==='1'}catch(e){}return on})();
+const TX={
+ en:{q:'Did {n} help?',yes:'Yes',no:'No',send:'Send my result',note:'Anything confusing?',wa:'Send on WhatsApp',copy:'Copy',copied:'Copied',close:'Close',line:'UAE Agents test. Tried: {a}. Helped: {h}.',tag:'Note: '},
+ ar:{q:'هل ساعدك {n}؟',yes:'نعم',no:'لا',send:'أرسل نتيجتي',note:'أي شيء غير واضح؟',wa:'أرسل عبر واتساب',copy:'نسخ',copied:'تم النسخ',close:'إغلاق',line:'تجربة وكلاء الإمارات. جرّبت: {a}. ساعد: {h}.',tag:'ملاحظة: '}
+};
+const tx=()=>TX[isAr()?'ar':'en'];
+let store={c:{}},visit=null,pending=null,tBar,tPill,tSheet,tNote;
+const tel=id=>document.getElementById(id);
+const tSave=()=>{try{localStorage.setItem('uaeagents-test',JSON.stringify(store))}catch(e){}};
+const tCount=()=>{let a=0,h=0;AG.forEach(k=>{const c=store.c[k]||[0,0];if(c[0]>0)a++;if(c[1]>0)h++});return {a,h}};
+const tDevice=()=>coarse()?'phone':'computer';
+function tVisit(key){if(TEST){visit={key,at:Date.now()};pending=null;tPaint()}}
+function tEnd(){const v=visit;visit=null;if(TEST&&v&&Date.now()-v.at>=15000){pending=v.key;tPaint()}}
+function tAnswer(yes){
+ const k=pending;if(!k)return;
+ const c=store.c[k]=store.c[k]||[0,0];c[0]=Math.min(99,c[0]+1);if(yes)c[1]=Math.min(c[0],c[1]+1);
+ tSave();pending=null;tPaint();tPill.focus();
+}
+function tMessage(){
+ const {a,h}=tCount(),n=tNote.value.replace(/UA1/gi,'').replace(/\s+/g,' ').trim().slice(0,200),D=tx();
+ const lines=[D.line.replace('{a}',a).replace('{h}',h)];
+ if(n)lines.push(D.tag+n);
+ lines.push(makeCode(store.c,root.lang,tDevice()));
+ return lines;
+}
+const sumText=n=>isAr()?(n===1?'جرّبت وكيلًا واحدًا':n===2?'جرّبت وكيلين':'جرّبت '+n+(n<=10?' وكلاء':' وكيلًا')):'You tried '+n+(n===1?' agent':' agents');
+function tPaint(){
+ if(!TEST||!tBar)return;
+ const D=tx(),n=tCount().a;
+ tel('tqText').textContent=pending?D.q.replace('{n}',nameOf(AGENTS[pending])):'';
+ tel('tqYes').textContent=D.yes;tel('tqNo').textContent=D.no;
+ tBar.hidden=!pending;tPill.hidden=!!pending||!n;tPill.textContent=D.send;
+ document.body.classList.toggle('tpad',!!pending||!!n);
+ tel('tsTitle').textContent=D.send;tel('tsClose').setAttribute('aria-label',D.close);
+ tel('tsSum').textContent=sumText(n);tel('tsNoteL').textContent=D.note;
+ tel('tsWa').textContent=D.wa;tel('tsCopy').textContent=D.copy;
+ const box=tel('tsMsg'),ls=tMessage();box.replaceChildren();
+ ls.forEach((t,i)=>{const d=document.createElement('div');d.textContent=t;if(i===ls.length-1){d.className='code';d.dir='ltr'}else d.dir='auto';box.append(d)});
+}
+async function tCopy(text){
+ try{await navigator.clipboard.writeText(text);return true}catch(e){}
+ try{const t=document.createElement('textarea');t.value=text;t.setAttribute('readonly','');t.style.cssText='position:fixed;opacity:0';tSheet.append(t);t.select();const ok=document.execCommand('copy');t.remove();return ok}catch(e){return false}
+}
+if(TEST){
+ try{const o=JSON.parse(localStorage.getItem('uaeagents-test'));if(o&&o.c&&typeof o.c==='object')store=o}catch(e){}
+ const x='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+ tBar=document.createElement('div');tBar.className='tbar';tBar.hidden=true;tBar.setAttribute('role','group');tBar.setAttribute('aria-labelledby','tqText');
+ tBar.innerHTML='<div class="wrap"><p class="tq-t" id="tqText"></p><button class="tbtn main" type="button" id="tqYes"></button><button class="tbtn" type="button" id="tqNo"></button></div>';
+ tPill=document.createElement('button');tPill.className='tbtn main tpill';tPill.type='button';tPill.hidden=true;
+ tSheet=document.createElement('dialog');tSheet.id='tsheet';tSheet.setAttribute('aria-labelledby','tsTitle');
+ tSheet.innerHTML='<div class="sheet-bar"><h2 class="sheet-name" id="tsTitle"></h2><button class="ibtn" id="tsClose" type="button" autofocus>'+x+'</button></div>'
+  +'<div class="tbody"><p class="tsum" id="tsSum"></p><label class="tl" id="tsNoteL" for="tsNote"></label><textarea id="tsNote" maxlength="200" rows="2" dir="auto"></textarea>'
+  +'<div class="tmsg" id="tsMsg"></div><div class="tact"><button class="tbtn main" type="button" id="tsWa"></button><button class="tbtn link" type="button" id="tsCopy" aria-live="polite"></button></div></div>';
+ document.body.append(tBar,tPill,tSheet);
+ tNote=tel('tsNote');
+ tel('tqYes').addEventListener('click',()=>tAnswer(true));
+ tel('tqNo').addEventListener('click',()=>tAnswer(false));
+ tPill.addEventListener('click',()=>{tPaint();tSheet.showModal();root.classList.add('locked')});
+ tNote.addEventListener('input',tPaint);
+ const shut=()=>{if(tSheet.open)tSheet.close()};
+ tel('tsClose').addEventListener('click',shut);
+ tSheet.addEventListener('click',e=>{if(e.target===tSheet)shut()});
+ tSheet.addEventListener('close',()=>root.classList.remove('locked'));
+ tel('tsWa').addEventListener('click',async()=>{
+  const text=tMessage().join('\n');
+  if(navigator.share){try{await navigator.share({text});return}catch(e){if(e&&e.name==='AbortError')return}}
+  window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank','noopener');
+ });
+ let t0=0;
+ tel('tsCopy').addEventListener('click',async()=>{
+  const ok=await tCopy(tMessage().join('\n')),b=tel('tsCopy');if(!ok)return;
+  b.textContent=tx().copied;clearTimeout(t0);t0=setTimeout(()=>{b.textContent=tx().copy},1800);
+ });
+ tPaint();
+}
+
 // English / Arabic with full RTL.
 function set(l){
  const ar=l==='ar',D=ar?AR:EN;
@@ -360,7 +492,7 @@ function set(l){
  Q.placeholder=D.ph;
  const b=document.getElementById('lang');b.textContent=ar?'English':'عربي';b.lang=ar?'en':'ar';
  try{localStorage.setItem('uaeagents-lang',l)}catch(e){}
- said='';showRoute();paintName();
+ said='';showRoute();paintName();tPaint();
 }
 let saved=null;try{saved=localStorage.getItem('uaeagents-lang')}catch(e){}
 set(saved||((navigator.language||'').toLowerCase().startsWith('ar')?'ar':'en'));

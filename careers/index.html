@@ -130,7 +130,7 @@ h1{margin:14px 0 16px;font-size:28px;line-height:1.15;color:var(--gold-ink)}
 .thead .ico{width:40px;height:40px;margin:-4px;margin-inline-end:0}
 .thead h2{flex:1;min-width:0}
 .after{display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:8px;padding-bottom:32px}
-.foot{font-size:15px;color:var(--muted);text-align:center}
+.foot{font-size:15px;color:var(--muted);text-align:center;padding-bottom:24px}
 
 /* Shared pieces */
 .chip{display:inline-flex;align-items:center;min-height:30px;padding:2px 12px;border-radius:15px;background:var(--tile-hi);color:var(--ink);font-size:15px;line-height:20px;font-weight:600;white-space:nowrap}
@@ -299,7 +299,7 @@ dialog.sheet.short{height:auto;max-height:calc(100vh - 10px);max-height:calc(100
 }
 
 /* Embedded in the landing page's sheet: no name bar, no footer, tighter top */
-.embed .bar,.embed .foot{display:none}
+.embed .bar{display:none}
 .embed .top .wrap{padding-top:10px}
 .embed h1{margin-top:10px}
 @media (min-width:760px){.embed h1{margin-top:16px}}
@@ -380,6 +380,7 @@ dialog.sheet.short{height:auto;max-height:calc(100vh - 10px);max-height:calc(100
   <button type="button" class="tbtn" id="moreBtn" data-sheet="sheetMore" aria-haspopup="dialog" data-i="more">More</button>
  </div>
 </main>
+<footer class="foot wrap"><p data-i="notGov">Not legal advice. Not a government service.</p></footer>
 
 <!-- ===================== SHEETS ===================== -->
 <dialog class="sheet" id="sheetIv" aria-labelledby="ivH">
@@ -495,9 +496,9 @@ const I18N={
 en:{
 skip:'Skip to content',brand:'Zaheb',menu:'Menu',close:'Close',more:'More',moreDetails:'More details',back:'Back',chooseH:'What brings you here?',chSeek:'I’m looking for a job',chHire:'I’m hiring',
 privRules:'Stays in this browser. Results come from rules.',privAI:'Stays in this browser. AI suggests, you decide. Text leaves the UAE only if you agree.',demoNote:'Demo with made-up examples. General information, not legal advice.',
-seekH:'Ready for the interview?',fRole:'Type of job',btnStart:'Start',seekHelp:'Questions one by one, with feedback.',
+seekH:'Ready for the interview?',fRole:'Type of job',btnStart:'Start',seekHelp:'Questions one by one, with feedback. Practice only: it cannot predict your result.',
 ivTile:'Practice',ivLine:'Questions and feedback',ivLineQ:'Question {n} of {t}',ivLineDone:'Finished',
-mapTile:'My strengths',mapLine:'Job areas that fit',p90Tile:'First 90 days',p90Line:'Plan for a new job',
+mapTile:'My strengths',mapLine:'Ideas to explore',p90Tile:'First 90 days',p90Line:'Plan for a new job',
 hireH:'Hire Emiratis who stay',fSize:'Staff',fSkilled:'Skilled roles',fEmirati:'Emiratis in them',exTry:'Try:',exLogi:'Logistics, 180',exSmall:'Small firm, 35',
 e2H:'Emiratisation target',hireTile:'Hiring plan',hireLine:'Roles, onboarding, retention',
 aiTag:'AI',ruleTag:'Rule',exampleTag:'Example',whoAI:'AI · {by}',kAI:'AI',kRule:'Rule',traceH:'Agent steps',
@@ -505,12 +506,12 @@ copy:'Copy',copied:'Copied',copyFallback:'Select and copy:',copy_map:'Copy stren
 langNote:'Written in {lang}. Run again to switch.',langName_en:'English',langName_ar:'Arabic',
 ivEmpty:'Pick a job, then Start.',ivQ:'{n} of {t}',ivYou:'You',ivAnswerLabel:'Your answer',ivAnswerPh:'Your words',ivSend:'Send',ivEnd:'End',ivRestart:'New practice',
 ivBusy:'Reading your answer…',ivBusyStart:'Choosing a question…',ivStrong:'Strong:',ivImprove:'Improve:',ivExample:'Better answer',
-ivSelf:'Self-check: {m} of {t}',ivMissing:'Missing:',ivSumH:'Summary',ivSumRules:'You met {m} of {t} points.',ivSumFallback:'Done. Practise your one improvement.',ivSumEarly:'Ended before any answer.',
+notGov:'Not legal advice. Not a government service.',ivSelf:'Self-check: {m} of {t}',ivMissing:'Missing:',ivSumH:'Summary',ivSumRules:'You met {m} of {t} points.',ivSumFallback:'Done. Practise your one improvement.',ivSumEarly:'Ended before any answer.',
 ivNeed:'Type an answer first.',ivRulesNote:'Rule: 8 set questions, 5 checks each.',ivSwitched:'No AI answer; rule used.',ivFiltered:'Feedback failed checks; rule used.',met:'done',notMet:'not yet',
 an_ivFirst:'Question 1 of {t}: {q}',an_ivNext:'Question {n} of {t}: {q}',an_ivDone:'Practice finished.',
 tr_iv_role:'Job type: {role}',tr_iv_asked:'Questions asked: {n}',tr_iv_bank:'Question bank of 8',tr_iv_aiCoach:'Answers coached: {n}',tr_iv_rulesCoach:'Answers rule-checked: {n}',
 tr_iv_check:'Checked AI text: {n} removed',tr_iv_checkNone:'Checked AI text',tr_local:'Nothing sent; ran here',tr_private:'Sent without personal details',tr_sentFailed:'Sent to {ai}; reply unusable',
-s1Sub:'Stays in this browser.',exMariam:'Mariam',exSaeed:'Saeed',exClear:'Clear',undo:'Undo',
+s1Sub:'Stays in this browser. Ideas to explore, not job matches or offers.',exMariam:'Mariam',exSaeed:'Saeed',exClear:'Clear',undo:'Undo',
 an_cleared:'Cleared. Undo available.',an_loaded:'Example loaded. Undo available.',an_restored:'Profile restored.',
 fSkills:'Skills and interests',fSkillsPh:'e.g. Excel, organising events',fField:'Field of study',fFieldPh:'e.g. Business',fSectors:'Sectors',
 sec_logistics:'Logistics',sec_finance:'Finance',sec_retail:'Retail',sec_hospitality:'Hospitality',sec_tech:'Technology',sec_health:'Healthcare',sec_energy:'Energy',sec_media:'Media',sec_construction:'Construction',
@@ -531,19 +532,19 @@ tr_youDecide:'Ideas, not an offer',tr_rKeywords:'Keywords matched: {list}',tr_rS
 btnPlan90:'Make my plan',busyPlan90:'Writing your plan…',an_p90Done:'Plan ready.',p90For:'For: {role}',p90Weeks:'Milestones',p90People:'Who to meet',p90Feedback:'Asking for feedback',
 tr_p_role:'Job type: {role}',tr_p_aiWeeks:'Plan blocks written: {n}',tr_p_rulesWeeks:'Standard 90-day template',tr_p_people:'People named by role',tr_p_fb:'Feedback phrases: {n}',tr_p_decide:'Goals agreed with your manager',
 tgtNeed:'Enter the three numbers.',tgtBad:'Check the numbers',tgtInvalid:'Whole numbers, each no bigger than the one before.',
-tgtGapStatus:'{g} still to hire',tgtGapPast:'{g} short of the {y} target',tgtMetStatus:'Meets the estimate',tgtMetPast:'Met the {y} estimate',tgtSmallStatus:'Under 50 staff',tgtSmallLine:'10% applies to firms with 50+ staff.',
-st_need:'Needed',st_now:'Now',st_gap:'To hire',tgtBarLabel:'Progress',tgtProgress:'{c} of {r} ({p}%)',
-tgtUntil:'End of {y} · {days} left',tgtPassed:'{y} target. Check MoHRE. Not legal advice.',
-tgtSmall:'20–49 staff in 14 sectors: hire 1 Emirati in 2024, 1 more in 2025.',tgtHealth:'Healthcare: split target from 2027.',
-tgtNeedLine:'Needed = 10% of skilled roles, rounded up',tgtCalc1:'10% of {k} = {x} → {r}',tgtGapLine:'To hire = needed − now (min 0)',tgtCalc2:'{r} − {c} = {g}',
+tgtGapStatus:'Rough gap: {g}',tgtGapPast:'',tgtMetStatus:'No gap in this estimate',tgtMetPast:'',tgtRough:'Rough estimate for {y}, not your official figure. Confirm with MoHRE.',tgtRule:'Firms with 50 or more staff must grow Emirati staff in skilled jobs by 2% a year, 10% in total by the end of 2026.',tgtSmallStatus:'Under 50 staff',tgtSmallLine:'The 2% a year target is for firms with 50 or more staff.',
+st_need:'Estimate',st_now:'Now',st_gap:'Gap',tgtBarLabel:'Progress',tgtProgress:'{c} of {r} ({p}%)',
+tgtUntil:'End of {y} · {days} left',tgtPassed:'Targets after {y} are set by MoHRE.',
+tgtSmall:'Firms with 20–49 staff in 14 listed sectors had to hire 1 Emirati in 2024 and a 2nd in 2025, and must keep them. Ask MoHRE if your sector is covered.',tgtHealth:'Healthcare facilities: the target may be split by job type. Ask MoHRE.',
+tgtNeedLine:'Estimate = 10% of skilled roles, rounded up. MoHRE sets the exact count.',tgtCalc1:'10% of {k} = {x} → {r}',tgtGapLine:'Gap = estimate − now (min 0)',tgtCalc2:'{r} − {c} = {g}',
 tgtSrc:'Source: MoHRE.',
-tr_t_read:'Read: {s} staff, {k} skilled, {c} Emiratis',tr_t_big:'50+ staff: 10% applies',tr_t_small:'Under 50 staff: 10% not applied',tr_t_calc:'Needed {r}, now {c}, to hire {g}',
+tr_t_read:'Read: {s} staff, {k} skilled, {c} Emiratis',tr_t_big:'50+ staff: yearly target applies',tr_t_small:'Under 50 staff: 50+ target not applied',tr_t_calc:'Estimate {r}, now {c}, gap {g}',
 e1Sub:'No questions on gender, religion, age, family, health.',fSector:'Sector',
 es_logistics:'Logistics',es_retail:'Retail',es_hospitality:'Hospitality',es_finance:'Banking and finance',es_construction:'Construction',es_tech:'Technology',es_health:'Healthcare',es_manufacturing:'Manufacturing',es_other:'Another sector',
 fPlans:'Next 12 months’ plans',fPlansPh:'e.g. 8 warehouse roles',
 fairOk:'No unfair criteria.',fairH:'Unfair words left out: {n}',fairWhy:'Describe skills instead.',fc_gender:'gender',fc_religion:'religion',fc_age:'age',fc_family:'family',fc_health:'health',
 leftOut:'Left out:',leftOutTag:'left out',an_fair:'Unfair words left out: {n}.',
-aiSees:'What the AI will see',seesNums:'Staff {s} · skilled {k} · Emiratis {c} · needed {r} · to hire {g} · {sec}',seesSmall:'Staff {s} · skilled {k} · Emiratis {c} · under 50 staff · {sec}',seesPlans:'Your plans, unfair lines struck:',seesNone:'(no plans yet)',
+aiSees:'What the AI will see',seesNums:'Staff {s} · skilled {k} · Emiratis {c} · estimate {r} · gap {g} · {sec}',seesSmall:'Staff {s} · skilled {k} · Emiratis {c} · under 50 staff · {sec}',seesPlans:'Your plans, unfair lines struck:',seesNone:'(no plans yet)',
 btnHire:'Plan my hiring',busyHire:'Drafting your plan…',an_hireDone:'Hiring plan ready.',an_hireDoneFair:'Plan ready. Unfair words left out: {n}.',
 h_roles:'Roles to open',h_where:'Where to find talent',h_buddy:'Buddy plan',h_retain:'Keeping people',h_week:'First week',
 tgtEstimate:'Estimate, not legal advice. Confirm with MoHRE.',
@@ -569,9 +570,9 @@ cc_pick:'Pick a company.',cc_full:'Paste the full key.',cc_refused:'{name} refus
 ar:{
 skip:'انتقال إلى المحتوى',brand:'زاهب',menu:'القائمة',close:'إغلاق',more:'المزيد',moreDetails:'تفاصيل أخرى',back:'رجوع',chooseH:'ما الذي تبحث عنه؟',chSeek:'أبحث عن عمل',chHire:'أبحث عن موظفين',
 privRules:'يبقى في هذا المتصفح. النتائج من قواعد.',privAI:'يبقى في هذا المتصفح. الذكاء الاصطناعي يقترح والقرار لك. لا يُرسَل النص خارج الإمارات إلا بموافقتك.',demoNote:'تجربة بأمثلة مختلقة. معلومات عامة، وليست استشارة قانونية.',
-seekH:'مقابلتك القادمة',fRole:'نوع الوظيفة',btnStart:'بدء',seekHelp:'سؤال تلو الآخر، مع ملاحظات.',
+seekH:'الاستعداد للمقابلة',fRole:'نوع الوظيفة',btnStart:'بدء',seekHelp:'سؤال تلو الآخر، مع ملاحظات. للتدريب فقط، ولا تتنبأ بنتيجتك.',
 ivTile:'التدريب',ivLine:'أسئلة وملاحظات',ivLineQ:'السؤال {n} من {t}',ivLineDone:'اكتمل',
-mapTile:'نقاط قوتي',mapLine:'مجالات وظيفية مناسبة',p90Tile:'أول 90 يوماً',p90Line:'خطة لوظيفة جديدة',
+mapTile:'نقاط قوتي',mapLine:'أفكار للاستكشاف',p90Tile:'أول 90 يوماً',p90Line:'خطة لوظيفة جديدة',
 hireH:'توظيف مواطنين يبقون',fSize:'الموظفون',fSkilled:'الوظائف المهارية',fEmirati:'المواطنون فيها',exTry:'مثال:',exLogi:'لوجستيات، 180',exSmall:'شركة صغيرة، 35',
 e2H:'هدف التوطين',hireTile:'خطة التوظيف',hireLine:'وظائف، واستقبال، واستبقاء',
 aiTag:'ذكاء اصطناعي',ruleTag:'قاعدة',exampleTag:'مثال',whoAI:'ذكاء اصطناعي · {by}',kAI:'ذكاء',kRule:'قاعدة',traceH:'خطوات الوكيل',
@@ -579,12 +580,12 @@ copy:'نسخ',copied:'تم النسخ',copyFallback:'تحديد النص ونس�
 langNote:'كُتبت ب{lang}. التشغيل مجدداً يغيّرها.',langName_en:'الإنجليزية',langName_ar:'العربية',
 ivEmpty:'اختيار وظيفة، ثم «بدء».',ivQ:'{n} من {t}',ivYou:'أنت',ivAnswerLabel:'إجابتك',ivAnswerPh:'الإجابة بكلماتك',ivSend:'إرسال',ivEnd:'إنهاء',ivRestart:'تدريب جديد',
 ivBusy:'جارٍ قراءة الإجابة…',ivBusyStart:'جارٍ اختيار سؤال…',ivStrong:'نقطة قوة:',ivImprove:'للتحسين:',ivExample:'إجابة أفضل',
-ivSelf:'تحقق ذاتي: {m} من {t}',ivMissing:'ينقص:',ivSumH:'الملخص',ivSumRules:'المستوفى: {m} من {t}.',ivSumFallback:'انتهى. الخطوة التالية: نقطة التحسين.',ivSumEarly:'انتهى قبل أي إجابة.',
+notGov:'ليست استشارة قانونية ولا خدمة حكومية.',ivSelf:'تحقق ذاتي: {m} من {t}',ivMissing:'ينقص:',ivSumH:'الملخص',ivSumRules:'المستوفى: {m} من {t}.',ivSumFallback:'انتهى. الخطوة التالية: نقطة التحسين.',ivSumEarly:'انتهى قبل أي إجابة.',
 ivNeed:'الإجابة مطلوبة أولاً.',ivRulesNote:'قاعدة: 8 أسئلة ثابتة و5 فحوص.',ivSwitched:'لا رد؛ استُخدم فحص القاعدة.',ivFiltered:'الملاحظات لم تجتز الفحص.',met:'تحقق',notMet:'لم يتحقق',
 an_ivFirst:'السؤال 1 من {t}: {q}',an_ivNext:'السؤال {n} من {t}: {q}',an_ivDone:'انتهى التدريب.',
 tr_iv_role:'نوع الوظيفة: {role}',tr_iv_asked:'أسئلة مطروحة: {n}',tr_iv_bank:'بنك من 8 أسئلة',tr_iv_aiCoach:'إجابات موجّهة: {n}',tr_iv_rulesCoach:'إجابات فحصتها القاعدة: {n}',
 tr_iv_check:'فُحص النص: حُذف {n}',tr_iv_checkNone:'فُحص النص',tr_local:'لم يُرسَل شيء',tr_private:'أُرسل بلا بيانات شخصية',tr_sentFailed:'أُرسل إلى {ai}؛ الرد غير صالح',
-s1Sub:'يبقى في هذا المتصفح.',exMariam:'مريم',exSaeed:'سعيد',exClear:'مسح',undo:'تراجع',
+s1Sub:'يبقى في هذا المتصفح. أفكار للاستكشاف، وليست وظائف مطابقة أو عروضاً.',exMariam:'مريم',exSaeed:'سعيد',exClear:'مسح',undo:'تراجع',
 an_cleared:'مُسح. التراجع متاح.',an_loaded:'حُمّل المثال. التراجع متاح.',an_restored:'عاد الملف.',
 fSkills:'المهارات والاهتمامات',fSkillsPh:'مثلاً: إكسل، تنظيم الفعاليات',fField:'مجال الدراسة',fFieldPh:'مثلاً: إدارة الأعمال',fSectors:'القطاعات',
 sec_logistics:'اللوجستيات',sec_finance:'المالية',sec_retail:'التجزئة',sec_hospitality:'الضيافة',sec_tech:'التكنولوجيا',sec_health:'الصحة',sec_energy:'الطاقة',sec_media:'الإعلام',sec_construction:'البناء',
@@ -605,19 +606,19 @@ tr_youDecide:'أفكار، لا عرض عمل',tr_rKeywords:'كلمات مطاب
 btnPlan90:'إعداد خطتي',busyPlan90:'جارٍ إعداد الخطة…',an_p90Done:'الخطة جاهزة.',p90For:'لـ: {role}',p90Weeks:'المحطات',p90People:'لقاءات مهمة',p90Feedback:'طلب الملاحظات',
 tr_p_role:'نوع الوظيفة: {role}',tr_p_aiWeeks:'مراحل مكتوبة: {n}',tr_p_rulesWeeks:'نموذج قياسي',tr_p_people:'لقاءات بحسب الدور',tr_p_fb:'عبارات الملاحظات: {n}',tr_p_decide:'الأهداف بالاتفاق مع المدير',
 tgtNeed:'الأرقام الثلاثة مطلوبة.',tgtBad:'الأرقام تحتاج إلى مراجعة',tgtInvalid:'أعداد صحيحة، كل منها لا يزيد على ما قبله.',
-tgtGapStatus:'المتبقي للتوظيف: {g}',tgtGapPast:'ينقص {g} عن هدف {y}',tgtMetStatus:'النسبة مستوفاة تقديرياً',tgtMetPast:'النسبة مستوفاة وفق هدف {y}',tgtSmallStatus:'أقل من 50 موظفاً',tgtSmallLine:'نسبة 10% للشركات ذات 50 موظفاً فأكثر.',
-st_need:'المطلوب',st_now:'الحالي',st_gap:'المتبقي',tgtBarLabel:'التقدم',tgtProgress:'{c} من {r} ({p}%)',
-tgtUntil:'نهاية {y} · المتبقي: {days}',tgtPassed:'هدف {y}. المرجع: الوزارة. ليست استشارة قانونية.',
-tgtSmall:'20 إلى 49 موظفاً في 14 قطاعاً: مواطن في 2024 وآخر في 2025.',tgtHealth:'الرعاية الصحية: هدف مقسّم من 2027.',
-tgtNeedLine:'المطلوب = 10% من الوظائف المهارية، بالتقريب للأعلى',tgtCalc1:'10% من {k} = {x} ← {r}',tgtGapLine:'المتبقي = المطلوب − الحالي (≥ 0)',tgtCalc2:'{r} − {c} = {g}',
+tgtGapStatus:'فجوة تقريبية: {g}',tgtGapPast:'',tgtMetStatus:'لا فجوة في هذا التقدير',tgtMetPast:'',tgtRough:'تقدير تقريبي لعام {y}، وليس رقمك الرسمي. تأكد من الوزارة.',tgtRule:'على المنشآت التي يعمل بها 50 موظفاً فأكثر زيادة نسبة المواطنين في الوظائف المهارية 2% سنوياً، بإجمالي 10% بنهاية 2026.',tgtSmallStatus:'أقل من 50 موظفاً',tgtSmallLine:'هدف 2% سنوياً للمنشآت التي يعمل بها 50 موظفاً فأكثر.',
+st_need:'التقدير',st_now:'الحالي',st_gap:'الفجوة',tgtBarLabel:'التقدم',tgtProgress:'{c} من {r} ({p}%)',
+tgtUntil:'نهاية {y} · المتبقي: {days}',tgtPassed:'تحدد الوزارة مستهدفات ما بعد {y}.',
+tgtSmall:'على المنشآت التي يعمل بها 20-49 موظفاً في 14 قطاعاً محدداً توظيف مواطن في 2024 وآخر في 2025 والاحتفاظ بهما. اسأل الوزارة هل قطاعك مشمول.',tgtHealth:'المنشآت الصحية: قد يُقسَّم الهدف حسب نوع الوظيفة. اسأل الوزارة.',
+tgtNeedLine:'التقدير = 10% من الوظائف المهارية، بالتقريب للأعلى. تحدد الوزارة العدد الدقيق.',tgtCalc1:'10% من {k} = {x} ← {r}',tgtGapLine:'الفجوة = التقدير − الحالي (≥ 0)',tgtCalc2:'{r} − {c} = {g}',
 tgtSrc:'المصدر: وزارة الموارد البشرية والتوطين.',
-tr_t_read:'الأرقام: الموظفون {s}، المهارية {k}، المواطنون {c}',tr_t_big:'50 فأكثر: تنطبق 10%',tr_t_small:'أقل من 50: لا تنطبق 10%',tr_t_calc:'المطلوب {r}، الحالي {c}، المتبقي {g}',
+tr_t_read:'الأرقام: الموظفون {s}، المهارية {k}، المواطنون {c}',tr_t_big:'50 فأكثر: ينطبق الهدف السنوي',tr_t_small:'أقل من 50: لا ينطبق هدف 50 فأكثر',tr_t_calc:'التقدير {r}، الحالي {c}، الفجوة {g}',
 e1Sub:'لا أسئلة عن الجنس والدين والعمر والأسرة والصحة.',fSector:'القطاع',
 es_logistics:'اللوجستيات',es_retail:'التجزئة',es_hospitality:'الضيافة',es_finance:'البنوك والمالية',es_construction:'البناء',es_tech:'التكنولوجيا',es_health:'الرعاية الصحية',es_manufacturing:'التصنيع',es_other:'قطاع آخر',
 fPlans:'خطط الأشهر الـ12 القادمة',fPlansPh:'مثلاً: 8 وظائف مستودع',
 fairOk:'لا معايير غير عادلة.',fairH:'كلمات غير عادلة استُبعدت: {n}',fairWhy:'الأفضل وصف المهارات.',fc_gender:'الجنس',fc_religion:'الدين',fc_age:'العمر',fc_family:'الأسرة',fc_health:'الصحة',
 leftOut:'مستبعد:',leftOutTag:'مستبعد',an_fair:'استُبعدت كلمات غير عادلة: {n}.',
-aiSees:'ما سيراه الذكاء الاصطناعي',seesNums:'الموظفون {s} · المهارية {k} · المواطنون {c} · المطلوب {r} · المتبقي {g} · {sec}',seesSmall:'الموظفون {s} · المهارية {k} · المواطنون {c} · أقل من 50 · {sec}',seesPlans:'خططك بعد شطب غير العادل:',seesNone:'(لا خطط بعد)',
+aiSees:'ما سيراه الذكاء الاصطناعي',seesNums:'الموظفون {s} · المهارية {k} · المواطنون {c} · التقدير {r} · الفجوة {g} · {sec}',seesSmall:'الموظفون {s} · المهارية {k} · المواطنون {c} · أقل من 50 · {sec}',seesPlans:'خططك بعد شطب غير العادل:',seesNone:'(لا خطط بعد)',
 btnHire:'تخطيط التوظيف',busyHire:'جارٍ إعداد الخطة…',an_hireDone:'خطة التوظيف جاهزة.',an_hireDoneFair:'الخطة جاهزة. استُبعدت كلمات غير عادلة: {n}.',
 h_roles:'وظائف للفتح',h_where:'مصادر المواهب',h_buddy:'الزميل المرافق',h_retain:'الاستبقاء',h_week:'الأسبوع الأول',
 tgtEstimate:'تقدير، وليس استشارة قانونية. المرجع: الوزارة.',
@@ -1542,18 +1543,19 @@ function target(e){const raw=[e.size,e.skilled,e.emirati].map(x=>String(x??'').t
 const TGT={pct:10,year:2026,end:new Date(2026,11,31,23,59,59)};
 function daysLeft(now){const n=now&&typeof now.getTime==='function'?now.getTime():Date.now();const d=Math.ceil((TGT.end.getTime()-n)/864e5);return d>0?d:0}
 function tgtDateLine(now){const d=daysLeft(now);return d?t('tgtUntil',{y:TGT.year,days:countOf(DAYS,d)}):t('tgtPassed',{y:TGT.year})}
-function tgtStatus(r,now){const past=!daysLeft(now);if(r.gap)return past?t('tgtGapPast',{g:r.gap,y:TGT.year}):t('tgtGapStatus',{g:r.gap});return past?t('tgtMetPast',{y:TGT.year}):t('tgtMetStatus')}
+function tgtStatus(r,now){if(r.gap)return t('tgtGapStatus',{g:r.gap});return t('tgtMetStatus')}
 const OFFICIAL=()=>`<p class="note">${T('officialH')} <a href="https://www.mohre.gov.ae" target="_blank" rel="noopener noreferrer">${T('mohre')}</a> · <a href="https://nafis.gov.ae" target="_blank" rel="noopener noreferrer">${T('nafis')}</a></p>`;
 function renderTarget(){const r=target(S.emp);const box=$('tgtOut');let h='';const tr=[];const more=[];
   if(r.state==='need')h=`<p class="note">${T('tgtNeed')}</p>`;
   else if(r.state==='invalid')h=statusHTML('✕',t('tgtBad'))+`<p class="note tgtnote">${T('tgtInvalid')}</p>`;
   else{tr.push(['rule',t('tr_t_read',{s:r.size,k:r.sk,c:r.cur})]);
     if(r.state==='small'){h=statusHTML('!',t('tgtSmallStatus'))+`<p class="note tgtnote">${T('tgtSmallLine')}</p>`;more.push(`<p>${T('tgtSmall')}</p>`);tr.push(['rule',t('tr_t_small')])}
-    else{h=statusHTML(r.gap?'!':'✓',tgtStatus(r))
+    else if(!daysLeft()){h=`<p class="note tgtnote">${T('tgtPassed',{y:TGT.year})}</p>`;tr.push(['rule',t('tr_t_big')])}
+    else{h=`<p class="note tgtnote">${T('tgtRough',{y:TGT.year})}</p>`+statusHTML('!',tgtStatus(r))
       +`<div class="stats"><div class="stat"><b>${r.req}</b><span>${T('st_need')}</span></div><div class="stat"><b>${r.cur}</b><span>${T('st_now')}</span></div><div class="stat"><b>${r.gap}</b><span>${T('st_gap')}</span></div></div>
       <span class="vh" id="barLbl">${T('tgtBarLabel')}</span><div class="meter" role="progressbar" aria-labelledby="barLbl" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${r.pct}" aria-valuetext="${T('tgtProgress',{c:r.cur,r:r.req,p:r.pct})}"><i style="width:${r.pct}%"></i></div>
       <p class="note tgtnote">${esc(tgtDateLine())}</p>`;
-      more.push(`<div class="blk"><p class="note">${T('tgtNeedLine')}</p><p class="calc" dir="ltr">${T('tgtCalc1',{k:r.sk,x:(r.sk/10).toFixed(1),r:r.req})}</p><p class="note">${T('tgtGapLine')}</p><p class="calc" dir="ltr">${T('tgtCalc2',{r:r.req,c:r.cur,g:r.gap})}</p></div>`);
+      more.push(`<p>${T('tgtRule')}</p>`);more.push(`<div class="blk"><p class="note">${T('tgtNeedLine')}</p><p class="calc" dir="ltr">${T('tgtCalc1',{k:r.sk,x:(r.sk/10).toFixed(1),r:r.req})}</p><p class="note">${T('tgtGapLine')}</p><p class="calc" dir="ltr">${T('tgtCalc2',{r:r.req,c:r.cur,g:r.gap})}</p></div>`);
       tr.push(['rule',t('tr_t_big')],['rule',t('tr_t_calc',{r:r.req,c:r.cur,g:r.gap})])}}
   if(S.emp.sector==='health')more.push(`<p>${T('tgtHealth')}</p>`);
   if(r.state!=='need'&&r.state!=='invalid'){more.push(`<p class="note">${T('tgtSrc')}</p>`+OFFICIAL());if(tr.length)more.push(traceHTML(tr))}
@@ -1652,7 +1654,7 @@ document.addEventListener('click',async e=>{const b=e.target.closest('[data-copy
 
 /* ---------- counters, tabs, language, theme, reset ---------- */
 let prevCaught=null;
-function renderTiles(){const l=$('ivLine');if(!l||!S)return;const iv=S.iv;l.textContent=!iv?t('ivLine'):iv.done?t('ivLineDone'):t('ivLineQ',{n:iv.items.length,t:ivTotal(iv)})}
+function renderTiles(){const l=$('ivLine');if(!l||!S)return;const iv=S.iv;l.textContent=!iv||iv.example?t('ivLine'):iv.done?t('ivLineDone'):t('ivLineQ',{n:iv.items.length,t:ivTotal(iv)})}
 function setTab(tab,focus){const side=tab==='hire'?'hire':tab==='seek'?'seek':'';if(side)S.tab=side;
   $('paneChoose').hidden=!!side;$('paneSeek').hidden=side!=='seek';$('paneHire').hidden=side!=='hire';
   if(focus){const h=$(side==='hire'?'hireH':side==='seek'?'seekH':'chH');if(h){h.tabIndex=-1;h.focus({preventScroll:true})}}

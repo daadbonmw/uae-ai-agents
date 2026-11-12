@@ -78,6 +78,7 @@ h1{margin:16px 0;font-size:28px;line-height:1.15;font-weight:600;color:var(--gol
 .route{margin:10px 4px 0;min-height:22px;font-size:15px;line-height:22px;color:var(--muted)}
 .route:empty{margin:0;min-height:0}
 .ibtn{flex:none;display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:transparent;color:var(--ink);cursor:pointer}
+.tlang{width:auto;min-width:44px;padding:0 10px;border-radius:22px;font:inherit;font-size:15px;font-weight:600}
 .ibtn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .top .ibtn{color:var(--ink)}
 .embed #mast,.embed #foot{display:none!important}
@@ -255,6 +256,7 @@ audio{width:100%}
   <div class="bar" id="mast">
    <span class="brand"><svg class="mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2a10 10 0 1 1 0 20H2V12A10 10 0 0 1 12 2z"/></svg><span data-t="name">Bil Tareekh</span></span>
    <span class="bar-end">
+    <button class="ibtn tlang" id="uiLangTop" type="button" lang="ar">عربي</button>
     <button class="ibtn" id="menuBtn" type="button" aria-haspopup="dialog" aria-controls="menuSheet" data-ta="menu" aria-label="More"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
    </span>
   </div>
@@ -313,7 +315,7 @@ audio{width:100%}
 </main>
 
 <footer class="foot" id="foot">
- <span data-t="foot">Demo with made-up examples. General information, not legal advice. Not an official government service.</span>
+ <span data-t="foot">Demo with made-up examples. Not legal advice. Not a government service.</span>
 </footer>
 
 <!-- My pay -->
@@ -530,7 +532,7 @@ leadHelp:'Pick what is wrong.',safeQ:'Are you safe now?',dzLock:'Locked in or ca
 topicQ:'What is wrong?',hDom:'I am a domestic worker',hMsgLbl:'Paste a message you got. Read as information, never as orders.',examples:'Examples',explain:'Explain my options',
 leadCase:'A dated record you can share.',cfForQ:'For',showEmp:'Show the employer',preview:'Preview',cfLbl:'Your case file',cfOk:'It is true. I choose to share it.',copy:'Copy',share:'Share',
 addEv:'Add an event',evDate:'Date',evText:'What happened',evPh:'They took my passport',evAdd:'Add',summary:'Summary',cfSum:'Write the summary',cfSumAgain:'Write it again',
-cfNote:'Not legal advice. A person should check it before filing.',foot:'Demo with made-up examples. General information, not legal advice. Not an official government service.',reset:'Reset',resetArm:'Tap again to reset',close:'Close',
+cfNote:'Not legal advice. A person should check it before filing.',foot:'Demo with made-up examples. Not legal advice. Not a government service.',reset:'Reset',resetArm:'Tap again to reset',close:'Close',
 mRules:'Sources',admin:'Admin',
 sendH:'Send to AI?',sendYes:'Send',sendNo:'Use rules',listen:'Listen',
 tagAI:'AI',tagRule:'Rule',tagYou:'You',tagWorker:'Worker',whoAI:'AI · {by}',basic:'Basic mode (rules).',choseRules:'You chose rules for this step.',notLegal:'Not legal advice.',
@@ -555,9 +557,9 @@ chipPay:'{amt} a month · the {d} · {rule}',change:'Change',setFirst:'Set up yo
 gapIssues:'Months to check: {n}',gapAmt:'not arrived: {amt}',gapNone:'Nothing missing so far.',gapNote:'Your own numbers, not a legal amount.',dueOn:'Due {d}.',shortBy:'{amt} short.',noMonths:'No months yet.',
 remove:'Remove',removeAria:'Remove the payment of {d}',removeEntry:'Remove this entry',fullPay:'full pay',partPay:'part pay',
 unset:'Pay day not set. Set it in My pay.',ownNone:'Nothing logged. Due {d}, {days} ago.',ownWait:'Due {d}.',ownLate:'Came {last}: {days} after pay day ({d}).',ownOk:'Came {last}: on time.',
-wpsExempt:'The WPS rule may not cover your job. Check the official source.',wpsNone:'WPS rule: due {d}. Nothing logged. {counts}',wpsDue:'WPS rule: due {d}.',wpsFull:'WPS rule: paid in full by {d}.',
-wps85:'WPS rule: {p}% by {d}. Fine only if the rest is a lawful cut.',wpsBy:'WPS rule: came by {d}.',wpsLate:'WPS rule: due {d}. {by} {counts}',byNone:'Nothing came by then.',byP:'Only {p}% came by then.',byAmt:'Only {amt} came by then.',
-counts:'Counts as late.',mayCount:'May count as late.',wpsBefore:'Before the WPS rule (1 June 2026).',domNone:'Domestic rule: due by {d}. Nothing logged.',domLate:'Domestic rule: came {days} after {d}.',domOk:'Domestic rule: came within 10 days.',
+wpsExempt:'If you work in a free zone or for the government, a different authority may handle your pay complaint. Call MOHRE on 80084 and ask.',wpsNone:'WPS rule: due {d}. Nothing logged. {counts}',wpsDue:'WPS rule: due {d}.',wpsFull:'WPS rule: paid in full by {d}.',
+wps85:'WPS rule: {p}% by {d}. Allowed only if the rest is a lawful cut. Ask MOHRE if unsure.',wpsBy:'WPS rule: came by {d}.',wpsLate:'WPS rule: due {d}. {by} {counts}',byNone:'Nothing came by then.',byP:'Only {p}% came by then.',byAmt:'Only {amt} came by then.',
+counts:'Counts as late. Official steps grow stronger over about 3 weeks.',mayCount:'May count as late.',wpsBefore:'Before the WPS rule (1 June 2026).',domNone:'Domestic rule: due by {d}. Nothing logged.',domLate:'Domestic rule: came {days} after {d}.',domOk:'Domestic rule: came within 10 days.',
 amtShort:'Got {total} of {exp}: {diff} short.',amtFull:'Full pay: {total}.',amtPart:'Marked part pay: {total}.',
 lMiss:'Missing',lPart:'Part paid',lPartLate:'Part paid, late',lLate:'Late',lOk:'Paid on time',lOkFull:'Paid in full, on time',lWait:'Not due yet',lLogged:'Logged, not checked',lUnset:'Pay day not set',
 trYouLogged:'You logged {amt} that came on {d}',trMatched:'Matched it to the pay for {m}',trTimeline:'Added it to your timeline',
@@ -609,7 +611,7 @@ leadHelp:'اختر المشكلة.',safeQ:'هل أنت بأمان الآن؟',dz
 topicQ:'ما المشكلة؟',hDom:'أنا من العمالة المساعدة',hMsgLbl:'الصق رسالة وصلتك. تُقرأ كمعلومة، لا كأوامر.',examples:'أمثلة',explain:'اشرح خياراتي',
 leadCase:'سجل مؤرّخ يمكنك مشاركته.',cfForQ:'موجّه إلى',showEmp:'أظهر صاحب العمل',preview:'معاينة',cfLbl:'ملف حالتك',cfOk:'المعلومات صحيحة، وأختار مشاركتها.',copy:'نسخ',share:'مشاركة',
 addEv:'أضف حدثًا',evDate:'التاريخ',evText:'ماذا حدث',evPh:'أخذوا جواز سفري',evAdd:'إضافة',summary:'الملخص',cfSum:'اكتب الملخص',cfSumAgain:'أعد كتابته',
-cfNote:'ليست استشارة قانونية. يجب أن يراجعه شخص قبل التقديم.',foot:'نسخة تجريبية بأمثلة مختلَقة. معلومات عامة، وليست استشارة قانونية. ليست خدمة حكومية رسمية.',reset:'إعادة ضبط',resetArm:'اضغط مجددًا للتأكيد',close:'إغلاق',
+cfNote:'ليست استشارة قانونية. يجب أن يراجعه شخص قبل التقديم.',foot:'نسخة تجريبية بأمثلة مختلَقة. ليست استشارة قانونية ولا خدمة حكومية.',reset:'إعادة ضبط',resetArm:'اضغط مجددًا للتأكيد',close:'إغلاق',
 mRules:'المصادر',admin:'المشرف',
 sendH:'إرسال إلى الذكاء الاصطناعي؟',sendYes:'إرسال',sendNo:'استخدم القواعد',listen:'استمع',
 tagAI:'ذكاء اصطناعي',tagRule:'قاعدة',tagYou:'أنت',tagWorker:'العامل',whoAI:'ذكاء اصطناعي · {by}',basic:'الوضع الأساسي (قواعد).',choseRules:'اخترت القواعد لهذه الخطوة.',notLegal:'ليست استشارة قانونية.',
@@ -634,9 +636,9 @@ chipPay:'{amt} شهريًا · يوم {d} · {rule}',change:'تغيير',setFirs
 gapIssues:'أشهر للمراجعة: {n}',gapAmt:'لم يصل: {amt}',gapNone:'لا شيء ناقص حتى الآن.',gapNote:'أرقامك أنت، وليست مبلغًا قانونيًا.',noMonths:'لا أشهر بعد.',dueOn:'الموعد {d}.',shortBy:'ناقص {amt}.',
 remove:'حذف',removeAria:'حذف دفعة {d}',removeEntry:'حذف هذا الإدخال',fullPay:'راتب كامل',partPay:'جزء من الراتب',
 unset:'يوم الراتب غير محدد. حدّده في «راتبي».',ownNone:'لم يُسجَّل شيء. الموعد {d}، قبل {days}.',ownWait:'الموعد {d}.',ownLate:'وصل {last}: بعد يوم الراتب ({d}) بـ{days}.',ownOk:'وصل {last}: في موعده.',
-wpsExempt:'قد لا تشمل قاعدة حماية الأجور عملك. تحقق من المصدر الرسمي.',wpsNone:'قاعدة حماية الأجور: الموعد {d}. لم يُسجَّل شيء. {counts}',wpsDue:'قاعدة حماية الأجور: الموعد {d}.',wpsFull:'قاعدة حماية الأجور: وصل كاملًا بحلول {d}.',
-wps85:'قاعدة حماية الأجور: وصل {p}% بحلول {d}. مقبول فقط إن كان الباقي خصمًا قانونيًا.',wpsBy:'قاعدة حماية الأجور: وصل بحلول {d}.',wpsLate:'قاعدة حماية الأجور: الموعد {d}. {by} {counts}',byNone:'لم يصل شيء بحلوله.',byP:'وصل {p}% فقط بحلوله.',byAmt:'وصل {amt} فقط بحلوله.',
-counts:'يُعدّ تأخيرًا.',mayCount:'قد يُعدّ تأخيرًا.',wpsBefore:'قبل قاعدة حماية الأجور (1 يونيو 2026).',domNone:'قاعدة العمالة المساعدة: الموعد حتى {d}. لم يُسجَّل شيء.',domLate:'قاعدة العمالة المساعدة: وصل بعد {d} بـ{days}.',domOk:'قاعدة العمالة المساعدة: وصل خلال 10 أيام.',
+wpsExempt:'إن كنت تعمل في منطقة حرة أو جهة حكومية فقد تتولى جهة أخرى شكوى الأجور. اتصل بالوزارة على 80084 واسأل.',wpsNone:'قاعدة حماية الأجور: الموعد {d}. لم يُسجَّل شيء. {counts}',wpsDue:'قاعدة حماية الأجور: الموعد {d}.',wpsFull:'قاعدة حماية الأجور: وصل كاملًا بحلول {d}.',
+wps85:'قاعدة حماية الأجور: وصل {p}% بحلول {d}. يجوز فقط إن كان الباقي خصمًا قانونيًا. اسأل الوزارة إن لم تكن متأكدًا.',wpsBy:'قاعدة حماية الأجور: وصل بحلول {d}.',wpsLate:'قاعدة حماية الأجور: الموعد {d}. {by} {counts}',byNone:'لم يصل شيء بحلوله.',byP:'وصل {p}% فقط بحلوله.',byAmt:'وصل {amt} فقط بحلوله.',
+counts:'يُعدّ تأخيرًا. وتشتد الإجراءات الرسمية خلال نحو 3 أسابيع.',mayCount:'قد يُعدّ تأخيرًا.',wpsBefore:'قبل قاعدة حماية الأجور (1 يونيو 2026).',domNone:'قاعدة العمالة المساعدة: الموعد حتى {d}. لم يُسجَّل شيء.',domLate:'قاعدة العمالة المساعدة: وصل بعد {d} بـ{days}.',domOk:'قاعدة العمالة المساعدة: وصل خلال 10 أيام.',
 amtShort:'وصل {total} من {exp}: ناقص {diff}.',amtFull:'الراتب كاملًا: {total}.',amtPart:'مُسجَّل كجزء من الراتب: {total}.',
 lMiss:'لم يصل',lPart:'جزء فقط',lPartLate:'جزء، ومتأخر',lLate:'متأخر',lOk:'وصل في موعده',lOkFull:'وصل كاملًا في موعده',lWait:'لم يحن موعده',lLogged:'مُسجَّل، دون فحص',lUnset:'يوم الراتب غير محدد',
 trYouLogged:'سجّلت {amt} وصلت في {d}',trMatched:'ربطناها براتب {m}',trTimeline:'أضفناها إلى سجلك الزمني',
@@ -703,47 +705,40 @@ function homeName(l){const h=HOMES.find(x=>x[0]===S.home);return h&&h[0]?(isAr(l
 const SRC={
   mohre_contact:{pub:'MOHRE, official contact page',url:'https://www.mohre.gov.ae/en/contact-us',d:'2026-11-07',k:'c'},
   mohre_rights:{pub:'MOHRE, "Dear Worker, know your rights"',url:'https://mohre.gov.ae/en/guidance-and-awareness-portal-new/employee-companies/dear-worker-know-your-rights',d:'2026-11-07',k:'c'},
+  mohre_law:{pub:'MOHRE, Federal Decree-Law No. 33 of 2021 (PDF)',url:'https://www.mohre.gov.ae/assets/download/e82f7872/Federal%20Decree-Law%20No.%2033%20of%202021%20Regarding%20the%20Regulation%20of%20Employment%20Relationship%20and%20its%20amendments_638990571068264034.pdf.aspx',d:'2026-11-12',k:'c'},
+  owwa:{pub:'OWWA, contact page',url:'https://owwa.gov.ph/contact-us/',d:'2026-11-12',k:''},
   uae_rights:{pub:'u.ae, Protection of workers’ rights',url:'https://u.ae/en/information-and-services/jobs/Sector-of-employment/employment-in-the-private-sector/labour-rights',d:'2026-10-15',k:'u'},
   uae_domestic:{pub:'u.ae, Domestic workers',url:'https://u.ae/en/information-and-services/jobs/Workplace-regulations/domestic-helpers',d:'2026-10-06',k:'u'},
   uae_wages:{pub:'u.ae, Payment of wages',url:'https://u.ae/en/information-and-services/jobs/Sector-of-employment/employment-in-the-private-sector/payment-of-wages',d:'2026-10-14',k:'u'},
-  gn_wps:{pub:'Gulf News, salary deadline from June 1',url:'https://gulfnews.com/uae/government/uae-sets-monthly-salary-deadline-for-private-sector-from-june-1-1.500544328',d:'2026-05-18',k:'u'},
-  ml_wps:{pub:'Morgan Lewis, new WPS resolution',url:'https://morganlewis.com/pubs/2026/05/uae-introduces-new-wage-protection-system-resolution-effective-1-june-2026',d:'2026-05-22',k:''},
-  gn_exempt:{pub:'Gulf News, who is exempt from the WPS rule',url:'https://gulfnews.com/living-in-uae/ask-us/uae-wage-protection-system-2026-which-workers-are-exempt-from-the-new-salary-payment-rules-1.500567217',d:'2026-06-08',k:'u'},
-  gn_passport:{pub:'Gulf News, can an employer keep your passport',url:'https://gulfnews.com/ask-gulf-news/ask-gulf-news-can-an-employer-keep-your-passport-in-the-uae-heres-what-the-law-says-1.500568227',d:'2026-06-09',k:'u'},
-  gn_visa:{pub:'Gulf News, visa costs and your salary',url:'https://gulfnews.com/living-in-uae/ask-us/is-it-legal-for-employers-in-the-uae-to-deduct-visa-costs-from-your-salary-1.500098387',d:'2025-04-18',k:'u'},
-  gn_deduct:{pub:'Gulf News, when can my employer deduct my wages',url:'https://gulfnews.com/living-in-uae/ask-us/new-uae-labour-law-when-can-my-employer-deduct-my-wages-1.1637847186119',d:'2021-11-25',k:'u'},
-  gn_midday:{pub:'Gulf News, midday work ban 2026',url:'https://gulfnews.com/uae/government/midday-outdoor-work-ban-returns-across-uae-for-22nd-year-1.500567381',d:'2026-06-08',k:'u'},
   cgi_dubai:{pub:'Consulate General of India, Dubai, contact page',url:'https://www.cgidubai.gov.in/page/contact/',d:'2026-05-05',k:'u'},
   dofe:{pub:'Department of Foreign Employment, Nepal',url:'https://dofe.gov.np',d:'2026-11-07',k:'c'},
   nepal_emb:{pub:'Embassy of Nepal, Abu Dhabi',url:'https://ae.nepalembassy.gov.np/',d:'2026-11-07',k:'c'},
-  gn_owwa:{pub:'Gulf News, official help for Filipino workers',url:'https://gulfnews.com/world/mena/scams-to-watch-out-for-how-filipino-workers-can-protect-themselves-and-access-official-assistance-1.500517933',d:'2026-04-24',k:'u'},
-  gn_owwa_intl:{pub:'Gulf News, emergency hotlines for Filipinos abroad',url:'https://gulfnews.com/world/mena/who-to-call-during-emergencies-important-details-filipinos-abroad-must-know-1.500459549',d:'2026-03-01',k:'u'}
 };
 const srcDate=(s,l)=>s.k==='c'?t('srcChecked',{d:fmtDate(s.d,l)},l):s.k==='u'?t('srcUpdated',{d:fmtDate(s.d,l)},l):fmtDate(s.d,l);
 /* who: co = company workers (Federal Decree-Law 33 of 2021 and WPS), dom = domestic workers (u.ae domestic workers page).
    t is the English text the AI is given; ar is the Arabic shown on screen. */
 const FACTS={
   ontime:{t:'You have the right to your wages on time, in the way your contract says.',ar:'لك الحق في أجرك في موعده، وبالطريقة التي يحددها عقدك.',src:['mohre_rights'],who:'co'},
-  wps:{t:'From 1 June 2026, private-sector employers registered with MOHRE must pay the previous month’s wages on the 1st of each month, through the Wage Protection System. Pay after that day counts as delayed (Ministerial Resolution No. 340 of 2026). Some jobs are outside this rule, such as banks and financial institutions.',ar:'منذ 1 يونيو 2026، على أصحاب العمل في القطاع الخاص المسجلين لدى الوزارة دفع أجر الشهر السابق في اليوم الأول من كل شهر عبر نظام حماية الأجور، وما بعده يُعدّ تأخيرًا (القرار الوزاري رقم 340 لسنة 2026). بعض الوظائف خارج هذه القاعدة، مثل البنوك والمؤسسات المالية.',src:['uae_wages','gn_wps','ml_wps','gn_exempt'],who:'co'},
-  wps85:{t:'Under that rule, a worker counts as paid when at least 85% of the wage arrives by the due date and the rest is a lawful deduction.',ar:'وفق هذه القاعدة، يُعدّ العامل قد تقاضى أجره إذا وصل 85% منه على الأقل في الموعد وكان الباقي خصمًا قانونيًا.',src:['uae_wages','ml_wps','gn_wps'],who:'co'},
-  unpaidleave:{t:'Workers on approved unpaid leave are outside that rule for that time.',ar:'العامل في إجازة غير مدفوعة موافق عليها خارج هذه القاعدة خلال مدتها.',src:['uae_wages','gn_exempt'],who:'co'},
-  days30:{t:'MOHRE says you can complain to it within 30 days of the employer’s breach.',ar:'تقول الوزارة إنه يمكنك تقديم الشكوى إليها خلال 30 يومًا من مخالفة صاحب العمل.',src:['mohre_rights'],who:'co'},
+  wps:{t:'From 1 June 2026, private-sector employers registered with MOHRE must pay the previous month’s wages on the 1st of each month, through the Wage Protection System. Pay after that day counts as delayed (Ministerial Resolution No. 340 of 2026). The official steps grow with the days after the due date: alerts from day 2, new work permits paused from day 5, an administrative fine from day 11, a labour dispute opened for the workers from day 16, a payment order from day 21. Some jobs are outside this rule, such as banks and financial institutions.',ar:'منذ 1 يونيو 2026، على أصحاب العمل في القطاع الخاص المسجلين لدى الوزارة دفع أجر الشهر السابق في اليوم الأول من كل شهر عبر نظام حماية الأجور، وما بعده يُعدّ تأخيرًا (القرار الوزاري رقم 340 لسنة 2026). وتتدرّج الإجراءات الرسمية بحسب الأيام بعد الموعد: تنبيهات من اليوم الثاني، وإيقاف تصاريح العمل الجديدة من اليوم الخامس، وغرامة إدارية من اليوم الحادي عشر، وتسجيل نزاع عمالي للعمال من اليوم السادس عشر، وأمر دفع من اليوم الحادي والعشرين. بعض الوظائف خارج هذه القاعدة، مثل البنوك والمؤسسات المالية.',src:['uae_wages'],who:'co'},
+  wps85:{t:'Under that rule, a worker counts as paid when at least 85% of the wage arrives by the due date and the rest is a lawful deduction.',ar:'وفق هذه القاعدة، يُعدّ العامل قد تقاضى أجره إذا وصل 85% منه على الأقل في الموعد وكان الباقي خصمًا قانونيًا.',src:['uae_wages'],who:'co'},
+  unpaidleave:{t:'Workers on approved unpaid leave are outside that rule for that time.',ar:'العامل في إجازة غير مدفوعة موافق عليها خارج هذه القاعدة خلال مدتها.',src:['uae_wages'],who:'co'},
+  days30:{t:'MOHRE says you can complain to it within 30 days of the employer’s breach. Complain as early as you can.',ar:'تقول الوزارة إنه يمكنك تقديم الشكوى إليها خلال 30 يومًا من مخالفة صاحب العمل. قدّم شكواك مبكرًا ما أمكن.',src:['mohre_rights'],who:'co'},
   days14:{t:'MOHRE says it usually settles labour disputes within 14 days of the complaint.',ar:'تقول الوزارة إنها تسوّي النزاعات العمالية عادةً خلال 14 يومًا من الشكوى.',src:['mohre_rights'],who:'co'},
-  dwpay:{t:'Domestic workers: the employer must pay the wage the contract sets, within 10 days of the due date.',ar:'العمالة المساعدة: على صاحب العمل دفع الأجر المحدد في العقد خلال 10 أيام من تاريخ استحقاقه.',src:['uae_domestic'],who:'dom'},
-  deduct:{t:'The labour law allows cuts from wages only in the cases it lists, such as a loan you agreed to in writing, or a court order (Article 25, Federal Decree-Law No. 33 of 2021).',ar:'لا يجيز قانون العمل الخصم من الأجر إلا في الحالات التي يحددها، مثل قرض وافقت عليه كتابيًا أو حكم قضائي (المادة 25، المرسوم بقانون اتحادي رقم 33 لسنة 2021).',src:['gn_deduct'],who:'co'},
-  fee64:{t:'Employers may not charge workers recruitment or employment costs, directly or indirectly (Article 6(4), Federal Decree-Law No. 33 of 2021).',ar:'لا يجوز لصاحب العمل تحميل العامل تكاليف الاستقدام أو التشغيل، مباشرةً أو بشكل غير مباشر (المادة 6(4)، المرسوم بقانون اتحادي رقم 33 لسنة 2021).',src:['gn_visa'],who:'co'},
+  dwpay:{t:'Domestic workers: the employer must pay the wage the contract sets, within 10 days of the due date. Claims under the law cannot be heard after three months from the end of the job. Complain early.',ar:'العمالة المساعدة: على صاحب العمل دفع الأجر المحدد في العقد خلال 10 أيام من تاريخ استحقاقه. لا تُسمع المطالبات الناشئة عن القانون بعد مرور ثلاثة أشهر على انتهاء الخدمة. قدّم شكواك مبكرًا.',src:['uae_domestic'],who:'dom'},
+  deduct:{t:'The labour law allows cuts from wages only in the cases it lists, such as a loan you agreed to in writing, or a court order (Article 25, Federal Decree-Law No. 33 of 2021).',ar:'لا يجيز قانون العمل الخصم من الأجر إلا في الحالات التي يحددها، مثل قرض وافقت عليه كتابيًا أو حكم قضائي (المادة 25، المرسوم بقانون اتحادي رقم 33 لسنة 2021).',src:['mohre_law'],who:'co'},
+  fee64:{t:'Employers may not charge workers recruitment or employment costs, directly or indirectly (Article 6(4), Federal Decree-Law No. 33 of 2021).',ar:'لا يجوز لصاحب العمل تحميل العامل تكاليف الاستقدام أو التشغيل، مباشرةً أو بشكل غير مباشر (المادة 6(4)، المرسوم بقانون اتحادي رقم 33 لسنة 2021).',src:['mohre_law'],who:'co'},
   hours:{t:'Normal hours are up to 8 a day or 48 a week. Overtime pay is the basic wage for those hours plus at least 25%.',ar:'ساعات العمل العادية حتى 8 ساعات يوميًا أو 48 ساعة أسبوعيًا. وأجر العمل الإضافي هو الأجر الأساسي لتلك الساعات مع زيادة لا تقل عن 25%.',src:['mohre_rights'],who:'co'},
   feeuae:{t:'Charging recruitment fees to workers is illegal in the UAE. The employer pays recruitment and travel costs.',ar:'تحصيل رسوم الاستقدام من العمال مخالف للقانون في الإمارات، ويتحمل صاحب العمل تكاليف الاستقدام والسفر.',src:['uae_rights'],who:'co'},
   dwfee:{t:'Domestic workers: recruitment offices must not take any commission from workers. Employers must not collect payments from a domestic worker, directly or indirectly, unless the law or the approved contract expressly allows it.',ar:'العمالة المساعدة: لا يجوز لمكاتب الاستقدام أخذ أي عمولة من العامل، ولا يجوز لصاحب العمل تحصيل أي مبالغ منه، مباشرةً أو بشكل غير مباشر، إلا إذا سمح بذلك القانون أو العقد المعتمد صراحةً.',src:['uae_domestic'],who:'dom'},
   pass:{t:'Taking workers’ passports is prohibited in the UAE.',ar:'احتجاز جوازات سفر العمال محظور في الإمارات.',src:['uae_rights'],who:'co'},
-  pass13:{t:'The employer must not hold back a worker’s official documents (Article 13, Federal Decree-Law No. 33 of 2021). A passport taken for a visa task must be given back as soon as the task is done.',ar:'لا يجوز لصاحب العمل الاحتفاظ بوثائق العامل الرسمية (المادة 13، المرسوم بقانون اتحادي رقم 33 لسنة 2021). والجواز المأخوذ لإجراء التأشيرة يُعاد فور انتهائه.',src:['gn_passport'],who:'co'},
+  pass13:{t:'Employers must not keep a worker’s passport or official documents (Article 13(2), Federal Decree-Law No. 33 of 2021).',ar:'لا يجوز لصاحب العمل الاحتفاظ بجواز سفر العامل أو وثائقه الرسمية (المادة 13(2)، المرسوم بقانون اتحادي رقم 33 لسنة 2021).',src:['uae_rights','mohre_law'],who:'co'},
   dwpass:{t:'Domestic workers have the right to keep their own passport and ID.',ar:'للعمالة المساعدة الحق في الاحتفاظ بجواز السفر والهوية.',src:['uae_domestic'],who:'dom'},
-  passsteps:{t:'Steps reported for this: ask for it back in writing if you feel safe, complain to MOHRE, and tell your embassy.',ar:'الخطوات المذكورة لذلك: اطلبه كتابيًا إن شعرت بالأمان، واشتكِ إلى الوزارة، وأبلغ سفارتك.',src:['gn_passport'],who:'co'},
+  passsteps:{t:'If your passport is kept, contact MOHRE on 80084 or 600590000 and your embassy.',ar:'إن احتُجز جواز سفرك فاتصل بالوزارة على 80084 أو 600590000 وبسفارتك.',src:['uae_rights','mohre_contact'],who:'co'},
   house:{t:'Employers must provide suitable housing that meets the standards in the law. MOHRE monitors labour accommodation.',ar:'على صاحب العمل توفير سكن مناسب يستوفي المعايير القانونية، وتراقب الوزارة سكن العمال.',src:['mohre_rights'],who:'co'},
   leave30:{t:'When a job ends, you have 30 days to leave employer housing, unless the employer agrees to longer.',ar:'عند انتهاء العمل، لديك 30 يومًا لمغادرة سكن صاحب العمل، ما لم يوافق على مدة أطول.',src:['mohre_rights'],who:'co'},
-  midday:{t:'Midday break: no work under the sun in open places from 12:30 pm to 3:00 pm, every year from 15 June to 15 September.',ar:'استراحة منتصف النهار: لا عمل تحت الشمس في الأماكن المكشوفة من 12:30 إلى 3:00 مساءً، كل عام من 15 يونيو إلى 15 سبتمبر.',src:['mohre_rights','gn_midday']},
-  reportheat:{t:'You can report a midday break breach to the MOHRE call centre or in the MOHRE app.',ar:'يمكنك الإبلاغ عن مخالفة استراحة منتصف النهار عبر مركز اتصال الوزارة أو تطبيقها.',src:['gn_midday']},
-  protect:{t:'Employers must provide protection against work injuries and work illnesses.',ar:'على صاحب العمل توفير الحماية من إصابات العمل وأمراض المهنة.',src:['mohre_rights'],who:'co'}
+  midday:{t:'Midday break: no work under the sun in open places from 12:30 pm to 3:00 pm, every year from 15 June to 15 September.',ar:'استراحة منتصف النهار: لا عمل تحت الشمس في الأماكن المكشوفة من 12:30 إلى 3:00 مساءً، كل عام من 15 يونيو إلى 15 سبتمبر.',src:['mohre_rights']},
+  reportheat:{t:'You can report a breach to MOHRE on 600590000 or 80084, or in the MOHRE UAE app.',ar:'يمكنك الإبلاغ عن المخالفة عبر الوزارة على 600590000 أو 80084 أو من خلال تطبيق MOHRE UAE.',src:['mohre_contact']},
+  protect:{t:'Check the official source on workplace safety.',ar:'راجع المصدر الرسمي بشأن السلامة في مكان العمل.',src:['mohre_rights'],who:'co'}
 };
 const factText=(f,l)=>isAr(l)&&f.ar?f.ar:f.t;
 const CH={
@@ -757,7 +752,7 @@ const CH={
   in_pbsk:{name:{en:'Indian workers: PBSK, Consulate General of India, Dubai',ar:'العمال الهنود: PBSK، القنصلية العامة للهند في دبي'},short:{en:'PBSK (India)',ar:'PBSK (الهند)'},num:'80046342',tel:'80046342',also:{en:'Toll-free. WhatsApp +971 54 309 0571.',ar:'مجاني. واتساب ‎+971 54 309 0571.'},src:['cgi_dubai']},
   np_emb:{name:{en:'Nepali workers: Embassy of Nepal, Abu Dhabi',ar:'العمال النيباليون: سفارة نيبال في أبوظبي'},short:{en:'Nepal embassy',ar:'سفارة نيبال'},how:{en:'Official site, with numbers and hours',ar:'الموقع الرسمي، بالأرقام والمواعيد'},url:'https://ae.nepalembassy.gov.np/',src:['nepal_emb']},
   np_dofe:{name:{en:'Nepal: Department of Foreign Employment',ar:'نيبال: إدارة التوظيف الخارجي'},short:{en:'Nepal DoFE',ar:'التوظيف الخارجي، نيبال'},how:{en:'Official site, with its complaint system',ar:'الموقع الرسمي ونظام الشكاوى'},url:'https://dofe.gov.np',also:{en:'For agents and fees back home. In Nepali.',ar:'للوكلاء والرسوم في نيبال. بالنيبالية.'},src:['dofe']},
-  ph_owwa:{name:{en:'Filipino workers: OWWA hotline',ar:'العمال الفلبينيون: الخط الساخن لـOWWA'},short:{en:'OWWA (Philippines)',ar:'OWWA (الفلبين)'},num:'+632 1348',tel:'+6321348',also:{en:'From the UAE. Inside the Philippines the number is 1348.',ar:'من الإمارات. داخل الفلبين الرقم 1348.'},src:['gn_owwa_intl','gn_owwa']},
+  ph_owwa:{name:{en:'Filipino workers: OWWA hotline',ar:'العمال الفلبينيون: الخط الساخن لـOWWA'},short:{en:'OWWA (Philippines)',ar:'OWWA (الفلبين)'},num:'+632 1348',tel:'+6321348',also:{en:'From the UAE. Inside the Philippines the number is 1348.',ar:'من الإمارات. داخل الفلبين الرقم 1348.'},src:['owwa']},
   other_emb:{name:{en:'Your embassy or consulate welfare desk',ar:'مكتب رعاية العمال في سفارتك أو قنصليتك'},short:{en:'Your embassy',ar:'سفارتك'},how:{en:'Check the official source for the number',ar:'تحقق من الرقم في المصدر الرسمي'},src:[]}
 };
 const L2=(o,l)=>o?(o[l||UI]||o.en):'';
@@ -767,8 +762,8 @@ const TOPICS={
   pay:{label:'Pay is late or missing',labelAr:'الراتب متأخر أو لم يصل',short:'Late or missing pay',shortAr:'راتب متأخر أو مفقود',facts:['ontime','wps','wps85','unpaidleave','dwpay','days30','days14'],ch:['claims','call','wa','app'],emb:true,
     steps:{en:['Keep every payslip, salary SMS and message about your pay.','Log each payment in the pay diary.','Call MOHRE on 80084 for advice.','MOHRE asks for complaints within 30 days. If more time has passed, still call and ask.'],
       ar:['احتفظ بكل قسيمة راتب ورسالة راتب.','سجّل كل دفعة في سجل الراتب.','اتصل بالوزارة على 80084 للاستشارة.','تطلب الوزارة الشكوى خلال 30 يومًا. إن مرّ وقت أطول، اتصل واسأل على أي حال.']},
-    stepsDom:{en:['Keep every payslip, salary SMS and message about your pay.','Log each payment in the pay diary.','Complain to MOHRE with the domestic worker service.','Ask MOHRE about time limits for your complaint.'],
-      ar:['احتفظ بكل قسيمة راتب ورسالة راتب.','سجّل كل دفعة في سجل الراتب.','قدّم شكواك إلى الوزارة عبر خدمة العمالة المساعدة.','اسأل الوزارة عن المهل الزمنية لشكواك.']}},
+    stepsDom:{en:['Keep every payslip, salary SMS and message about your pay.','Log each payment in the pay diary.','Complain to MOHRE with the domestic worker service.','Claims cannot be heard after three months from the end of the job. Complain early.'],
+      ar:['احتفظ بكل قسيمة راتب ورسالة راتب.','سجّل كل دفعة في سجل الراتب.','قدّم شكواك إلى الوزارة عبر خدمة العمالة المساعدة.','لا تُسمع المطالبات بعد ثلاثة أشهر على انتهاء الخدمة. قدّم شكواك مبكرًا.']}},
   cut:{label:'Money was cut from my pay',labelAr:'خُصم من راتبي',short:'Pay cut or overtime not paid',shortAr:'خصم أو عمل إضافي غير مدفوع',facts:['deduct','fee64','hours','wps85','dwpay','days30'],ch:['claims','call','app'],emb:false,
     steps:{en:['Ask for a payslip that shows each cut.','Write down what was cut, and the reason given.','Recruitment and visa costs must not be taken from workers.','Ask MOHRE on 80084 if the cut is allowed.'],
       ar:['اطلب قسيمة راتب تُظهر كل خصم.','اكتب ما خُصم والسبب المذكور.','لا يجوز تحميل العمال تكاليف الاستقدام أو التأشيرة.','اسأل الوزارة على 80084 إن كان الخصم مسموحًا.']}},
@@ -776,8 +771,8 @@ const TOPICS={
     steps:{en:['Write down who you paid, how much, and when.','Keep receipts, loan papers and messages from the agent.','Charging recruitment fees to workers is illegal in the UAE.','For a loan or an agent back home, ask your embassy.'],
       ar:['اكتب لمن دفعت، وكم، ومتى.','احتفظ بالإيصالات وأوراق القرض ورسائل الوكيل.','تحصيل رسوم الاستقدام من العمال مخالف للقانون في الإمارات.','للقروض أو الوكلاء في بلدك، اسأل سفارتك.']}},
   passport:{label:'My passport is kept',labelAr:'جواز سفري محتجز',short:'Passport kept',shortAr:'جواز محتجز',facts:['pass','pass13','dwpass','passsteps'],ch:['claims','call','app'],emb:true,
-    steps:{en:['You have the right to keep your passport.','If you feel safe, ask for it back in writing.','Complain to MOHRE.','Tell your embassy.'],
-      ar:['من حقك الاحتفاظ بجواز سفرك.','إن شعرت بالأمان، اطلب استعادته كتابيًا.','قدّم شكوى إلى الوزارة.','أبلغ سفارتك.']}},
+    steps:{en:['You have the right to keep your passport.','Call MOHRE on 80084 or 600590000.','Tell your embassy.'],
+      ar:['من حقك الاحتفاظ بجواز سفرك.','اتصل بالوزارة على 80084 أو 600590000.','أبلغ سفارتك.']}},
   home:{label:'Housing, water or food',labelAr:'السكن أو الماء أو الطعام',short:'Housing, water or food',shortAr:'السكن أو الماء أو الطعام',facts:['house','leave30'],ch:['call','claims','app'],emb:true,
     steps:{en:['Take dated photos of the room, the water and the food.','Write down how many people sleep in the room.','Report it to the MOHRE call centre or in the app.','No water or food today? Call MOHRE now. In danger? Call the Police on 999.'],
       ar:['التقط صورًا مؤرخة للغرفة والماء والطعام.','اكتب عدد من ينامون في الغرفة.','أبلغ مركز اتصال الوزارة أو عبر التطبيق.','لا ماء أو طعام اليوم؟ اتصل بالوزارة الآن. في خطر؟ اتصل بالشرطة على 999.']}},
@@ -1207,7 +1202,7 @@ function dueOwn(ym){const s=S.setup;const t=s.payFor==='same'?ym:addMonths(ym,1)
 function dueWPS(ym){const d=addMonths(ym,1)+'-01';return d>=WPS_START?d:null}
 /* scope: is the employer outside the WPS rule (free zone, bank, government)? no = covered, unsure = may apply, yes = may be exempt. */
 const wpsScope=()=>S.setup.work==='household'?'':(['no','unsure','yes'].includes(S.setup.scope)?S.setup.scope:'unsure');
-const wpsSrc=()=>wpsScope()==='no'?['uae_wages','gn_wps','ml_wps']:['uae_wages','gn_exempt','gn_wps'];
+const wpsSrc=()=>wpsScope()==='no'?['uae_wages']:['uae_wages'];
 /* checkMonth returns facts and short notes (codes); the words are made in the screen's language when shown. */
 function checkMonth(ym){
   const s=S.setup,set=!!s.confirmed,exp=set?(+s.expected||0):0,today=todayISO(),company=s.work!=='household',scope=wpsScope();
@@ -1230,7 +1225,7 @@ function checkMonth(ym){
       else if(!exp&&last<=wps)notes.push({k:'wpsBy',d:wps,src:W});
       else{overdue=true;notes.push({k:'wpsLate',d:wps,may,p:onTime>0&&exp?pct(onTime,exp):null,amt:onTime>0&&!exp?onTime:null,src:W})}
       if(pays.some(p=>LEAVE_RX.test(p.note||'')))notes.push({k:'fact',id:'unpaidleave',src:FACTS.unpaidleave.src})}
-    else notes.push({k:'wpsBefore',src:['uae_wages','gn_wps']});
+    else notes.push({k:'wpsBefore',src:['uae_wages']});
   }else if(dom){const D=['uae_domestic'];
     if(!pays.length){if(today>dom){overdue=true;notes.push({k:'domNone',d:dom,src:D})}}
     else{const d=diffDays(dom,last);if(d>0){overdue=true;notes.push({k:'domLate',d:dom,n:d,src:D})}else notes.push({k:'domOk',src:D})}}
@@ -1521,7 +1516,7 @@ function applyLang(l,init){UI=l==='ar'?'ar':'en';const r=document.documentElemen
   document.querySelectorAll('[data-t]').forEach(e=>{e.textContent=t(e.dataset.t)});
   document.querySelectorAll('[data-ta]').forEach(e=>e.setAttribute('aria-label',t(e.dataset.ta)));
   document.querySelectorAll('[data-tp]').forEach(e=>e.setAttribute('placeholder',t(e.dataset.tp)));
-  const b=$('uiLang');b.textContent=UI==='ar'?'English':'عربي';b.lang=UI==='ar'?'en':'ar';
+  for(const b of [$('uiLang'),$('uiLangTop')]){b.textContent=UI==='ar'?'English':'عربي';b.lang=UI==='ar'?'en':'ar'}
   document.title=UI==='ar'?'بالتاريخ · Bil Tareekh':'Bil Tareekh · بالتاريخ';
   if(!init){try{localStorage.setItem(ULKEY,UI)}catch(e){}}
   fillSelects();renderStatic();renderRules();setLeads();applyTheme();resetTwoTaps();
@@ -1560,7 +1555,7 @@ $('sendYes').addEventListener('click',()=>settleSend(true));
 $('sendNo').addEventListener('click',()=>settleSend(false));
 $('menuBtn').addEventListener('click',()=>{renderPrivacy();openSheet($('menuSheet'))});
 $('adminLink').addEventListener('click',e=>{e.preventDefault();closeSheet($('menuSheet'));toggleAIPanel(true)});
-$('uiLang').addEventListener('click',()=>{const nl=UI==='ar'?'en':'ar';if(S.lang==='en'||S.lang==='ar'){S.lang=nl;save()}applyLang(nl)});
+for(const id of ['uiLang','uiLangTop'])$(id).addEventListener('click',()=>{const nl=UI==='ar'?'en':'ar';if(S.lang==='en'||S.lang==='ar'){S.lang=nl;save()}applyLang(nl)});
 
 /* ---------- the main box (top) ---------- */
 const HT=$('hText');

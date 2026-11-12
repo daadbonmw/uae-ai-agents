@@ -61,7 +61,8 @@ img{max-width:100%}
 .brand{display:flex;align-items:center;gap:8px;min-width:0;font-weight:600}
 .brand .mark{width:30px;height:30px;flex:none;margin-inline-start:-4px}
 .bar-end{display:flex;align-items:center;gap:4px;flex:none}
-.lang{min-width:44px;min-height:44px;padding:0 14px;border:1.5px solid var(--muted);border-radius:22px;background:transparent;font-size:15px;font-weight:600;line-height:1;cursor:pointer}
+.lang{min-width:44px;min-height:44px;padding:0 14px;border:1.5px solid var(--muted);border-radius:22px;background:transparent;color:var(--ink);font-size:15px;font-weight:600;line-height:1;cursor:pointer}
+#rWarn{margin-top:8px}
 .ibtn{flex:none;display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:transparent;color:inherit;cursor:pointer}
 .ibtn svg{width:24px;height:24px}
 .status{display:flex;align-items:center;gap:6px;min-height:44px;max-width:36vw;padding:0 12px;border:0;border-radius:22px;background:var(--tile);font-size:15px;cursor:pointer}
@@ -102,6 +103,7 @@ main.wrap{display:flex;flex-direction:column;gap:22px;padding:16px 16px 8px}
 h2,h3,h4{font-size:17px;line-height:24px;font-weight:600}
 .tile{padding:16px;border-radius:22px;background:var(--tile)}
 #rReply:empty{display:none}
+.foot{padding:8px 16px 24px;text-align:center}
 .reply{display:flex;flex-direction:column;gap:8px}
 .reply:focus{outline:none}
 .who{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:15px;line-height:22px;color:var(--muted)}
@@ -133,7 +135,7 @@ h2,h3,h4{font-size:17px;line-height:24px;font-weight:600}
 .steps{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:4px}
 .steps span{height:4px;border-radius:2px;background:var(--bg)}
 .steps .done{background:var(--brand)}
-.steps .now{background:var(--ink)}
+.steps .now{background:var(--spot)}
 /* The sheet is white, so the steps not reached yet get the tile grey there. */
 .case-body .steps span:not(.done):not(.now){background:var(--tile)}
 .thumbs{display:flex;flex-wrap:wrap;gap:10px}
@@ -217,7 +219,7 @@ dialog.sheet::backdrop{background:rgba(8,10,20,.5)}
 @keyframes sp{to{transform:rotate(360deg)}}
 
 /* Embedded in the landing page's sheet: the landing shows the name, so drop our own top bar and footer */
-html.embed .bar{display:none}
+html.embed .bar,html.embed .foot{display:none}
 html.embed .top .wrap{padding-top:14px}
 html.embed h1{margin-top:0}
 
@@ -265,6 +267,7 @@ html.embed h1{margin-top:0}
   <div class="bar" id="masthead">
    <span class="brand"><svg class="ico mark" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path class="s" d="M27 12h8l9 26c-3.4 1.3-8.2 2-13 2s-9.6-.7-13-2z"/><path d="M14 42V14a7 7 0 0 1 7-7h4M25 7h12l-2 5h-8zM9 42h10"/></svg><span data-t="brand">Wareeni</span></span>
    <span class="bar-end">
+    <button class="lang" id="lang" type="button" lang="ar">عربي</button>
     <button type="button" class="status" id="aiStatus" aria-haspopup="dialog" aria-controls="adminSheet" hidden><span class="dot"></span><span id="aiStatusText">AI</span></button>
     <button class="ibtn" id="menuBtn" type="button" aria-haspopup="dialog" aria-controls="menuSheet" data-ta="menu" aria-label="Menu"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h11"/></svg></button>
    </span>
@@ -284,6 +287,7 @@ html.embed h1{margin-top:0}
    <div class="thumbs" id="rThumb"></div>
    <p class="err" id="rErr" role="alert"></p>
   </form>
+  <p class="note" id="rWarn" data-t="demoWarn">Demo: nothing is sent. Don’t type real names or numbers, or add photos of people.</p>
  </div>
 </header>
 
@@ -295,6 +299,7 @@ html.embed h1{margin-top:0}
  </section>
  <section class="tile memory" id="memory" aria-labelledby="mh"></section>
 </main>
+<footer class="foot wrap"><p class="note" data-t="notLegal">Not legal advice. Not a government service.</p></footer>
 <p class="vh" id="live" role="status" aria-live="polite"></p>
 
 <dialog class="sheet" id="caseSheet" aria-labelledby="caseTitle">
@@ -307,7 +312,6 @@ html.embed h1{margin-top:0}
  <div class="sheet-body">
   <div class="menu-list">
    <a class="row" id="allAgents" href="../"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect class="s" x="13" y="13" width="7" height="7" rx="2"/></svg><span data-t="all">All agents</span></a>
-   <button class="row" id="lang" type="button" lang="ar">عربي</button>
   </div>
   <p class="note" data-t="aboutDemo">Demo. Examples are made up. General information, not legal advice.</p>
   <p class="note" data-t="aboutData">Data stays in this browser. Each step is marked Rule or AI.</p>
@@ -348,8 +352,8 @@ const LKEY='uaeagents-lang';
 
 /* ---------- words (English and Arabic) ---------- */
 const STR={en:{
-brand:'Wareeni',h1:'What needs fixing?',lText:'What’s wrong?',phText:'Describe the problem',photo:'Add a photo',phAI:'(optional; the AI looks at it)',phKept:'(optional; kept for the operator)',lSticker:'QR sticker',noSticker:'No sticker',lLoc:'Place',phLoc:'Where?',send:'Send report',sending:'Reading the report',yourPhoto:'Your photo',
-cases:'Cases',menu:'More',close:'Close',all:'All agents',admin:'Admin',aboutDemo:'Demo. Examples are made up. General information, not legal advice.',aboutData:'Data stays in this browser. Each step is marked Rule or AI.',more:'More',reset:'Reset',resetAgain:'Tap again to reset',resetDone:'Demo reset.',
+brand:'Wareeni',h1:'What needs fixing?',lText:'What’s wrong?',phText:'Describe the problem',photo:'Add a photo',phAI:'(optional; the AI looks at it)',phKept:'(optional; kept for the operator)',lSticker:'QR sticker',noSticker:'No sticker',lLoc:'Place',phLoc:'Where? (required)',send:'Send report',sending:'Reading the report',yourPhoto:'Your photo',
+cases:'Cases',menu:'More',close:'Close',all:'All agents',admin:'Admin',aboutDemo:'Demo. Examples are made up. Not a real service.',aboutData:'Cases are saved in this browser only. If you allow AI, your words and photo go to that AI company. Each step is marked Rule or AI.',notLegal:'Not legal advice. Not a government service.',demoWarn:'Demo: nothing is sent. Don’t type real names or numbers, or add photos of people.',more:'More',reset:'Reset',resetAgain:'Tap again to reset',resetDone:'Demo reset.',
 
 tagAI:'AI',tagRule:'Rule',tagEx:'Example',
 whoResident:'Resident',whoAI:'AI',whoRule:'Rule',whoCrew:'Crew',whoOperator:'Operator',
@@ -361,28 +365,28 @@ roleRes:'Resident',roleCrew:'Crew',roleOp:'Operator',
 askedWhere:'Where is it?',lAnswer:'Your answer',phAnswer:'Park and landmark',bSendPlace:'Send place',
 crewTitle:'Fix it, then add proof',lNote:'What was done?',phNote:'e.g. Replaced two slats',lAfter:'After photo',afterPending:'Not sent yet',bFixed:'Mark fixed',bFake:'Try a fake repair',fakeTip:'Sends the before photo again as the after photo.',
 checkFailed:'The check didn’t finish',bRetry:'Run again',
-isFixed:'Is it fixed?',bYes:'Yes, fixed',bNo:'No, still broken',bNoReply:'No reply (48 h)',
-decTitle:'Close or send back',fRes:'Resident: {r}',rYes:'confirmed',rNo:'no reply',fCheck:'Check: {v}',fPhoto:'Photo: flagged',fNoPhoto:'No after photo',vNone:'not run',concern:'Not proven. Closing needs a reason.',ack:'I checked the evidence.',lWhy:'Reason',lWhyOpt:'Note for the crew',bClose:'Close case',bBack:'Send back',
+isFixed:'Is it fixed?',bYes:'Yes, fixed',bNo:'No, still broken',bNoReply:'No reply (48 h, demo rule)',
+decTitle:'Close or send back',fRes:'Resident: {r}',rYes:'confirmed',rNo:'no reply',fCheck:'Check (not proof): {v}',fPhoto:'Photo: flagged',fNoPhoto:'No after photo',vNone:'not run',concern:'Not proven. Closing needs a reason.',ack:'I checked the evidence.',lWhy:'Reason',lWhyOpt:'Note for the crew',bClose:'Close case',bBack:'Send back',
 reopen:'Reopen',lReopen:'What still needs work?',bReopen:'Reopen with a new cycle',
 errShort:'Describe it in a few words.',errPhoto:'That file isn’t a photo. Try JPEG or PNG.',errLoc:'Type the place, like the park and a landmark.',errNote:'Say what the crew did.',errNoBefore:'No before photo to reuse.',errAck:'Tick the box first.',errWhy:'Not proven. Add a reason.',errBack:'Say what the crew must do.',errReopen:'Say why it needs reopening.',
-check:'Check',vLooks:'looks fixed',vNot:'does not look fixed',vUnclear:'unclear',checking:'Checking the fix…',
+check:'Check (not proof)',vLooks:'looks fixed',vNot:'does not look fixed',vUnclear:'unclear',checking:'Checking the fix…',
 raised:'The photo rule set this. {by} said “{own}”.',byAI:'The AI',byRules:'The rules check',
 toCheck:'To check: {w}',wCompare:'compare the before and after photos',wAskPhoto:'ask the crew for an after photo',wFresh:'ask for a fresh photo taken on site',wWhen:'check when the photo was taken',wComparePhotos:'compare the matching photos yourself',rLook:'Look at the photos and the note.',noAfterCheck:'No after photo, so no photo check.',noCopy:'Photo check: no copy found.',
 exR1:'The crew note names a repair and a 10-minute test',exR2:'No after photo, so the check relies on the note',exWhat:'ask for an after photo next time',
 fSameExact:'The after photo is a copy of the before photo.',fSameNear:'The after photo looks almost the same as the before photo ({d} of 64 points differ).',fReusedExact:'The after photo is a copy of {where}.',fReusedNear:'The after photo looks almost the same as {where} ({d} of 64 points differ).',fSameVar:'The after photo looks like a flipped, cropped or shifted copy of the before photo.',fReusedVar:'The after photo looks like a flipped, cropped or shifted copy of {where}.',fOldExif:'The camera says this photo was taken {age} before upload.',fOldFile:'The photo file is {age} older than the upload (file date only).',
 wCycle:'this case’s cycle {n} photo',wBefore:'the before photo in {id}',wAfter:'the after photo in {id}',wPast:'a cycle {n} photo in {id}',
 nCant:'The after photo couldn’t be checked; look at it.',nPlain:'The after photo is too plain to compare; look at it.',nBeforePlain:'The before photo is too plain to compare.',nNotCopy:'Not a copy of the {n} other photos checked.',nNothing:'No other photos to compare yet.',
-replyTo:'Reply to the resident',seeCase:'See {id}',
+replyTo:'Sample reply. Nothing was sent.',seeCase:'See {id}',
 trRead:'Read the report ({lang})',lang_en:'English',lang_ar:'Arabic',lang_ur:'Urdu',lang_hi:'Hindi',lang_ml:'Malayalam',lang_bn:'Bengali',
-trRedact:'Removed {n} personal numbers before AI',trPhotoAI:'Looked at the photo: {notes}',trPhotoAI0:'Looked at the photo',trPhotoKept:'Kept the photo for the operator',trInj:'Ignored hidden instructions',trSort:'Sorted: {cat}, {urg}',trPlaceText:'Found the place in the text: {loc}',trDup:'May repeat {ids}',trNoDup:'No repeat open here',trSent:'Sent to {crew}, target {target}',trAsk:'Asked where it is first',trAiAsk:'Asked for a clearer place',trBlocked:'Blocked a link, number or payment in the AI reply',
+trRedact:'Removed {n} personal numbers before AI',trPhotoAI:'Looked at the photo: {notes}',trPhotoAI0:'Looked at the photo',trPhotoKept:'Kept the photo for the operator',trInj:'Ignored hidden instructions',trSort:'Sorted: {cat}, {urg}',trPlaceText:'Found the place in the text: {loc}',trDup:'May repeat {ids}',trNoDup:'No repeat open here',trSent:'Demo: for {crew}, target {target} (made up)',trAsk:'Asked where it is first',trAiAsk:'Asked for a clearer place',trBlocked:'Blocked a link, number or payment in the AI reply',
 nOff:'Claude wasn’t allowed here, so rules were used.',nImg:'The photo couldn’t be sent to the AI.',nBusy:'The AI is busy, so rules were used.',nAuth:'{name} refused the key, so rules were used.',nNet:'Couldn’t reach {name}, so rules were used.',nJson:'The AI reply was unreadable, so rules were used.',nRefused:'The AI declined, so rules were used.',nNoAns:'The AI didn’t answer, so rules were used.',nNoConsent:'AI not used, by your choice.',nBasic:'Basic mode: no AI.',
-mh:'Repeat spots',noSpots:'No repeat spots yet.',bPlan:'Draft a fix-once plan',drafting:'Drafting…',planTag:'for a person to approve',planRule:'1. Send the {crew} to check the whole spot, not only the last fault.\n2. Fix the cause in one visit and replace worn parts.\n3. Check it again in two weeks.\nMeasure: no new report here for 60 days.',
-cTitle:'Send to AI?',cText:'Your words and photo go to {name} ({where}) to be read.',cMore:'ID, passport, IBAN, card and phone numbers are removed first. Photos lose their location data, but faces are not blurred.',cBuiltin:'This uses your claude.ai account and its settings.',cGemini:'Free Gemini keys let Google use and review what you send.',cRouter:'OpenRouter passes it on to the model’s maker.',cYes:'Send',cNo:'Basic mode',usa:'USA',
+mh:'Repeat spots',noSpots:'No repeat spots yet.',bPlan:'Draft a fix-once plan',drafting:'Drafting…',planTag:'example only; a person must approve',planRule:'1. Send the {crew} to check the whole spot, not only the last fault.\n2. Fix the cause in one visit and replace worn parts.\n3. Check it again in two weeks.\nAim: no new report here for 60 days.',
+cTitle:'Send to AI?',cText:'Your words and photo go to {name} ({where}) to be read.',cMore:'Common ID, passport, IBAN, card, phone and email patterns are removed first; some may be missed. Photos lose their location data, but faces are not blurred.',cBuiltin:'This uses your claude.ai account and its settings.',cGemini:'Free Gemini keys let Google use and review what you send.',cRouter:'OpenRouter passes it on to a company that runs the model.',cYes:'Send',cNo:'Basic mode',usa:'a company outside the UAE',
 aiTitle:'AI settings (admin)',nowUsing:'Now: {label}',scanAgain:'Scan again',scanningBtn:'Scanning…',pFound:'Found',pChecking:'Checking',pBlocked:'Needs CORS',pMissing:'Not found',pIdle:'Not scanned',nModels:'{n} models',oneModel:'1 model',use:'Use',inUse:'In use',builtinWhere:'Built into claude.ai',builtinHelp:'Works only inside claude.ai.',onPC:'on this computer',inClaudeLocal:'Not reachable inside claude.ai.',hBlocked:'Running, but it blocks web pages.',hLm:'In LM Studio, start the server and turn on CORS.',hOllama:'Set OLLAMA_ORIGINS to this site’s address, then restart Ollama.',hJan:'In Jan, turn on the local API server.',hLlama:'Start the server with CORS allowed.',ownKey:'Your own key',company:'AI company',apiKey:'API key',ownWhere:'Own key · {how}',savedHere:'saved on this device',visitOnly:'this visit only',remember:'Remember on this device',remHint:'Saved in this browser; other pages on this site can read it.',keyWarn:'Unticked, the key is kept for this visit only. Ticked, it is stored in this browser, where other pages on this site can read it. Use a key with a spending limit.',gemWarn:'Free Gemini keys let Google use and review the data. Use a paid key.',test:'Test and connect',testing:'Testing…',forget:'Forget keys',aiOff:'Turn AI off',copyWhy:'Inside claude.ai only the built-in Claude works. The standalone copy runs in any browser.',getCopy:'Download standalone copy',copySaved:'Saved. Open it in any browser.',copyNo:'Downloads aren’t available here.',copyCancel:'Download cancelled.',copyFail:'The download didn’t work. Try again.',ePick:'Pick an AI company.',eKey:'Paste the full key.',eRefused:'{name} refused that key.',eInClaude:'{name} can’t be reached inside claude.ai. Use the standalone copy.',eReach:'Couldn’t reach {name}. Check the connection and the key.',basic:'Basic mode',scanning:'Scanning…',modelAria:'Model',
-evQR:'Reported with QR sticker {code}.',evTyped:'Reported with a typed place.',evNoLoc:'Reported without a place.',evReported:'Reported.',evInj:'Hidden instructions found and ignored.',evTriage:'Sorted as {cat}, {urg}.',evPhotoSaw:'Photo shows: {notes}.',evPhotoOdd:'The photo may not match the report.',evLocText:'Took the place from the text: “{loc}”.',evDup:'May repeat {ids}. Kept separate.',evAskLoc:'No place yet, so asked where it is.',evAiAsk:'The place was too vague, so asked for a clearer one.',evAssign:'Sent to {crew}. Target: {target}.',evRedact:'Removed {n} personal numbers before sending to the AI.',evBlocked:'The AI reply had a link, number or payment request, so the standard reply was used.',evPhotoFlag:'Photo check flagged the after photo.',evPhotoOk:'Photo check: no copy found.',evCheck:'Checked the fix: {v}.',evCheckEx:'Checked the fix: {v} (example).',evDiffPlace:'The after photo may show another place.',evRaised:'The photo rule set the result to “{v}”. {by} said “{own}”.',evAskRes:'Asked the resident: “Is it fixed?”',evGaveLoc:'Gave the place: “{loc}”.',evFixedPhoto:'Marked fixed, with an after photo.',evFixedNoPhoto:'Marked fixed, no photo.',evFixedNote:'Marked fixed: {note}.',evFake:'Demo test: sent the before photo as the after photo.',evResYes:'Confirmed it is fixed.',evResNo:'Said it is still broken.',evBack:'Back to the crew. Cycle {n} needs new proof.',evNoReply:'No reply in 48 h (demo). Moved to the decision.',evClosed:'Closed after review.',evClosedWhy:'Closed despite a concern: “{why}”.',evSentBack:'Sent back: “{why}”.',evCycle:'Cycle {n} needs new proof.',evReopen:'Reopened: “{why}”.',evCycleOld:'Cycle {n} needs new proof; old photos can’t close it.'
+evQR:'Reported with QR sticker {code}.',evTyped:'Reported with a typed place.',evNoLoc:'Reported without a place.',evReported:'Reported.',evInj:'Hidden instructions found and ignored.',evTriage:'Sorted as {cat}, {urg}.',evPhotoSaw:'Photo shows: {notes}.',evPhotoOdd:'The photo may not match the report.',evLocText:'Took the place from the text: “{loc}”.',evDup:'May repeat {ids}. Kept separate.',evAskLoc:'No place yet, so asked where it is.',evAiAsk:'The place was too vague, so asked for a clearer one.',evAssign:'Demo: for {crew}. Target: {target} (made up).',evRedact:'Removed {n} personal numbers before sending to the AI.',evBlocked:'The AI reply had a link, number or payment request, so the standard reply was used.',evPhotoFlag:'Photo check flagged the after photo.',evPhotoOk:'Photo check: no copy found.',evCheck:'Checked the fix: {v}.',evCheckEx:'Checked the fix: {v} (example).',evDiffPlace:'The after photo may show another place.',evRaised:'The photo rule set the result to “{v}”. {by} said “{own}”.',evAskRes:'Asked the resident: “Is it fixed?”',evGaveLoc:'Gave the place: “{loc}”.',evFixedPhoto:'Marked fixed, with an after photo.',evFixedNoPhoto:'Marked fixed, no photo.',evFixedNote:'Marked fixed: {note}.',evFake:'Demo test: sent the before photo as the after photo.',evResYes:'Confirmed it is fixed.',evResNo:'Said it is still broken.',evBack:'Back to the crew. Cycle {n} needs new proof.',evNoReply:'No reply in 48 h (demo). Moved to the decision.',evClosed:'Closed after review.',evClosedWhy:'Closed despite a concern: “{why}”.',evSentBack:'Sent back: “{why}”.',evCycle:'Cycle {n} needs new proof.',evReopen:'Reopened: “{why}”.',evCycleOld:'Cycle {n} needs new proof; old photos can’t close it.'
 },ar:{
-brand:'ورّيني',h1:'شو يحتاج إصلاح؟',lText:'ما المشكلة؟',phText:'صف المشكلة',photo:'أضف صورة',phAI:'(اختيارية؛ يراها الذكاء الاصطناعي)',phKept:'(اختيارية؛ تُحفظ للمشغّل)',lSticker:'ملصق QR',noSticker:'بدون ملصق',lLoc:'المكان',phLoc:'وين؟',send:'أرسل البلاغ',sending:'جارٍ قراءة البلاغ',yourPhoto:'صورتك',
-cases:'البلاغات',menu:'المزيد',close:'إغلاق',all:'كل الوكلاء',admin:'المشرف',aboutDemo:'تجربة. الأمثلة من صنع الخيال. معلومات عامة، وليست استشارة قانونية.',aboutData:'تبقى البيانات في هذا المتصفح. كل خطوة موسومة: قاعدة أو ذكاء اصطناعي.',more:'المزيد',reset:'إعادة ضبط',resetAgain:'اضغط مرة أخرى للتأكيد',resetDone:'أُعيد ضبط التجربة.',
+brand:'ورّيني',h1:'شو يحتاج إصلاح؟',lText:'ما المشكلة؟',phText:'صف المشكلة',photo:'أضف صورة',phAI:'(اختيارية؛ يراها الذكاء الاصطناعي)',phKept:'(اختيارية؛ تُحفظ للمشغّل)',lSticker:'ملصق QR',noSticker:'بدون ملصق',lLoc:'المكان',phLoc:'وين؟ (مطلوب)',send:'أرسل البلاغ',sending:'جارٍ قراءة البلاغ',yourPhoto:'صورتك',
+cases:'البلاغات',menu:'المزيد',close:'إغلاق',all:'كل الوكلاء',admin:'المشرف',aboutDemo:'تجربة. الأمثلة من صنع الخيال. ليست خدمة حقيقية.',notLegal:'ليست استشارة قانونية ولا خدمة حكومية.',demoWarn:'تجربة: لا يُرسل شيء. لا تكتب أسماءً أو أرقاماً حقيقية ولا تضف صور أشخاص.',aboutData:'تبقى البيانات في هذا المتصفح. كل خطوة موسومة: قاعدة أو ذكاء اصطناعي.',more:'المزيد',reset:'إعادة ضبط',resetAgain:'اضغط مرة أخرى للتأكيد',resetDone:'أُعيد ضبط التجربة.',
 
 tagAI:'ذكاء اصطناعي',tagRule:'قاعدة',tagEx:'مثال',
 whoResident:'المُبلّغ',whoAI:'الذكاء الاصطناعي',whoRule:'قاعدة',whoCrew:'الفريق',whoOperator:'المشغّل',
@@ -394,25 +398,25 @@ roleRes:'المُبلّغ',roleCrew:'الفريق',roleOp:'المشغّل',
 askedWhere:'وين المكان؟',lAnswer:'إجابتك',phAnswer:'الحديقة وأقرب معلم',bSendPlace:'أرسل المكان',
 crewTitle:'أصلحها، ثم أضف الإثبات',lNote:'ما الذي تم؟',phNote:'مثلاً: استبدلنا لوحين',lAfter:'صورة بعد الإصلاح',afterPending:'لم تُرسل بعد',bFixed:'تم الإصلاح',bFake:'جرّب إصلاحاً مزيفاً',fakeTip:'يرسل صورة «قبل» مرة أخرى على أنها صورة «بعد».',
 checkFailed:'لم يكتمل الفحص',bRetry:'أعد الفحص',
-isFixed:'هل تم الإصلاح؟',bYes:'نعم، تم',bNo:'لا، ما زال معطلاً',bNoReply:'لا رد (48 ساعة)',
-decTitle:'أغلق أو أعِد إلى الفريق',fRes:'المُبلّغ: {r}',rYes:'أكّد',rNo:'لم يرد',fCheck:'الفحص: {v}',fPhoto:'الصورة: عليها ملاحظة',fNoPhoto:'لا صورة بعد الإصلاح',vNone:'لم يُجرَ',concern:'غير مثبت. الإغلاق يحتاج سبباً.',ack:'راجعت الإثبات.',lWhy:'السبب',lWhyOpt:'ملاحظة للفريق',bClose:'أغلق البلاغ',bBack:'أعِد إلى الفريق',
+isFixed:'هل تم الإصلاح؟',bYes:'نعم، تم',bNo:'لا، ما زال معطلاً',bNoReply:'لا رد (48 ساعة، قاعدة تجريبية)',
+decTitle:'أغلق أو أعِد إلى الفريق',fRes:'المُبلّغ: {r}',rYes:'أكّد',rNo:'لم يرد',fCheck:'الفحص (ليس إثباتاً): {v}',fPhoto:'الصورة: عليها ملاحظة',fNoPhoto:'لا صورة بعد الإصلاح',vNone:'لم يُجرَ',concern:'غير مثبت. الإغلاق يحتاج سبباً.',ack:'راجعت الإثبات.',lWhy:'السبب',lWhyOpt:'ملاحظة للفريق',bClose:'أغلق البلاغ',bBack:'أعِد إلى الفريق',
 reopen:'إعادة فتح',lReopen:'ما الذي يحتاج عملاً بعد؟',bReopen:'أعد الفتح بدورة جديدة',
 errShort:'صف المشكلة بكلمات قليلة.',errPhoto:'هذا الملف ليس صورة. جرّب JPEG أو PNG.',errLoc:'اكتب المكان، مثل الحديقة وأقرب معلم.',errNote:'اكتب ما قام به الفريق.',errNoBefore:'لا توجد صورة «قبل» لإعادة استخدامها.',errAck:'ضع علامة في المربع أولاً.',errWhy:'غير مثبت. أضف سبباً.',errBack:'اكتب ما يجب على الفريق فعله.',errReopen:'اكتب سبب إعادة الفتح.',
-check:'الفحص',vLooks:'يبدو مُصلحاً',vNot:'لا يبدو مُصلحاً',vUnclear:'غير واضح',checking:'جارٍ فحص الإصلاح…',
+check:'الفحص (ليس إثباتاً)',vLooks:'يبدو مُصلحاً',vNot:'لا يبدو مُصلحاً',vUnclear:'غير واضح',checking:'جارٍ فحص الإصلاح…',
 raised:'قاعدة الصور حدّدت هذه النتيجة. وكانت نتيجة {by}: «{own}».',byAI:'الذكاء الاصطناعي',byRules:'فحص القواعد',
 toCheck:'للتحقق: {w}',wCompare:'قارن صورتي «قبل» و«بعد»',wAskPhoto:'اطلب من الفريق صورة بعد الإصلاح',wFresh:'اطلب صورة جديدة من الموقع',wWhen:'تحقق من وقت التقاط الصورة',wComparePhotos:'قارن الصور المتشابهة بنفسك',rLook:'راجع الصور والملاحظة.',noAfterCheck:'لا صورة بعد الإصلاح، فلا فحص للصور.',noCopy:'فحص الصور: لا نسخ.',
 exR1:'ملاحظة الفريق تذكر إصلاحاً محدداً واختباراً لعشر دقائق',exR2:'لا صورة بعد الإصلاح، فالفحص يعتمد على الملاحظة',exWhat:'اطلب صورة بعد الإصلاح في المرة القادمة',
 fSameExact:'صورة «بعد» نسخة من صورة «قبل».',fSameNear:'صورة «بعد» تكاد تطابق صورة «قبل» (تختلف {d} من 64 نقطة).',fReusedExact:'صورة «بعد» نسخة من {where}.',fReusedNear:'صورة «بعد» تكاد تطابق {where} (تختلف {d} من 64 نقطة).',fSameVar:'صورة «بعد» تبدو نسخة مقلوبة أو مقصوصة أو مُزاحة من صورة «قبل».',fReusedVar:'صورة «بعد» تبدو نسخة مقلوبة أو مقصوصة أو مُزاحة من {where}.',fOldExif:'تقول الكاميرا إن الصورة التُقطت قبل الرفع بـ{age}.',fOldFile:'ملف الصورة أقدم من الرفع بـ{age} (حسب تاريخ الملف فقط).',
 wCycle:'صورة الدورة {n} لهذا البلاغ',wBefore:'صورة «قبل» في {id}',wAfter:'صورة «بعد» في {id}',wPast:'صورة من الدورة {n} في {id}',
 nCant:'تعذّر فحص صورة «بعد»؛ راجعها بنفسك.',nPlain:'صورة «بعد» بسيطة جداً للمقارنة؛ راجعها بنفسك.',nBeforePlain:'صورة «قبل» بسيطة جداً للمقارنة.',nNotCopy:'ليست نسخة من الصور الأخرى المفحوصة ({n}).',nNothing:'لا صور أخرى للمقارنة بعد.',
-replyTo:'الرد على المُبلّغ',seeCase:'عرض {id}',
+replyTo:'رد تجريبي. لم يُرسل شيء.',seeCase:'عرض {id}',
 trRead:'قرأ البلاغ ({lang})',lang_en:'بالإنجليزية',lang_ar:'بالعربية',lang_ur:'بالأردية',lang_hi:'بالهندية',lang_ml:'بالمالايالامية',lang_bn:'بالبنغالية',
-trRedact:'حذف {n} من الأرقام الشخصية قبل الإرسال',trPhotoAI:'نظر في الصورة: {notes}',trPhotoAI0:'نظر في الصورة',trPhotoKept:'حفظ الصورة للمشغّل',trInj:'تجاهل تعليمات مخفية',trSort:'صنّف: {cat}، {urg}',trPlaceText:'وجد المكان في النص: {loc}',trDup:'قد يكرر {ids}',trNoDup:'لا بلاغ مكرر مفتوح هنا',trSent:'أرسل إلى {crew}، المهلة {target}',trAsk:'سأل عن المكان أولاً',trAiAsk:'طلب مكاناً أوضح',trBlocked:'منع رابطاً أو رقماً أو طلب دفع في رد الذكاء الاصطناعي',
+trRedact:'حذف {n} من الأرقام الشخصية قبل الإرسال',trPhotoAI:'نظر في الصورة: {notes}',trPhotoAI0:'نظر في الصورة',trPhotoKept:'حفظ الصورة للمشغّل',trInj:'تجاهل تعليمات مخفية',trSort:'صنّف: {cat}، {urg}',trPlaceText:'وجد المكان في النص: {loc}',trDup:'قد يكرر {ids}',trNoDup:'لا بلاغ مكرر مفتوح هنا',trSent:'تجربة: إلى {crew}، المهلة {target} (من صنع الخيال)',trAsk:'سأل عن المكان أولاً',trAiAsk:'طلب مكاناً أوضح',trBlocked:'منع رابطاً أو رقماً أو طلب دفع في رد الذكاء الاصطناعي',
 nOff:'لم يُسمح باستخدام Claude هنا، فاستُخدمت القواعد.',nImg:'تعذّر إرسال الصورة إلى الذكاء الاصطناعي.',nBusy:'الذكاء الاصطناعي مشغول، فاستُخدمت القواعد.',nAuth:'رفضت {name} المفتاح، فاستُخدمت القواعد.',nNet:'تعذّر الوصول إلى {name}، فاستُخدمت القواعد.',nJson:'تعذّرت قراءة رد الذكاء الاصطناعي، فاستُخدمت القواعد.',nRefused:'رفض الذكاء الاصطناعي الطلب، فاستُخدمت القواعد.',nNoAns:'لم يُجب الذكاء الاصطناعي، فاستُخدمت القواعد.',nNoConsent:'لم يُستخدم الذكاء الاصطناعي، باختيارك.',nBasic:'الوضع الأساسي: بلا ذكاء اصطناعي.',
-mh:'أماكن متكررة',noSpots:'لا أماكن متكررة بعد.',bPlan:'اقترح خطة إصلاح نهائي',drafting:'جارٍ الكتابة…',planTag:'تحتاج موافقة شخص',planRule:'1. أرسل {crew} لفحص المكان كله، لا العطل الأخير فقط.\n2. أصلح السبب في زيارة واحدة واستبدل القطع البالية.\n3. أعد الفحص بعد أسبوعين.\nالقياس: لا بلاغ جديد هنا خلال 60 يوماً.',
-cTitle:'إرسال إلى الذكاء الاصطناعي؟',cText:'تُرسل كلماتك وصورتك إلى {name} ({where}) لقراءتها.',cMore:'تُحذف أولاً أرقام الهوية والجواز والآيبان والبطاقات والهواتف. وتُحذف بيانات الموقع من الصور، لكن الوجوه لا تُموَّه.',cBuiltin:'يستخدم هذا حسابك في claude.ai وإعداداته.',cGemini:'مفاتيح Gemini المجانية تسمح لـGoogle باستخدام ما ترسله ومراجعته.',cRouter:'يمرّر OpenRouter البيانات إلى الشركة المطوّرة للنموذج.',cYes:'أرسل',cNo:'الوضع الأساسي',usa:'الولايات المتحدة',
+mh:'أماكن متكررة',noSpots:'لا أماكن متكررة بعد.',bPlan:'اقترح خطة إصلاح نهائي',drafting:'جارٍ الكتابة…',planTag:'مثال فقط؛ تحتاج موافقة شخص',planRule:'1. أرسل {crew} لفحص المكان كله، لا العطل الأخير فقط.\n2. أصلح السبب في زيارة واحدة واستبدل القطع البالية.\n3. أعد الفحص بعد أسبوعين.\nالهدف: لا بلاغ جديد هنا خلال 60 يوماً.',
+cTitle:'إرسال إلى الذكاء الاصطناعي؟',cText:'تُرسل كلماتك وصورتك إلى {name} ({where}) لقراءتها.',cMore:'تُحذف أولاً أنماط الهوية والجواز والآيبان والبطاقات والهواتف والبريد الإلكتروني الشائعة، وقد يفوت بعضها. وتُحذف بيانات الموقع من الصور، لكن الوجوه لا تُموَّه.',cBuiltin:'يستخدم هذا حسابك في claude.ai وإعداداته.',cGemini:'مفاتيح Gemini المجانية تسمح لـGoogle باستخدام ما ترسله ومراجعته.',cRouter:'يمرّر OpenRouter البيانات إلى شركة تشغّل النموذج.',cYes:'أرسل',cNo:'الوضع الأساسي',usa:'شركة خارج الإمارات',
 aiTitle:'إعدادات الذكاء الاصطناعي (المشرف)',nowUsing:'الآن: {label}',scanAgain:'افحص مجدداً',scanningBtn:'جارٍ الفحص…',pFound:'موجود',pChecking:'جارٍ الفحص',pBlocked:'يحتاج CORS',pMissing:'غير موجود',pIdle:'لم يُفحص',nModels:'النماذج: {n}',oneModel:'نموذج واحد',use:'استخدم',inUse:'قيد الاستخدام',builtinWhere:'مدمج في claude.ai',builtinHelp:'يعمل داخل claude.ai فقط.',onPC:'على هذا الجهاز',inClaudeLocal:'غير متاح داخل claude.ai.',hBlocked:'يعمل، لكنه يحجب صفحات الويب.',hLm:'في LM Studio، شغّل الخادم وفعّل CORS.',hOllama:'اضبط OLLAMA_ORIGINS على عنوان هذا الموقع، ثم أعد تشغيل Ollama.',hJan:'في Jan، شغّل خادم API المحلي.',hLlama:'شغّل الخادم مع السماح بـCORS.',ownKey:'مفتاحك الخاص',company:'الشركة',apiKey:'مفتاح API',ownWhere:'مفتاح خاص · {how}',savedHere:'محفوظ على هذا الجهاز',visitOnly:'لهذه الزيارة فقط',remember:'تذكّر على هذا الجهاز',remHint:'يُحفظ في هذا المتصفح، ويمكن لصفحات أخرى على هذا الموقع قراءته.',keyWarn:'دون علامة، يُحفظ المفتاح لهذه الزيارة فقط. ومع العلامة يُخزَّن في هذا المتصفح، حيث تستطيع صفحات أخرى على هذا الموقع قراءته. استخدم مفتاحاً بحد إنفاق.',gemWarn:'مفاتيح Gemini المجانية تسمح لـGoogle باستخدام البيانات ومراجعتها. استخدم مفتاحاً مدفوعاً.',test:'اختبر واتصل',testing:'جارٍ الاختبار…',forget:'انسَ المفاتيح',aiOff:'أوقف الذكاء الاصطناعي',copyWhy:'داخل claude.ai يعمل Claude المدمج فقط. والنسخة المستقلة تعمل في أي متصفح.',getCopy:'نزّل نسخة مستقلة',copySaved:'تم الحفظ. افتحها في أي متصفح.',copyNo:'التنزيل غير متاح هنا.',copyCancel:'أُلغي التنزيل.',copyFail:'لم ينجح التنزيل. حاول مجدداً.',ePick:'اختر شركة.',eKey:'الصق المفتاح كاملاً.',eRefused:'رفضت {name} هذا المفتاح.',eInClaude:'لا يمكن الوصول إلى {name} داخل claude.ai. استخدم النسخة المستقلة.',eReach:'تعذّر الوصول إلى {name}. تحقق من الاتصال والمفتاح.',basic:'الوضع الأساسي',scanning:'جارٍ الفحص…',modelAria:'النموذج',
-evQR:'أُبلغ عبر ملصق QR {code}.',evTyped:'أُبلغ مع كتابة المكان.',evNoLoc:'أُبلغ بدون مكان.',evReported:'أُبلغ.',evInj:'وُجدت تعليمات مخفية وتم تجاهلها.',evTriage:'صُنّف: {cat}، {urg}.',evPhotoSaw:'تُظهر الصورة: {notes}.',evPhotoOdd:'قد لا تطابق الصورة البلاغ.',evLocText:'أُخذ المكان من النص: «{loc}».',evDup:'قد يكرر {ids}. أُبقي منفصلاً.',evAskLoc:'لا مكان بعد، فسُئل المُبلّغ عنه.',evAiAsk:'المكان غير واضح، فطُلب مكان أوضح.',evAssign:'أُرسل إلى {crew}. المهلة: {target}.',evRedact:'حُذفت {n} من الأرقام الشخصية قبل الإرسال إلى الذكاء الاصطناعي.',evBlocked:'تضمّن رد الذكاء الاصطناعي رابطاً أو رقماً أو طلب دفع، فاستُخدم الرد المعتاد.',evPhotoFlag:'فحص الصور وضع ملاحظة على صورة «بعد».',evPhotoOk:'فحص الصور: لا نسخ.',evCheck:'فُحص الإصلاح: {v}.',evCheckEx:'فُحص الإصلاح: {v} (مثال).',evDiffPlace:'قد تُظهر صورة «بعد» مكاناً آخر.',evRaised:'قاعدة الصور جعلت النتيجة «{v}». وكانت نتيجة {by}: «{own}».',evAskRes:'سُئل المُبلّغ: «هل تم الإصلاح؟»',evGaveLoc:'أرسل المكان: «{loc}».',evFixedPhoto:'أُشير إلى الإصلاح، مع صورة بعده.',evFixedNoPhoto:'أُشير إلى الإصلاح، بلا صورة.',evFixedNote:'أُشير إلى الإصلاح: {note}.',evFake:'اختبار: أُرسلت صورة «قبل» على أنها صورة «بعد».',evResYes:'أكّد أنه أُصلح.',evResNo:'قال إنه ما زال معطلاً.',evBack:'أُعيد إلى الفريق. الدورة {n} تحتاج إثباتاً جديداً.',evNoReply:'لا رد خلال 48 ساعة (تجريبي). انتقل إلى القرار.',evClosed:'أُغلق بعد المراجعة.',evClosedWhy:'أُغلق رغم ملاحظة: «{why}».',evSentBack:'أُعيد إلى الفريق: «{why}».',evCycle:'الدورة {n} تحتاج إثباتاً جديداً.',evReopen:'أُعيد الفتح: «{why}».',evCycleOld:'الدورة {n} تحتاج إثباتاً جديداً؛ الصور القديمة لا تكفي.'
+evQR:'أُبلغ عبر ملصق QR {code}.',evTyped:'أُبلغ مع كتابة المكان.',evNoLoc:'أُبلغ بدون مكان.',evReported:'أُبلغ.',evInj:'وُجدت تعليمات مخفية وتم تجاهلها.',evTriage:'صُنّف: {cat}، {urg}.',evPhotoSaw:'تُظهر الصورة: {notes}.',evPhotoOdd:'قد لا تطابق الصورة البلاغ.',evLocText:'أُخذ المكان من النص: «{loc}».',evDup:'قد يكرر {ids}. أُبقي منفصلاً.',evAskLoc:'لا مكان بعد، فسُئل المُبلّغ عنه.',evAiAsk:'المكان غير واضح، فطُلب مكان أوضح.',evAssign:'تجربة: إلى {crew}. المهلة: {target} (من صنع الخيال).',evRedact:'حُذفت {n} من الأرقام الشخصية قبل الإرسال إلى الذكاء الاصطناعي.',evBlocked:'تضمّن رد الذكاء الاصطناعي رابطاً أو رقماً أو طلب دفع، فاستُخدم الرد المعتاد.',evPhotoFlag:'فحص الصور وضع ملاحظة على صورة «بعد».',evPhotoOk:'فحص الصور: لا نسخ.',evCheck:'فُحص الإصلاح: {v}.',evCheckEx:'فُحص الإصلاح: {v} (مثال).',evDiffPlace:'قد تُظهر صورة «بعد» مكاناً آخر.',evRaised:'قاعدة الصور جعلت النتيجة «{v}». وكانت نتيجة {by}: «{own}».',evAskRes:'سُئل المُبلّغ: «هل تم الإصلاح؟»',evGaveLoc:'أرسل المكان: «{loc}».',evFixedPhoto:'أُشير إلى الإصلاح، مع صورة بعده.',evFixedNoPhoto:'أُشير إلى الإصلاح، بلا صورة.',evFixedNote:'أُشير إلى الإصلاح: {note}.',evFake:'اختبار: أُرسلت صورة «قبل» على أنها صورة «بعد».',evResYes:'أكّد أنه أُصلح.',evResNo:'قال إنه ما زال معطلاً.',evBack:'أُعيد إلى الفريق. الدورة {n} تحتاج إثباتاً جديداً.',evNoReply:'لا رد خلال 48 ساعة (تجريبي). انتقل إلى القرار.',evClosed:'أُغلق بعد المراجعة.',evClosedWhy:'أُغلق رغم ملاحظة: «{why}».',evSentBack:'أُعيد إلى الفريق: «{why}».',evCycle:'الدورة {n} تحتاج إثباتاً جديداً.',evReopen:'أُعيد الفتح: «{why}».',evCycleOld:'الدورة {n} تحتاج إثباتاً جديداً؛ الصور القديمة لا تكفي.'
 }};
 let LANG='en';
 function txl(l,k,p){let s=STR[l]&&STR[l][k];if(s==null)s=STR.en[k];if(s==null)return k;return p?s.replace(/\{(\w+)\}/g,(m,n)=>p[n]!=null?String(p[n]):m):s}
@@ -862,10 +866,10 @@ function validTriage(r){
 }
 /* Replies in the resident's language when there is a template for it, otherwise in English. */
 const TPL={
-  en:{ask:'Thanks for reporting this. Where exactly is it? Please name the park, street or nearest landmark.',sent:c=>`Thanks. We've sent this to the ${CATS[c][1].toLowerCase()} and will let you know when it's fixed.`},
-  ar:{ask:'شكراً لبلاغك. أين يقع المكان بالضبط؟ اذكر اسم الحديقة أو الشارع أو أقرب معلم.',sent:c=>`شكراً لبلاغك. أرسلناه إلى ${CATS_AR[c][1]} وسنخبرك عند الانتهاء.`},
-  ur:{ask:'شکریہ۔ یہ جگہ بالکل کہاں ہے؟ پارک، سڑک یا قریبی نشانی کا نام بتائیں۔',sent:()=>'شکریہ۔ ہم نے یہ مرمت کی ٹیم کو بھیج دیا ہے اور ٹھیک ہونے پر آپ کو بتائیں گے۔'},
-  hi:{ask:'धन्यवाद। यह जगह ठीक कहाँ है? पार्क, सड़क या पास की किसी पहचान का नाम बताइए।',sent:()=>'धन्यवाद। हमने इसे मरम्मत टीम को भेज दिया है और ठीक होने पर आपको बताएँगे।'}};
+  en:{ask:'Thanks for reporting this. Where exactly is it? Please name the park, street or nearest landmark.',sent:c=>`Thanks. A real service would send this to the ${CATS[c][1].toLowerCase()}.`},
+  ar:{ask:'شكراً لبلاغك. أين يقع المكان بالضبط؟ اذكر اسم الحديقة أو الشارع أو أقرب معلم.',sent:c=>`شكراً لبلاغك. الخدمة الحقيقية سترسله إلى ${CATS_AR[c][1]}.`},
+  ur:{ask:'شکریہ۔ یہ جگہ بالکل کہاں ہے؟ پارک، سڑک یا قریبی نشانی کا نام بتائیں۔',sent:()=>'شکریہ۔ حقیقی سروس اسے مرمت کی ٹیم کو بھیجے گی۔'},
+  hi:{ask:'धन्यवाद। यह जगह ठीक कहाँ है? पार्क, सड़क या पास की किसी पहचान का नाम बताइए।',sent:()=>'धन्यवाद। असली सेवा इसे मरम्मत टीम को भेजेगी।'}};
 const tplLang=l=>TPL[l]?l:'en';
 function templateReply(lang,needsLoc,cat){const T=TPL[tplLang(lang)];return needsLoc?T.ask:T.sent(CATS[cat]?cat:'other')}
 function verifyPrompt(c,hasBefore,hasAfter){
@@ -937,6 +941,7 @@ async function sendReport(){
     t.summary=scrub(t.summary).text;if(t.photo_notes)t.photo_notes=scrub(t.photo_notes).text}
   const location=formLoc||t.location_in_text||'';
   const beforeHash=reportPhoto?await dhash(reportPhoto):null;
+  reportedOnce=true;
   const c={id:nextId(),created:Date.now(),text,lang,location,asset:s?s[0]:'',category:t.category,urgency:t.urgency,summary:t.summary||text.slice(0,80),state:'needs_info',cycle:1,before:reportPhoto,beforeHash,evidence:null,check:null,resident:null,past:[],events:[]};
   const W=source==='ai'?'ai':'rule',WHO_=source==='ai'?'AI agent':'Rule';
   log(c,'Resident','human',s?'evQR':formLoc?'evTyped':'evNoLoc',s?{code:s[0]}:{});
@@ -1116,7 +1121,8 @@ function renderCaseSheet(o){o=o||{};if(!openCaseId)return;const c=byId(openCaseI
   if(o.caseTop||keep){let el=null;if(!o.caseTop&&keep){if(keep.id)el=document.getElementById(keep.id);if(!el&&keep.act)el=body.querySelector('[data-act="'+keep.act+'"]')}
     if(!el)el=$('caseTitle');try{el.focus({preventScroll:true})}catch(e){}}}
 /* One count next to the list: the cases waiting for a person. Each case shows its own step. */
-function renderTiles(){const v=cases.filter(c=>c.state==='needs_info'||c.state==='decision').length;
+let reportedOnce=false;
+function renderTiles(){const v=!reportedOnce?0:cases.filter(c=>c.state==='needs_info'||c.state==='decision').length;
   $('tiles').innerHTML=v?`<span class="count"><b>${v}</b> ${esc(tx('cntYou'))}</span>`:''}
 function hotspots(){const g={};const now=Date.now();for(const c of cases){if(!c.location||now-c.created>60*D)continue;const k=norm(c.location)+'|'+c.category;(g[k]=g[k]||[]).push(c)}return Object.values(g).filter(x=>x.length>=2).sort((a,b)=>b.length-a.length)}
 const plans={};
