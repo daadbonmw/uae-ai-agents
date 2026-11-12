@@ -5,11 +5,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#2F663C" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#2F663C" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1B1D21" media="(prefers-color-scheme: dark)">
 <title>Zaheb · زاهب</title>
 <meta name="description" content="Zaheb: interview practice, a first-90-days plan and Emiratisation hiring help, in English and Arabic.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%231E46E6' d='M12 2a10 10 0 1 1 0 20H2V12A10 10 0 0 1 12 2z'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%2392722A' d='M12 2a10 10 0 1 1 0 20H2V12A10 10 0 0 1 12 2z'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600&display=swap" rel="stylesheet">
@@ -25,26 +25,29 @@ r.lang=l;r.dir=l==='ar'?'rtl':'ltr';
 var th=j('career-compass-theme-v1');if(th==='light'||th==='dark')r.setAttribute('data-theme',th)}catch(x){}})();
 </script>
 <style>
-/* Zaheb, in the ProjectA "super-app" look (tools/calm-design.md): white, one cobalt, warm-grey tiles, Rubik.
+/* Zaheb, in the ProjectA "super-app" look (tools/calm-design.md): white, one government green, warm-grey tiles, Rubik.
    Three sizes only: 15px notes, 17px body and controls, 28px the page title. Weights 400 and 600. */
 :root{
- --bg:#FFFFFF;--ink:#131417;--muted:#585A60;--tile:#F2F1EE;--tile-hi:#EAE9E4;--line:#E4E3DF;
- --brand:#2F663C;--on-brand:#FFFFFF;--spot:#2F663C;--tint:#E4F4E7;--focus:#2F663C;
- --field:#FFFFFF;--field-ink:#131417;--hint:#66686E;
- /* Added for AA: input edges (3:1 on white and on tiles) and link text (4.5:1 on tiles in both themes). */
- --edge:#808288;--link:#2F663C;
+ --bg:#FFFFFF;--ink:#232528;--muted:#5F646D;--tile:#F7F7F7;--tile-hi:#EDEEF0;--line:#E1E3E5;
+ --brand:#21633E;--on-brand:#FFFFFF;--link:#21633E;--spot:#B68A35;--tint:#F9F7ED;--focus:#21633E;
+ --gold:#B68A35;--gold-ink:#92722A;--gold-line:#D7BC6D;--band-a:#FFFFFF;--band-b:#FAF3E3;
+ --field:#FFFFFF;--field-ink:#232528;--hint:#66686E;
+ /* Added for AA: input edges (3:1 on white and on tiles). */
+ --edge:#808288;
  color-scheme:light;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
- --bg:#0D0E11;--ink:#F2F2F4;--muted:#A3A6AE;--tile:#191A1F;--tile-hi:#212229;--line:#26272D;
- --brand:#2F663C;--spot:#6FB97F;--tint:#24432B;--focus:#A0D5AB;
- --field:#0D0E11;--field-ink:#F2F2F4;--hint:#9A9DA6;--edge:#6F727B;--link:#A0D5AB;
+ --bg:#0E0F12;--ink:#F7F7F7;--muted:#9EA2A9;--tile:#1B1D21;--tile-hi:#232528;--line:#3E4046;
+ --brand:#2F663C;--link:#6FB97F;--spot:#CBA344;--tint:#2A2417;--focus:#A0D5AB;
+ --gold:#CBA344;--gold-ink:#D7BC6D;--gold-line:#7C5E24;--band-a:#1B1D21;--band-b:#19160E;
+ --field:#0E0F12;--field-ink:#F7F7F7;--hint:#9EA2A9;--edge:#6F727B;
  color-scheme:dark;
 }}
 :root[data-theme="dark"]{
- --bg:#0D0E11;--ink:#F2F2F4;--muted:#A3A6AE;--tile:#191A1F;--tile-hi:#212229;--line:#26272D;
- --brand:#2F663C;--spot:#6FB97F;--tint:#24432B;--focus:#A0D5AB;
- --field:#0D0E11;--field-ink:#F2F2F4;--hint:#9A9DA6;--edge:#6F727B;--link:#A0D5AB;
+ --bg:#0E0F12;--ink:#F7F7F7;--muted:#9EA2A9;--tile:#1B1D21;--tile-hi:#232528;--line:#3E4046;
+ --brand:#2F663C;--link:#6FB97F;--spot:#CBA344;--tint:#2A2417;--focus:#A0D5AB;
+ --gold:#CBA344;--gold-ink:#D7BC6D;--gold-line:#7C5E24;--band-a:#1B1D21;--band-b:#19160E;
+ --field:#0E0F12;--field-ink:#F7F7F7;--hint:#9EA2A9;--edge:#6F727B;
  color-scheme:dark;
 }
 *,*::before,*::after{box-sizing:border-box}
@@ -62,49 +65,52 @@ a{color:var(--link);text-underline-offset:3px}
 :focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 .skip{position:absolute;inset-inline-start:8px;top:8px;z-index:9;transform:translateY(-300%);padding:10px 16px;border-radius:22px;background:var(--ink);color:var(--bg);text-decoration:none;--focus:var(--bg)}
 .skip:focus{transform:none}
-/* The skip link appears over the blue band (and over the mode tabs when embedded), so its ring is drawn inside the pill. */
+/* The skip link appears over the green band, so its ring is drawn inside the pill. */
 .skip:focus-visible{outline-offset:-6px}
 .wrap{max-width:1000px;margin-inline:auto;padding-inline:16px}
 
-/* Cobalt top: the name, the mode switch, then each mode's title and main input */
-.top,.band{background:var(--brand);color:var(--on-brand);--focus:#FFFFFF}
+/* Green top: the name, then each side's title and main input */
+.top{background:linear-gradient(180deg,var(--band-a),var(--band-b));color:var(--ink);box-shadow:inset 0 4px 0 var(--gold)}
+.band{background:var(--band-b);color:var(--ink)}
 .top .wrap{padding-top:6px}
 .bar{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:56px}
 .brand{display:flex;align-items:baseline;flex-wrap:wrap;column-gap:8px;min-width:0;font-weight:600}
-.brand .o{font-weight:400;color:rgba(255,255,255,.92)}
+.brand .o{font-weight:400;color:var(--muted)}
 .mark{width:30px;height:30px;flex:none;align-self:center;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
-.mark .s{fill:currentColor;stroke:none}
+.mark .s{fill:var(--spot);stroke:none}
 .bar-end{display:flex;align-items:center;gap:4px;flex:none}
-.lang,.pill-o,.tabs [role=tab]{min-width:44px;min-height:44px;padding:0 16px;border:1.5px solid rgba(255,255,255,.75);border-radius:22px;background:transparent;color:var(--on-brand);font-size:15px;font-weight:600;line-height:1;cursor:pointer}
+.lang,.pill-o{min-width:44px;min-height:44px;padding:0 16px;border:1.5px solid var(--muted);border-radius:22px;background:transparent;color:var(--ink);font-size:15px;font-weight:600;line-height:1;cursor:pointer}
 .ibtn{flex:none;display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:transparent;color:inherit;cursor:pointer}
 .ibtn svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.tabs{display:flex;flex-wrap:wrap;gap:8px;padding:6px 0 2px}
-.tabs [role=tab][aria-selected=true]{background:var(--on-brand);border-color:var(--on-brand);color:var(--brand)}
+.choose{display:flex;flex-direction:column;gap:10px;margin-bottom:4px}
+.choose .go{width:100%;min-height:56px;border-radius:28px;background:var(--brand);color:var(--on-brand)}
+.choose .go+.go{background:transparent;color:var(--ink);border:1.5px solid var(--muted)}
+.band [data-back]{margin-top:8px}
 .band{border-end-start-radius:28px;border-end-end-radius:28px}
 .band .wrap{padding-top:4px;padding-bottom:20px}
-h1{margin:14px 0 16px;font-size:28px;line-height:1.15}
+h1{margin:14px 0 16px;font-size:28px;line-height:1.15;color:var(--gold-ink)}
 :root[lang=en] h1{letter-spacing:-.01em}
-.field{display:flex;align-items:center;gap:6px;min-height:56px;padding:6px;padding-inline-start:16px;border-radius:28px;background:var(--field);color:var(--field-ink)}
+.field{display:flex;align-items:center;gap:6px;min-height:56px;padding:6px;padding-inline-start:16px;border-radius:28px;background:var(--field);color:var(--field-ink);box-shadow:inset 0 0 0 1.5px var(--gold-line)}
 .selwrap{position:relative;flex:1;min-width:0;display:flex}
 .selwrap select{flex:1;min-width:0;min-height:44px;padding:0;padding-inline-end:30px;border:0;background:transparent;color:inherit;font-size:17px;-webkit-appearance:none;appearance:none;cursor:pointer;text-overflow:ellipsis}
 .selwrap select option{color:var(--ink);background:var(--bg)}
 .chev{position:absolute;inset-inline-end:4px;top:50%;width:20px;height:20px;margin-top:-10px;pointer-events:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .go{flex:none;min-height:44px;padding:0 22px;border:0;border-radius:22px;background:var(--brand);color:#FFFFFF;font-size:17px;font-weight:600;cursor:pointer}
-/* Start sits on the white field, not on the blue band, so its focus ring uses the field's ink instead of the band's white. */
+/* Start sits on the white field, not on the green band, so its focus ring uses the field's ink instead of the band's white. */
 .field .go{--focus:var(--field-ink)}
 .go:disabled{opacity:.6;cursor:wait}
 @supports selector(a:has(b)){
  .selwrap select:focus{outline:none}
  .field:has(select:focus-visible){outline:3px solid var(--focus);outline-offset:2px}
 }
-.soft{margin:10px 4px 0;font-size:15px;line-height:22px;color:rgba(255,255,255,.92)}
+.soft{margin:10px 4px 0;font-size:15px;line-height:22px;color:var(--muted)}
 .nums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:end}
-.nums label{display:flex;flex-direction:column;gap:6px;min-width:0;font-size:15px;line-height:20px;color:rgba(255,255,255,.92)}
+.nums label{display:flex;flex-direction:column;gap:6px;min-width:0;font-size:15px;line-height:20px;color:var(--muted)}
 .nums input{width:100%;min-height:52px;padding:0 14px;border:0;border-radius:18px;background:var(--field);color:var(--field-ink);font-size:17px;font-weight:600;-moz-appearance:textfield;appearance:textfield}
 .nums input::-webkit-outer-spin-button,.nums input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .exrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:12px;font-size:15px}
 /* The example that is loaded shows as a pressed (filled) pill, instead of an extra "Example" tag. */
-.exrow .pill-o[aria-pressed=true]{background:var(--on-brand);border-color:var(--on-brand);color:var(--brand)}
+.exrow .pill-o[aria-pressed=true]{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
 
 /* Content: warm-grey tiles on white */
 .content{padding-top:16px;padding-bottom:8px}
@@ -209,22 +215,6 @@ details.more[open]>summary::after{margin-top:4px;transform:rotate(-135deg)}
 .sec{display:flex;flex-direction:column;gap:10px;padding-bottom:18px;margin-bottom:18px;border-bottom:1px solid var(--line)}
 .sec:last-of-type{border-bottom:0}
 .sec-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.tour{list-style:none;display:flex;flex-direction:column}
-.tour button{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;padding:0;border:0;background:transparent;color:var(--ink);text-align:start;cursor:pointer}
-.tour .mk{flex:none;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--tile);color:var(--ink);font-size:15px;line-height:1}
-.tour .ok .mk{background:var(--tint)}
-.tour .ok .tx{color:var(--muted)}
-.minis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.mini{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border-radius:16px;background:var(--tile)}
-.mini b{font-size:28px;line-height:1.15;font-variant-numeric:tabular-nums}
-.mini span{font-size:15px;line-height:20px;color:var(--muted)}
-.facts{display:grid;gap:8px}
-.fact{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border-radius:16px;background:var(--tile)}
-.fact b{font-size:28px;line-height:1.15}
-.rails{margin:0;padding-inline-start:22px;display:flex;flex-direction:column;gap:4px}
-.menu{list-style:none;display:flex;flex-direction:column}
-.rowbtn{display:flex;align-items:center;width:100%;min-height:52px;padding:0 4px;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);text-align:start;cursor:pointer}
-.menu li:last-child .rowbtn{border-bottom:0}
 
 /* Admin: AI settings */
 .ailist{list-style:none;display:flex;flex-direction:column;gap:8px}
@@ -239,7 +229,7 @@ details.more[open]>summary::after{margin-top:4px;transform:rotate(-135deg)}
 /* Sheets: slide up on phones, a side sheet on desktop, as on the landing page */
 dialog.sheet{position:fixed;inset:auto 0 0 0;width:100%;max-width:none;height:calc(100vh - 10px);height:calc(100dvh - 10px);max-height:none;margin:0;padding:0;border:0;border-radius:22px 22px 0 0;overflow:hidden;background:var(--bg);color:var(--ink)}
 dialog.sheet[open]{display:flex;flex-direction:column}
-dialog.sheet::backdrop{background:rgba(8,10,20,.5)}
+dialog.sheet::backdrop{background:rgba(14,15,18,.5)}
 dialog.sheet.short{height:auto;max-height:calc(100vh - 10px);max-height:calc(100dvh - 10px)}
 .sheet-bar{flex:none;display:flex;align-items:center;gap:10px;min-height:60px;padding:8px;padding-inline-start:16px;border-bottom:1px solid var(--line)}
 .sheet-bar .ico{width:32px;height:32px;flex:none}
@@ -253,8 +243,7 @@ dialog.sheet.short{height:auto;max-height:calc(100vh - 10px);max-height:calc(100
 @media (hover:hover){
  .tile.link:hover{background:var(--tile-hi)}
  .ibtn:hover{background:rgba(127,127,127,.16)}
- .lang:hover,.pill-o:not([aria-pressed=true]):hover,.tabs [role=tab][aria-selected=false]:hover{background:rgba(255,255,255,.14)}
- .rowbtn:hover,.tour button:hover{background:var(--tile)}
+ .lang:hover,.pill-o:not([aria-pressed=true]):hover{background:rgba(127,127,127,.16)}
 }
 @media (prefers-reduced-motion:no-preference){
  .tile.link{transition:transform .18s cubic-bezier(.3,.7,.4,1),background-color .18s}
@@ -296,7 +285,6 @@ dialog.sheet.short{height:auto;max-height:calc(100vh - 10px);max-height:calc(100
  .btn.full{width:auto;min-width:260px;align-self:flex-start}
  dialog.sheet{inset-block:0;inset-inline-start:auto;inset-inline-end:0;width:min(600px,100vw);height:100vh;height:100dvh;border-radius:0;border-start-start-radius:24px;border-end-start-radius:24px}
  dialog.sheet.short{inset:auto 0 24px 0;margin-inline:auto;width:min(480px,calc(100vw - 32px));height:auto;border-radius:22px}
- .facts{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 @media (min-width:760px) and (prefers-reduced-motion:no-preference){
  dialog.sheet:not(.short)[open]{animation-name:side}
@@ -328,21 +316,27 @@ dialog.sheet.short{height:auto;max-height:calc(100vh - 10px);max-height:calc(100
    <span class="bar-end">
     <button type="button" class="lang" id="langAr" lang="ar">عربي</button>
     <button type="button" class="lang" id="langEn" lang="en" hidden>English</button>
-    <button type="button" class="ibtn" id="menuBtn" data-sheet="sheetMenu" aria-haspopup="dialog" aria-label="Menu" data-ia="menu"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
    </span>
-  </div>
-  <div class="tabs" role="tablist" aria-label="Mode" data-ia="tabsLabel">
-   <button type="button" role="tab" id="tabSeek" aria-controls="paneSeek" aria-selected="true" data-i="tabSeek">Job seeker</button>
-   <button type="button" role="tab" id="tabHire" aria-controls="paneHire" aria-selected="false" tabindex="-1" data-i="tabHire">Employer</button>
   </div>
  </div>
 </header>
 
 <main id="main" tabindex="-1">
- <!-- ===================== JOB SEEKER ===================== -->
- <section role="tabpanel" id="paneSeek" aria-labelledby="tabSeek">
+ <!-- ===================== CHOICE ===================== -->
+ <section id="paneChoose" aria-labelledby="chH">
   <div class="band"><div class="wrap">
-   <h1 data-i="seekH">Ready for the interview?</h1>
+   <h1 id="chH" data-i="chooseH">What brings you here?</h1>
+   <div class="choose">
+    <button type="button" class="go" id="chSeek" data-i="chSeek">I’m looking for a job</button>
+    <button type="button" class="go" id="chHire" data-i="chHire">I’m hiring</button>
+   </div>
+  </div></div>
+ </section>
+ <!-- ===================== JOB SEEKER ===================== -->
+ <section id="paneSeek" aria-labelledby="seekH" hidden>
+  <div class="band"><div class="wrap">
+   <button type="button" class="pill-o" data-back data-i="back">Back</button>
+   <h1 id="seekH" data-i="seekH">Ready for the interview?</h1>
    <div class="field">
     <label for="ivRole" class="vh" data-i="fRole">Type of job</label>
     <span class="selwrap"><select id="ivRole" data-role-select></select><svg class="chev" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg></span>
@@ -353,16 +347,17 @@ dialog.sheet.short{height:auto;max-height:calc(100vh - 10px);max-height:calc(100
   <div class="wrap content">
    <div class="tiles">
     <button type="button" class="tile link wide-m" id="ivTile" data-sheet="sheetIv"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path class="s" d="M28 22h10a5 5 0 0 1 5 5v6a5 5 0 0 1-5 5h-1v5l-6-5h-3a5 5 0 0 1-5-5v-6a5 5 0 0 1 5-5z"/><path d="M10 6h18a5 5 0 0 1 5 5v8a5 5 0 0 1-5 5H17l-7 6v-6a5 5 0 0 1-5-5v-8a5 5 0 0 1 5-5zM12 13h12M12 18h7"/></svg><span class="name" data-i="ivTile">Practice</span><span class="line" id="ivLine"></span></button>
-    <button type="button" class="tile link" id="mapTile" data-sheet="sheetMap"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path class="s" d="M31.5 16.5 27 27l-10.5 4.5L21 21z"/><circle cx="24" cy="24" r="17"/><path d="M24 3v4M24 41v4M3 24h4M41 24h4"/></svg><span class="name" data-i="mapTile">My strengths</span><span class="line" data-i="mapLine">Job areas that fit</span></button>
-    <button type="button" class="tile link" id="p90Tile" data-sheet="sheet90"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect class="s" x="26" y="27" width="10" height="8" rx="2"/><rect x="6" y="10" width="36" height="31" rx="5"/><path d="M15 6v8M33 6v8M6 19h36M13 27h6M13 33h6"/></svg><span class="name" data-i="p90Tile">First 90 days</span><span class="line" data-i="p90Line">Plan for a new job</span></button>
+    <button type="button" class="tile link" id="mapTile" data-sheet="sheetMap"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path class="s" d="M31.5 16.5 27 27l-10.5 4.5L21 21z"/><circle cx="24" cy="24" r="17"/><path d="M24 3v4M24 41v4M3 24h4M41 24h4"/></svg><span class="name" data-i="mapTile">My strengths</span></button>
+    <button type="button" class="tile link" id="p90Tile" data-sheet="sheet90"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect class="s" x="26" y="27" width="10" height="8" rx="2"/><rect x="6" y="10" width="36" height="31" rx="5"/><path d="M15 6v8M33 6v8M6 19h36M13 27h6M13 33h6"/></svg><span class="name" data-i="p90Tile">First 90 days</span></button>
    </div>
   </div>
  </section>
 
  <!-- ===================== EMPLOYER ===================== -->
- <section role="tabpanel" id="paneHire" aria-labelledby="tabHire" hidden>
+ <section id="paneHire" aria-labelledby="hireH" hidden>
   <div class="band"><div class="wrap">
-   <h1 data-i="hireH">Hire Emiratis who stay</h1>
+   <button type="button" class="pill-o" data-back data-i="back">Back</button>
+   <h1 id="hireH" data-i="hireH">Hire Emiratis who stay</h1>
    <div class="nums" id="empForm">
     <label for="eSize"><span data-i="fSize">Staff</span><input type="number" id="eSize" inputmode="numeric" min="0" step="1"></label>
     <label for="eSkilled"><span data-i="fSkilled">Skilled roles</span><input type="number" id="eSkilled" inputmode="numeric" min="0" step="1"></label>
@@ -376,14 +371,13 @@ dialog.sheet.short{height:auto;max-height:calc(100vh - 10px);max-height:calc(100
      <div class="thead"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><circle class="s" cx="22" cy="26" r="5"/><circle cx="22" cy="26" r="16"/><circle cx="22" cy="26" r="9.5"/><path d="M22 26 38 10M33 9.5l5.5.5.5 5.5"/></svg><h2 id="e2H" data-i="e2H">Emiratisation target</h2><span class="chip" data-i="ruleTag">Rule</span></div>
      <div id="tgtOut"></div>
     </section>
-    <button type="button" class="tile link wide-m" id="hireTile" data-sheet="sheetHire"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><circle class="s" cx="36" cy="14" r="7"/><path d="M36 10.5v7M32.5 14h7"/><circle cx="18" cy="17" r="7"/><path d="M5 41v-3a10 10 0 0 1 10-10h6a10 10 0 0 1 10 10v3"/></svg><span class="name" data-i="hireTile">Hiring plan</span><span class="line" data-i="hireLine">Roles, onboarding, retention</span></button>
+    <button type="button" class="tile link wide-m" id="hireTile" data-sheet="sheetHire"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><circle class="s" cx="36" cy="14" r="7"/><path d="M36 10.5v7M32.5 14h7"/><circle cx="18" cy="17" r="7"/><path d="M5 41v-3a10 10 0 0 1 10-10h6a10 10 0 0 1 10 10v3"/></svg><span class="name" data-i="hireTile">Hiring plan</span></button>
    </div>
   </div>
  </section>
 
  <div class="wrap after">
   <button type="button" class="tbtn" id="moreBtn" data-sheet="sheetMore" aria-haspopup="dialog" data-i="more">More</button>
-  <p class="foot" data-i="foot">Zaheb · demo · not legal advice</p>
  </div>
 </main>
 
@@ -459,32 +453,11 @@ dialog.sheet.short{height:auto;max-height:calc(100vh - 10px);max-height:calc(100
 <dialog class="sheet" id="sheetMore" aria-labelledby="moreH">
  <div class="sheet-bar"><h2 class="sheet-name" id="moreH" data-i="more">More</h2><button type="button" class="ibtn" data-close aria-label="Close" data-ia="close"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
  <div class="sheet-body">
-  <section class="sec" aria-labelledby="tourH"><div class="sec-head"><h3 id="tourH" data-i="tourH">Quick tour</h3><span class="chip" id="tourCount"></span></div><ol class="tour" id="tour"></ol></section>
-  <section class="sec" aria-labelledby="caughtH"><h3 id="caughtH" data-i="caughtH">So far</h3><div class="minis" id="caught"></div></section>
-  <section class="sec" aria-labelledby="whyH"><h3 id="whyH" data-i="whyH">Why it matters</h3>
-   <div class="facts">
-    <div class="fact"><b>10%</b><p data-i="f1">Firms with 50+ staff: Emiratis in 10% of skilled jobs by end-2026.</p><p class="note"><span data-i="srcLabel">Source:</span> <a href="https://www.thenationalnews.com/news/uae/2026/07/20/emiratisation-on-track-with-190000-employed-in-private-sector/" target="_blank" rel="noopener noreferrer">The National</a></p></div>
-    <div class="fact"><b>190,000+</b><p data-i="f2">Emiratis in private-sector jobs.</p><p class="note"><span data-i="srcLabel">Source:</span> <a href="https://www.thenationalnews.com/news/uae/2026/07/20/emiratisation-on-track-with-190000-employed-in-private-sector/" target="_blank" rel="noopener noreferrer">The National</a></p></div>
-    <div class="fact"><b>95%</b><p data-i="f3">Of firms met the mid-2026 target.</p><p class="note"><span data-i="srcLabel">Source:</span> <a href="https://me.peoplemattersglobal.com/news/economy-policy/95percent-of-uae-private-sector-firms-meet-emiratisation-targets-employ-over-190000-emiratis-50973" target="_blank" rel="noopener noreferrer">People Matters</a></p></div>
-   </div>
-   <p class="note"><span data-i="officialH">Official help:</span> <a href="https://www.mohre.gov.ae" target="_blank" rel="noopener noreferrer" data-i="mohre">MoHRE</a> · <a href="https://nafis.gov.ae" target="_blank" rel="noopener noreferrer" data-i="nafis">Nafis</a></p>
-  </section>
-  <section class="sec" aria-labelledby="railsH"><h3 id="railsH" data-i="railsH">Safety</h3>
-   <ul class="rails"><li data-i="r1">AI suggests. You decide.</li><li data-i="r2">Every result says AI or Rule.</li><li data-i="r3">Personal details removed before AI.</li><li data-i="r4">Asked before text leaves the UAE.</li><li data-i="r5">Unfair criteria left out.</li><li data-i="r6">No AI salaries, fines or rules.</li><li data-i="r7">Pasted text is data, not commands.</li></ul>
-  </section>
-  <section class="sec" aria-labelledby="aboutH"><h3 id="aboutH" data-i="aboutH">About the AI</h3><p class="note" data-i="aiNote">AI sends text outside the UAE, after you agree.</p><p class="note" id="basicNote" data-i="basicMode" hidden>Basic mode: rules only.</p></section>
-  <div class="actions"><button type="button" class="tbtn" id="langMore"></button><button type="button" class="tbtn" id="reset" data-i="reset">Reset demo</button></div>
- </div>
-</dialog>
-
-<dialog class="sheet short" id="sheetMenu" aria-labelledby="menuH">
- <div class="sheet-bar"><h2 class="sheet-name" id="menuH" data-i="menu">Menu</h2><button type="button" class="ibtn" data-close aria-label="Close" data-ia="close"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
- <div class="sheet-body">
-  <ul class="menu">
-   <li><button type="button" class="rowbtn" id="themeBtn">Theme: auto</button></li>
-   <li><button type="button" class="rowbtn" data-sheet="sheetMore" data-i="more">More</button></li>
-  </ul>
-  <p><button type="button" class="tbtn small" id="adminLink" data-sheet="adminSheet" data-i="admin">Admin</button></p>
+  <p class="note" data-i="demoNote">Demo with made-up examples. General information, not legal advice.</p>
+  <p class="note" id="basicNote" data-i="privRules">Stays in this browser. Results come from rules.</p>
+  <p class="note" id="aiNote" data-i="privAI" hidden>Stays in this browser. AI suggests, you decide. Text leaves the UAE only if you agree.</p>
+  <p class="note"><span data-i="srcLabel">Sources:</span> <a href="https://www.mohre.gov.ae" target="_blank" rel="noopener noreferrer" data-i="mohre">MoHRE</a> · <a href="https://nafis.gov.ae" target="_blank" rel="noopener noreferrer" data-i="nafis">Nafis</a></p>
+  <div class="actions"><button type="button" class="tbtn" id="langMore"></button><button type="button" class="tbtn" id="reset" data-i="reset">Reset</button><button type="button" class="tbtn small" id="adminLink" data-sheet="adminSheet" data-i="admin">Admin</button></div>
  </div>
 </dialog>
 
@@ -520,8 +493,8 @@ if(EMBED)document.documentElement.classList.add('embed');
 /* ---------- interface text: English and Arabic ---------- */
 const I18N={
 en:{
-skip:'Skip to content',brand:'Zaheb',menu:'Menu',close:'Close',more:'More',moreDetails:'More details',tabsLabel:'Mode',tabSeek:'Job seeker',tabHire:'Employer',
-foot:'Zaheb · demo · not legal advice',
+skip:'Skip to content',brand:'Zaheb',menu:'Menu',close:'Close',more:'More',moreDetails:'More details',back:'Back',chooseH:'What brings you here?',chSeek:'I’m looking for a job',chHire:'I’m hiring',
+privRules:'Stays in this browser. Results come from rules.',privAI:'Stays in this browser. AI suggests, you decide. Text leaves the UAE only if you agree.',demoNote:'Demo with made-up examples. General information, not legal advice.',
 seekH:'Ready for the interview?',fRole:'Type of job',btnStart:'Start',seekHelp:'Questions one by one, with feedback.',
 ivTile:'Practice',ivLine:'Questions and feedback',ivLineQ:'Question {n} of {t}',ivLineDone:'Finished',
 mapTile:'My strengths',mapLine:'Job areas that fit',p90Tile:'First 90 days',p90Line:'Plan for a new job',
@@ -560,10 +533,10 @@ tr_p_role:'Job type: {role}',tr_p_aiWeeks:'Plan blocks written: {n}',tr_p_rulesW
 tgtNeed:'Enter the three numbers.',tgtBad:'Check the numbers',tgtInvalid:'Whole numbers, each no bigger than the one before.',
 tgtGapStatus:'{g} still to hire',tgtGapPast:'{g} short of the {y} target',tgtMetStatus:'Meets the estimate',tgtMetPast:'Met the {y} estimate',tgtSmallStatus:'Under 50 staff',tgtSmallLine:'10% applies to firms with 50+ staff.',
 st_need:'Needed',st_now:'Now',st_gap:'To hire',tgtBarLabel:'Progress',tgtProgress:'{c} of {r} ({p}%)',
-tgtUntil:'End of {y} · {days} left · not legal advice',tgtPassed:'{y} target. Check MoHRE. Not legal advice.',
+tgtUntil:'End of {y} · {days} left',tgtPassed:'{y} target. Check MoHRE. Not legal advice.',
 tgtSmall:'20–49 staff in 14 sectors: hire 1 Emirati in 2024, 1 more in 2025.',tgtHealth:'Healthcare: split target from 2027.',
 tgtNeedLine:'Needed = 10% of skilled roles, rounded up',tgtCalc1:'10% of {k} = {x} → {r}',tgtGapLine:'To hire = needed − now (min 0)',tgtCalc2:'{r} − {c} = {g}',
-tgtSrc:'Source: The National, Jul 2026.',
+tgtSrc:'Source: MoHRE.',
 tr_t_read:'Read: {s} staff, {k} skilled, {c} Emiratis',tr_t_big:'50+ staff: 10% applies',tr_t_small:'Under 50 staff: 10% not applied',tr_t_calc:'Needed {r}, now {c}, to hire {g}',
 e1Sub:'No questions on gender, religion, age, family, health.',fSector:'Sector',
 es_logistics:'Logistics',es_retail:'Retail',es_hospitality:'Hospitality',es_finance:'Banking and finance',es_construction:'Construction',es_tech:'Technology',es_health:'Healthcare',es_manufacturing:'Manufacturing',es_other:'Another sector',
@@ -577,12 +550,8 @@ tgtEstimate:'Estimate, not legal advice. Confirm with MoHRE.',
 tr_e_target:'Fixed formula: needed {r}, now {c}, gap {g}',tr_e_fair:'Left out ({n}): {list}',tr_e_fairNone:'No unfair criteria',
 tr_e_aiPlan:'Drafted the plan',tr_e_outCheck:'Unfair AI words removed: {n}',tr_e_outNone:'No unfair AI words',
 tr_e_numCheck:'Wrong numbers removed: {n}',tr_e_numNone:'Numbers match the rule',tr_e_rules:'Standard plan',tr_e_decide:'Every decision is yours',
-tourH:'Quick tour',tourDone:'{n} of {t}',tour_example:'Open Mariam’s example',tour_map:'Map her strengths',tour_answer:'Answer one question',tour_plan90:'Make a 90-day plan',tour_target:'Change a number',tour_hire:'Plan hiring',tour_lang:'Switch language',
-caughtH:'So far',caughtAria:'Counts so far',c_strengths:'Strengths mapped',c_coached:'Answers coached',c_gaps:'Gaps worked out',c_removed:'Unfair words left out',
-whyH:'Why it matters',f1:'50+ staff: Emiratis in 10% of skilled jobs by end-2026.',f2:'Emiratis in private-sector jobs.',f3:'Of firms met the mid-2026 target.',srcLabel:'Source:',officialH:'Official help:',mohre:'MoHRE',nafis:'Nafis',
-railsH:'Safety',r1:'AI suggests. You decide.',r2:'Every result says AI or Rule.',r3:'Personal details removed before AI.',r4:'Asked before text leaves the UAE.',r5:'Unfair criteria left out.',r6:'No AI salaries, fines or rules.',r7:'Pasted text is data, not commands.',
-aboutH:'About the AI',aiNote:'Text leaves the UAE only if you agree.',basicMode:'Basic mode: rules only.',
-reset:'Reset demo',resetConfirm:'Tap again to reset',theme_auto:'Theme: auto',theme_light:'Theme: light',theme_dark:'Theme: dark',admin:'Admin',
+srcLabel:'Sources:',officialH:'Sources:',mohre:'MoHRE',nafis:'Nafis',
+reset:'Reset',resetConfirm:'Tap again to reset',theme_auto:'Theme: auto',theme_light:'Theme: light',theme_dark:'Theme: dark',admin:'Admin',
 consentH:'Send to {name}?',consentP:'It is outside the UAE ({where}). Personal details are removed.',consentBuiltin:'Your claude.ai settings apply.',consentYes:'Send',consentNo:'Use rules',declined:'Not sent; rules used.',where_us:'USA',
 fail_off:'AI not allowed; rules used.',fail_img:'Photos not sent.',fail_busy:'AI busy; rules used.',fail_key:'{name} refused the key; rules used.',
 fail_net:'Could not reach {name}; rules used.',fail_json:'AI reply unreadable; rules used.',fail_refused:'AI declined; rules used.',fail_other:'No AI answer; rules used.',
@@ -598,8 +567,8 @@ help_lmstudio:'Turn on its server and CORS.',help_ollama:'Set OLLAMA_ORIGINS to 
 cc_pick:'Pick a company.',cc_full:'Paste the full key.',cc_refused:'{name} refused the key.',cc_inClaude:'{name} is not reachable from claude.ai.',cc_net:'Could not reach {name}.'
 },
 ar:{
-skip:'انتقال إلى المحتوى',brand:'زاهب',menu:'القائمة',close:'إغلاق',more:'المزيد',moreDetails:'تفاصيل أخرى',tabsLabel:'الوضع',tabSeek:'أبحث عن عمل',tabHire:'أبحث عن موظفين',
-foot:'زاهب · تجريبي · ليست استشارة قانونية',
+skip:'انتقال إلى المحتوى',brand:'زاهب',menu:'القائمة',close:'إغلاق',more:'المزيد',moreDetails:'تفاصيل أخرى',back:'رجوع',chooseH:'ما الذي تبحث عنه؟',chSeek:'أبحث عن عمل',chHire:'أبحث عن موظفين',
+privRules:'يبقى في هذا المتصفح. النتائج من قواعد.',privAI:'يبقى في هذا المتصفح. الذكاء الاصطناعي يقترح والقرار لك. لا يُرسَل النص خارج الإمارات إلا بموافقتك.',demoNote:'تجربة بأمثلة مختلقة. معلومات عامة، وليست استشارة قانونية.',
 seekH:'مقابلتك القادمة',fRole:'نوع الوظيفة',btnStart:'بدء',seekHelp:'سؤال تلو الآخر، مع ملاحظات.',
 ivTile:'التدريب',ivLine:'أسئلة وملاحظات',ivLineQ:'السؤال {n} من {t}',ivLineDone:'اكتمل',
 mapTile:'نقاط قوتي',mapLine:'مجالات وظيفية مناسبة',p90Tile:'أول 90 يوماً',p90Line:'خطة لوظيفة جديدة',
@@ -638,10 +607,10 @@ tr_p_role:'نوع الوظيفة: {role}',tr_p_aiWeeks:'مراحل مكتوبة:
 tgtNeed:'الأرقام الثلاثة مطلوبة.',tgtBad:'الأرقام تحتاج إلى مراجعة',tgtInvalid:'أعداد صحيحة، كل منها لا يزيد على ما قبله.',
 tgtGapStatus:'المتبقي للتوظيف: {g}',tgtGapPast:'ينقص {g} عن هدف {y}',tgtMetStatus:'النسبة مستوفاة تقديرياً',tgtMetPast:'النسبة مستوفاة وفق هدف {y}',tgtSmallStatus:'أقل من 50 موظفاً',tgtSmallLine:'نسبة 10% للشركات ذات 50 موظفاً فأكثر.',
 st_need:'المطلوب',st_now:'الحالي',st_gap:'المتبقي',tgtBarLabel:'التقدم',tgtProgress:'{c} من {r} ({p}%)',
-tgtUntil:'نهاية {y} · المتبقي: {days} · ليست استشارة قانونية',tgtPassed:'هدف {y}. المرجع: الوزارة. ليست استشارة قانونية.',
+tgtUntil:'نهاية {y} · المتبقي: {days}',tgtPassed:'هدف {y}. المرجع: الوزارة. ليست استشارة قانونية.',
 tgtSmall:'20 إلى 49 موظفاً في 14 قطاعاً: مواطن في 2024 وآخر في 2025.',tgtHealth:'الرعاية الصحية: هدف مقسّم من 2027.',
 tgtNeedLine:'المطلوب = 10% من الوظائف المهارية، بالتقريب للأعلى',tgtCalc1:'10% من {k} = {x} ← {r}',tgtGapLine:'المتبقي = المطلوب − الحالي (≥ 0)',tgtCalc2:'{r} − {c} = {g}',
-tgtSrc:'المصدر: The National، يوليو 2026.',
+tgtSrc:'المصدر: وزارة الموارد البشرية والتوطين.',
 tr_t_read:'الأرقام: الموظفون {s}، المهارية {k}، المواطنون {c}',tr_t_big:'50 فأكثر: تنطبق 10%',tr_t_small:'أقل من 50: لا تنطبق 10%',tr_t_calc:'المطلوب {r}، الحالي {c}، المتبقي {g}',
 e1Sub:'لا أسئلة عن الجنس والدين والعمر والأسرة والصحة.',fSector:'القطاع',
 es_logistics:'اللوجستيات',es_retail:'التجزئة',es_hospitality:'الضيافة',es_finance:'البنوك والمالية',es_construction:'البناء',es_tech:'التكنولوجيا',es_health:'الرعاية الصحية',es_manufacturing:'التصنيع',es_other:'قطاع آخر',
@@ -655,11 +624,7 @@ tgtEstimate:'تقدير، وليس استشارة قانونية. المرجع: 
 tr_e_target:'معادلة ثابتة: المطلوب {r}، الحالي {c}، الفجوة {g}',tr_e_fair:'مستبعد ({n}): {list}',tr_e_fairNone:'لا معايير غير عادلة',
 tr_e_aiPlan:'كتب مسودة الخطة',tr_e_outCheck:'كلمات غير عادلة حُذفت: {n}',tr_e_outNone:'لا كلمات غير عادلة',
 tr_e_numCheck:'أرقام خاطئة حُذفت: {n}',tr_e_numNone:'الأرقام تطابق القاعدة',tr_e_rules:'خطة قياسية',tr_e_decide:'القرار لك',
-tourH:'جولة سريعة',tourDone:'{n} من {t}',tour_example:'فتح مثال مريم',tour_map:'تحديد نقاط قوتها',tour_answer:'الإجابة عن سؤال',tour_plan90:'إعداد خطة 90 يوماً',tour_target:'تغيير رقم',tour_hire:'تخطيط التوظيف',tour_lang:'تبديل اللغة',
-caughtH:'حتى الآن',caughtAria:'الأعداد حتى الآن',c_strengths:'نقاط قوة',c_coached:'إجابات وُجّهت',c_gaps:'فجوات حُسبت',c_removed:'كلمات غير عادلة استُبعدت',
-whyH:'لماذا يهم',f1:'50 موظفاً فأكثر: مواطنون في 10% من الوظائف المهارية بنهاية 2026.',f2:'مواطن في القطاع الخاص.',f3:'من الشركات حققت هدف منتصف 2026.',srcLabel:'المصدر:',officialH:'جهات رسمية:',mohre:'وزارة الموارد البشرية والتوطين',nafis:'نافس',
-railsH:'الأمان',r1:'الذكاء الاصطناعي يقترح، والقرار لك.',r2:'كل نتيجة: ذكاء اصطناعي أو قاعدة.',r3:'تُحذف البيانات الشخصية قبل الإرسال.',r4:'إذن قبل إرسال النص خارج الإمارات.',r5:'تُستبعد المعايير غير العادلة.',r6:'لا رواتب أو غرامات أو قواعد مختلقة.',r7:'النص الملصق بيانات، لا أوامر.',
-aboutH:'عن الذكاء الاصطناعي',aiNote:'لا يُرسَل النص خارج الإمارات إلا بموافقتك.',basicMode:'الوضع الأساسي: قواعد فقط.',
+srcLabel:'المصادر:',officialH:'المصادر:',mohre:'وزارة الموارد البشرية والتوطين',nafis:'نافس',
 reset:'إعادة الضبط',resetConfirm:'ضغطة أخرى لإعادة الضبط',theme_auto:'المظهر: تلقائي',theme_light:'المظهر: فاتح',theme_dark:'المظهر: داكن',admin:'الإدارة',
 consentH:'إرسال إلى {name}؟',consentP:'الخدمة خارج الإمارات ({where}). تُحذف البيانات الشخصية.',consentBuiltin:'تسري إعدادات claude.ai.',consentYes:'إرسال',consentNo:'استخدام القواعد',declined:'لم يُرسَل؛ استُخدمت القواعد.',where_us:'الولايات المتحدة',
 fail_off:'غير مسموح هنا؛ استُخدمت القواعد.',fail_img:'لم تُرسَل الصور.',fail_busy:'مشغول؛ استُخدمت القواعد.',fail_key:'رفضت {name} المفتاح؛ استُخدمت القواعد.',
@@ -1075,7 +1040,7 @@ const byText=b=>typeof b==='string'?b:aiLabelFor(b);
 const aiShortOf=b=>typeof b==='string'?b:!b?'':b.kind==='sample'?'Claude':String(b.name||'').replace(/ \(.*\)$/,'');
 const whoAI=b=>{const n=aiShortOf(b);return n?t('whoAI',{by:n}):t('aiTag')};
 /* Users see no AI status. In rules-only mode a tiny "Basic mode" line sits under More. */
-function renderStatus(){const b=$('basicNote');if(b)b.hidden=aiReady()||booting}
+function renderStatus(){const on=aiReady()&&!booting;const b=$('basicNote'),a=$('aiNote'),sx=$('sees');if(b)b.hidden=on;if(a)a.hidden=!on;if(sx)sx.hidden=!on}
 
 /* ---------- transfer notice: asked once per AI per visit, before any text leaves this device ---------- */
 function needsConsent(){return AI.kind==='sample'||CLOUD_AIS.some(c=>c.id===AI.id)}
@@ -1154,7 +1119,7 @@ document.addEventListener('change',e=>{if(e.target.id==='cloudSel'){renderAIPane
   const ms=e.target.closest&&e.target.closest('[data-model]');if(ms&&AI.id===ms.dataset.model){useAI(AI.id,ms.value)}});
 
 /* ---------- sheets: slide up on phones, side sheet on desktop; Back closes them (not when embedded) ---------- */
-const SHEETS=['sheetIv','sheetMap','sheet90','sheetHire','sheetMore','sheetMenu','adminSheet'];
+const SHEETS=['sheetIv','sheetMap','sheet90','sheetHire','sheetMore','adminSheet'];
 const useHist=!EMBED&&window.self===window.top;
 let curSheet=null,sheetFrom=null,afterClose=null;
 function onSheetOpen(id){if(id==='adminSheet')renderAIPanel();if(id==='sheetIv'&&!S.iv){const b=$('ivStart');if(b)b.focus}}
@@ -1253,19 +1218,10 @@ function touch(){if(S&&S.pristine)S.pristine=false}
 let S;
 const busy={map:false,iv:false,p90:false,hire:false};
 let ivDraft='';
-const TOUR=['example','map','answer','plan90','target','hire','lang'];
-let tour={};try{tour=JSON.parse(localStorage.getItem(TKEY)||'{}')||{}}catch(e){tour={}}
-function tick(k){if(tour[k])return;tour[k]=true;try{localStorage.setItem(TKEY,JSON.stringify(tour))}catch(e){}renderTour()}
-function renderTour(){const done=TOUR.filter(k=>tour[k]).length;const c=$('tourCount');c.textContent=t('tourDone',{n:done,t:TOUR.length});
-  $('tour').innerHTML=TOUR.map(k=>`<li class="${tour[k]?'ok':''}"><button type="button" data-tour="${k}"><span class="mk" aria-hidden="true">${tour[k]?'✓':''}</span><span class="tx">${T('tour_'+k)}</span><span class="vh"> · ${tour[k]?T('met'):T('notMet')}</span></button></li>`).join('')}
-/* Each tour item opens the right mode and sheet, then focuses the control it is about. */
-const TOUR_GO={example:['seek','sheetMap','[data-ex="mariam"]'],map:['seek','sheetMap','#mapBtn'],answer:['seek','sheetIv','#ivAnswer'],plan90:['seek','sheet90','#p90Btn'],target:['hire',null,'#eSize'],hire:['hire','sheetHire','#hireBtn'],lang:[null,null,null]};
+function tick(){}
+function renderCaught(){}
 function focusEl(sel){const el=sel&&document.querySelector(sel);if(!el)return false;try{el.scrollIntoView({behavior:smooth(),block:'center'})}catch(e){}el.focus({preventScroll:true});return true}
-$('tour').addEventListener('click',e=>{const b=e.target.closest('[data-tour]');if(!b)return;const k=b.dataset.tour;const g=TOUR_GO[k];if(!g)return;
-  if(k==='lang'){if(EMBED){focusEl('#langMore');return}closeSheet(()=>focusEl(LANG==='ar'?'#langEn':'#langAr'));return}
-  if(k==='answer'&&!(S.iv&&!S.iv.done)){closeSheet(()=>{setTab('seek');focusEl('#ivStart')});return}
-  if(g[1]){if(g[0])setTab(g[0]);openSheet(g[1]);setTimeout(()=>focusEl(g[2]),60);return}
-  closeSheet(()=>{if(g[0])setTab(g[0]);focusEl(g[2])})});
+
 
 /* ---------- jobseeker: profile ---------- */
 function readProfile(){const p={};for(const k in PF)p[k]=$(PF[k]).value;p.sectors=[...document.querySelectorAll('input[name=pSector]:checked')].map(x=>x.value);return p}
@@ -1696,18 +1652,14 @@ document.addEventListener('click',async e=>{const b=e.target.closest('[data-copy
 
 /* ---------- counters, tabs, language, theme, reset ---------- */
 let prevCaught=null;
-function renderCaught(){const s=S.stats;const items=[['strengths','c_strengths'],['coached','c_coached'],['gaps','c_gaps'],['removed','c_removed']];
-  $('caught').setAttribute('aria-label',t('caughtAria'));
-  $('caught').innerHTML=items.map(([k,l])=>`<div class="mini"><b class="${prevCaught&&prevCaught[k]!==s[k]?'bump':''}">${s[k]}</b><span>${T(l)}</span></div>`).join('');
-  prevCaught={...s}}
 function renderTiles(){const l=$('ivLine');if(!l||!S)return;const iv=S.iv;l.textContent=!iv?t('ivLine'):iv.done?t('ivLineDone'):t('ivLineQ',{n:iv.items.length,t:ivTotal(iv)})}
-function setTab(tab,focus){S.tab=tab==='hire'?'hire':'seek';const seek=S.tab==='seek';
-  $('tabSeek').setAttribute('aria-selected',String(seek));$('tabHire').setAttribute('aria-selected',String(!seek));$('tabSeek').tabIndex=seek?0:-1;$('tabHire').tabIndex=seek?-1:0;
-  $('paneSeek').hidden=!seek;$('paneHire').hidden=seek;if(focus)$(seek?'tabSeek':'tabHire').focus();save()}
-$('tabSeek').addEventListener('click',()=>setTab('seek'));
-$('tabHire').addEventListener('click',()=>setTab('hire'));
-document.querySelector('[role=tablist]').addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();
-  const next=e.key==='Home'?'seek':e.key==='End'?'hire':(S.tab==='seek'?'hire':'seek');setTab(next,true)}});
+function setTab(tab,focus){const side=tab==='hire'?'hire':tab==='seek'?'seek':'';if(side)S.tab=side;
+  $('paneChoose').hidden=!!side;$('paneSeek').hidden=side!=='seek';$('paneHire').hidden=side!=='hire';
+  if(focus){const h=$(side==='hire'?'hireH':side==='seek'?'seekH':'chH');if(h){h.tabIndex=-1;h.focus({preventScroll:true})}}
+  if(side)window.scrollTo(0,0);save()}
+$('chSeek').addEventListener('click',()=>setTab('seek',true));
+$('chHire').addEventListener('click',()=>setTab('hire',true));
+document.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',()=>{setTab('');const c=$('chSeek');if(c)c.focus({preventScroll:true})}));
 function applyStatic(){
   document.querySelectorAll('[data-i]').forEach(el=>{if(el.id==='mapBtn'&&busy.map||el.id==='p90Btn'&&busy.p90||el.id==='hireBtn'&&busy.hire)return;if(el.id==='reset'&&resetArmed)return;el.textContent=t(el.dataset.i)});
   document.querySelectorAll('[data-ip]').forEach(el=>{el.placeholder=t(el.dataset.ip)});
@@ -1724,7 +1676,7 @@ function renderExMarks(){const p=S.profile||{},e=S.emp||{};
   const pk=exKeyOf(p);document.querySelectorAll('[data-ex]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.ex===pk)));$('profEx').textContent=pk?t('exampleTag'):'';
   const ek=Object.keys(EXE).find(k=>{const x=EXE[k];return x.size===e.size&&x.skilled===e.skilled&&x.emirati===e.emirati})||'';
   document.querySelectorAll('[data-eex]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.eex===ek)));$('empEx').textContent=ek?t('exampleTag'):''}
-function renderAll(){applyStatic();renderExMarks();renderTour();renderCaught();renderMap();renderRoleSelects();renderInterview();renderP90();renderTarget();renderFair();renderHire();renderStatus();renderAIPanel();renderTiles()}
+function renderAll(){applyStatic();renderExMarks();renderMap();renderRoleSelects();renderInterview();renderP90();renderTarget();renderFair();renderHire();renderStatus();renderAIPanel();renderTiles()}
 /* Language: ?lang= first; when embedded, the landing page's language; then this page's saved choice; then the landing page's; then the browser. */
 function initialLang(){const q=String(QS.get('lang')||'').toLowerCase();if(q==='ar'||q==='en')return q;
   let land=null;try{land=localStorage.getItem('uaeagents-lang')}catch(e){}const ok=v=>v==='ar'||v==='en';
@@ -1738,8 +1690,7 @@ $('langEn').addEventListener('click',()=>setLang('en',true));
 $('langAr').addEventListener('click',()=>setLang('ar',true));
 $('langMore').addEventListener('click',()=>setLang(LANG==='ar'?'en':'ar',true));
 let THEME=store.get(THKEY,'auto');
-function renderTheme(){const r=document.documentElement;if(THEME==='light'||THEME==='dark')r.setAttribute('data-theme',THEME);else r.removeAttribute('data-theme');$('themeBtn').textContent=t('theme_'+THEME)}
-$('themeBtn').addEventListener('click',()=>{THEME=THEME==='auto'?'light':THEME==='light'?'dark':'auto';store.set(THKEY,THEME);renderTheme()});
+function renderTheme(){const r=document.documentElement;if(THEME==='light'||THEME==='dark')r.setAttribute('data-theme',THEME);else r.removeAttribute('data-theme')}
 let resetArmed=false,resetTimer=null;
 $('reset').addEventListener('click',()=>{const b=$('reset');
   if(!resetArmed){resetArmed=true;b.textContent=t('resetConfirm');resetTimer=setTimeout(()=>{resetArmed=false;b.textContent=t('reset')},4000);return}
@@ -1747,15 +1698,15 @@ $('reset').addEventListener('click',()=>{const b=$('reset');
   /* AI calls still running belong to the old demo: GEN makes them drop their answers. */
   GEN++;for(const k in busy)busy[k]=false;busyBtn('mapBtn',null,'btnMap');busyBtn('p90Btn',null,'btnPlan90');busyBtn('hireBtn',null,'btnHire');$('ivStart').disabled=false;
   if(consentDone)consentDone(false);consentOK.clear();saveConsent();
-  ivDraft='';S=seed();tour={};try{localStorage.removeItem(TKEY)}catch(e){}
+  ivDraft='';S=seed();try{localStorage.removeItem(TKEY)}catch(e){}
   ['mapErr','p90Err','hireErr'].forEach(id=>setErr(id,''));savedShown=false;undoProfile=null;clearTimeout(undoTimer);$('undoBtn').hidden=true;
-  writeProfile(S.profile);writeEmp(S.emp);save();prevCaught=null;setTab('seek');renderAll();empSig=empKey();
+  writeProfile(S.profile);writeEmp(S.emp);save();prevCaught=null;setTab('');renderAll();empSig=empKey();
   closeSheet(()=>{$('main').focus({preventScroll:true});window.scrollTo({top:0,behavior:smooth()})})});
 
 /* ---------- start ---------- */
 LANG=initialLang();document.documentElement.lang=LANG;document.documentElement.dir=LANG==='ar'?'rtl':'ltr';
 /* A damaged save never stops the page: fall back to the made-up demo, and always start the AI check. */
-function boot(st){S=st;ivDraft=S.ivDraft||'';writeProfile(S.profile);writeEmp(S.emp);prevCaught=null;renderAll();setTab(S.tab);empSig=empKey()}
+function boot(st){S=st;ivDraft=S.ivDraft||'';writeProfile(S.profile);writeEmp(S.emp);prevCaught=null;renderAll();setTab('');empSig=empKey()}
 try{boot(load())}catch(e){try{boot(seed())}catch(e2){console.error(e2)}}
 try{applyQ()}catch(e){}
 bootP=bootAI().catch(()=>{booting=false;renderStatus()});

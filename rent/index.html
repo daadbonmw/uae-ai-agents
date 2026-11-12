@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
 <meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#2F663C" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#2F663C" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1B1D21" media="(prefers-color-scheme: dark)">
 <title>Masmooh · مسموح</title>
 <meta name="description" content="Is your Dubai rent rise allowed? Check it against the rules, then draft a calm reply you send yourself.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%231E46E6' d='M12 2a10 10 0 1 1 0 20H2V12A10 10 0 0 1 12 2z'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%2392722A' d='M12 2a10 10 0 1 1 0 20H2V12A10 10 0 0 1 12 2z'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600&display=swap" rel="stylesheet">
@@ -17,22 +17,25 @@
 /* Masmooh: the "super-app" look of the landing page (tools/calm-design.md).
    Rubik for English and Arabic. Three sizes only: 15px notes, 17px body and controls, 28px title. Weights 400 and 600. */
 :root{
- --bg:#FFFFFF;--ink:#131417;--muted:#585A60;--tile:#F2F1EE;--tile-hi:#EAE9E4;--line:#E4E3DF;
- --brand:#2F663C;--on-brand:#FFFFFF;--spot:#2F663C;--tint:#E4F4E7;--focus:#2F663C;
- --field:#FFFFFF;--field-ink:#131417;--hint:#66686E;
+ --bg:#FFFFFF;--ink:#232528;--muted:#5F646D;--tile:#F7F7F7;--tile-hi:#EDEEF0;--line:#E1E3E5;
+ --brand:#21633E;--on-brand:#FFFFFF;--spot:#B68A35;--tint:#F9F7ED;--focus:#21633E;
+ --gold:#B68A35;--gold-ink:#92722A;--gold-line:#D7BC6D;--band-a:#FFFFFF;--band-b:#FAF3E3;
+ --field:#FFFFFF;--field-ink:#232528;--hint:#66686E;
  --edge:#85878D; /* field outlines: 3:1 against white and tile (WCAG 1.4.11) */
- --link:#2F663C; /* text links and text buttons; lighter in dark mode so they keep 4.5:1 on tiles */
+ --link:#21633E; /* text links and text buttons; lighter in dark mode so they keep 4.5:1 on tiles */
  color-scheme:light;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
- --bg:#0D0E11;--ink:#F2F2F4;--muted:#A3A6AE;--tile:#191A1F;--tile-hi:#212229;--line:#26272D;
- --brand:#2F663C;--spot:#6FB97F;--tint:#24432B;--focus:#A0D5AB;
- --field:#0D0E11;--field-ink:#F2F2F4;--hint:#9A9DA6;--edge:#70737C;--link:#A0D5AB;color-scheme:dark;
+ --bg:#0E0F12;--ink:#F7F7F7;--muted:#9EA2A9;--tile:#1B1D21;--tile-hi:#232528;--line:#3E4046;
+ --brand:#2F663C;--spot:#CBA344;--tint:#2A2417;--focus:#A0D5AB;
+ --gold:#CBA344;--gold-ink:#D7BC6D;--gold-line:#7C5E24;--band-a:#1B1D21;--band-b:#19160E;
+ --field:#0E0F12;--field-ink:#F7F7F7;--hint:#9EA2A9;--edge:#70737C;--link:#6FB97F;color-scheme:dark;
 }}
 :root[data-theme="dark"]{
- --bg:#0D0E11;--ink:#F2F2F4;--muted:#A3A6AE;--tile:#191A1F;--tile-hi:#212229;--line:#26272D;
- --brand:#2F663C;--spot:#6FB97F;--tint:#24432B;--focus:#A0D5AB;
- --field:#0D0E11;--field-ink:#F2F2F4;--hint:#9A9DA6;--edge:#70737C;--link:#A0D5AB;color-scheme:dark;
+ --bg:#0E0F12;--ink:#F7F7F7;--muted:#9EA2A9;--tile:#1B1D21;--tile-hi:#232528;--line:#3E4046;
+ --brand:#2F663C;--spot:#CBA344;--tint:#2A2417;--focus:#A0D5AB;
+ --gold:#CBA344;--gold-ink:#D7BC6D;--gold-line:#7C5E24;--band-a:#1B1D21;--band-b:#19160E;
+ --field:#0E0F12;--field-ink:#F7F7F7;--hint:#9EA2A9;--edge:#70737C;--link:#6FB97F;color-scheme:dark;
 }
 *,*::before,*::after{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -52,18 +55,17 @@ button,input,textarea,select{font:inherit;color:inherit}
 .ico .s{fill:var(--spot);stroke:none}
 
 /* Brand band: name, title and the main input */
-.top{background:var(--brand);color:var(--on-brand);--focus:#FFFFFF;border-end-start-radius:28px;border-end-end-radius:28px}
+.top{background:linear-gradient(180deg,var(--band-a),var(--band-b));color:var(--ink);box-shadow:inset 0 4px 0 var(--gold);border-end-start-radius:28px;border-end-end-radius:28px}
 .top .wrap{padding:6px 16px 16px}
 .bar{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:56px}
 .brand{display:flex;align-items:center;gap:10px;font-weight:600;min-width:0}
 .brand .ico{width:28px;height:28px}
-.brand .ico .s{fill:currentColor}
 .bar-actions{display:flex;gap:8px;flex:none}
-.pillb{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-width:44px;min-height:44px;padding:0 16px;border:1.5px solid rgba(255,255,255,.75);border-radius:22px;background:transparent;color:var(--on-brand);font-size:15px;font-weight:600;line-height:1;cursor:pointer}
+.pillb{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-width:44px;min-height:44px;padding:0 16px;border:1.5px solid var(--muted);border-radius:22px;background:transparent;color:var(--ink);font-size:15px;font-weight:600;line-height:1;cursor:pointer}
 .pillb svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
-h1{margin:16px 0;font-size:28px;line-height:1.15;font-weight:600}
+h1{margin:16px 0;color:var(--gold-ink);font-size:28px;line-height:1.15;font-weight:600}
 h1:focus{outline:none}
-.field{display:flex;align-items:flex-end;gap:6px;min-height:56px;padding:6px;padding-inline-start:20px;border-radius:28px;background:var(--field);color:var(--field-ink)}
+.field{display:flex;align-items:flex-end;gap:6px;min-height:56px;padding:6px;padding-inline-start:20px;border-radius:28px;background:var(--field);color:var(--field-ink);box-shadow:inset 0 0 0 1.5px var(--gold-line)}
 .field textarea{flex:1;min-width:0;height:96px;max-height:168px;margin:0;padding:10px 0;border:0;background:transparent;font-size:17px;line-height:24px;resize:none;overflow-y:auto}
 .field textarea::placeholder{color:var(--hint);opacity:1}
 .go{flex:none;display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:var(--brand);color:#FFFFFF;cursor:pointer}
@@ -73,8 +75,8 @@ h1:focus{outline:none}
 .go .spin{width:20px;height:20px;margin:0}
 @supports selector(a:has(b)){.field textarea:focus{outline:none}.field:has(textarea:focus){outline:3px solid var(--focus);outline-offset:2px}}
 .route{display:flex;flex-wrap:wrap;align-items:center;gap:0 16px;margin:8px 4px 0;font-size:15px;line-height:22px}
-.top .tbtn{color:var(--on-brand);font-size:15px}
-.route .soft{color:rgba(255,255,255,.86)}
+.top .tbtn{color:var(--link);font-size:15px}
+.route .soft{color:var(--muted)}
 #exNote:empty{display:none}
 
 /* Content */
@@ -89,10 +91,10 @@ main.wrap{padding:16px 16px 24px}
 .head h2{flex:1 1 auto}
 .head h2:focus{outline:none}
 .role{font-size:15px;color:var(--muted)}
-.tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.tool{min-width:0;min-height:128px;display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:14px;border:0;border-radius:22px;background:var(--tile);color:var(--ink);text-align:start;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.tool .ico{width:40px;height:40px;margin:-2px -2px 8px}
-.tool b{font-size:17px;line-height:22px}
+.tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.tool{min-width:0;min-height:96px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px 4px;border:0;border-radius:22px;background:var(--tile);color:var(--ink);text-align:start;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.tool .ico{width:32px;height:32px}
+.tool b{font-size:15px;line-height:20px;text-align:center}
 .tool span{font-size:15px;line-height:21px;color:var(--muted)}
 .foot-row{display:flex;flex-wrap:wrap;align-items:center;gap:0 12px;padding:4px}
 footer.foot .wrap{padding:0 20px 28px}
@@ -110,7 +112,7 @@ fieldset{margin:0;padding:0;border:0;display:flex;flex-direction:column;gap:2px;
 legend{padding:0;margin-bottom:6px;font-weight:600}
 .opt{display:flex;flex-direction:row;align-items:center;gap:12px;min-height:48px;cursor:pointer}
 .opt label.inl{display:inline;cursor:pointer}
-.brand .ico .a{stroke:var(--brand)}
+.brand .ico .a{stroke:var(--ink)}
 .opt input{width:22px;height:22px;margin:0;flex:none;accent-color:var(--brand)}
 .pct{display:inline-flex;align-items:center;gap:8px}
 .pct input{width:84px;min-height:44px;padding:6px 10px;text-align:center}
@@ -205,7 +207,7 @@ dl.kv dd{margin:0;font-weight:600;font-variant-numeric:tabular-nums}
 dialog.sheet{position:fixed;inset:auto 0 0 0;width:100%;max-width:none;height:calc(100vh - 10px);height:calc(100dvh - 10px);max-height:none;margin:0;padding:0;border:0;border-radius:22px 22px 0 0;overflow:hidden;background:var(--bg);color:var(--ink)}
 dialog.sheet.short{height:auto;max-height:calc(100dvh - 10px)}
 dialog.sheet[open]{display:flex;flex-direction:column}
-dialog.sheet::backdrop{background:rgba(8,10,20,.5)}
+dialog.sheet::backdrop{background:rgba(14,15,18,.5)}
 .sheet-bar{flex:none;display:flex;align-items:center;gap:10px;min-height:60px;padding:8px;padding-inline-start:16px;border-bottom:1px solid var(--line)}
 .sheet-bar h2{flex:1;min-width:0}
 .sheet-bar h2:focus{outline:none}
@@ -217,7 +219,7 @@ dialog.sheet::backdrop{background:rgba(8,10,20,.5)}
 @media (hover:hover){
  .tool:hover,.exlist button:hover{background:var(--tile-hi)}
  .ibtn:hover{background:var(--tile)}
- .pillb:hover{background:rgba(255,255,255,.14)}
+ .pillb:hover{background:var(--tile)}
  .tbtn:hover{text-decoration:underline}
 }
 @media (prefers-reduced-motion:no-preference){
@@ -255,13 +257,12 @@ dialog.sheet::backdrop{background:rgba(8,10,20,.5)}
  @keyframes side-rtl{from{transform:translateX(-48px);opacity:.3}to{transform:none;opacity:1}}
 }
 @media (min-width:980px){
- .layout{grid-template-columns:minmax(0,1fr) 336px;align-items:start}
- .aside{position:sticky;top:16px}
+ .layout{max-width:720px}
 }
 @media (max-width:359px){.tool{padding:12px}.pillb{padding:0 12px}}
 
 /* Embedded in the landing page's sheet: no masthead, menu or footer, tighter top */
-.embed .bar,.embed footer.foot,.embed #menuBtn{display:none!important}
+.embed .bar{display:none!important}
 .embed .top{border-radius:0 0 24px 24px}
 .embed .top .wrap{padding-top:4px}
 .embed h1{margin:8px 0 12px}
@@ -272,12 +273,9 @@ dialog.sheet::backdrop{background:rgba(8,10,20,.5)}
  <div class="wrap">
   <div class="bar">
    <span class="brand"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M5 24 21 11l16 13M10 20v18h22V20M17.5 38v-9h7v9"/><circle class="s" cx="37" cy="12" r="7"/><path class="a" d="M37 15.5v-7M33.8 11.7 37 8.5l3.2 3.2"/></svg><span data-t="brand">Masmooh</span></span>
-   <span class="bar-actions">
-    <button class="pillb" id="langBtn" type="button" lang="ar">عربي</button>
-    <button class="pillb" id="menuBtn" type="button" aria-haspopup="dialog" data-sheet="sheetMenu" data-ta="menu" aria-label="Menu"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-   </span>
   </div>
-  <h1 id="h-s1" tabindex="-1" data-t="h1">Is your Dubai rent rise allowed?</h1>
+  <h1 id="h-s1" tabindex="-1" data-t="h1">Is your rent rise allowed?</h1>
+  <p class="route"><span class="soft" data-t="dubaiOnly">Dubai only.</span></p>
   <form class="ask" id="askForm" novalidate>
    <label for="mText" class="vh" data-t="msgLabel">Your landlord's message</label>
    <div class="field">
@@ -286,7 +284,7 @@ dialog.sheet::backdrop{background:rgba(8,10,20,.5)}
    </div>
    <p class="route">
     <input type="file" id="mPhoto" class="vh" accept="image/jpeg,image/png,image/webp">
-    <label for="mPhoto" class="tbtn filebtn" data-t="photo">Add a photo</label>
+    <label for="mPhoto" class="tbtn filebtn" id="photoBtn" hidden data-t="photo">Add a photo</label>
     <button type="button" class="tbtn" id="exBtn" data-sheet="sheetEx" aria-haspopup="dialog" data-t="examples">Examples</button>
     <span class="soft" id="exNote" role="status"></span>
    </p>
@@ -313,9 +311,9 @@ dialog.sheet::backdrop{background:rgba(8,10,20,.5)}
    </section>
 
    <section class="tile" id="s2" aria-labelledby="h-s2">
-    <div class="head"><h2 id="h-s2" tabindex="-1" data-t="s2h">Rule check</h2><span class="role" data-t="s2role">Rules decide</span></div>
+    <div class="head"><h2 id="h-s2" tabindex="-1" data-t="s2h">Rule check</h2></div>
     <p class="note" id="cGate"></p>
-    <a class="tbtn" id="calcLink" href="https://dubailand.gov.ae/en/eservices/rental-index/" target="_blank" rel="noopener noreferrer"><span data-t="calcOpen">Open the DLD rent calculator</span><svg class="flip" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14 4h6v6M20 4l-8.5 8.5M18 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/></svg></a>
+    <a class="tbtn" id="calcLink" href="https://dubailand.gov.ae/en/eservices/rental-index/" target="_blank" rel="noopener noreferrer"><span data-t="calcOpen">DLD rent calculator</span><svg class="flip" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14 4h6v6M20 4l-8.5 8.5M18 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/></svg></a>
     <fieldset>
      <legend data-t="calcLegend">What did it say?</legend>
      <label class="opt" for="cZero"><input type="radio" name="calc" id="cZero" value="zero"><span data-t="calcZero">No rise allowed</span></label>
@@ -329,20 +327,17 @@ dialog.sheet::backdrop{background:rgba(8,10,20,.5)}
    </section>
   </div>
 
-  <div class="aside">
-   <h2 class="vh" data-t="toolsH">More tools</h2>
-   <div class="tools">
-    <button type="button" class="tool" data-sheet="sheetS4" aria-haspopup="dialog"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M10 9h28a5 5 0 0 1 5 5v15a5 5 0 0 1-5 5H24l-9 7v-7h-5a5 5 0 0 1-5-5V14a5 5 0 0 1 5-5zM13 18h18M13 24h9"/><circle class="s" cx="33" cy="24" r="4"/></svg><b data-t="s4t">Reply</b><span data-t="s4l">Draft a calm reply</span></button>
-    <button type="button" class="tool" data-sheet="sheetS3" aria-haspopup="dialog"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M4 24 17 13l13 11M8 21v17h18V21M14 38v-8h6v8"/><path class="s" d="M31 27h7v-5l8 8-8 8v-5h-7z"/></svg><b data-t="s3t">Stay or move</b><span data-t="s3l">Compare the costs</span></button>
-    <button type="button" class="tool" data-sheet="sheetS5" aria-haspopup="dialog"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><circle cx="16" cy="24" r="9"/><circle class="s" cx="16" cy="24" r="4"/><path d="M25 24h18M37 24v7M42 24v5"/></svg><b data-t="s5t">Deposit</b><span data-t="s5l">Get it back</span></button>
-    <button type="button" class="tool" data-sheet="sheetS6" aria-haspopup="dialog"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect x="6" y="10" width="36" height="31" rx="6"/><path d="M15 6v8M33 6v8M6 19h36"/><rect class="s" x="26" y="26" width="9" height="9" rx="2"/></svg><b data-t="s6t">Key dates</b><span data-t="s6l">Before the contract ends</span></button>
+   <div class="tools" id="tools" role="group" data-ta="toolsH" aria-label="Next steps" hidden>
+    <button type="button" class="tool" data-sheet="sheetS4" aria-haspopup="dialog"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M10 9h28a5 5 0 0 1 5 5v15a5 5 0 0 1-5 5H24l-9 7v-7h-5a5 5 0 0 1-5-5V14a5 5 0 0 1 5-5zM13 18h18M13 24h9"/><circle class="s" cx="33" cy="24" r="4"/></svg><b data-t="s4t">Reply</b></button>
+    <button type="button" class="tool" data-sheet="sheetS3" aria-haspopup="dialog"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M4 24 17 13l13 11M8 21v17h18V21M14 38v-8h6v8"/><path class="s" d="M31 27h7v-5l8 8-8 8v-5h-7z"/></svg><b data-t="s3t">Stay or move</b></button>
+    <button type="button" class="tool" data-sheet="sheetS5" aria-haspopup="dialog"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><circle cx="16" cy="24" r="9"/><circle class="s" cx="16" cy="24" r="4"/><path d="M25 24h18M37 24v7M42 24v5"/></svg><b data-t="s5t">Deposit</b></button>
+    <button type="button" class="tool" data-sheet="sheetS6" aria-haspopup="dialog"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect x="6" y="10" width="36" height="31" rx="6"/><path d="M15 6v8M33 6v8M6 19h36"/><rect class="s" x="26" y="26" width="9" height="9" rx="2"/></svg><b data-t="s6t">Key dates</b></button>
    </div>
    <p class="foot-row note"><span data-t="notAdvice">General information, not legal advice.</span><button type="button" class="tbtn" id="moreBtn" data-sheet="sheetMore" aria-haspopup="dialog" data-t="more">More</button></p>
   </div>
  </div>
 </main>
 
-<footer class="foot"><div class="wrap"><p class="note" data-t="foot">Masmooh · A demo with made-up examples.</p></div></footer>
 
 <dialog class="sheet" id="sheetS3" aria-labelledby="h-s3">
  <div class="sheet-bar"><h2 id="h-s3" tabindex="-1" data-t="s3t">Stay or move</h2><span class="role" data-airole="weigh"></span><button class="ibtn" type="button" data-close data-ta="close" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
@@ -428,7 +423,7 @@ dialog.sheet::backdrop{background:rgba(8,10,20,.5)}
 </dialog>
 
 <dialog class="sheet" id="sheetS6" aria-labelledby="h-s6">
- <div class="sheet-bar"><h2 id="h-s6" tabindex="-1" data-t="s6t">Key dates</h2><span class="role" data-t="rulesCount">Rules count</span><button class="ibtn" type="button" data-close data-ta="close" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+ <div class="sheet-bar"><h2 id="h-s6" tabindex="-1" data-t="s6t">Key dates</h2><button class="ibtn" type="button" data-close data-ta="close" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
  <div class="sheet-body">
   <section class="tile" id="s6" aria-labelledby="h-s6">
    <label for="remExpiry"><span data-t="fExpiry">Contract ends</span><input type="date" id="remExpiry"></label>
@@ -443,30 +438,23 @@ dialog.sheet::backdrop{background:rgba(8,10,20,.5)}
 
 <dialog class="sheet" id="sheetMore" aria-labelledby="moreH">
  <div class="sheet-bar"><h2 id="moreH" tabindex="-1" data-t="more">More</h2><button class="ibtn" type="button" data-close data-ta="close" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+
  <div class="sheet-body">
-  <section class="sec" aria-labelledby="gh"><h3 id="gh" data-t="gh">Your renewal</h3><div id="glance"></div></section>
-  <section class="sec" aria-labelledby="modeH"><h3 id="modeH" data-t="modeH">Mode</h3><p class="note" id="modeNote"></p><button type="button" class="tbtn" id="consentReset" hidden data-t="consentReset">Ask me again before using AI</button></section>
-  <section class="sec" aria-labelledby="rulesh"><details class="more" id="rulesBox"><summary><h3 id="rulesh" data-t="rulesh">Rules and sources</h3></summary><div class="more-body">
-   <div class="seg" role="group" data-ta="emirate" aria-label="Emirate"><button type="button" id="emDubai" aria-pressed="true" data-t="dubai">Dubai</button><button type="button" id="emAD" aria-expanded="false" aria-controls="adNote" data-t="abuDhabi">Abu Dhabi, soon</button></div>
+  <button type="button" class="tbtn" id="langBtn" lang="ar">عربي</button>
+  <p class="note" id="modeNote"></p>
+  <button type="button" class="tbtn" id="consentReset" hidden data-t="consentReset">Ask me again before using AI</button>
+  <section class="sec" aria-labelledby="rulesh"><details class="more" id="rulesBox"><summary><h3 id="rulesh" data-t="rulesh">Sources</h3></summary><div class="more-body">
+   <div class="seg" role="group" data-ta="emirate" aria-label="Emirate" hidden><button type="button" id="emDubai" aria-pressed="true" data-t="dubai">Dubai</button><button type="button" id="emAD" aria-expanded="false" aria-controls="adNote" data-t="abuDhabi">Abu Dhabi, soon</button></div>
    <div class="note" id="adNote" hidden></div>
    <ul class="list" id="ruleList"></ul>
-   <details class="more"><summary data-t="scaleSum">How the index limit works</summary><div class="more-body" id="scale"></div></details>
   </div></details></section>
-  <section class="sec" aria-labelledby="th"><details class="more" id="tourBox"><summary><h3 id="th">Demo tour</h3></summary><div class="more-body"><ol class="tour" id="tour"></ol></div></details></section>
-  <section class="sec" aria-labelledby="bandH"><h3 id="bandH" data-t="bandH">What Masmooh did</h3><div class="stats" id="band"></div></section>
-  <section class="sec" aria-labelledby="vh"><details class="more"><summary><h3 id="vh" data-t="vh">In the news</h3></summary><div class="more-body"><ul class="list" id="voices"></ul></div></details></section>
-  <section class="sec" aria-labelledby="sh"><details class="more"><summary><h3 id="sh" data-t="sh">How it stays safe</h3></summary><div class="more-body"><ul class="steps" id="rails"></ul></div></details></section>
-  <section class="sec" aria-labelledby="ph"><details class="more"><summary><h3 id="ph" data-t="ph">Privacy</h3></summary><div class="more-body"><ul class="steps" id="privacy"></ul></div></details></section>
- </div>
-</dialog>
-
-<dialog class="sheet short" id="sheetMenu" aria-labelledby="menuH">
- <div class="sheet-bar"><h2 id="menuH" data-t="menu">Menu</h2><button class="ibtn" type="button" data-close data-ta="close" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
- <div class="sheet-body">
-  <button type="button" class="tbtn" data-sheet="sheetMore" data-t="moreInfo">Rules, sources and privacy</button>
-  <button type="button" class="tbtn" id="themeBtn">Theme: Auto</button>
-  <div class="row"><button type="button" class="tbtn" id="reset" data-t="reset">Reset demo</button><span class="note" id="resetMsg" role="status"></span></div>
+  <p class="note" data-t="pvOne">A demo: the examples are made up. Your data stays in this browser.</p>
+  <div class="row"><button type="button" class="tbtn" id="reset" data-t="reset">Reset</button><span class="note" id="resetMsg" role="status"></span></div>
   <button type="button" class="tbtn note" id="adminLink" data-t="admin">Admin</button>
+  <button type="button" class="tbtn" id="themeBtn" hidden>Theme: Auto</button>
+  <div id="legacy" hidden>
+   <div id="glance"></div><div id="scale"></div><h3 id="th"></h3><ol id="tour"></ol><div id="band"></div><ul id="voices"></ul><ul id="rails"></ul><ul id="privacy"></ul>
+  </div>
  </div>
 </dialog>
 
@@ -569,10 +557,10 @@ const p1=p=>String(Math.round(p*10)/10);
 /* ---------- English words (Arabic in TX.ar) ---------- */
 const TX={};
 TX.en={
- brand:'Masmooh',h1:'Is your Dubai rent rise allowed?',msgLabel:"Your landlord's message",msgPh:"Paste your landlord's message",check:'Check',photo:'Add a photo',examples:'Examples',
- datesSum:'Dates and how it came',fArrived:'Message reached you',fExpiry:'Contract ends',fHow:'Sent by',s2h:'Rule check',s2role:'Rules decide',calcOpen:'Open the DLD rent calculator',
- calcLegend:'What did it say?',calcZero:'No rise allowed',calcUpTo:'Up to',pctL:'Percent allowed',calcUnknown:'Not checked yet',calcDemo:'Use a made-up result',cRun:'Check my renewal',
- toolsH:'More tools',s4t:'Reply',s4l:'Draft a calm reply',s3t:'Stay or move',s3l:'Compare the costs',s5t:'Deposit',s5l:'Get it back',s6t:'Key dates',s6l:'Before the contract ends',
+ brand:'Masmooh',h1:'Is your rent rise allowed?',dubaiOnly:'Dubai only.',pvOne:'A demo: the examples are made up. Your data stays in this browser.',msgLabel:"Your landlord's message",msgPh:"Paste your landlord's message",check:'Check',photo:'Add a photo',examples:'Examples',
+ datesSum:'Dates and how it came',fArrived:'Message reached you',fExpiry:'Contract ends',fHow:'Sent by',s2h:'Rule check',s2role:'Rules decide',calcOpen:'DLD rent calculator',
+ calcLegend:'What did it say?',calcZero:'No rise allowed',calcUpTo:'Up to',pctL:'Percent allowed',calcUnknown:'Not checked yet',calcDemo:'Use an example result',cRun:'Check my renewal',
+ toolsH:'Next steps',s4t:'Reply',s4l:'Draft a calm reply',s3t:'Stay or move',s3l:'Compare the costs',s5t:'Deposit',s5l:'Get it back',s6t:'Key dates',s6l:'Before the contract ends',
  notAdvice:'General information, not legal advice.',more:'More',foot:'Masmooh · A demo with made-up examples.',close:'Close',menu:'Menu',
  vStay:'Rent if you stay, a year',vComp:'Rent for a similar home, a year',vCosts:'Moving costs, your own quotes',aedPh:'AED',vAgent:'Agent fee',vMovers:'Movers',vConnect:'Utility connection, not refunded',
  vEjari:'Ejari registration',vOther:'Anything else',vFees:'Current fees:',vNotes:'What matters to you? Optional',useEx:'Use made-up numbers',vRun:'Work it out',
@@ -580,12 +568,12 @@ TX.en={
  oLonger:'A longer lease for a smaller rise',oShort:"A short extension at today's rent",addNote:'Add a note',rNote:'Your note, optional',rDraft:'Draft my reply',
  s5h:'Get your deposit back',moH:'Move-out checklist',dPaid:'Deposit you paid',dKept:'Amount kept',dMsg:"Landlord's message about deductions",options:'Options',dOut:'Day you moved out',
  dWithin:'Ask for a reply within',d7:'7 days',d14:'14 days',d21:'21 days',dPhotos:'I have dated move-in and move-out photos',useEx2:'Use the made-up example',dDraft:'Draft my request',
- rulesCount:'Rules count',remCopy:'Copy the dates',remManualL:'Dates to copy',gh:'Your renewal',modeH:'Mode',consentReset:'Ask me again before using AI',rulesh:'Rules and sources',
+ rulesCount:'Rules count',remCopy:'Copy the dates',remManualL:'Dates to copy',gh:'Your renewal',modeH:'Mode',consentReset:'Ask me again before using AI',rulesh:'Sources',
  emirate:'Emirate',dubai:'Dubai',abuDhabi:'Abu Dhabi, soon',scaleSum:'How the index limit works',bandH:'What Masmooh did',vh:'In the news',sh:'How it stays safe',ph:'Privacy',
- moreInfo:'Rules, sources and privacy',reset:'Reset demo',admin:'Admin',exH:'Made-up examples',exLate:'Late notice, big rise',exOntime:'On time, check the index',exAr:'Arabic message',
+ moreInfo:'Rules, sources and privacy',reset:'Reset',admin:'Admin',exH:'Examples',exLate:'Late notice, big rise',exOntime:'On time, check the index',exAr:'Arabic message',
  exVacate:'Notice to vacate',exTrick:'Hidden instructions',adminH:'Admin: AI',consentH:'Send to AI?',consentYes:'Send to AI',consentNo:'Use basic mode instead',
  /* step 1 */
- readingAI:'AI is reading…',readingRules:'Reading…',lookingAI:'Looking for AI…',exLoaded:'Made-up example: {name}',errNoMsg:'Paste the message, or add a photo.',
+ readingAI:'AI is reading…',readingRules:'Reading…',lookingAI:'Reading…',exLoaded:'{name}',errNoMsg:()=>aiOn()&&AI.images?'Paste the message, or add a photo.':'Paste the message.',
  errPhotoNoAI:'Reading a photo needs AI. Paste the text instead.',errPhotoRead:'That file is not a photo. Try a JPEG or PNG.',photoAI:'The photo is sent as it is. Cover ID numbers first.',
  photoNoAI:'Photos need AI. Paste the text instead.',photoAlt:"Your photo of the landlord's message",readByAI:'Read by AI · {by}',readByRules:'Read by rules',claim:'The message claims:',
  injWarn:'This message tries to instruct an AI. That was ignored. Never pay through a link or number in a message.',payWarn:'This message has a link or a number to pay. Never pay through it. Use a contact you trust.',
@@ -597,9 +585,9 @@ TX.en={
  errRent:'Type each rent as a yearly amount, like 63,000.',errFill:'Fill in: {list}.',
  u_current:'which amount is the current rent',u_date:'whether the date is the contract end',
  /* step 2 */
- gateConfirm:'Confirm the facts first.',gateStart:'Check a message above first.',gateDemo:'Made-up result: {res}. Not a real index result.',errPct:'Type the percent it showed, like 5.',
+ gateConfirm:'Confirm the facts first.',gateStart:'Check a message above first.',gateDemo:'Example result: {res}.',errPct:'Type the percent it showed, like 5.',
  goStep1:'Go to the facts',res_zero:'no rise allowed',res_pct:'up to {p}%',v_allowed:'Allowed',v_notallowed:'Not allowed',v_unsure:'Not sure',madeUpIdx:'Made-up index',
- resFine:'Not legal advice. Rules checked {d}.',resFineDemo:'Uses a made-up index result, so it is not a real answer.',rulesOld:'Rules last checked {d}. Check the official sources too.',
+ resFine:'Not legal advice. Rules checked {d}.',resFineDemo:'',rulesOld:'Rules last checked {d}. Check the official sources too.',
  unsureNote:'No reviewer is connected here.',goReply:'Draft a reply',pSum:'Summary for a person',
  sumH:'Summary for a person to check',sumNote:'Built by rules from your facts. Masmooh sends it nowhere.',pCopy:'Copy the summary',sumLabel:'Summary text',
  i_oddDates_h:'The dates look odd.',i_oddDates_t:'The message seems to have come after the contract ended.',
@@ -653,18 +641,18 @@ TX.en={
  st_pays:'Moving costs about {d} more in year one, then saves {y} a year: it pays back in about {m} months.',st_cheaper:'Staying is cheaper: moving costs about {d} more in the first year.',
  st_cheaperHigher:'Staying is cheaper: moving costs about {d} more in the first year, and the other rent is higher.',
  rowStay:'A year if you stay',rowOther:'A year in the other home',rowCosts:'Moving costs',rowMove:'First year if you move',byRules:'Worked out by rules',byRulesEx:'Worked out by rules, with made-up numbers',
- notCounted:"Not counted: the new home's deposit, which comes back at the end ({src}).",exNums:'Made-up numbers. Use your own.',weighBtn:'What else to weigh? (AI)',
+ notCounted:"Not counted: the new home's deposit, which comes back at the end ({src}).",exNums:'',weighBtn:'What else to weigh? (AI)',
  weighNeed:'This needs AI. The sums above use rules only.',weighBusy:'AI is thinking…',weighBy:'AI · {by}',weighBad:'The AI added figures not in your sums, so its note is hidden.',
  errStay:'Type the yearly rent if you stay, like 63,000.',errComp:'Type the yearly rent of a similar home.',errCosts:'Moving costs must be numbers, or empty.',
  /* step 4 */
  draftedBy:'Drafted by AI · {by}',template:'Ready-made template',staleDraft:'Written from an earlier check. Draft it again.',yourReply:'Your reply. Edit it, then send it yourself.',
  rCopy:'Copy my reply',replyFine:'Masmooh never sends this. If the landlord answers with a notice or a dispute, ask a person first.',drafting:'AI is drafting…',filling:'Filling the template…',
- errOffer:'Type the offer as a yearly amount, like 54,600, or leave it empty.',demoDraft:'Uses a made-up index result. Check the real one before you send.',
+ errOffer:'Type the offer as a yearly amount, like 54,600, or leave it empty.',demoDraft:'',
  /* step 5 */
  itemsAI:'Items read by AI · {by}',itemsRules:'Items found by rules',noItems:'No itemised deductions found. The request asks for a full list.',noAmount:'no amount',
  sumOk:'The items add up to {s}, the amount kept.',sumBad:'The items add up to {s}, but {k} was kept. Ask about the {d} gap.',yourRequest:'Your request. Edit it, then send it yourself.',
  dCopy:'Copy my request',depFine:'No answer? The Rental Dispute Centre handles disputes ({src}). Have a person check your file first.',errPaid:'Type the deposit you paid, like 5,000.',
- errKept:'Type the amount kept, from 0 up to the deposit.',exDep:'Made-up example: the flat and amounts are invented.',readingDed:'AI is reading the deductions…',
+ errKept:'Type the amount kept, from 0 up to the deposit.',exDep:'',readingDed:'AI is reading the deductions…',
  moCount:'{d} of {n}',moWhy:'Why it matters: {a} · {b}',
  mo0:'Take dated photos and a video of every room on handover day.',mo1:'Compare them with your move-in photos or report.',mo2:'Clean, and fix small damage you caused. Normal wear is not yours to fix.',
  mo3:'Photograph the meter readings.',mo4:'Close or move your utility accounts. Keep the final bills.',mo5:'Hand back every key and card. Ask for a signed handover note.',mo6:'Ask in writing for your deposit, with an itemised list of any deductions.',
@@ -704,10 +692,10 @@ TX.en={
 };
 TX.en.st_pays=({d,y,m})=>`Moving costs about ${d} more in year one, then saves ${y} a year: it pays back in about ${m} month${m===1?'':'s'}.`;
 TX.ar={
- brand:'مسموح',h1:'هل زيادة إيجارك في دبي مسموحة؟',msgLabel:'رسالة المالك',msgPh:'الصق رسالة المالك هنا',check:'افحص',photo:'أضف صورة',examples:'أمثلة',
- datesSum:'التواريخ وطريقة الوصول',fArrived:'تاريخ وصول الرسالة',fExpiry:'تاريخ انتهاء العقد',fHow:'وصلت عبر',s2h:'فحص القواعد',s2role:'القواعد تقرر',calcOpen:'افتح حاسبة الإيجارات لدى دائرة الأراضي',
- calcLegend:'ماذا كانت النتيجة؟',calcZero:'لا يُسمح بأي زيادة',calcUpTo:'حتى',pctL:'النسبة المسموح بها',calcUnknown:'لم أتحقق بعد',calcDemo:'استخدم نتيجة افتراضية',cRun:'افحص التجديد',
- toolsH:'أدوات أخرى',s4t:'الرد',s4l:'صياغة رد هادئ',s3t:'البقاء أم الانتقال',s3l:'قارن التكاليف',s5t:'التأمين',s5l:'استرده',s6t:'مواعيد مهمة',s6l:'قبل انتهاء العقد',
+ brand:'مسموح',h1:'هل زيادة الإيجار مسموحة؟',dubaiOnly:'دبي فقط.',pvOne:'عرض تجريبي: الأمثلة افتراضية. بياناتك تبقى في هذا المتصفح.',msgLabel:'رسالة المالك',msgPh:'الصق رسالة المالك هنا',check:'افحص',photo:'أضف صورة',examples:'أمثلة',
+ datesSum:'التواريخ وطريقة الوصول',fArrived:'تاريخ وصول الرسالة',fExpiry:'تاريخ انتهاء العقد',fHow:'وصلت عبر',s2h:'فحص القواعد',s2role:'القواعد تقرر',calcOpen:'حاسبة دائرة الأراضي',
+ calcLegend:'ماذا كانت النتيجة؟',calcZero:'لا يُسمح بأي زيادة',calcUpTo:'حتى',pctL:'النسبة المسموح بها',calcUnknown:'لم أتحقق بعد',calcDemo:'استخدم نتيجة مثال',cRun:'افحص التجديد',
+ toolsH:'الخطوات التالية',s4t:'الرد',s4l:'صياغة رد هادئ',s3t:'البقاء أم الانتقال',s3l:'قارن التكاليف',s5t:'التأمين',s5l:'استرده',s6t:'مواعيد مهمة',s6l:'قبل انتهاء العقد',
  notAdvice:'معلومات عامة، وليست استشارة قانونية.',more:'المزيد',foot:'مسموح · عرض تجريبي بأمثلة افتراضية.',close:'إغلاق',menu:'القائمة',
  vStay:'الإيجار السنوي إذا بقيت',vComp:'الإيجار السنوي لمسكن مشابه',vCosts:'تكاليف الانتقال، حسب عروض الأسعار لديك',aedPh:'درهم',vAgent:'عمولة الوسيط',vMovers:'شركة النقل',
  vConnect:'توصيل الخدمات، غير المسترد',vEjari:'تسجيل إيجاري',vOther:'تكاليف أخرى',vFees:'الرسوم الحالية:',vNotes:'ما الذي يهمك؟ اختياري',useEx:'استخدم أرقاماً افتراضية',vRun:'احسب',
@@ -715,11 +703,11 @@ TX.ar={
  oLonger:'عقد أطول مقابل زيادة أقل',oShort:'تمديد قصير بالإيجار الحالي',addNote:'أضف ملاحظة',rNote:'ملاحظتك، اختيارية',rDraft:'صُغ ردي',
  s5h:'استرداد مبلغ التأمين',moH:'قائمة الإخلاء',dPaid:'مبلغ التأمين المدفوع',dKept:'المبلغ المحتجز',dMsg:'رسالة المالك بشأن الخصومات',options:'خيارات',dOut:'تاريخ الإخلاء',
  dWithin:'اطلب الرد خلال',d7:'7 أيام',d14:'14 يوماً',d21:'21 يوماً',dPhotos:'لديّ صور مؤرخة عند الاستلام والإخلاء',useEx2:'استخدم المثال الافتراضي',dDraft:'صُغ طلبي',
- rulesCount:'القواعد تحسب',remCopy:'انسخ المواعيد',remManualL:'المواعيد للنسخ',gh:'ملخص التجديد',modeH:'الوضع',consentReset:'اسألني مجدداً قبل استخدام الذكاء الاصطناعي',rulesh:'القواعد والمصادر',
+ rulesCount:'القواعد تحسب',remCopy:'انسخ المواعيد',remManualL:'المواعيد للنسخ',gh:'ملخص التجديد',modeH:'الوضع',consentReset:'اسألني مجدداً قبل استخدام الذكاء الاصطناعي',rulesh:'المصادر',
  emirate:'الإمارة',dubai:'دبي',abuDhabi:'أبوظبي، قريباً',scaleSum:'كيف يُحسب الحد الأقصى للزيادة',bandH:'ما أنجزه مسموح',vh:'في الأخبار',sh:'كيف نحافظ على سلامتك',ph:'الخصوصية',
- moreInfo:'القواعد والمصادر والخصوصية',reset:'إعادة ضبط العرض',admin:'المشرف',exH:'أمثلة افتراضية',exLate:'إشعار متأخر وزيادة كبيرة',exOntime:'إشعار في وقته، تحقق من المؤشر',exAr:'رسالة بالعربية',
+ moreInfo:'القواعد والمصادر والخصوصية',reset:'إعادة ضبط',admin:'المشرف',exH:'أمثلة',exLate:'إشعار متأخر وزيادة كبيرة',exOntime:'إشعار في وقته، تحقق من المؤشر',exAr:'رسالة بالعربية',
  exVacate:'إشعار بالإخلاء',exTrick:'تعليمات مخفية',adminH:'المشرف: الذكاء الاصطناعي',consentH:'إرسال إلى الذكاء الاصطناعي؟',consentYes:'أرسل إلى الذكاء الاصطناعي',consentNo:'استخدم الوضع الأساسي بدلاً من ذلك',
- readingAI:'الذكاء الاصطناعي يقرأ…',readingRules:'جارٍ القراءة…',lookingAI:'جارٍ البحث عن ذكاء اصطناعي…',exLoaded:'مثال افتراضي: {name}',errNoMsg:'الصق الرسالة، أو أضف صورة لها.',
+ readingAI:'الذكاء الاصطناعي يقرأ…',readingRules:'جارٍ القراءة…',lookingAI:'جارٍ القراءة…',exLoaded:'{name}',errNoMsg:()=>aiOn()&&AI.images?'الصق الرسالة، أو أضف صورة لها.':'الصق الرسالة.',
  errPhotoNoAI:'قراءة الصور تحتاج إلى ذكاء اصطناعي. الصق النص بدلاً منها.',errPhotoRead:'هذا الملف ليس صورة. جرّب JPEG أو PNG.',photoAI:'تُرسل الصورة كما هي. غطِّ أرقام الهوية أولاً.',
  photoNoAI:'الصور تحتاج إلى ذكاء اصطناعي. الصق النص بدلاً منها.',photoAlt:'صورتك لرسالة المالك',readByAI:'قرأها الذكاء الاصطناعي · {by}',readByRules:'قرأتها القواعد',claim:'تدّعي الرسالة:',
  injWarn:'تحاول هذه الرسالة توجيه تعليمات إلى الذكاء الاصطناعي، وقد تم تجاهلها. لا تدفع أبداً عبر رابط أو رقم في رسالة.',payWarn:'في هذه الرسالة رابط أو رقم للدفع. لا تدفع عبره. تواصل عبر جهة تثق بها.',
@@ -729,9 +717,9 @@ TX.ar={
  tag_ai:'ذكاء اصطناعي',tag_rule:'قاعدة',tag_you:'أنت',tag_example:'مثال',tag_missing:'ناقص',
  m_whatsapp:'واتساب أو رسالة نصية',m_email:'بريد إلكتروني',m_letter:'رسالة باليد',m_registered_mail:'بريد مسجل',m_notary:'كاتب العدل',m_phone:'مكالمة هاتفية',m_unknown:'غير متأكد',
  errRent:'اكتب كل إيجار كمبلغ سنوي، مثل 63,000.',errFill:'أكمل: {list}.',u_current:'أي مبلغ هو الإيجار الحالي',u_date:'هل التاريخ هو تاريخ انتهاء العقد',
- gateConfirm:'أكّد المعلومات أولاً.',gateStart:'افحص رسالة في الأعلى أولاً.',gateDemo:'نتيجة افتراضية: {res}. ليست نتيجة حقيقية من المؤشر.',errPct:'اكتب النسبة التي ظهرت، مثل 5.',
+ gateConfirm:'أكّد المعلومات أولاً.',gateStart:'افحص رسالة في الأعلى أولاً.',gateDemo:'نتيجة مثال: {res}.',errPct:'اكتب النسبة التي ظهرت، مثل 5.',
  goStep1:'اذهب إلى المعلومات',res_zero:'لا يُسمح بأي زيادة',res_pct:'حتى {p}%',v_allowed:'مسموحة',v_notallowed:'غير مسموحة',v_unsure:'غير مؤكد',madeUpIdx:'مؤشر افتراضي',
- resFine:'ليست استشارة قانونية. رُوجعت القواعد في {d}.',resFineDemo:'تستخدم نتيجة مؤشر افتراضية، فهي ليست إجابة حقيقية.',rulesOld:'آخر مراجعة للقواعد في {d}. راجع المصادر الرسمية أيضاً.',
+ resFine:'ليست استشارة قانونية. رُوجعت القواعد في {d}.',resFineDemo:'',rulesOld:'آخر مراجعة للقواعد في {d}. راجع المصادر الرسمية أيضاً.',
  unsureNote:'لا يوجد مراجع متصل هنا.',goReply:'صُغ رداً',pSum:'ملخص لشخص يراجعه',
  sumH:'ملخص لشخص يراجعه',sumNote:'أعدّته القواعد من معلوماتك. لا يرسله مسموح إلى أي جهة.',pCopy:'انسخ الملخص',sumLabel:'نص الملخص',
  i_oddDates_h:'التواريخ غير منطقية.',i_oddDates_t:'يبدو أن الرسالة وصلت بعد انتهاء العقد.',
@@ -782,16 +770,16 @@ TX.ar={
  st_pays:({d,y,m})=>`الانتقال يكلف نحو ${d} أكثر في السنة الأولى، ثم يوفر ${y} سنوياً، فيسترد تكلفته بعد نحو ${arCount(m,['شهر','شهرين','أشهر','شهراً','شهر'])}.`,
  st_cheaper:'البقاء أوفر: الانتقال يكلف نحو {d} أكثر في السنة الأولى.',st_cheaperHigher:'البقاء أوفر: الانتقال يكلف نحو {d} أكثر في السنة الأولى، وإيجار المسكن الآخر أعلى أيضاً.',
  rowStay:'سنة إذا بقيت',rowOther:'سنة في المسكن الآخر',rowCosts:'تكاليف الانتقال',rowMove:'السنة الأولى إذا انتقلت',byRules:'حسبتها القواعد',byRulesEx:'حسبتها القواعد بأرقام افتراضية',
- notCounted:'غير محسوب: تأمين المسكن الجديد، فهو يُسترد في النهاية ({src}).',exNums:'أرقام افتراضية. استخدم أرقامك.',weighBtn:'ماذا أوازن أيضاً؟ (ذكاء اصطناعي)',
+ notCounted:'غير محسوب: تأمين المسكن الجديد، فهو يُسترد في النهاية ({src}).',exNums:'',weighBtn:'ماذا أوازن أيضاً؟ (ذكاء اصطناعي)',
  weighNeed:'هذا يحتاج إلى ذكاء اصطناعي. الحسابات أعلاه بالقواعد فقط.',weighBusy:'الذكاء الاصطناعي يفكر…',weighBy:'ذكاء اصطناعي · {by}',weighBad:'أضاف الذكاء الاصطناعي أرقاماً ليست في حساباتك، فأُخفيت ملاحظته.',
  errStay:'اكتب الإيجار السنوي إذا بقيت، مثل 63,000.',errComp:'اكتب الإيجار السنوي لمسكن مشابه.',errCosts:'تكاليف الانتقال يجب أن تكون أرقاماً أو فارغة.',
  draftedBy:'صاغه الذكاء الاصطناعي · {by}',template:'قالب جاهز',staleDraft:'كُتب من فحص سابق. صُغه من جديد.',yourReply:'ردك. عدّله ثم أرسله بنفسك.',
  rCopy:'انسخ ردي',replyFine:'لا يرسل مسموح هذا الرد. إذا ردّ المالك بإشعار أو نزاع، استشر شخصاً أولاً.',drafting:'الذكاء الاصطناعي يصوغ…',filling:'جارٍ ملء القالب…',
- errOffer:'اكتب عرضك كمبلغ سنوي، مثل 54,600، أو اتركه فارغاً.',demoDraft:'تستخدم نتيجة مؤشر افتراضية. تحقق من النتيجة الحقيقية قبل الإرسال.',
+ errOffer:'اكتب عرضك كمبلغ سنوي، مثل 54,600، أو اتركه فارغاً.',demoDraft:'',
  itemsAI:'بنود قرأها الذكاء الاصطناعي · {by}',itemsRules:'بنود وجدتها القواعد',noItems:'لم تُذكر خصومات مفصلة. الطلب يسأل عن قائمة كاملة.',noAmount:'بلا مبلغ',
  sumOk:'مجموع البنود {s}، وهو المبلغ المحتجز.',sumBad:'مجموع البنود {s}، لكن المحتجز {k}. اسأل عن الفرق البالغ {d}.',yourRequest:'طلبك. عدّله ثم أرسله بنفسك.',
  dCopy:'انسخ طلبي',depFine:'لا رد؟ يختص مركز فض المنازعات الإيجارية بالنزاعات ({src}). اعرض ملفك على شخص أولاً.',errPaid:'اكتب مبلغ التأمين المدفوع، مثل 5,000.',
- errKept:'اكتب المبلغ المحتجز، من 0 حتى مبلغ التأمين.',exDep:'مثال افتراضي: الشقة والمبالغ متخيَّلة.',readingDed:'الذكاء الاصطناعي يقرأ الخصومات…',
+ errKept:'اكتب المبلغ المحتجز، من 0 حتى مبلغ التأمين.',exDep:'',readingDed:'الذكاء الاصطناعي يقرأ الخصومات…',
  moCount:'{d} من {n}',moWhy:'لماذا يهم: {a} · {b}',
  mo0:'التقط صوراً مؤرخة ومقطع فيديو لكل غرفة يوم التسليم.',mo1:'قارنها بصور الاستلام أو تقرير المعاينة.',mo2:'نظّف، وأصلح الأضرار الصغيرة التي تسببت بها. الاستهلاك العادي ليس عليك.',
  mo3:'صوّر قراءات العدادات.',mo4:'أغلق حسابات الخدمات أو انقلها، واحتفظ بالفواتير النهائية.',mo5:'سلّم كل المفاتيح والبطاقات، واطلب محضر تسليم موقعاً.',mo6:'اطلب كتابياً استرداد التأمين، مع قائمة مفصلة بأي خصومات.',
@@ -1253,10 +1241,11 @@ async function copyText(text,msgEl,manualEl){let ok=false;
   else{msgEl.textContent=t('copyBlocked');if(manualEl){if(manualEl.tagName==='TEXTAREA'&&manualEl.readOnly){manualEl.value=text;manualEl.hidden=false}manualEl.focus();manualEl.select()}}
   return ok}
 function onAIChange(){const on=aiOn();
-  document.querySelectorAll('[data-airole]').forEach(el=>{const r=el.dataset.airole;if(r==='weigh'){el.hidden=!on;el.textContent=t('role_weigh');return}el.textContent=on?t('role_aiDraft'):t('role_tpl')})}
+  document.querySelectorAll('[data-airole]').forEach(el=>{const r=el.dataset.airole;el.hidden=!on;el.textContent=r==='weigh'?t('role_weigh'):t('role_aiDraft')});
+  const pb=$('photoBtn');if(pb)pb.hidden=!(on&&AI.images)}
 /* "Basic mode" is shown only under More */
 function renderMode(){const m=$('modeNote');if(!m)return;const c=aiReady()?consentOf():'';
-  m.textContent=aiOn()?t('modeAI',{name:AI.kind==='sample'?'Claude':AI.name})+(AI.local?'':' '+whereText()+'.'):c==='no'?t('modeDeclined'):t('modeBasic');
+  m.textContent=aiOn()?t('modeAI',{name:AI.kind==='sample'?'Claude':AI.name})+(AI.local?'':' '+whereText()+'.'):c==='no'?t('modeDeclined'):'';
   $('consentReset').hidden=!Object.keys(sess.get(CONSENT,{})||{}).length}
 function renderPhotoHint(){const h=$('photoHint');if(!h)return;h.hidden=!photo;h.textContent=aiOn()&&AI.images?t('photoAI'):t('photoNoAI')}
 
@@ -1489,7 +1478,7 @@ function runCheck(){const err=$('cErr');err.textContent='';
 function renderCalc(){const c=S.calc||{};document.querySelectorAll('input[name="calc"]').forEach(r=>{r.checked=r.value===c.kind});$('cPct').value=c.pct||''}
 function renderCheck(){
   const gate=$('cGate');gate.hidden=!!(S.facts&&S.confirmed);gate.textContent=S.facts?t('gateConfirm'):t('gateStart');
-  const box=$('cResult');const c=S.check;if(!c){box.innerHTML='';return}
+  const box=$('cResult');const c=S.check;$('tools').hidden=!c;if(!c){box.innerHTML='';return}
   const V=VERDICT[c.verdict];const old=daysBetween(CHECKED,todayISO())>120;
   box.innerHTML=`<div class="result" id="cRes" tabindex="-1" aria-labelledby="cResV">
     <p class="status" id="cResV">${symHTML(V[2])}<span>${esc(vLabel(c.verdict))}</span>${c.demo?`<span class="note">· ${esc(t('madeUpIdx'))}</span>`:''}</p>
@@ -1497,7 +1486,7 @@ function renderCheck(){
     <p class="note">${esc(say(c.next))}</p>
     ${c.verdict==='unsure'?`<p class="note">${esc(t('unsureNote'))}</p>`:''}
     ${old?`<p class="note">${esc(t('rulesOld',{d:longDate(CHECKED)}))}</p>`:''}
-    <div class="row"><button type="button" class="tbtn" data-go="h-s4">${esc(t('goReply'))}</button><button type="button" class="tbtn" id="pSum">${esc(t('pSum'))}</button></div>
+    <div class="row"><button type="button" class="tbtn" id="pSum">${esc(t('pSum'))}</button></div>
     <div id="pOut"></div>
     <details class="more"><summary>${esc(t('more'))}</summary><div class="more-body">
      <ul class="list">${c.items.map(i=>`<li>${symHTML(i.s)}<div><span class="vh">${esc(SR_STATUS[i.s][UI.lang]||SR_STATUS[i.s].en)} </span><b>${esc(itemH(i))}</b> ${esc(itemT(i))}${i.r.length?`<span class="srcs">${i.r.map(srcLink).join('')}</span>`:''}</div></li>`).join('')}</ul>
@@ -1781,7 +1770,7 @@ function renderGlance(){const g=$('glance');if(!S.facts){g.innerHTML=`<p class="
 function renderBand(){const b=$('band');if(!b)return;const rows=[[K.read,'b_read'],[K.checks,'b_checks'],[K.caught,'b_caught'],[K.drafts,'b_drafts'],[K.dates,'b_dates'],[0,'b_sent']];
   b.innerHTML=rows.map(([v,k])=>`<div><b>${v||0}</b><span>${esc(t(k))}</span></div>`).join('')}
 const RULE_ORDER=['notice90','smart','index','calc','noRise','vacate','deposit','condition','rdc'];
-function renderRules(){$('ruleList').innerHTML=RULE_ORDER.map(id=>{const R=RULES[id];return `<li class="plain"><b>${esc(ruleTitle(id))}</b><p class="note">${esc(ruleText(id))}</p><a class="src" href="${R.url}" target="_blank" rel="noopener noreferrer">${esc(ruleSrc(id))} · ${esc(shortDate(R.d))}</a></li>`}).join('');
+function renderRules(){$('ruleList').innerHTML=RULE_ORDER.map(id=>{const R=RULES[id];return `<li class="plain"><b>${esc(ruleTitle(id))}</b><a class="src" href="${R.url}" target="_blank" rel="noopener noreferrer">${esc(ruleSrc(id))} · ${esc(shortDate(R.d))}</a></li>`}).join('');
   $('scale').innerHTML=`<p class="note">${esc(t('scaleIntro'))}</p><ul class="steps">${['sc1','sc2','sc3','sc4','sc5'].map(k=>`<li class="plain">${esc(t(k))}</li>`).join('')}</ul><p class="note">${esc(t('scaleSrc'))}</p>${srcLink('index')}`}
 function renderAD(){$('adNote').innerHTML=`<p>${esc(t('adText'))}</p><p>${esc(t('adCaveat'))}</p><span class="srcs">${AD_SRCS.map(([a,d,u])=>`<a class="src" href="${u}" target="_blank" rel="noopener noreferrer">${esc(a)} · ${esc(shortDate(d))}</a>`).join('')}</span>`}
 const VOICES=[
@@ -1825,7 +1814,7 @@ document.querySelectorAll('dialog.sheet').forEach(d=>{
 const _focusEl=focusEl;
 focusEl=function(id){const el=$(id);if(el&&!el.closest('dialog')){for(const it of sheetStack.slice().reverse())closeSheet(it.d,true)}_focusEl(id)};
 document.addEventListener('click',e=>{const o=e.target.closest('[data-sheet]');
-  if(o){e.preventDefault();const from=o.closest('dialog');if(from&&from.id==='sheetMenu')closeSheet(from,true);openSheet(o.dataset.sheet);return}
+  if(o){e.preventDefault();const from=o.closest('dialog');openSheet(o.dataset.sheet);return}
   const c=e.target.closest('[data-close]');if(c){closeSheet(c.closest('dialog'));return}
   const g=e.target.closest('[data-go]');if(g)focusEl(g.dataset.go)});
 
@@ -1882,7 +1871,7 @@ $('emAD').addEventListener('click',()=>{const n=$('adNote');n.hidden=!n.hidden;$
 $('emDubai').addEventListener('click',()=>{$('adNote').hidden=true;$('emAD').setAttribute('aria-expanded','false')});
 $('langBtn').addEventListener('click',()=>applyLang(UI.lang==='ar'?'en':'ar'));
 $('themeBtn').addEventListener('click',()=>{theme=THEMES[(THEMES.indexOf(theme)+1)%THEMES.length];store.set(THKEY,theme);applyTheme()});
-$('adminLink').addEventListener('click',()=>{closeSheet($('sheetMenu'),true);openAdmin()});
+$('adminLink').addEventListener('click',()=>{closeSheet($('sheetMore'),true);openAdmin()});
 $('consentReset').addEventListener('click',()=>{sess.del(CONSENT);onAIChange();renderMode();renderPhotoHint()});
 
 /* two-tap reset: clears the user's demo data here. The admin's AI settings stay (Admin > Forget saved keys removes them). */
@@ -1892,7 +1881,7 @@ $('reset').addEventListener('click',()=>{const b=$('reset');
   clearTimeout(resetT);resetArmed=false;gen++;depGen++;freeAll(['mRead','rDraft','dDraft']);S=freshState();K=freshCounts();tour={};moveout={};photo=null;
   try{[SKEY,TKEY,CKEY,MKEY].forEach(k=>localStorage.removeItem(k))}catch(e){}sess.del(CONSENT);
   $('mPhoto').value='';$('mThumb').innerHTML='';['mErr','cErr','vErr','rErr','dErr','remMsg'].forEach(id=>{$(id).textContent=''});$('remManual').hidden=true;
-  save();renderAll();b.textContent=t('reset');$('resetMsg').textContent=t('resetDone');closeSheet($('sheetMenu'),true);focusEl('h-s1')});
+  save();renderAll();b.textContent=t('reset');$('resetMsg').textContent=t('resetDone');closeSheet($('sheetMore'),true);focusEl('h-s1')});
 
 function renderAll(){renderIntake();renderFacts();renderCalc();renderCheck();renderStay();renderReply();renderMoveout();renderDep();renderRem();renderGlance();renderBand();renderTour();renderRules();renderAD();renderLists();applyTheme();onAIChange();renderMode();renderPhotoHint()}
 

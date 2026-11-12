@@ -5,26 +5,29 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
 <meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#2F663C" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#2F663C" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1B1D21" media="(prefers-color-scheme: dark)">
 <title>UAE Agents · وكلاء الإمارات</title>
 <meta name="description" content="One place for life in the UAE: rules, scam messages, late salary, rent, city repairs and interviews.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%231E46E6' d='M12 2a10 10 0 1 1 0 20H2V12A10 10 0 0 1 12 2z'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%2392722A' d='M12 2a10 10 0 1 1 0 20H2V12A10 10 0 0 1 12 2z'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600&display=swap" rel="stylesheet">
 <style>
-/* Option A, "Super-app": white, one electric cobalt, near-black ink. Rubik for English and Arabic.
+/* Super-app in the colours of UAE government websites (tools/calm-design.md): white and cream, gold for identity,
+   green for actions, near-black ink. Rubik for English and Arabic.
    Three sizes only: 15px notes, 17px body and names, 28px title (34px on desktop). Weights 400 and 600. */
 :root{
- --bg:#FFFFFF;--ink:#131417;--muted:#585A60;--tile:#F2F1EE;--tile-hi:#EAE9E4;--line:#E4E3DF;
- --brand:#2F663C;--on-brand:#FFFFFF;--spot:#2F663C;--tint:#E4F4E7;--focus:#2F663C;
- --field:#FFFFFF;--field-ink:#131417;--hint:#66686E;
+ --bg:#FFFFFF;--ink:#232528;--muted:#5F646D;--tile:#F7F7F7;--tile-hi:#EDEEF0;--line:#E1E3E5;
+ --brand:#21633E;--on-brand:#FFFFFF;--link:#21633E;--spot:#B68A35;--tint:#F9F7ED;--focus:#21633E;
+ --gold:#B68A35;--gold-ink:#92722A;--gold-line:#D7BC6D;--band-a:#FFFFFF;--band-b:#FAF3E3;
+ --field:#FFFFFF;--field-ink:#232528;--hint:#66686E;
 }
 @media (prefers-color-scheme:dark){:root{
- --bg:#0D0E11;--ink:#F2F2F4;--muted:#A3A6AE;--tile:#191A1F;--tile-hi:#212229;--line:#26272D;
- --brand:#2F663C;--spot:#6FB97F;--tint:#24432B;--focus:#A0D5AB;
- --field:#0D0E11;--field-ink:#F2F2F4;--hint:#9A9DA6;
+ --bg:#0E0F12;--ink:#F7F7F7;--muted:#9EA2A9;--tile:#1B1D21;--tile-hi:#232528;--line:#3E4046;
+ --brand:#2F663C;--link:#6FB97F;--spot:#CBA344;--tint:#2A2417;--focus:#A0D5AB;
+ --gold:#CBA344;--gold-ink:#D7BC6D;--gold-line:#7C5E24;--band-a:#1B1D21;--band-b:#19160E;
+ --field:#0E0F12;--field-ink:#F7F7F7;--hint:#9EA2A9;
 }}
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%;background:var(--bg)}
@@ -35,17 +38,17 @@ button,textarea{font:inherit;color:inherit}
 :focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 .wrap{max-width:1000px;margin-inline:auto}
 
-/* Cobalt top: brand, one question, the ask bar */
-.top{background:var(--brand);color:var(--on-brand);--focus:#FFFFFF;border-end-start-radius:28px;border-end-end-radius:28px}
+/* Light top with a thin gold line: brand, one question, the ask bar */
+.top{background:linear-gradient(180deg,var(--band-a),var(--band-b));color:var(--ink);box-shadow:inset 0 4px 0 var(--gold);border-end-start-radius:28px;border-end-end-radius:28px}
 .top .wrap{padding:6px 16px 16px}
 .bar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px}
 .brand{display:flex;align-items:center;gap:10px;font-weight:600}
 .mark{width:22px;height:22px;flex:none;fill:currentColor}
 [dir=rtl] .mark{transform:scaleX(-1)}
-.lang{min-width:44px;min-height:44px;padding:0 16px;border:1.5px solid rgba(255,255,255,.75);border-radius:22px;background:transparent;font-size:15px;font-weight:600;line-height:1;cursor:pointer}
-h1{margin:16px 0 16px;font-size:28px;line-height:1.15;font-weight:600}
+.lang{min-width:44px;min-height:44px;padding:0 16px;border:1.5px solid var(--muted);border-radius:22px;background:transparent;font-size:15px;font-weight:600;line-height:1;cursor:pointer}
+h1{margin:16px 0 16px;font-size:28px;line-height:1.15;font-weight:600;color:var(--gold-ink)}
 :root[lang=en] h1{letter-spacing:-.01em}
-.field{display:flex;align-items:flex-end;gap:6px;min-height:56px;padding:6px;padding-inline-start:20px;border-radius:28px;background:var(--field);color:var(--field-ink)}
+.field{display:flex;align-items:flex-end;gap:6px;min-height:56px;padding:6px;padding-inline-start:20px;border-radius:28px;background:var(--field);color:var(--field-ink);box-shadow:inset 0 0 0 1.5px var(--gold-line)}
 .field textarea{flex:1;min-width:0;height:44px;max-height:148px;margin:0;padding:10px 0;border:0;background:transparent;font-size:17px;line-height:24px;resize:none;overflow-y:auto}
 .field textarea::placeholder{color:var(--hint);opacity:1}
 .go{flex:none;display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:var(--brand);color:#FFFFFF;cursor:pointer;-webkit-tap-highlight-color:transparent}
@@ -57,7 +60,7 @@ h1{margin:16px 0 16px;font-size:28px;line-height:1.15;font-weight:600}
 }
 .route{margin:10px 4px 0;min-height:22px;font-size:15px;line-height:22px}
 .route b{font-weight:600}
-.route .soft{color:rgba(255,255,255,.84)}
+.route .soft{color:var(--muted)}
 .route [hidden]{display:none}
 
 /* The six agents */
@@ -100,7 +103,7 @@ main.wrap{padding:16px 16px 24px}
  .agent:hover{background:var(--tile-hi)}
  .agent.match:hover{background:var(--tint)}
  .ibtn:hover{background:var(--tile)}
- .lang:hover{background:rgba(255,255,255,.14)}
+ .lang:hover{background:var(--tile)}
 }
 @media (prefers-reduced-motion:no-preference){
  .agent{transition:transform .18s cubic-bezier(.3,.7,.4,1),background-color .18s,box-shadow .18s}
@@ -160,40 +163,39 @@ main.wrap{padding:16px 16px 24px}
     <textarea id="q" name="q" rows="1" dir="auto" maxlength="800" enterkeyhint="go" placeholder="Ask anything"></textarea>
     <button class="go" type="submit" data-ta="send" aria-label="Go"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h13M12.5 6l6 6-6 6"/></svg></button>
    </div>
-   <p class="route"><span class="soft" id="hint" data-t="hint">Or pick one below.</span><span id="route" aria-live="polite"></span></p>
+   <p class="route"><span class="soft" id="hint" data-t="hint">Or pick one.</span><span id="route" aria-live="polite"></span></p>
   </form>
  </div>
 </header>
 
 <main class="wrap">
- <h2 class="vh" data-t="h2">Or pick one</h2>
  <ul class="agents">
   <li><a class="agent" href="answers/">
    <svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path class="s" d="M30 7h8v18l-4-3-4 3z"/><path d="M24 15C19.5 12.3 13.5 11 6 11v25c7.5 0 13.5 1.3 18 4 4.5-2.7 10.5-4 18-4V11c-7.5 0-13.5 1.3-18 4zM24 15v25M11 19.5c2.6.2 5 .7 7 1.4M11 25.5c2.6.2 5 .7 7 1.4"/></svg>
    <span lang="en">Inzain</span><span lang="ar">انزين</span>
-   <span class="line" data-t="w1">UAE rules, answered</span></a></li>
+   <span class="line" data-t="w1">Ask UAE rules</span></a></li>
   <li><a class="agent" href="message-check/">
    <svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M11 8h16a6 6 0 0 1 6 6v10a6 6 0 0 1-6 6H17l-6 6v-6a6 6 0 0 1-6-6V14a6 6 0 0 1 6-6zM12 15.5h13M12 21.5h7"/><circle class="s" cx="33" cy="29" r="7.5"/><circle cx="33" cy="29" r="7.5"/><path d="M38.5 34.5 43 39"/></svg>
    <span lang="en">Mazboot</span><span lang="ar">مضبوط</span>
-   <span class="line" data-t="w2">Is this message a scam?</span></a></li>
+   <span class="line" data-t="w2">Check a message</span></a></li>
   <li><a class="agent" href="wages/">
    <svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect x="5" y="10" width="30" height="28" rx="5"/><path d="M13 6v8M27 6v8M5 18h30M11 25h4M19 25h4M11 31h4"/><path class="s" d="M27 31c0-1.9 3.6-3.5 8-3.5s8 1.6 8 3.5v6c0 1.9-3.6 3.5-8 3.5s-8-1.6-8-3.5z"/><ellipse cx="35" cy="31" rx="8" ry="3.5"/><path d="M27 31v6c0 1.9 3.6 3.5 8 3.5s8-1.6 8-3.5v-6M27 34c0 1.9 3.6 3.5 8 3.5s8-1.6 8-3.5"/></svg>
    <span lang="en">Bil Tareekh</span><span lang="ar">بالتاريخ</span>
-   <span class="line" data-t="w3">Salary late? Keep proof</span></a></li>
+   <span class="line" data-t="w3">Prove late pay</span></a></li>
   <li><a class="agent" href="rent/">
    <svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M5 24 21 11l16 13M10 20v18h22V20M17.5 38v-9h7v9"/><circle class="s" cx="37" cy="12" r="7"/><path d="M37 15.5v-7M33.8 11.7 37 8.5l3.2 3.2"/></svg>
    <span lang="en">Masmooh</span><span lang="ar">مسموح</span>
-   <span class="line" data-t="w4">Is your rent increase allowed?</span></a></li>
+   <span class="line" data-t="w4">Check your rent</span></a></li>
   <li><a class="agent" href="city-repairs/">
    <svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path class="s" d="M27 12h8l9 26c-3.4 1.3-8.2 2-13 2s-9.6-.7-13-2z"/><path d="M14 42V14a7 7 0 0 1 7-7h4M25 7h12l-2 5h-8zM9 42h10"/></svg>
    <span lang="en">Wareeni</span><span lang="ar">ورّيني</span>
-   <span class="line" data-t="w5">Report it. See it fixed</span></a></li>
+   <span class="line" data-t="w5">Report a problem</span></a></li>
   <li><a class="agent" href="careers/">
    <svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path class="s" d="M27.2 17.6c1.5 4.8 2.4 9.6 2.4 14.2a2.4 2.4 0 0 1-4.8 0c0-4.6.9-9.4 2.4-14.2z"/><path d="M6 43V21.5c0-3 1.8-5.6 4.6-6.6L18 12M42 43V21.5c0-3-1.8-5.6-4.6-6.6L30 12M18 12c0 3.3 2.7 6 6 6s6-2.7 6-6c-1.7-1.3-3.8-2-6-2s-4.3.7-6 2zM24 18v12"/></svg>
    <span lang="en">Zaheb</span><span lang="ar">زاهب</span>
-   <span class="line" data-t="w6">Ready for the interview</span></a></li>
+   <span class="line" data-t="w6">Interview practice</span></a></li>
  </ul>
- <p class="foot" data-t="foot">General information, not legal advice.</p>
+ <p class="foot" data-t="foot">Not legal advice. Not a government service.</p>
 </main>
 
 <dialog id="view" aria-labelledby="viewName">
@@ -210,21 +212,71 @@ main.wrap{padding:16px 16px 24px}
 (function(){
 'use strict';
 const root=document.documentElement;
-const AR={brand:'وكلاء الإمارات',h1:'شو تحتاج؟',label:'سؤالك',send:'انطلق',hint:'أو اختر من الأسفل.',h2:'أو اختر بنفسك',w1:'أنظمة الإمارات بوضوح',w2:'هل الرسالة احتيال؟',w3:'تأخر راتبك؟ احفظ الإثبات',w4:'هل زيادة الإيجار مسموحة؟',w5:'بلّغ، وشوف الإصلاح',w6:'جاهز للمقابلة',full:'صفحة كاملة',close:'إغلاق',foot:'معلومات عامة، وليست استشارة قانونية.',ph:'اسأل أي شيء'};
+const AR={brand:'وكلاء الإمارات',h1:'شو تحتاج؟',label:'سؤالك',send:'انطلق',hint:'أو اختر واحدًا.',w1:'اسأل عن الأنظمة',w2:'افحص رسالة مشبوهة',w3:'أثبت تأخر الراتب',w4:'افحص زيادة الإيجار',w5:'بلّغ عن عطل',w6:'استعد لمقابلة العمل',full:'صفحة كاملة',close:'إغلاق',foot:'ليست استشارة قانونية ولا خدمة حكومية.',ph:'اسأل أي شيء'};
 const EN={};
 document.querySelectorAll('[data-t]').forEach(e=>{EN[e.dataset.t]=e.textContent});
 document.querySelectorAll('[data-ta]').forEach(e=>{EN[e.dataset.ta]=e.getAttribute('aria-label')});
 const Q=document.getElementById('q');EN.ph=Q.placeholder;
 const AGENTS={answers:{path:'answers/',en:'Inzain',ar:'انزين'},message:{path:'message-check/',en:'Mazboot',ar:'مضبوط'},wages:{path:'wages/',en:'Bil Tareekh',ar:'بالتاريخ'},rent:{path:'rent/',en:'Masmooh',ar:'مسموح'},repairs:{path:'city-repairs/',en:'Wareeni',ar:'ورّيني'},careers:{path:'careers/',en:'Zaheb',ar:'زاهب'}};
-// Simple router: a few strong words pick the agent; everything else goes to Inzain, which answers any UAE rules question.
-const RULES=[
- ['message',/(scam|fraud|suspicious|phishing|\botp\b|\bsms\b|whats ?app message|text message|this link|verify (my|your) account|won a prize|احتيال|نصب|رسالة مشبوهة|وصلتني رسالة|رابط|رمز التحقق|مشبوه)/i],
- ['wages',/(not (been )?paid|unpaid|salary (is )?(late|delayed|not)|late salary|no salary|\bwps\b|withheld|ما استلمت|راتب.{0,12}(متأخر|ما نزل)|تأخر الراتب|بدون راتب)/i],
- ['rent',/(rent (increase|hike|renewal)|landlord.{0,30}(increase|raise)|increase.{0,20}rent|renewal notice|زيادة الإيجار|رفع الإيجار|تجديد العقد|المالك.{0,20}زيادة)/i],
- ['repairs',/(broken|leak|pothole|street ?light|lamp ?post|garbage|rubbish|overflow|damaged (road|pavement|bench)|playground|عطل|تسرب|حفرة|إنارة|مكسور|نفايات|حديقة)/i],
- ['careers',/(interview|\bcv\b|resume|job offer|career|first day at work|new job|مقابلة|سيرة ذاتية|وظيفة جديدة|عرض عمل)/i],
-];
-function pick(t){for(const [k,re] of RULES)if(re.test(t))return k;return 'answers'}
+/*ROUTER-START*/
+// Router: whole words and phrases only (Arabic prefixes allowed). Mazboot needs scam context, Masmooh covers rent and eviction.
+// A message that looks like a scam goes to Mazboot; one other clear match goes to that agent; anything unsure or mixed goes to Inzain.
+const norm=s=>String(s||'').toLowerCase()
+ .replace(/[ً-ٰٟـ]/g,'')
+ .replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه')
+ .replace(/ڤ/g,'ف').replace(/پ/g,'ب').replace(/[چگ]/g,'ك')
+ .replace(/['’`ʼ]/g,'')
+ .replace(/[^\p{L}\p{N}]+/gu,' ').trim();
+const mk=ph=>{
+ const n=norm(ph),ar=/[؀-ۿ]/.test(n);
+ const esc=x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+ if(!ar)return new RegExp(' '+esc(n)+'(?:s|es|d|ed|ing)? ');
+ const stem=n.endsWith('ه')?esc(n.slice(0,-1))+'(?:ه|ت)':esc(n);
+ return new RegExp(' (?:[وفبلك]{0,2}(?:ال)?|لل|ولل)'+stem+'(?:ه|ها|ي|ك|كم|هم|نا|ات|ين|ون)? ');
+};
+const L=s=>s.split('|').map(mk);
+const RULES={
+ message:{
+  any:L('scam|scammer|fraud|fraudulent|fraudster|phishing|phish|suspicious|احتيال|احتيالي|محتال|نصب|نصاب|نصابين|مشبوه|تصيد|nasb|nasaab|nassab|ehtiyal|e7tyal|ehtial|mashbooh|mashbooha|mashbouh|mashbouha|mashbuh|mashbuha|mshbooh|mshbooha'),
+  pairs:[[
+   L('message|sms|link|whatsapp|whats app|email|otp|voice note|phone call|caller|رساله|رسائل|رابط|روابط|مكالمه|اتصل|اتصلوا|اتصلت|واتس|واتساب|ايميل|بريد|رمز التحقق|رمز|resala|risala|rsala|rabit|mukalama|mkalma|watsapp'),
+   L('click|verify|verifying|verification|confirm your|update your|suspended|blocked|locked|frozen|expire|expired|prize|won|winner|congratulations|urgent|urgently|parcel|asked for|asked me|asking for|asking me|asks for|asks me|password|pin|fake|legit|is this real|is it real|اضغط|اضغطوا|تحقق|تحديث|بياناتك|موقوف|معلق|محظور|مجمد|جايزه|ربحت|فزت|عاجل|يطلب|يطلبون|طلبوا|طلب مني|حقيقيه|حقيقي|مزيفه|مزيف|وهميه|وهمي|mawqoof|mawqouf|jayza|jaeza|rbe7t|3ajil|3ajel')
+  ]]},
+ wages:{
+  any:L('not paid|unpaid for|unpaid salary|unpaid wages|no salary|without salary|withheld salary|salary withheld|didnt pay me|didnt get paid|not paying me|stopped paying me|refuses to pay me|owes me salary|owe me salary|wage theft|wps|wage protection|ما استلمت راتب|راتب ما نزل'),
+  pairs:[[
+   L('salary|salaries|wage|wages|paycheck|paycheque|راتب|رواتب|معاش|مستحقات|ratib|ratibi|rateb|rateby|ratbi|maash|ma3ash'),
+   L('late|delayed|delay|overdue|unpaid|withheld|withhold|stopped|not received|didnt receive|havent received|didnt get|not credited|not transferred|didnt arrive|not arrived|متاخر|متاخره|تاخر|تاخير|تاخرت|ما نزل|ما نزلت|ما وصل|ما وصلني|ما استلمت|ما استلمنا|ما دفعوا|ما دفع|ما عطوني|ما يعطوني|محتجز|محجوز|موقوف|متوقف|met2akhar|mit2akhar|mta5er|mt2akher|mitakhar|mutakhir|ta2akhar|ta5ar|ma nzal|ma nazal|ma nezal|ma wasal|ma wsal|ma istalamt|ma istlamt|ma estlamt|ma stlamt|ma dafa3o|ma dfa3o')
+  ]]},
+ rent:{
+  any:L('rent increase|rent hike|rent raise|raise the rent|raise my rent|raising the rent|raising my rent|increase my rent|increase the rent|increasing the rent|rent went up|rental increase|rent renewal|renewal notice|evict|eviction|evicting|notice to vacate|vacate|vacating|vacate notice|12 month notice|12 months notice|twelve month notice|kick me out|throw me out|asked me to leave the apartment|asked me to leave the flat|asked me to leave the house|terminate my lease|end my lease|lease termination|زياده الايجار|زياده الاجار|رفع الايجار|رفع الاجار|زياده في الايجار|زياده ايجار|اخلاء|انهاء عقد الايجار|فسخ عقد الايجار|ikhlaa|ikhla2|ikhlaa2|ekhlaa|ekhla2|ikhlae'),
+  pairs:[[
+   L('rent|rental|lease|tenancy|tenant|landlord|ejari|ايجار|اجار|مالك|مؤجر|صاحب الشقه|صاحب البيت|صاحب العماره|ijar|ejar|eejar|malik|maalik|mallak'),
+   L('increase|increased|increasing|raise|raised|raising|hike|hiked|higher|went up|going up|doubled|more expensive|renewal|renew|renewing|زياده|زيد|زاد|يزيد|يزود|رفع|يرفع|يرفعون|يرفعوا|ارفع|رفعوا|غلا|ارتفع|ارتفاع|تجديد|zyada|ziyada|zeyada|ziada|zyadeh|yzid|yzeed|yzeid|yrfa3|yarfa3|raf3|rafa3|ghala')
+  ],[
+   L('landlord|مالك|مؤجر|صاحب الشقه|صاحب البيت|صاحب العماره|malik|maalik|mallak'),
+   L('notice|leave|out|sell|selling|personal use|renovate|renovation|terminate|يطلعني|يطلعنا|يطلعوني|يخرجني|يطردني|يطرد|اخلي|انهاء|فسخ|اخطار|اشعار|انذار|yetla3ni|ytla3ni')
+  ]]},
+ repairs:{
+  any:L('pothole|street light|streetlight|lamp post|lamppost|light pole|manhole|graffiti|overflowing bin|bin overflowing|garbage not collected|rubbish not collected|trash not collected|damaged road|broken pavement|broken road|broken sidewalk|road damage|cracked road|حفره|7ofra|7fra|hofra|hufra|7ufra|zbala|zabala|zbaala'),
+  pairs:[[
+   L('broken|damaged|cracked|leaking|leak|flooded|flooding|overflowing|overflow|collapsed|dark|not working|out of order|faulty|مكسور|مكسر|تالف|متضرر|خربان|خراب|مو شغال|مب شغال|ما يشتغل|ما تشتغل|مطفي|تسرب|يتسرب|تسريب|معطل|طافح|طفح|متشقق|تشقق|mksoor|mksor|kharban|kharbana|mu shaghal|mo shaghal|mb shaghal|ma yeshtighil|ma yshtghl|tasarrub|tasarob|ta3tal|tafh'),
+   L('street|road|pavement|sidewalk|footpath|playground|garden|bench|bus stop|bin|dumpster|traffic light|road sign|beach|شارع|طريق|رصيف|حديقه|ملعب|ممشي|عمود|اعمده|اناره|اشاره|حاويه|مقعد|شاطئ|share3|shari3|tareeg|rseef|rasif|7adeeqa|7adiqa|7adeqa|mal3ab|3amood|3amod|3mood|enara|inara')
+  ],[
+   L('garbage|rubbish|trash|litter|نفايات|زباله|قمامه'),
+   L('street|road|piling|pile|collected|overflowing|overflow|dumped|bin|smell|smells|شارع|طريق|رصيف|حاويه|تتراكم|متراكمه|رائحه|ريحه')
+  ]]},
+ careers:{
+  any:L('interview|cv|my resume|a resume|your resume|the resume|update resume|cover letter|job offer|offer letter|new job|first day at work|first day of work|my first job|career|job hunting|job search|job application|مقابله|مقابله عمل|مقابله وظيفيه|سيره ذاتيه|سي في|وظيفه جديده|عرض وظيفي|عرض عمل|ابحث عن وظيفه|ابحث عن عمل|التقديم على وظيفه|moqabala|muqabala|moqabalah|muqabalah|siera zatiya|seera zatiya|wazifa jdeeda')}
+};
+const hit=(t,r)=>r.any.some(x=>x.test(t))||(r.pairs||[]).some(p=>p.every(g=>g.some(x=>x.test(t))));
+function pick(raw){
+ const t=' '+norm(raw)+' ';
+ if(hit(t,RULES.message))return 'message';
+ const found=['wages','rent','repairs','careers'].filter(k=>hit(t,RULES[k]));
+ return found.length===1?found[0]:'answers';
+}
+/*ROUTER-END*/
 const isAr=()=>root.lang==='ar';
 const nameOf=a=>isAr()?a.ar:a.en;
 const tiles=[...document.querySelectorAll('.agent')];
