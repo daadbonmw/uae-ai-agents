@@ -1,0 +1,17 @@
+Mazboot picture reader: open-source parts (loaded only when a person adds a picture)
+
+tesseract.js 7.0.0 (tesseract.esm.min.js, worker.min.js)
+  https://github.com/naptha/tesseract.js  - Apache-2.0
+  Also contains: regenerator-runtime (MIT, Facebook), buffer (MIT, Feross Aboukhadijeh), ieee754 (BSD-3-Clause, Feross Aboukhadijeh), zlib.js (MIT, imaya)
+
+tesseract.js-core 7.0.0 (tesseract-core-*-lstm.wasm.js)
+  https://github.com/naptha/tesseract.js-core  - Apache-2.0
+  The Tesseract engine built for the browser (LSTM only).
+
+@tesseract.js-data/eng 1.0.0 and @tesseract.js-data/ara 1.0.0, folder 4.0.0_best_int (lang/eng.traineddata.gz, lang/ara.traineddata.gz)
+  https://github.com/naptha/tessdata.git  - MIT (as stated in each package.json)
+
+jsQR 1.4.0 (jsQR.js, reads QR codes)
+  https://github.com/cozmo/jsQR  - Apache-2.0
+
+The Apache-2.0 text is in LICENSE-Apache-2.0.txt. Files are the unchanged npm packages. Nothing is downloaded from another site.
