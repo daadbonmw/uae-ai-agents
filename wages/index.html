@@ -527,7 +527,7 @@ rsGap:"By the worker's own records, {amt} has not arrived.",rsProbs:'Problems re
 tlStart:'First month in the pay diary: {m}. Agreed pay: {amt} a month, pay day the {d}.',tlPay:'Pay received for {m}: {amt} ({kind}){note}.',tlNote:'. Note: {x}',tlMiss:'No pay logged for {m}. It was due {d}.',
 tlFlag:'{m} pay: {label}.{late}{part}',tlFlagLate:' It came {days} after it was due ({d}).',tlFlagPart:' {total} of {exp} came.',tlCase:'Problem reported: {x}. {y}',kindFull:'full',kindPart:'part',
 tlsStart:'Diary starts: {m}, {amt} a month',tlsPay:'{amt} for {m}{part}',tlsPart:' (part)',tlsMiss:'{m}: nothing came',tlsCase:'Problem: {x}',
-priv:'Nothing you type leaves your device. Saved only in this browser. Your name stays hidden unless you show it. Fonts load from Google Fonts.',
+priv:'Nothing you type leaves your device. Saved only in this browser. Your name stays hidden unless you show it.',
 },ar:{
 name:'بالتاريخ',skip:'انتقل إلى السجل',menu:'المزيد',h1:'راتبك متأخر؟ احفظ الإثبات.',hLabel:'ماذا حدث؟',hPh:'ماذا حدث في راتبك؟',hGo:'ماذا أفعل الآن',
 actions:'الإجراءات',tPay:'راتبي',tHelp:'ماذا أفعل الآن',tCase:'ملف الحالة',
@@ -598,7 +598,7 @@ rsGap:'حسب سجل العامل، لم يصل {amt}.',rsProbs:'مشكلات م
 tlStart:'أول شهر في سجل الراتب: {m}. الراتب المتفق عليه: {amt} شهريًا، يوم الراتب {d}.',tlPay:'راتب {m}: {amt} ({kind}){note}.',tlNote:'. ملاحظة: {x}',tlMiss:'لا راتب مُسجَّل عن {m}. كان موعده {d}.',
 tlFlag:'راتب {m}: {label}.{late}{part}',tlFlagLate:' وصل بعد موعده ({d}) بـ{days}.',tlFlagPart:' وصل {total} من {exp}.',tlCase:'مشكلة مُبلَّغ عنها: {x}. {y}',kindFull:'كامل',kindPart:'جزء',
 tlsStart:'بداية السجل: {m}، {amt} شهريًا',tlsPay:'{amt} عن {m}{part}',tlsPart:' (جزء)',tlsMiss:'{m}: لم يصل شيء',tlsCase:'مشكلة: {x}',
-priv:'لا شيء تكتبه يغادر جهازك. يُحفظ في هذا المتصفح فقط. اسمك مخفي إلا إذا أظهرته. تُحمَّل الخطوط من Google Fonts.',
+priv:'لا شيء تكتبه يغادر جهازك. يُحفظ في هذا المتصفح فقط. اسمك مخفي إلا إذا أظهرته.',
 }};
 function t(k,v,l){const D=TX[l||UI]||TX.en;let s=D[k];if(s==null)s=TX.en[k];if(s==null)return k;if(v)s=s.replace(/\{(\w+)\}/g,(m,n)=>v[n]!=null?String(v[n]):'');return s}
 const isAr=l=>(l||UI)==='ar';
