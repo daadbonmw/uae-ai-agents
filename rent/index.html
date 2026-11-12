@@ -746,8 +746,12 @@ function lastPos(re,s){let p=-1,m;re.lastIndex=0;while((m=re.exec(s)))p=m.index+
 function rulesRead(text){text=normNums(text);
   const out={lang:isArText(text)?'ar':'en',current:null,asked:null,expiry:null,notice_date:null,method:'unknown',cheques:null,deposit:null,vacate:false,unclear:[]};
   const amts=[];const re=/(?:\b(?:AED|Dhs?|dirhams?)|د\.?\s?إ)\.?\s*(\d[\d,]*(?:\.\d+)?)\s*(k\b|ألف|الف|آلاف)?|(\d[\d,]*(?:\.\d+)?)\s*(k\b|ألف|الف|آلاف)?\s*(?:AED\b|Dhs?\b|dirhams?\b|درهم|دراهم|د\.?\s?إ)|\b(\d{2,3})\s*k\b/gi;
+  const near=i=>{const before=text.slice(Math.max(0,i-48),i);return {c:lastPos(CUR_W,before),w:lastPos(NEW_W,before),d:lastPos(DEP_W,before)}};
   let m;while((m=re.exec(text))){const raw=m[1]||m[3]||m[5]||'';const k=m[2]||m[4]||(m[5]?'k':'');let n=num(raw);if(n==null)continue;if(k)n*=1000;
-    const before=text.slice(Math.max(0,m.index-48),m.index);amts.push({n,c:lastPos(CUR_W,before),w:lastPos(NEW_W,before),d:lastPos(DEP_W,before)})}
+    amts.push({n,...near(m.index)})}
+  /* Amounts written without a currency ("from 60,000 to 70,000", "من 60 ألف إلى 70 ألف"): read only when fewer than two marked amounts were found. */
+  if(amts.filter(a=>a.n>=10000).length<2){const bare=/(?:^|[^\d\/.,\-])(?:([1-9]\d{0,2}(?:,\d{3})+|[1-9]\d{4,6})(?![\d\/\-]|[.,]\d)|(\d{2,3})\s*(?:ألف|الف|آلاف))/g;
+    while((m=bare.exec(text))){const n=m[1]?num(m[1]):num(m[2])*1000;if(n!=null&&n>=10000&&!amts.some(a=>a.n===n))amts.push({n,...near(m.index+1)})}}
   for(const a of amts){const best=Math.max(a.c,a.w,a.d);if(best<0)continue;
     if(best===a.d){if(out.deposit==null)out.deposit=a.n}
     else if(best===a.c){if(out.current==null&&a.n>=1000)out.current=a.n}

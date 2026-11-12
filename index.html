@@ -261,10 +261,10 @@ const mk=ph=>{
 const L=s=>s.split('|').map(mk);
 const RULES={
  message:{
-  any:L('scam|scammer|fraud|fraudulent|fraudster|phishing|phish|suspicious|احتيال|احتيالي|محتال|نصب|نصاب|نصابين|مشبوه|تصيد|nasb|nasaab|nassab|ehtiyal|e7tyal|ehtial|mashbooh|mashbooha|mashbouh|mashbouha|mashbuh|mashbuha|mshbooh|mshbooha'),
+  any:L('scam|scammer|fraud|fraudulent|fraudster|phishing|phish|suspicious|is this real|is this legit|is this fake|is this genuine|احتيال|احتيالي|محتال|نصب|نصاب|نصابين|مشبوه|تصيد|nasb|nasaab|nassab|ehtiyal|e7tyal|ehtial|mashbooh|mashbooha|mashbouh|mashbouha|mashbuh|mashbuha|mshbooh|mshbooha'),
   pairs:[[
    L('message|sms|link|whatsapp|whats app|email|otp|voice note|phone call|caller|رساله|رسائل|رابط|روابط|مكالمه|اتصل|اتصلوا|اتصلت|واتس|واتساب|ايميل|بريد|رمز التحقق|رمز|resala|risala|rsala|rabit|mukalama|mkalma|watsapp'),
-   L('click|verify|verifying|verification|confirm your|update your|suspended|blocked|locked|frozen|expire|expired|prize|won|winner|congratulations|urgent|urgently|parcel|asked for|asked me|asking for|asking me|asks for|asks me|password|pin|fake|legit|is this real|is it real|اضغط|اضغطوا|تحقق|تحديث|بياناتك|موقوف|معلق|محظور|مجمد|جايزه|ربحت|فزت|عاجل|يطلب|يطلبون|طلبوا|طلب مني|حقيقيه|حقيقي|مزيفه|مزيف|وهميه|وهمي|mawqoof|mawqouf|jayza|jaeza|rbe7t|3ajil|3ajel')
+   L('click|verify|verifying|verification|confirm your|update your|suspended|blocked|locked|frozen|expire|expired|prize|won|winner|congratulations|urgent|urgently|parcel|asked for|asked me|asking for|asking me|asks for|asks me|password|pin|fake|legit|safe|trusted|trustworthy|genuine|is this real|is it real|اضغط|اضغطوا|تحقق|تحديث|بياناتك|موقوف|معلق|محظور|مجمد|جايزه|ربحت|فزت|عاجل|يطلب|يطلبون|طلبوا|طلب مني|حقيقيه|حقيقي|مزيفه|مزيف|وهميه|وهمي|mawqoof|mawqouf|jayza|jaeza|rbe7t|3ajil|3ajel')
   ]]},
  wages:{
   any:L('not paid|unpaid for|unpaid salary|unpaid wages|no salary|without salary|withheld salary|salary withheld|didnt pay me|didnt get paid|not paying me|stopped paying me|refuses to pay me|owes me salary|owe me salary|wage theft|wps|wage protection|ما استلمت راتب|راتب ما نزل'),
@@ -276,7 +276,7 @@ const RULES={
   any:L('rent increase|rent hike|rent raise|raise the rent|raise my rent|raising the rent|raising my rent|increase my rent|increase the rent|increasing the rent|rent went up|rental increase|rent renewal|renewal notice|evict|eviction|evicting|notice to vacate|vacate|vacating|vacate notice|12 month notice|12 months notice|twelve month notice|kick me out|throw me out|asked me to leave the apartment|asked me to leave the flat|asked me to leave the house|terminate my lease|end my lease|lease termination|زياده الايجار|زياده الاجار|رفع الايجار|رفع الاجار|زياده في الايجار|زياده ايجار|اخلاء|انهاء عقد الايجار|فسخ عقد الايجار|ikhlaa|ikhla2|ikhlaa2|ekhlaa|ekhla2|ikhlae'),
   pairs:[[
    L('rent|rental|lease|tenancy|tenant|landlord|ejari|ايجار|اجار|مالك|مؤجر|صاحب الشقه|صاحب البيت|صاحب العماره|ijar|ejar|eejar|malik|maalik|mallak'),
-   L('increase|increased|increasing|raise|raised|raising|hike|hiked|higher|went up|going up|doubled|more expensive|renewal|renew|renewing|زياده|زيد|زاد|يزيد|يزود|رفع|يرفع|يرفعون|يرفعوا|ارفع|رفعوا|غلا|ارتفع|ارتفاع|تجديد|zyada|ziyada|zeyada|ziada|zyadeh|yzid|yzeed|yzeid|yrfa3|yarfa3|raf3|rafa3|ghala')
+   L('increase|increased|increasing|raise|raised|raising|rise|rising|rose|hike|hiked|higher|go up|goes up|went up|going up|doubled|more expensive|renewal|renew|renewing|زياده|زيد|زاد|يزيد|يزود|رفع|يرفع|يرفعون|يرفعوا|ارفع|رفعوا|غلا|ارتفع|ارتفاع|تجديد|zyada|ziyada|zeyada|ziada|zyadeh|yzid|yzeed|yzeid|yrfa3|yarfa3|raf3|rafa3|ghala')
   ],[
    L('landlord|مالك|مؤجر|صاحب الشقه|صاحب البيت|صاحب العماره|malik|maalik|mallak'),
    L('notice|leave|out|sell|selling|personal use|renovate|renovation|terminate|يطلعني|يطلعنا|يطلعوني|يخرجني|يطردني|يطرد|اخلي|انهاء|فسخ|اخطار|اشعار|انذار|yetla3ni|ytla3ni')
@@ -294,11 +294,28 @@ const RULES={
   any:L('interview|cv|my resume|a resume|your resume|the resume|update resume|cover letter|job offer|offer letter|new job|first day at work|first day of work|my first job|career|job hunting|job search|job application|مقابله|مقابله عمل|مقابله وظيفيه|سيره ذاتيه|سي في|وظيفه جديده|عرض وظيفي|عرض عمل|ابحث عن وظيفه|ابحث عن عمل|التقديم على وظيفه|moqabala|muqabala|moqabalah|muqabalah|siera zatiya|seera zatiya|wazifa jdeeda')}
 };
 const hit=(t,r)=>r.any.some(x=>x.test(t))||(r.pairs||[]).some(p=>p.every(g=>g.some(x=>x.test(t))));
+// A message the person received and pasted in also goes to Mazboot.
+// Strong signs: a link or a UAE mobile number (a map link does not count: people add one to a street report).
+// Soft signs: it opens the way a sender does ("Your parcel", "Dear customer", "حسابك"). A typed question is left to the rules above.
+const MAPS=/https?:\/\/(?:maps\.app\.goo\.gl|goo\.gl\/maps|(?:www\.|maps\.)?google\.[a-z.]+\/maps|maps\.apple\.com)\S*/gi;
+const LINKISH=/(?:https?:\/\/|www\.)\S|(?:^|[\s(:،])[a-z0-9-]+(?:\.[a-z0-9-]+)*(?:\.(?:com|net|org|ae|cc|top|xyz|info|app|link|site|online|shop|live|vip|club|biz)(?![a-z0-9])|\.(?:me|ly|co|io)\/)/i;
+const MOBILE=/(?:\+|00)971[\s-]?5\d|(?:^|\D)05\d[\s-]?\d{3}[\s-]?\d{4}(?!\d)/;
+const HOWTO=/^\s*(?:how (?:do|can|to|much)|where (?:do|can|is)|كيف|شلون|وين|كم )/i;
+const ASKED=/^\s*(?:how|what|when|where|why|who|which|is|are|can|could|do|does|did|will|would|should)\b|^\s*(?:كيف|شلون|وين|اين|أين|كم|متى|ليش|لماذا|هل|شو|ماذا|ما |منو|انا|أنا|عندي|ابي|أبي|ابغي|أبغي|ودي)/i;
+const YOURS=/(?:^|[.,:!\n]\s*)your /i;
+const DEAR=/^\s*dear (?:customer|client|user|valued|parents?|member|subscriber|resident|applicant|guest|tenant|winner|card ?holder|account holder)\b/i;
+const AR_YOU=/(?:^|\s)(?:عزيزي|عزيزتي|عزيزنا)\s|(?:^|\s)[وفبل]?(?:حسابك|بطاقتك|شحنتك|طردك|طلبك|فاتورتك|رصيدك|موعدك|بياناتك|هويتك|مركبتك|رقمك|اشتراكك|مخالفتك|جائزتك|جايزتك|مكافآتك|نقاطك)(?=$|[\s.,،:!؟])/;
+function pasted(raw){   // 2 = strong sign, 1 = soft sign, 0 = none
+ const s=String(raw||'').replace(MAPS,' ');
+ if(!HOWTO.test(s)&&(LINKISH.test(s)||MOBILE.test(s)))return 2;
+ return !ASKED.test(s)&&(YOURS.test(s)||DEAR.test(s)||AR_YOU.test(s))?1:0;
+}
+// A soft sign never beats a clear match for another agent: a landlord's notice ("Your rent will rise ...") is for Masmooh.
 function pick(raw){
- const t=' '+norm(raw)+' ';
- if(hit(t,RULES.message))return 'message';
+ const t=' '+norm(raw)+' ',sign=pasted(raw);
+ if(sign===2||hit(t,RULES.message))return 'message';
  const found=['wages','rent','repairs','careers'].filter(k=>hit(t,RULES[k]));
- return found.length===1?found[0]:'answers';
+ return found.length===1?found[0]:sign?'message':'answers';
 }
 /*ROUTER-END*/
 /*CODE-START*/
@@ -371,11 +388,11 @@ function show(key,t,fromHistory){
  paintName();
  const old=document.getElementById('frame');if(old)old.remove();
  const f=document.createElement('iframe');f.id='frame';f.title=nameOf(a);
- f.src=a.path+'?embed=1'+(t?'&q='+encodeURIComponent(t):'');
+ f.src=a.path+'?embed=1&lang='+root.lang+(t?'&q='+encodeURIComponent(t):'');   // the agent opens in the language of this page
  const n=opens,ready=()=>{if(opens===n)vbody.classList.remove('loading')};
  vbody.classList.add('loading');f.addEventListener('load',ready,{once:true});setTimeout(ready,8000);
  vbody.append(f);
- full.href=a.path+(t?'?q='+encodeURIComponent(t):'');
+ full.href=a.path+'?lang='+root.lang+(t?'&q='+encodeURIComponent(t):'');
  if(!dlg.open){dlg.showModal();root.classList.add('locked')}
  if(!fromHistory){const h='#'+slugOf(a);if(location.hash!==h)history.pushState({sheet:key},'',h)}
 }
