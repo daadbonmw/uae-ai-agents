@@ -966,7 +966,7 @@ if(a==='details'&&!ctx.sensitive)return false;return true};
 for(const {o} of orgs){for(const [cats,en,ar] of o.k||[]){const hit=[...asks].find(a=>ok(a)&&cats.includes(map[a]));if(!hit)continue;
 const first_=ctx.flags[0];ctx.flags.push(mzFlag('org_never',3,first_?first_.snip:snipFn({i:0,len:Math.min(30,t.length)}),{org:o.i,arg:cats.join(','),ask:hit}));return}}}
 function mzFamily(rt){let best=null,n=0;const lo=rt.toLowerCase();for(const f of MZDATA.f){if(f.i==='other')continue;let h=0;for(const x of f.sen)if(lo.includes(x))h++;for(const x of f.sar)if(rt.includes(x))h++;if(h>n){n=h;best=f}}return n>=3?best:null}
-const MZ_RISKY=/\b(?:block\w*|suspen\w+|lock\w*|expired|fail\w*|declin\w+|overdue|unpaid|outstanding|penalt\w+|fines?|violation|verify|confirm|update|renew|suspicious|unusual|unauthori[sz]ed|held|returned|undeliver\w+|refund\w*|reward\w*|bonus|prize|won|claim\w*|gift|action required|investigat\w+|legal|court|summons|arrest\w*|cancel+ed|terminat\w+|deactivat\w+|disconnect\w*|restrict\w*|frozen|closed|banned|compromised|hacked)\b|محظور|موقوف|معلق|مجمد|مغلق|منتهي(?!ه?\s*ب)|تحديث|غرامه|مخالفه|متاخر|جائزه|مكافا|استرداد|الغاء|تعليق|قضيه|عاجل/i;
+const MZ_RISKY=/\b(?:block\w*|suspen\w+|lock(?:ed|ing|out)?|expired|fail\w*|declin\w+|overdue|unpaid|outstanding|penalt\w+|fines?|violation|verify|confirm|update|renew|suspicious|unusual|unauthori[sz]ed|held|returned|undeliver\w+|refund\w*|reward\w*|bonus|prize|won|claim\w*|gift|action required|investigat\w+|legal|court|summons|arrest\w*|cancel+ed|terminat\w+|deactivat\w+|disconnect\w*|restrict\w*|frozen|closed|banned|compromised|hacked)\b|محظور|موقوف|معلق|مجمد|مغلق|منتهي(?!ه?\s*ب)|تحديث|غرامه|مخالفه|متاخر|جائزه|مكافا|استرداد|الغاء|تعليق|قضيه|عاجل/i;
 const GEN_ORG=/\b(?:bank|police|ministry|government|municipality|authority|customs|court|courier|post office|immigration|telecom|insurance|exchange|dhl|ups|amazon|smsa|naqel|netflix|apple|microsoft|google|paypal|whatsapp|facebook|instagram|binance|mastercard|visa card|emirates id|uae pass|tax)\b|بنك|مصرف|شرطه|وزاره|هيئه|بلديه|جمارك|محكمه|نيابه|بريد|اتصالات|تامين/i;
 const RX_NOTIF=new RegExp(String.raw`\brefund\b${NB}{0,60}?\b(?:was|has been|have been)\s+(?:successfully\s+)?(?:processed|credited|issued|completed|sent|refunded|transferred)\b|\b(?:transfer|payment|deposit|amount|credit|debit|purchase|transaction|recharge|top-?up|instal+ment|subscription|booking|order|rent)\b${NB}{0,60}?\b(?:was|has been|have been)\s+(?:successfully\s+)?(?:successful|completed|processed|credited|debited|received|settled|paid|made|sent|transferred|deposited|charged|approved)\b|\bpaid at\b|\b(?:was|were)\s+(?:spent|used|charged|debited|credited)\b`,'gi');
 const mzNotif=t=>t.replace(RX_NOTIF,m=>' '.repeat(m.length));
@@ -1003,7 +1003,7 @@ copy(last,x.i);for(let k=0;k<g.length;k++){out+=g[k];S.push(x.i);E.push(x.j)}las
 copy(last,t.length);
 return n>=1?{text:out,n,S,E}:{text:t,n:0}}
 const MZ_TLD=new RegExp('^(?:'+TLD_LIST+')$','i');
-const MZ_DOTW='(?:\\[\\s*\\.\\s*\\]|\\(\\s*\\.\\s*\\)|\\{\\s*\\.\\s*\\}|\\[\\s*dot\\s*\\]|\\(\\s*dot\\s*\\)|\\{\\s*dot\\s*\\}|\\s+dot\\s+|\\s+(?:\\u0646\\u0642\\u0637\\u0647)\\s+)';
+const MZ_DOTW='(?:\\s*(?:\\[\\s*\\.\\s*\\]|\\(\\s*\\.\\s*\\)|\\{\\s*\\.\\s*\\}|\\[\\s*dot\\s*\\]|\\(\\s*dot\\s*\\)|\\{\\s*dot\\s*\\})\\s*|\\s+dot\\s+|\\s+(?:\\u0646\\u0642\\u0637\\u0647)\\s+)';
 const RX_OBF_A=new RegExp('(?:\\bh(?:xx|\\*\\*)ps?(?:\\[:\\]|:)?(?:\\[\\/\\/\\]|\\/\\/)\\s?)?(?:www'+MZ_DOTW+')?(?:[a-z0-9][a-z0-9-]*'+MZ_DOTW+'){1,4}(?:'+TLD_LIST+')\\b(?:\\/[^\\s<>"\']*)?','giu');
 const RX_OBF_B=/\bh(?:xx|\*\*)ps?(?:\[:\]|:)?(?:\[\/\/\]|\/\/)[^\s<>"']+/gi;
 const RX_OBF_C=/\b[a-z0-9][a-z0-9-]*-[a-z0-9-]+\s+\.\s*(?:top|xyz|click|link|live|online|site|shop|icu|buzz|vip|cc|com|net|ae)\b(?:\/\S*)?/gi;
@@ -1153,8 +1153,10 @@ mzRule('code_request').re.push(rxa(['(?:ترسل|تعطي|تقول|تدز|تبع
 const R3_REPLY=[/\b(?:send|text|reply|sms|type|respond|message)\s+(?:with\s+)?["'“]?(?:help|stop|yes|no|y|n|start|unsub\w*|cancel|1|2|ok|agree|confirm)["'”]?\s+(?:to|at|on)\s+\+?\d{3,7}\b/gi];
 const R3_PIN=[/\b(?:give|tell|share|hand|show|read|provide|say|use)\b[^.!?\n]{0,30}\b(?:rider|courier|driver|delivery (?:man|agent|person|partner|guy)|messenger|him|her)\b[^.!?\n]{0,30}\b(?:pin|code|otp|passcode)\b|\b(?:pin|code|otp|passcode)\b[^.!?\n]{0,30}\b(?:to|with) (?:the |your |our )?(?:rider|courier|driver|delivery \w+)\b|\b(?:rider|courier|driver)\b[^.!?\n]{0,30}\b(?:ask\w*|need\w*|want\w*)\b[^.!?\n]{0,25}\b(?:pin|code|otp)\b|\b(?:pin|code|otp|passcode)\b[^.!?\n]{0,30}\b(?:rider|courier|driver)\b|\b(?:rider|courier|driver|delivery)\b[^.!?\n]{0,40}\b(?:give|tell|share|read)\s+me\b[^.!?\n]{0,15}\b(?:pin|code|otp)\b|\bdelivery (?:pin|code|otp)\b/gi,
 rxa(['(?:اعط\\S*|قل|قول\\S*|ادخل|شارك\\S*)'+AN+'{0,25}(?:للمندوب|المندوب|للسائق|السائق|للموصل|لعامل التوصيل)'+AN+'{0,25}(?:رمز|كود|الرقم السري|بن)','(?:رمز|كود)\\s*(?:التسليم|الاستلام|التوصيل)'])];
-const R3_PIN_OK=/\b(?:door|arrive\w*|outside|here|hands? over|at your|when he|when she|only)\b|عند الباب|عند الوصول|عند الاستلام/i;
-const R3_PIN_BAD=/\b(?:by|over|on|via) (?:the )?(?:phone|call|link|whatsapp|sms|text|message)\b|\b(?:send|forward|text|whatsapp) (?:it|the (?:pin|code|otp)|me)\b|\b(?:click|tap|reply)\b|\bcall (?:me|us|this|the)\b|عبر الهاتف|بالهاتف|اتصال/i;
+const R4_PINX=[/\b(?:share|give|tell|show|read|say)\b[^.!?\n]{0,30}\b(?:trip|ride|booking|pickup|pick-up)\s+(?:pin|code|otp)\b|\b(?:pin|code|otp)\b[^.!?\n]{0,30}\bto start (?:the |your )?(?:trip|ride|journey)\b|\b(?:captain|driver|rider)\b[^.!?\n]{0,40}\b(?:trip|ride)\s+(?:pin|code)\b/gi,rxa(['(?:شارك|اعط|قل)\\S*[^.!؟\\n]{0,25}(?:رمز|كود|الرقم السري)\\s*(?:الرحله|المشوار|الطلب)'])];
+R3_PIN.push(...R4_PINX);
+const R3_PIN_OK=/\b(?:door|downstairs|gate|lobby|entrance|arriv\w*|trip|ride|captain|pick-?up|outside|here|hands? over|at your|when he|when she|only)\b|عند الباب|عند الوصول|عند الاستلام/i;
+const R3_PIN_BAD=/(?<!received |sent |got |arrived |came |arrives |comes )\b(?:by|over|on|via) (?:the )?(?:phone|call|link|whatsapp|sms|text|message)\b|\b(?:send|forward|text|whatsapp) (?:it|the (?:pin|code|otp)|me)\b|\b(?:click|tap|reply)\b|\bcall (?:me|us|this|the)\b|عبر الهاتف|بالهاتف|اتصال/i;
 const R3_PINF=new Set(['code_request','cred_ask','org_never','delivery_trick','bare_lure','urgency']);
 const R3_PAYIN=[/\b(?:send|share|give|text|whatsapp|drop|post|dm|forward)\b[^.!?\n]{0,20}\b(?:your |ur |the )?(?:account (?:number|no\.?|details|info)|iban|bank (?:details|account|info)|acc(?:ount)? number|payment link|pay(?:ment)? details|link (?:to|for) pay\w*)\b|\b(?:send|share|give)\s+me\b[^.!?\n]{0,15}\b(?:payment link|pay link|link)\b[^.!?\n]{0,30}\b(?:pay|payment|recharge|top-?up|fee|bill|tuition|rent)\b|\bcan i (?:have|get) your (?:iban|account (?:number|details))\b/gi,
 rxa(['(?:ارسل|ابعث|شاركني|شارك\\S*|عطني|اعطني|ارسلي|ابعثلي|زودني|ابي|ابغي|اريد)\\S*'+AN+'{0,20}(?:رقم حسابك|حسابك|الايبان|ايبان|iban|رقم الحساب|بيانات (?:حسابك|البنك)|رابط (?:الدفع|دفع))','(?:رابط)\\s*(?:الدفع|دفع)'])];
@@ -1163,7 +1165,7 @@ const R3_CODEF=new Set(['code_request','cred_ask']);
 const R3_CLAIMS=/^\s*[^:\n]{2,30}:\s|\b(?:dear (?:customer|client|user|member|sir|madam|valued)|this is (?:the |your )?(?:\w+\s+){0,2}(?:bank|police|support|department|team|service|office)|calling from|we (?:are|have|noticed|detected|need|will)|our (?:records|system|team|records)|your (?:bank|account|card) (?:has|is|was)|from (?:the )?(?:bank|police|ministry|customs|support))\b|\b(?:ana|i am|i'm|im|this is)\s+(?:\w+\s+){0,2}(?:min|men|from)\s+(?:el |al |the )?(?:\w+\s+)?(?:bank|police|shurta|shorta|hay2a|wizara|company|du|etisalat|customs)\b|\b(?:to|so i can) (?:verify|prove|confirm|check) (?:you|that you|it'?s you)\b|\bby mistake\b|\bghalat\b|عشان (?:اتاكد|اثبت|اتحقق|نتاكد)|علشان (?:اتاكد|اثبت|اتحقق)|لاتاكد|بالغلط|بالخطا|غلطت|عزيزي العميل|عميلنا|نحن |معك|(?:انا|احنا)\s+(?:\S+\s+){0,2}من\s+(?:ال)?(?:بنك|هيئه|شرطه|وزاره|جمارك|بلديه|اتصالات|شركه|دو|مصرف)|\b(?:men|min|mn)\s+(?:el |al )?(?:hay2a|hay'a|shurta|shorta|bank|wizara|baladiya|etisalat|du|customs|jamarek)\b|(?:^|\s)من\s+(?:ال)?(?:بنك|هيئه|شرطه|وزاره|جمارك|بلديه|اتصالات|مصرف|خدم[هة]|دعم|قسم|فريق|اداره|ادارة)/i;
 const R3_INTRO=/\b(?:ana|i am|i'm|this is|معك|انا)\b[^.!?\n]{0,50}(?:\b(?:bank|police|support|service|security|team|department|company|customer|3omala\w*|ministry|authority)\b|بنك|شرطه|دعم|خدم[هة]|امن|قسم|شركه|عملاء|عميل|هيئه)/i;
 const mzPersonal=(rt,ctx)=>!ctx.orgs.length&&!ctx.govHit&&!ctx.unofficial.length&&!ctx.phones.length&&!R3_CLAIMS.test(rt)&&!R3_CLAIMS.test(ctx.ot||'')&&!R3_INTRO.test(rt)&&!R3_INTRO.test(ctx.ot||'');
-Object.assign(S.en,{chk_line:'Check in the organisation’s own app or on its published number, never through the message. Report it in the UAE at ecrime.ae.',
+Object.assign(S.en,{chk_line:'Not sure? Call the sender on a number you already have, never one from the message.',
 fl_r3_newnum:'Says it is a new number. Call the old number to check.',fw_r3_newnum:'“New number, lost phone” is how many scams start. Call the person on the number you already have.',
 fl_r3_link:'A link written in an unusual way',fw_r3_link:'Real links do not hide behind digits or extra slashes. Do not open it.',
 fl_r3_acct:'Talks about a suspended account or asks you to update details',fw_r3_acct:'Check in the organisation’s own app. Do not use a link in a message.',
@@ -1174,7 +1176,7 @@ fl_r3_telco:'Says your phone line will be suspended',fw_r3_telco:'Check with you
 fl_r3_reply:'Asks you to text back to a short number',fw_r3_reply:'Replying can confirm your number is active or cost you money.',
 fl_r3_pay:'Asks for an account number or payment link. Share it only with someone you know, never a card number, PIN or code.',fw_r3_pay:'Check by calling the person first.',
 fl_r3_pin:'A delivery PIN is given only at the door, never by phone or link.',fw_r3_pin:'Give it to the rider in person, when the order is in your hand.'});
-Object.assign(S.ar,{chk_line:'تحقق عبر تطبيق الجهة نفسها أو رقمها المنشور، وليس عبر الرسالة. للإبلاغ في الإمارات: ecrime.ae.',
+Object.assign(S.ar,{chk_line:'غير متأكد؟ اتصل بالمرسل على رقم تعرفه مسبقًا، وليس رقمًا من الرسالة.',
 fl_r3_newnum:'تقول إنه رقم جديد. اتصل بالرقم القديم للتأكد.',fw_r3_newnum:'«رقم جديد، ضاع هاتفي» بداية كثير من عمليات الاحتيال. اتصل بالشخص على رقم تعرفه.',
 fl_r3_link:'رابط مكتوب بطريقة غير معتادة',fw_r3_link:'الروابط الحقيقية لا تختبئ خلف أرقام أو شرطات زائدة. لا تفتحه.',
 fl_r3_acct:'تتحدث عن حساب موقوف أو تطلب تحديث البيانات',fw_r3_acct:'تحقق في تطبيق الجهة نفسها. لا تستخدم رابطًا في رسالة.',
@@ -1195,10 +1197,10 @@ return out}
 function analyseRules(raw){mzEnInit();
 raw=String(raw==null?'':raw).replace(/[ً-ٰٟـ​‎‏‪-‮⁠⁦-⁩﻿]/g,'');
 const R=redact(raw);const ot=R.text.replace(/[’‘]/g,"'");const rt0=mzNotif(normAr(normDigits(ot)));
-const AZ=mzArabizi(rt0);const rt=AZ.text;
+const AZ=mzArabizi(rt0);const rtFull=AZ.text;const rt=mzR4Strip(rtFull);
 const SN=(i,len)=>{if(!AZ.n)return snip(ot,i,len);const s=AZ.S[Math.min(i,AZ.S.length-1)]||0,e=AZ.E[Math.min(i+Math.max(len,1),AZ.E.length)-1]||ot.length;return snip(ot,s,Math.max(1,e-s))};
-const links=mzObfLinks(rt,findLinks(rt));const allPhones=mzShortPhones(rt,findPhones(rt));const govHit=first(rt,[RX_GOV]);
-const orgs=mzOrgsIn(rt);mzMatchPhones(allPhones,orgs);
+const links=mzObfLinks(rt,findLinks(rt)).filter(l=>!mzR4Merchant(rt,l));const allPhones=mzShortPhones(rt,findPhones(rt));const govHit=first(rt,[RX_GOV]);
+const orgs=mzOrgsIn(rt);mzR4Label(rt,orgs);mzMatchPhones(allPhones,orgs);
 const phones=allPhones.filter(p=>!(p.reg&&p.ok));const unofficial=links.filter(l=>!l.official);
 const warn=mzWarn(rt);
 const flags=[];const ctx={links,unofficial,phones,allPhones,govHit,hard:false,flags,orgs,warn,ot};
@@ -1224,16 +1226,17 @@ if(asks.has('pay')&&!ctx.payOther&&flags.every(f=>f.id==='money_request')&&MZ_BI
 ctx.ownDest=ownPointer;ctx.sensitive=RX_SENS.test(rt);
 if(asks.has('details')&&!ctx.sensitive&&ownPointer&&!flags.length)asks.delete('details');
 mzNever(asks,orgs,ctx,sn,rt);
-const words=(rt.match(/[\p{L}\p{N}]+/gu)||[]).length;
+const words=(rtFull.match(/[\p{L}\p{N}]+/gu)||[]).length;
 const ids0=new Set(flags.map(f=>f.id));
 const strongOf=(fl,as)=>{const hard=fl.some(f=>f.hard);const score=fl.reduce((s,f)=>s+(f.hard?4:f.sev),0);const content=fl.filter(f=>f.sev>=2&&!f.link&&f.id!=='foreign_number'&&f.id!=='intl_number');
 return fl.some(f=>f.sev>=6)||score>=5||(score>=3&&as.size>0&&content.length>0)||(score>=4&&fl.length>=2)||(fl.some(f=>f.id==='prize')&&MZ_AMT.test(rt))};
 const hard=flags.some(f=>f.hard);const score=flags.reduce((s,f)=>s+(f.hard?4:f.sev),0);
 const decisive=flags.some(f=>f.sev>=6);
 const orgNamed=orgs.length>0||GEN_ORG.test(rt);
-const promo=!warn&&RX_PROMO.some(r=>{r.lastIndex=0;return r.test(rt)});
+const rtPromo=rt.replace(/تم\s+خصم/g,m=>' '.repeat(m.length));
+const promo=!warn&&RX_PROMO.some(r=>{r.lastIndex=0;return r.test(rtPromo)});
 const riskyHits=(rt.match(MZ_RISKY_G)||[]);const softRisk=riskyHits.length>0&&riskyHits.every(w=>MZ_RISKY_SOFT.test(w));
-const delivery=/\b(?:do not|don'?t|never)\s+(?:share|give|disclose|tell|forward|reveal|read)\b|لا (?:تشارك|تعطي|تخبر)/i.test(rt)&&/\b(?:code|otp|pin|password)\b|رمز|كود/i.test(rt);
+const delivery=/\b(?:do not|don'?t|never)\s+(?:share|give|disclose|tell|forward|reveal|read)\b|لا (?:تشارك|تعطي|تخبر)/i.test(rtFull)&&/\b(?:code|otp|pin|password)\b|رمز|كود/i.test(rtFull);
 const riskyReason=orgNamed&&!warn&&MZ_RISKY.test(rt)&&!(softRisk&&(ownPointer||delivery));
 const codeF=flags.find(f=>f.id==='code_request');
 const reasons=promo||flags.length>0||asks.size>0||riskyReason||unofficial.length>0||phones.length>0;
@@ -1253,26 +1256,37 @@ if(pin&&!ctx.unofficial.length&&!ctx.phones.length&&R3_PIN_OK.test(rt)&&!R3_PIN_
 if(!pinCase){const payin=first(rt,R3_PAYIN);
 if(payin&&mzPersonal(rt,ctx)&&onlyF(R3_PAYF)){v='unclear';drop(R3_PAYF,['pay','card','id','details']);add3('pay',payin)}
 else if(v==='scam'&&codeF&&mzPersonal(rt,ctx)&&onlyF(R3_CODEF)&&!warn&&!decisive){v='unclear'}}
-if(v==='likely_genuine'&&!warn){const fl=mzR3Floor(rt,ctx,ownPointer,AZ.n?rt:normAr(normDigits(ot)));if(fl.length){v='unclear';for(const h of fl)add3(h.k,h)}}
-let claimsR3=false;
+if(v==='likely_genuine'&&!warn){const fl=mzR3Floor(rt,ctx,ownPointer,AZ.n?rt:mzR4Strip(normAr(normDigits(ot))));if(fl.length){v='unclear';for(const h of fl)add3(h.k,h)}}
+let claimsR3=false;const r4x=[];
 if(v!=='scam'&&!warn&&!pinCase){const nonEn=/[\u0600-\u06FF]/.test(rt)||AZ.n>=2;const pers=mzPersonal(rt,ctx);claimsR3=!pers;
 const secret=nonEn&&first(rt,R3_SECRET);const gift=nonEn&&first(rt,R3_GIFT_AR);const money=nonEn&&first(rt,R3_MONEYASK);
 const why=(codeF&&!pers)||secret||gift||(money&&(R3_FEEWORD.test(rt)||!pers||first(rt,R3_LURE)||first(rt,R3_NEWNUM)||flags.some(f=>f.id==='family_imp'||f.id==='r3_lure'||f.id==='r3_newnum')));
-if(why){v='scam'}}
-let capped=false;if(v==='likely_genuine'&&(langCover(rt)==='other'||AZ.n>=2)){v='unclear';capped=true}
+if(why&&!(ownPointer&&ctx.links.length>0&&ctx.links.every(l=>l.official))){v='scam';if(secret||(codeF&&!pers))r4x.push('H1');if(gift||(money&&(R3_FEEWORD.test(rt)||first(rt,R3_LURE)||first(rt,R3_NEWNUM)||flags.some(f=>f.id==='family_imp'||f.id==='r3_lure'||f.id==='r3_newnum'))))r4x.push('H3')}}
+const rtR=AZ.n?rt:mzR4Strip(normAr(normDigits(ot)));const r4st={pinCase,x:r4x,add:[],look:[],raw:rtR};const r4H=mzR4Hard(rt,ctx,flags,asks,r4st);
+for(const [k,res,src] of r4st.add){const h=first(src||rt,[res]);if(h&&!flags.some(f=>f.id===k))flags.push(mzFlag(k,3,SN(h.i,h.len)))}
+for(const {o,L} of r4st.look)flags.push(mzFlag('org_lookalike',6,SN(L.i,L.len),{org:o.i,arg:L.host,link:true}));
+const r4Pass=!warn&&!pinCase&&r4H.length>0;
+if(v==='scam'&&!r4H.length)v='unclear';
+else if(v!=='scam'&&r4Pass)v='scam';
+if(v!=='scam'){const pf=flags.filter(f=>f.id==='org_link_other'||f.id==='org_phone_other');
+if(pf.length){const snd=mzR4Sender(rt,orgs,flags);const oi=snd.length?snd[0].o.i:pf[0].org;if(oi&&MZ_BY_ID[oi]){notes.push({k:'partner',o:oi});for(const f of pf)flags.splice(flags.indexOf(f),1)}}}
+if(v==='likely_genuine'&&!warn){const fl=mzR4Floor(rt,ctx,ownPointer,rtR);if(fl.length){v='unclear';for(const h of fl){const fid=h.k==='acct'?'r3_acct':'r4_'+h.k;if(!flags.some(f=>f.id===fid))flags.push(mzFlag(fid,2,SN(h.i,h.len)))}}}
+if(v==='unclear'&&!warn&&mzR4Calm(rt,ctx,flags,asks,{pinCase,riskyReason,promo,ownPointer})){const rn4=AZ.n?rt:mzR4Strip(normAr(normDigits(ot)));
+if(!mzR3Floor(rt,ctx,ownPointer,rn4).length&&!mzR4Floor(rt,ctx,ownPointer,rtR).length){for(let k=flags.length-1;k>=0;k--)if(R4_LOWFLAGS.has(flags[k].id))flags.splice(k,1);v='likely_genuine'}}
+let capped=false;if(v==='likely_genuine'&&(langCover(rtFull)==='other'||AZ.n>=2)){v='unclear';capped=true}
 const ids=new Set(flags.map(f=>f.id));
 if(warn&&!flags.length&&!asks.size)notes.push({k:'warn'});
 if(codeF&&!pinCase)notes.push({k:(v==='scam'&&(mzClaims(rt,ctx)||claimsR3))?'code_never':'code_adv'});
 if(asks.size&&v==='unclear')notes.push({k:'ask',a:[...asks]});
 const fam=(v!=='likely_genuine')?mzFamily(rt):null;if(fam)notes.push({k:'fam',a:fam.i});
 if(v==='scam'&&orgs.length){const o0=orgs[0].o;if(o0.r||(MZ_REPORT[o0.e]&&MZ_REPORT[o0.e].p.length))notes.push({k:'report',o:o0.i})}
-return {red:R.text,legend:R.legend,counts:R.counts,total:R.total,links,phones:allPhones,linksFlagged,flags,words,verdict:v,type:mzType(ids,orgs,v,fam),score,hard,capped,notes,orgs:orgs.map(x=>x.o.i),asks:[...asks],warn}}
+return {red:R.text,legend:R.legend,counts:R.counts,total:R.total,links,phones:allPhones,linksFlagged,flags,words,verdict:v,type:mzType(ids,orgs,v,fam),score,hard,signs:r4H,capped,notes,orgs:mzR4Sender(rt,orgs,flags).map(x=>x.o.i),asks:[...asks],warn}}
 const MZ_SECTOR_TYPE={bank:'bank_or_card',payment:'bank_or_card',courier:'delivery_fee',police:'fake_official',government:'fake_official',utility:'fake_official',telecom:'fake_official',lottery:'prize_or_refund',airline:'other',marketplace:'other',other:'other'};
 const MZ_FAM_TYPE={'bank-kyc':'bank_or_card','account-takeover':'bank_or_card','otp-code':'bank_or_card','sim-swap':'bank_or_card','government-impersonation':'fake_official','police-call':'fake_official','traffic-fine':'fake_official','utility-bill':'fake_official','visa-immigration':'fake_official','delivery-fee':'delivery_fee','prize-lottery':'prize_or_refund','job-offer':'job_offer','task-job':'job_offer','rental':'rental_deposit','investment':'investment_or_crypto','crypto':'investment_or_crypto','family-emergency':'family_or_friend_impersonation','romance':'romance','loan':'other'};
 function mzType(ids,orgs,v,fam){const h=k=>ids.has(k);
 for(const k of Object.keys(MZ_TYPE2))if(h(k))return MZ_TYPE2[k];
 if(h('job_fee')||h('job_task'))return 'job_offer';if(h('rental'))return 'rental_deposit';if(h('delivery_fee')||h('delivery_trick'))return 'delivery_fee';
-if(h('prize')||h('refund')||h('refund_gov')||h('points_offer'))return 'prize_or_refund';if(h('crypto'))return 'investment_or_crypto';if(h('family_imp')||h('wrong_number')||h('r3_newnum'))return 'family_or_friend_impersonation';if(h('r3_lure'))return 'prize_or_refund';if(h('r3_addr')||h('r3_fee'))return 'delivery_fee';if(h('r3_telco'))return 'fake_official';if(h('r3_acct'))return 'bank_or_card';
+if(h('prize')||h('refund')||h('refund_gov')||h('points_offer'))return 'prize_or_refund';if(h('crypto'))return 'investment_or_crypto';if(h('family_imp')||h('wrong_number')||h('r3_newnum'))return 'family_or_friend_impersonation';if(h('r3_lure')||h('r4_prem')||h('r4_big'))return 'prize_or_refund';if(h('r4_job')||h('r4_task'))return 'job_offer';if(h('r4_returns'))return 'investment_or_crypto';if(h('r4_advfee'))return h('delivery_fee')||h('r3_fee')?'delivery_fee':'prize_or_refund';if(h('r4_fee')||h('r4_addr'))return 'delivery_fee';if(h('r4_safe'))return 'bank_or_card';if(h('r4_mistake'))return 'family_or_friend_impersonation';if(h('r4_bec'))return 'rental_deposit';if(h('r4_callback')||h('r4_phone'))return 'bank_or_card';if(h('r3_addr')||h('r3_fee'))return 'delivery_fee';if(h('r3_telco'))return 'fake_official';if(h('r3_acct'))return 'bank_or_card';
 if(h('official_ask')||h('id_request')||h('foreign_number')||h('case_threat')||h('call_script')||h('fine_pay')||h('toll_fine')||h('authority_threat')||h('visa_fee'))return 'fake_official';
 if(h('card_request')||h('blocked')||h('lock_words')||h('code_request')||h('word')||h('lookalike'))return 'bank_or_card';
 if(h('org_lookalike')||h('org_never')||h('org_link_other')){const o=orgs.length?orgs[0].o:null;return (o&&MZ_SECTOR_TYPE[o.t])||'other'}
@@ -1281,6 +1295,7 @@ return VERDICTS[v].rank>=2?'other':'none'}
 Object.assign(S.en,{v_scam:'Very likely a scam',v_unclear:'Can’t confirm it',vl_unclear:'Check with the real sender before you do anything.',
 u_org:'Check with {o} using its real channel.',n_ask:'It asks you to: {w}. Nothing here confirms who sent it.',
 ask_pay:'pay',ask_code:'share a code',ask_card:'share card details',ask_id:'share ID details',ask_details:'give or update personal details',ask_click:'open a link',ask_call:'call or message someone',ask_reply:'reply',ask_install:'install an app',
+n_partner:'This link or number is not {o}’s own. It may be a partner of {o} (a courier, a survey or receipt service). Check with {o} on its own number before you tap or pay.',
 n_link_ok:'{host} is a real address of {o}.',n_phone_ok:'{num} is a published number of {o}.',n_warn:'This reads like a warning about scams, not a scam.',n_report:'To report it: {r}',n_fam:'Looks like: {f}.',n_partial:' (this entry is less certain)',
 fl_authority_threat:'Threatens legal action, arrest or a cut-off',fw_authority_threat:'Real authorities do not threaten you by message or call and ask you to act at once.',
 fl_toll_fine:'Fine or toll notice asking for payment',fw_toll_fine:'Fines and tolls are paid on the authority’s own site or app, never through a message.',
@@ -1304,6 +1319,7 @@ fl_org_never:'Asks for something the organisation says it never asks',fw_org_nev
 Object.assign(S.ar,{v_unclear:'لا يمكن التأكد منها',vl_unclear:'تحقق من المرسل الحقيقي قبل أي خطوة.',
 u_org:'تحقق مع {o} عبر قناتها الرسمية.',n_ask:'تطلب منك: {w}. لا شيء هنا يؤكد من أرسلها.',
 ask_pay:'الدفع',ask_code:'مشاركة رمز',ask_card:'مشاركة بيانات البطاقة',ask_id:'مشاركة بيانات الهوية',ask_details:'تقديم أو تحديث بيانات شخصية',ask_click:'فتح رابط',ask_call:'الاتصال أو المراسلة',ask_reply:'الرد',ask_install:'تثبيت تطبيق',
+n_partner:'هذا الرابط أو الرقم ليس من {o}. قد يكون لشريك لها (شركة توصيل أو خدمة استبيان أو إيصالات). تحقق من {o} على رقمها المعروف قبل أن تضغط أو تدفع.',
 n_link_ok:'{host} عنوان حقيقي لدى {o}.',n_phone_ok:'{num} رقم منشور رسميًا لدى {o}.',n_warn:'تبدو تحذيرًا من الاحتيال وليست احتيالًا.',n_report:'للإبلاغ: {r}',n_fam:'تشبه: {f}.',n_partial:' (معلومات هذه الجهة أقل تأكيدًا)',
 fl_authority_threat:'تهديد بإجراء قانوني أو اعتقال أو قطع خدمة',fw_authority_threat:'الجهات الرسمية لا تهددك برسالة أو اتصال وتطلب منك التصرف فورًا.',
 fl_toll_fine:'إشعار مخالفة أو رسوم طريق يطلب الدفع',fw_toll_fine:'المخالفات والرسوم تُدفع في موقع الجهة أو تطبيقها، لا عبر رسالة.',
@@ -1328,6 +1344,7 @@ function mzOrgFor(e){const id=(e&&e.orgs&&e.orgs[0])||null;return id?MZ_BY_ID[id
 function mzNoteText(n){const o=n.o?MZ_BY_ID[n.o]:null;
 if(n.k==='link_ok'&&o)return t('n_link_ok',{host:n.a,o:mzName(o)})+(o.u?t('n_partial'):'');
 if(n.k==='phone_ok'&&o)return t('n_phone_ok',{num:n.a,o:mzName(o)})+(o.u?t('n_partial'):'');
+if(n.k==='partner'&&o)return t('n_partner',{o:mzName(o)});
 if(n.k==='warn')return t('n_warn');
 if(n.k==='code_adv')return t('n_code_adv');
 if(n.k==='code_never')return t('n_code_never');
@@ -1336,6 +1353,237 @@ if(n.k==='ask')return t('n_ask',{w:n.a.map(k=>t('ask_'+k)).join(UI==='ar'?'، ':
 if(n.k==='fam'){const f=MZDATA.f.find(x=>x.i===n.a);return f?t('n_fam',{f:UI==='ar'?f.n[1]:f.n[0]}):''}
 return ''}
 const MZ_REPORT=MZDATA.rep;
+const R4_BL=m=>' '.repeat(m.length);
+const R4_WARN=[
+/\b(?:never|do not|don'?t|dont|does not|doesn'?t|won'?t|will not|would not|wouldn'?t)\s+(?:ever\s+)?(?:ask|request|require|demand|collect)\s+(?:you\b|customers?\b|clients?\b|users?\b|members?\b|anyone\b|people\b|for\b|to\b|that\b|payments?\b|by\b|any\b)[^.!?\n;]*/gi,
+/\b(?:never|do not|don'?t|dont|does not|doesn'?t|won'?t|will not|would not)\s+(?:ever\s+)?(?:call|text|message|email|contact|send|phone)\b[^.!?\n;]{0,70}\b(?:ask|request|pin|code|password|otp|cvv|card|link|links|payment|pay|details|credentials)\b[^.!?\n;]*/gi,
+/\b(?:please |kindly |pls )?(?:do not|don'?t|dont|never|not to)\s+(?:ever\s+)?(?:share|give|disclose|tell|reveal|forward|provide|read out|divulge|send|enter)\s+[^.!?\n;]{0,45}?\b(?:code|codes|otp|pin|password|passcode|cvv|credentials|card (?:number|details)|account (?:number|details)|details)\b[^.!?\n;]*/gi,
+/\b(?:do not|don'?t|dont|never)\s+(?:click|open|tap|follow|trust)\s+[^.!?\n;]{0,45}\b(?:links?|attachments?|unknown|suspicious)\b[^.!?\n;]*/gi,
+/(?:^|[\s,])(?:لن|لا|ما)\s*(?:نقوم ب)?(?:نطلب|يطلب|تطلب|نسال|يسال|نرسل|يرسل|نتصل|يتصل|نطالب|يطالب|نتواصل)\S*[^.!؟\n;]*/g,
+/(?:^|[\s,])(?:لا|ما)\s*(?:تشارك|تشاركوا|تشاركي|تعطي|تعطوا|تعطيه|تفصح|تخبر|تعلم|ترسل|ترسلي|تبلغ|تدخل)\S*\s+[^.!؟\n;]{0,45}?(?:الرمز|رمز|الكود|كود|الرقم السري|كلمه المرور|كلمه السر|بطاقتك|رقم البطاقه|cvv|otp|pin|التحقق|بيانات|معلومات)[^.!؟\n;]*/gi,
+/(?:^|[\s,])(?:لا|ما)\s*(?:تضغط|تفتح|تنقر|تتبع|تثق)\S*\s+[^.!؟\n;]{0,45}(?:رابط|روابط|الروابط|مرفق)[^.!؟\n;]*/g];
+function mzR4Strip(t){let s=String(t);for(const r of R4_WARN){r.lastIndex=0;s=s.replace(r,R4_BL)}return s}
+const R4_DEAR=/\bdear\s+(?:valued\s+)?(?:customer|client|user|member|account holder)|عزيزي العميل|عميلنا الكريم|عزيزي المستخدم/i;
+const R4_CLAIMS3=new RegExp(R3_CLAIMS.source.replace('^\\s*[^:\\n]{2,30}:\\s|',''),'i');
+const R4_FROMGEN=/(?:^|\s)(?:من|from)\s+(?:ال)?(?:هيئه|بنك|شرطه|وزاره|جمارك|بلديه|محكمه|نيابه|مصرف|اتصالات|شركه|bank|police|ministry|authority|customs|court|support|company)\b|(?:^|\s)(?:من|from)\s+(?:ال)?(?:هيئه|بنك|شرطه|وزاره|جمارك|بلديه|محكمه|نيابه|مصرف|اتصالات|شركه)/i;
+const R4_SECRETASK=/\b(?:send|sending|share|sharing|give|giving|tell|read|enter|entering|confirm|provide|providing|reply with|type|text|whatsapp)\b[^.!?\n]{0,70}\b(?:pin|cvv|cvc|password|passcode|card number|card details|security code|otp|verification code|one[- ]time (?:code|password)|6-digit code|4-digit code)\b/i;
+const R4_CLAIMS4=/\b(?:customer|technical|tech|bank|security|fraud|card|account|billing)\s+(?:support|service|care|team|department|desk)\b/i;
+const R4_AUTH=/\b(?:police|shurta|shorta|ministry|court|customs|prosecution|immigration|interpol|tax authority|municipality|traffic department)\b|شرطه|نيابه|محكمه|وزاره|جمارك|ضابط|هجره|الداخليه|ضرائب|المرور|بلديه|الجنسيه/i;
+const R4_STAYLINE=/\b(?:stay on the line|do not (?:disconnect|hang up)|don'?t (?:hang up|disconnect)|do not tell anyone|don'?t tell anyone|keep (?:this|it) (?:secret|between us|confidential))\b|لا تغلق|ابق على الخط|ابقى على الخط|لا تخبر\S*\s+احد/i;
+const R4_PERSONAL=/^\s*(?:أمي|امي|ابوي|أبوي|أبي|ابي|اخوي|أخي|اختي|حبيبي|mama|mum|mom|dad|baba|bro|habibi|habibti|beta)\s*[:,]/i;
+const R4_GOT=/(?:وصل\S*|جاء\S*|جا\S*|received|got|arrived|sent you)\s*(?:\S+\s+){0,2}$/i;
+const R4_APPW=/\b(?:app|website|portal|site)\b|تطبيق|موقع|بوابه|منصه/i;
+const R4_AZSECRET=/\b(?:ed5al|ed5ol|adkhel|akteb|ba3at\w*|ab3at\w*|send|enter|e3ti|3ti)\b[^.!?\n]{0,30}\b(?:card|cvv|karta|pin|password|otp|code|ma3lomat)\b|\b(?:card|cvv|karta|pin|password|otp)\b[^.!?\n]{0,25}\b(?:ed5al|ed5ol|adkhel|ba3at\w*|ab3at\w*|send|enter)\b/i;
+function mzR4Claims(t,c){const m=/^\s*([^:\n]{2,40}):/.exec(t);
+if(m){const lab=m[1].trim();if(GEN_ORG.test(lab)||/^[A-Z][A-Z0-9&. ]{1,14}$/.test(lab)||/\b(?:support|customer|service|security|fraud|police|bank|team|department|desk|hr|care|officer|agent|verification|compliance)\b/i.test(lab)||c.orgs.some(x=>x.i<=m[0].length))return true}
+if(c.orgs.length&&c.orgs[0].i<=3)return true;
+if(c.orgs.some(x=>/(?:رساله|رسالة|من|from|by|this is|message from|msg from)\s*$/i.test(t.slice(Math.max(0,x.i-14),x.i))))return true;
+if(R4_PERSONAL.test(t))return false;
+if(R4_CLAIMS4.test(t.slice(0,80)))return true;
+if(/(?:رساله|رسالة|message|msg|sms|text)\s+(?:من|from)\s+[^:\n]{1,25}:/i.test(t))return true;
+if(R4_CLAIMS3.test(t)||(R4_FROMGEN.test(t)&&!R4_GOT.test(t)))return true;
+RX_CLAIM_AR.lastIndex=0;RX_BYMISTAKE_AR.lastIndex=0;
+return RX_CLAIM.test(t)||RX_CLAIM_AR.test(t)||RX_WEPHRASE.test(t)||RX_BYMISTAKE.test(t)||RX_BYMISTAKE_AR.test(t)||R4_DEAR.test(t)||c.flags.some(f=>['caller_claim','official_ask','case_threat','authority_threat','call_script','blocked','lock_words','fine_pay','toll_fine'].includes(f.id))}
+const R4_PHONE=/(?<![\d.])(?:\+\s?(?:1|44|91|92|63|234|27|61|49|33|86|7)[\s.-]?\(?\d{2,4}\)?[\s.-]?\d{3,4}[\s.-]?\d{3,4}|\(?[2-9]\d{2}\)?[\s.-]\d{3}[\s.-]\d{4}|1[\s.-]?8\d\d[\s.-]?\d{3}[\s.-]?\d{4}|0\d{4}\s?\d{6}|0\d{3}\s\d{6,7}|0\d{3}\s\d{3}\s\d{4}|0\d{10,11})(?!\d)/g;
+const R4_BRAND=/\b(?:mcafee|norton|lifelock|avast|microsoft|windows|office ?365|microsoft ?365|paypal|amazon|apple|icloud|itunes|geek ?squad|netflix|spotify|dropbox|quickbooks|coinbase|binance|google|geico|best buy|walmart|ebay|crypto\.com|ledger|trust wallet|metamask)\b/i;
+const R4_CHARGE=/\b(?:charg\w*|debit\w*|bill\w*|renew\w*|subscri\w*|invoice\w*|refund\w*|auto-?pay|order (?:confirm\w*|no|number|#|id)|purchase\w*|transaction\w*|payment\w*)\b/i;
+const R4_PHONE_WHY=/\b(?:charg\w*|renew\w*|invoice\w*|refund\w*|prize|won\b|winner|subscri\w*|billing|debited|account (?:has been |was |is )?(?:suspend\w*|lock\w*|block\w*|problem|issue|compromis\w*|clos\w*|restrict\w*)|virus|infect\w*|hacked|unauthori[sz]ed|security alert|voucher|claim|cash ?prize|reward|mins\b|txts|(?<!feel )free\b)/i;
+const R4_BIG=[/\b(?:inherit\w*|estate of (?:a |the |your )?(?:late |former |deceased )?(?:client|customer|relative|husband|father|mr|mrs|dr)\w*|next of kin|unclaimed (?:funds?|inheritance|estate)|late (?:client|customer|husband|father|relative)|beneficiar(?:y|ies)|lotter(?:y|ies)|(?:statute of limitations|claim review)[^.!?\n]{0,60}(?:inherit|estate)|business proposal|(?:50|40|30|20|10)\s?%\s+(?:share|of the (?:fund|money|total|proceeds)))\b|\b(?:\$|usd|£|€|aed)\s?\d[\d.,]*\s?(?:m|mn|million|billion|b)\b|\b\d[\d.,]*\s?(?:million|billion|crore|lakhs?)\b/gi,
+rxa(['ميراث|ورث\\S*|تركه|وريث','يانصيب|لوتري|\\d[\\d.,]*\\s*مليون'])];
+const R4_BIG_OK=/\b(?:million|billion)\b[^.!?\n]{0,40}\b(?:revenue|sales|users|customers|visitors|passengers|trips|downloads|shares outstanding|budget|market)\b/i;
+const R4_JOB=[/\b(?:part[- ]?time (?:job|work)|work(?:ing)? from home|home[- ]based (?:job|work)|ghar baithe|(?:earn|kamayein|kamao|kamai)\b[^.!?\n]{0,30}\b(?:daily|per day|roz|everyday|every day|weekly|per week)|like (?:the |some )?(?:videos?|posts?|reels?|pages?)|(?:easy|simple) (?:task|tasks|job|work)|task[- ](?:job|work|based)|boost(?:ing)? (?:orders?|ratings?|sales)|(?:complete|finish) (?:\d+\s+)?tasks?|commission (?:per|for each) (?:task|order|video)|daily (?:income|salary|pay)|salary (?:of|up to) [^.!?\n]{0,20}(?:riyals?|aed|dirhams?|usd|\$))\b/gi,
+rxa(['(?:وظيفه|عمل)\\s*(?:من|عن)\\s*(?:المنزل|البيت|بعد)','(?:ربح|اربح|دخل)\\S*\\s*(?:يومي|يوميا)','مهام\\s*(?:بسيطه|سهله)'])];
+const R4_TASK=/\b(?:like (?:the |some )?(?:videos?|posts?|reels?)|(?:easy|simple) tasks?|task[- ](?:job|work|based)|boost(?:ing)? (?:orders?|ratings?|sales)|(?:complete|finish) (?:\d+\s+)?tasks?|commission (?:per|for each) (?:task|order|video)|video like karna|like karna)\b|مهام\s*(?:بسيطه|سهله)/i;
+const R4_TASKCTX=/\b(?:telegram|whatsapp|group|send (?:yes|1)|yes bhej\w*|bhejein|commission|per (?:task|day|video)|daily|roz|paid same day|join)\b|تيليجرام|واتساب|يوميا/i;
+const R4_SHORT=/\b(?:text|txt|send|sms|reply|answer|ans|type)\b[^.!?\n]{0,40}\bto\s+\d{4,6}\b|\bnew tones?\b|\b(?:ring ?tones?|poly(?:phonic)?|wallpapers?|caller ?tunes?)\b[^.!?\n]{0,60}\b(?:order|text|call|send|free|download)\b|\bto (?:claim|collect)\b|\b2 claim\b|\bsubscri(?:be|ption)\b[^.!?\n]{0,40}£\s?\d/gi;
+const R4_MISC=[/\bsent you a (?:friend|fbuddy|buddy|dating|chat|private)\b[^.!?\n]{0,20}\brequest\b|\bread what (?:she|he) had to say\b|\b(?:test (?:&|and) trace|contact tracing)\b|\byou (?:were|have been) in contact with\b|\bfound suspected\b|\bmisuse of telecom\b|\bre-?verifi\w*|\b(?:an? )?refund of\s?(?:[£$€]|aed|usd)\s?\d|\boverpayment\b/gi,
+rxa(['استرداد\\S*\\s*(?:مبلغ|مستحق)'])];
+const R4_ADDR=[/\b(?:cannot|can'?t|could not|couldn'?t|unable to|failed to|not able to)\s+(?:be\s+)?deliver\w*\b[^.!?\n]{0,80}\b(?:address|house number|door|location)\b|\b(?:modify|change|update|correct|confirm)\s+(?:your |the )?(?:delivery )?address\b|\b(?:parcel|package|shipment|order|item)\b[^\n]{0,100}\b(?:track|view|see|open)\b[^.!?\n]{0,20}\bhere\b/gi];
+const R4_BARE=[/(?<![\w@.\/-])[a-z0-9][a-z0-9-]{2,}\.(?:com|net|org|co|info|io|me|app|us|biz)\b(?!\.)/gi];
+const R4_ACCT2=[/\b(?:must|need(?:s)? to|has to|have to|should|required to|will be|to be) (?:be )?(?:re-?)?(?:verified|validated|updated|confirmed|re-?activated)\b|\b(?:verify|validate|confirm|update)\s+(?:your\s+)?(?:account|identity|details|information|card)\b/gi];
+const R4_FEEASK=[/\b(?:pay|settle|clear|confirm|complete)\b[^.!?\n]{0,50}\b(?:fees?|charges?|duty|duties|customs|taxes|tax)\b|\bconfirm (?:the |your )?payment\b|\b(?:customs|handling|clearance|processing|release|redelivery|import) (?:fees?|charges?|duty)\b[^.!?\n]{0,40}\b(?:due|unpaid|pending|outstanding|payable|of|is|are)\b/gi,
+rxa(['(?:ادفع|سدد|تاكيد الدفع|دفع)\\S*[^.!؟\\n]{0,40}(?:رسوم|جمارك|ضريبه)'])];
+const R4_GUAR=/\b(?:guaranteed?\s+(?:returns?|profits?|income|earnings?|roi|monthly|weekly|daily)|(?:returns?|profits?)\s+(?:are\s+)?guaranteed|risk[- ]free\s+(?:returns?|profits?|investment)|(?:double|triple)\s+your\s+(?:money|investment|deposit)|(?:\d{2,3})\s?%\s+(?:daily|weekly|monthly|per (?:day|week|month))\s+(?:return|profit|roi|income|interest)?)/i;
+const R4_MONEY_ASK=/\b(?:send|transfer|pay|wire|lend|loan|borrow|give)\b[^.!?\n]{0,35}(?:\b(?:money|cash|aed|usd|dirhams?|\d[\d,]{2,}|funds?)\b)|\b(?:need|urgent(?:ly)?)\b[^.!?\n]{0,25}\b(?:money|cash|help)\b/i;
+const R4_TH=new Set(['blocked','lock_words','authority_threat','case_threat','fine_pay','toll_fine','r3_acct','r3_telco','delivery_trick','r3_addr','delivery_fee','r3_fee','refund','refund_gov']);
+const R4_SECT=new Set(['bank','payment','government','police','utility','telecom','courier']);
+const MZ_PARTMAP=new Map();
+(function(){const ok3=new Set(['fab','rta','dld','icp','ica','moi','moj','dha','dib','dhl']);
+for(const o of MZDATA.o){const keys=new Set();
+for(const n of [...(o.a||[]),...(o.s||[])]){const k=n.toLowerCase().replace(/[^a-z0-9]/g,'');if(k.length>=4||ok3.has(k))keys.add(k)}
+for(const d of o.d||[]){const l=mzSplit(d).label.replace(/-/g,'');if(l.length>=4)keys.add(l)}
+for(const k of keys){if(MZ_LURE.has(k))continue;if(!MZ_PARTMAP.has(k))MZ_PARTMAP.set(k,o)}}})();
+function mzR4Part(host){const h=String(host||'').toLowerCase().replace(/^www\./,'');if(!h||mzOrgByHost(h))return null;
+const labs=h.split('.');if(labs.length<2)return null;const parts=labs.slice(0,-1).join('.').split(/[.\-_\d]+/).filter(Boolean);
+for(let n=Math.min(3,parts.length);n>=1;n--)for(let s=0;s+n<=parts.length;s++){const k=parts.slice(s,s+n).join('');const o=MZ_PARTMAP.get(k);if(o&&!(o.d||[]).some(d=>h===d||h.endsWith('.'+d)))return o}
+return null}
+Object.assign(S.en,{fl_r4_fee:'Asks you to pay a fee, charge or duty, or to confirm a payment',fw_r4_fee:'Check the amount in the organisation’s own app or website, never from a message.',
+fl_r4_phone:'A charge, renewal or account problem with a number to call',fw_r4_phone:'Look up the company’s real number yourself. Never call a number from a message.',
+fl_r4_big:'Talks about a large sum of money for you',fw_r4_big:'Messages offering an inheritance, a share of millions or a lottery win are advance-fee scams.',
+fl_r4_job:'Job or task offer from someone you do not know',fw_r4_job:'Real employers do not recruit by a chat message or pay per task.',
+fl_r4_prem:'Asks you to text or call a short or premium number',fw_r4_prem:'Replying can cost you money or sign you up to a paid service.',
+fl_r4_addr:'A parcel message that sends you to fix or track it',fw_r4_addr:'Check the parcel in the courier’s own app or website.',fl_r4_link:'A web address that cannot be checked',fw_r4_link:'Do not open it. Look the organisation up yourself.',
+fl_r4_safe:'Asks you to move money to a “safe account”',fw_r4_safe:'No bank or police asks you to move your money to another account.',fl_r4_bec:'Says its bank account changed and asks you to pay it',fw_r4_bec:'Call the person or company on a number you already have before you pay a new account.',
+fl_r4_advfee:'Asks you to pay first to get a prize, refund or parcel',fw_r4_advfee:'Real prizes, refunds and parcels never need a fee paid to a person or a link.',
+fl_r4_mistake:'Says money was sent to you by mistake and asks for it back',fw_r4_mistake:'Do not send anything back. Ask your bank to reverse it.',
+fl_r4_misc:'A lure that is not from a real sender',fw_r4_misc:'Do not reply. Check with the organisation by its own number.',
+fl_r4_callback:'A charge or renewal notice with a number to call',fw_r4_callback:'This is a known trick: call the real company on the number from its own website.',
+fl_r4_returns:'Promises guaranteed returns',fw_r4_returns:'No real investment can guarantee a profit.',
+fl_r4_task:'A task job that pays you per task',fw_r4_task:'Task jobs first ask you to pay in, then stop paying.'});
+Object.assign(S.ar,{fl_r4_fee:'تطلب دفع رسوم أو مبلغ أو تأكيد دفعة',fw_r4_fee:'تحقق من المبلغ في تطبيق الجهة أو موقعها، لا من رسالة.',
+fl_r4_phone:'رسوم أو تجديد أو مشكلة في الحساب مع رقم للاتصال',fw_r4_phone:'ابحث بنفسك عن رقم الشركة الحقيقي. لا تتصل برقم من رسالة.',
+fl_r4_big:'تتحدث عن مبلغ مالي كبير لك',fw_r4_big:'رسائل الميراث أو حصة من ملايين أو الفوز باليانصيب هي احتيال برسوم مقدمة.',
+fl_r4_job:'عرض وظيفة أو مهام من شخص لا تعرفه',fw_r4_job:'أصحاب العمل الحقيقيون لا يوظفون برسالة دردشة ولا يدفعون لكل مهمة.',
+fl_r4_prem:'تطلب إرسال رسالة أو الاتصال برقم قصير أو مدفوع',fw_r4_prem:'الرد قد يكلفك مالًا أو يشتركك في خدمة مدفوعة.',
+fl_r4_addr:'رسالة شحنة ترسلك لتصحيح العنوان أو التتبع',fw_r4_addr:'تحقق من الشحنة في تطبيق شركة الشحن أو موقعها.',fl_r4_link:'عنوان ويب لا يمكن التحقق منه',fw_r4_link:'لا تفتحه. ابحث عن الجهة بنفسك.',
+fl_r4_safe:'تطلب نقل أموالك إلى «حساب آمن»',fw_r4_safe:'لا يطلب بنك ولا شرطة نقل أموالك إلى حساب آخر.',fl_r4_bec:'تقول إن حسابها البنكي تغير وتطلب الدفع إليه',fw_r4_bec:'اتصل بالشخص أو الشركة على رقم تعرفه قبل الدفع إلى حساب جديد.',
+fl_r4_advfee:'تطلب منك الدفع أولًا لتستلم جائزة أو استردادًا أو شحنة',fw_r4_advfee:'الجوائز والمبالغ المستردة والشحنات الحقيقية لا تحتاج رسومًا تدفعها لشخص أو عبر رابط.',
+fl_r4_mistake:'تقول إنها حولت لك مالًا بالخطأ وتطلب إعادته',fw_r4_mistake:'لا تعد أي مبلغ. اطلب من بنكك عكس العملية.',
+fl_r4_misc:'إغراء ليس من مرسل حقيقي',fw_r4_misc:'لا ترد. تحقق من الجهة عبر رقمها المنشور.',
+fl_r4_callback:'إشعار خصم أو تجديد مع رقم للاتصال',fw_r4_callback:'هذه حيلة معروفة: اتصل بالشركة الحقيقية على رقم موقعها الرسمي.',
+fl_r4_returns:'تعد بأرباح مضمونة',fw_r4_returns:'لا يوجد استثمار حقيقي يضمن الربح.',
+fl_r4_task:'وظيفة مهام تدفع لك عن كل مهمة',fw_r4_task:'وظائف المهام تطلب منك الدفع أولًا ثم تتوقف.'});
+const R4_PROBLEM=/\b(?:suspend\w*|block\w*|lock(?:ed|ing|out)?|disabl\w*|deactivat\w*|restrict\w*|limited|limitation|frozen|freez\w*|clos(?:ed|ure)|terminat\w*|cancel+ed|expir\w+|overdue|unpaid|outstanding|penalt\w*|fines?|legal action|arrest\w*|court|violat\w*|compromis\w*|unusual|suspicious|unauthori[sz]ed|hacked|fraud\w*|failed|on hold|held|stopped|returned to sender|could not be delivered|cannot be delivered|undeliver\w*|incorrect|invalid|incomplete|wrong address|action required|urgent\w*|immediately|final notice|mandatory|verification (?:required|needed|pending)|deducted|debited|charged|pending instructions|missed)\b|ينقفل|بينقفل|راح ينقفل|يتجمد|يتوقف|مقفل|موقوف|محظور|موقوف|معلق|مجمد|مغلق|منتهي|غرامه|مخالفه|متاخر|اختراق|عاجل|فورا|حظر|تعليق|خصم|تم خصم/i;
+const R4_VOICE=/\byour (?:parcel|package|account|card|order|item|delivery|shipment|payment|bank|wallet|apple pay|prepaid|debit|credit|council tax|tax|vehicle|visa|id|emirates id|number|sim|line|subscription|membership|points|rewards?)\b|\bdear (?:\w+\s+){0,2}(?:customer|client|user|member|holder|sir|madam|parent|tenant|owner)\b|\b(?:we have|we were|we could|we are|we noticed)\b|عزيزي|عميل|بطاقتك|حسابك|طلبك|شحنتك/i;
+const R4_CALLNUM=/(?:\b(?:call|dial|ring|reach|contact|text|whatsapp|phone|tel)\b|اتصل\S*|تواصل\S*|كلم\S*|هذا الرقم)[^.!?\n]{0,28}?(?<![\d])(\+?\d[\d\s().-]{7,15}\d)(?!\d)|(?<!\d)(\+?[2-9]\d{2}[\s.-]?\d{3}[\s.-]?\d{4})(?!\d)/gi;
+const R4_GUAR2=/\binvest\b[^.!?\n]{0,40}\b(?:and\s+)?(?:earn|get|make|win)\b[^.!?\n]{0,25}\b(?:within|in)\s+(?:a |one |\d+ )?(?:day|week|month|hours?)\b|استثمر[^.!؟\n]{0,40}(?:واربح|وتربح|اربح)|\b(?:made|earn(?:ed)?|profit(?:s)? of|returns? of|get|win|make)\s+\d{3,4}\s?%|\b\d{3,4}\s?%\s+(?:profit|return|roi|gain|in (?:a |one |\d+ )?(?:days?|weeks?|months?|hours?))|ارباح\s*مضمونه|ربح\s*مضمون|عائد\s*مضمون|مضمونه\s*\d{2,3}\s*%|\bguaranteed\s*\d{2,3}\s*%/i;
+const R4_WITHDRAWFEE=/\b(?:withdraw|release|receive|claim|collect|unlock|cash out)\b[^.!?\n]{0,60}\b(?:must|need to|have to|should|first)\b[^.!?\n]{0,15}\bpay\b|\bpay\b[^.!?\n]{0,45}\b(?:to|before you can|in order to) (?:withdraw|release|receive|claim|collect|unlock|cash out)\b|\b(?:tax|fee|deposit|charge)\b[^.!?\n]{0,25}\bto (?:withdraw|release|claim|unlock|receive)\b/i;
+const R4_PREM=/\b\d{2,3}ppm\b|\b\d+p\s?(?:\/|per )\s?min\b|\bcalls? cost\b|(?<!\d)09\d{9}(?!\d)|(?<!\d)0?9\d{2}\s?\d{3}\s?\d{4}(?!\d)/i;
+const R4_PRIZEWORD=/\b(?:prize|won|win|winner|claim|bonus|free gift|chosen|selected|draw|lucky|quiz|reward|voucher|cash)\b|جائزه|فزت|ربحت/i;
+const R4_MISTAKE=/\b(?:sent|transferred|paid|deposited)\b[^.!?\n]{0,40}\bby (?:mistake|accident)\b[^.!?\n]{0,60}\b(?:send|return|give|transfer|pay|refund)\b[^.!?\n]{0,20}\bback\b|\b(?:send|return|give|transfer|pay|refund) (?:it|the money|the amount|that)? ?back\b[^.!?\n]{0,60}\bby (?:mistake|accident)\b|(?:حولت|ارسلت|حول)\S*[^.!؟\n]{0,40}(?:بالغلط|بالخطا)[^.!؟\n]{0,40}(?:رجع\S*|ارجع\S*|رد\S*|حول\S*)/i;
+const R4_SAFEACCT=/\bsafe account\b|\bsecure account\b[^.!?\n]{0,40}\b(?:move|transfer|send)\b|\b(?:move|transfer|send)\b[^.!?\n]{0,40}\b(?:to|into) (?:a |the |our )?(?:safe|secure|protected|government) account\b|الحساب الامن|حساب امن|حساب الحمايه|حساب محمي/i;
+const R4_BEC=/\b(?:new|changed|updated|different)\s+(?:bank\s+|account\s+)?(?:account|iban|bank details|account (?:number|details))\b[^.!?\n]{0,80}\b(?:pay|transfer|send|deposit|wire|remit)\b|\b(?:pay|transfer|send|deposit|wire|remit)\b[^.!?\n]{0,80}\b(?:new|changed|updated|different)\s+(?:bank\s+|account\s+)?(?:account|iban|bank details|account number)\b|\b(?:old|previous) account (?:is |has been |was )?closed\b|(?:تغير|تغيّر|تغيير)\s*رقم\s*حسابي|(?:الايبان|الآيبان|الحساب)\s*الجديد/i;
+const R4_PARCELFEE=/\b(?:parcel|package|shipment|customs|delivery|clearance|courier|cargo)\b[^.!?\n]{0,140}?\b(?:aed|dhs?|usd|dirhams?|\$)\s?\d|\b(?:aed|dhs?|usd|dirhams?|\$)\s?\d[\d,]*[^.!?\n]{0,100}?\b(?:parcel|package|shipment|customs|delivery|clearance|courier|cargo)\b/i;
+const R4_PAYVERB=/\b(?:pay|settle|transfer|send|deposit|wire|karein|karo|kijiye|bhejein|bhejo|dijiye|jama)\b|ادفع|دفع|حول|سدد|ارسل/i;
+function mzR4Odd(host){const h=String(host||'').toLowerCase().replace(/^www\./,'');const lab=mzSplit(h).label||'';
+return (/\d/.test(lab)&&/[a-z]/.test(lab))||/[^aeiou\d.-]{5,}/.test(lab)||(lab.split('-').length>2)||RARE_TLDS.has(h.split('.').pop())}
+const R4_COMMON=new Set(['your','please','dear','click','visit','this','that','with','have','from','call','alert','notice','message','account','customer','service','update','verify','login','link','below','here','today','thank','thanks','regards','hello','urgent','important']);
+function mzR4Own(host,rt){const lab=(mzSplit(host).label||'').replace(/-/g,'').toLowerCase();if(!lab||lab.length<4)return false;
+const m=/^\s*[(\[]?([^:\n\]\)]{2,40})[)\]]?:/.exec(rt);const src=(m?m[1]+' ':'')+(rt.slice(0,160).match(/\b[A-Z][A-Za-z]{3,}\b/g)||[]).join(' ');
+const toks=(src.toLowerCase().match(/[a-z0-9]{3,}/g)||[]).filter(x=>!R4_COMMON.has(x));
+for(let i=0;i<toks.length;i++){if(toks[i]===lab)return true;if(i+1<toks.length&&toks[i]+toks[i+1]===lab)return true}
+return false}
+function mzR4Dest(rt,ctx,flags){const links=ctx.links.filter(L=>!L.official&&!mzOrgByHost(L.host)&&!mzR4Own(L.host,rt));
+const nums=[];for(const p of ctx.allPhones){if(p.reg&&p.ok)continue;const dg=String(p.digits||p.raw).replace(/\D/g,'');if(dg.length<9||dg.length>13||/^0{3,}/.test(dg))continue;if(!/(?:call|dial|ring|reach|contact|text|whatsapp|phone|tel|اتصل|تواصل|الرقم|رقم)\W{0,30}$/i.test(rt.slice(Math.max(0,p.i-40),p.i)))continue;const lp=mzLocal(p.digits||p.raw);if(!p.uae||(lp.length===9&&lp[0]==='5'))nums.push(p.raw)}
+R4_CALLNUM.lastIndex=0;let m;while((m=R4_CALLNUM.exec(rt))){const raw=(m[1]||m[2]||'').trim();const d=raw.replace(/\D/g,'');if(d.length<9||d.length>13)continue;if(ctx.allPhones.some(p=>p.reg&&p.ok&&mzLocal(p.digits)===mzLocal(d)))continue;
+const lp=mzLocal(d);const uaeMob=lp.length===9&&lp[0]==='5';const intl=/^\+/.test(raw)&&!d.startsWith('971');const usLike=/^[2-9]\d{9}$/.test(d)||/^1[2-9]\d{9}$/.test(d);
+if(uaeMob||intl||usLike||/^0\d{10,11}$/.test(d))nums.push(raw)}
+R4_CALLNUM.lastIndex=0;
+return {links,nums,away:links.length>0||nums.length>0||flags.some(f=>f.id==='org_link_other'||f.id==='personal_payment'||f.id==='mule')}}
+const R4B_REAL=new Set(['pay','code','card','id','details','install']);
+const R4B_ASKFLAGS=new Set(['delivery_trick','r3_addr','cred_ask','card_request','code_request','id_request','remote_app','job_docs','reply_trick']);
+const R4B_THFLAGS=new Set(['blocked','lock_words','authority_threat','case_threat','fine_pay','toll_fine']);
+const R4B_THW=String.raw`(?:suspen[ds]\w*|block\w*|disconnect\w*|terminat\w*|deactivat\w*|lock(?:ed|out)?|cancel+ed|fine[ds]?|penalt\w*|legal action|arrest\w*|court|returned? to (?:the )?sender|destroy\w*|dispos\w*|forfeit\w*|frozen|freez\w*)`;
+const R4B_DLW=String.raw`(?:within|before|by|today|tonight|immediately|right now|asap|\d+\s*(?:hours?|hrs?|days?)|otherwise|failure to|or (?:your|the|we)|last chance|final notice)`;
+const R4B_THDL=new RegExp(String.raw`\b${R4B_THW}\b[^.!?\n]{0,90}\b${R4B_DLW}|\b${R4B_DLW}[^.!?\n]{0,90}\b${R4B_THW}\b|\bwill be\s+(?:\w+\s+){0,2}${R4B_THW}\b`,'i');
+const R4B_ARTH='(?:ايقاف|حظر|الغاء|اتلاف|ارجاع|غرامه|اجراء قانوني|اجراءات قانونيه|تعليق|تجميد|قفل|اغلاق|مصادره)',R4B_ARDL='(?:خلال|فورا|اليوم|قبل|ساعه|ساعات|\\d+\\s*(?:يوم|ايام|ساعه))';
+const R4B_THDL_AR=new RegExp(R4B_ARTH+'[^.!؟\\n]{0,70}'+R4B_ARDL+'|'+R4B_ARDL+'[^.!؟\\n]{0,70}'+R4B_ARTH+'|سيتم\\s+(?:\\S+\\s+){0,2}'+R4B_ARTH);
+const R4B_ASKRX=[/\b(?:address|details|information|id|account|profile|card|kyc)\s+(?:update|verification|validation|confirmation)\b|\b(?:needs?|requires?|pending|required|needed)\s+(?:account\s+|identity\s+)?(?:verification|validation|confirmation|update)\b|\b(?:verification|validation|update)\s+(?:required|needed|pending)\b|\bverify\s+(?:your|now|account|identity)\b|\b(?:update|confirm|verify)\s+(?:here|now|below|online)\b/i,
+/\b(?:confirm|complete|make|process|finali[sz]e|submit|proceed with|arrange|settle|clear)\b[^.!?\n]{0,25}\bpayment\b|\bpayment (?:process|required|link|page)\b|\bpay\b[^.!?\n]{0,20}\b(?:here|now|online|below|via|through)\b/i,
+/\b(?:complete|re-?enter|reset|update|renew|change|verify|validate|activate|enter|confirm|provide|send|share|give|type)\b[^.!?\n]{0,40}\b(?:pin|cvv|cvc|password|passcode|card number|card details|security code|otp|one[- ]time (?:code|password)|verification code)\b/i,
+/\b(?:fill(?: in| out)?|complete|submit)\b[^.!?\n]{0,25}\b(?:the |this |our |a )?(?:form|application form)\b/i,
+/\b(?:ed\s?fa3|i?dfa3|sadad|7awel|7awil)\b/i,
+/(?:ادفع|سدد|دفع|سداد)[^.!؟\n]{0,25}(?:الان|هنا|عبر|من خلال|اونلاين)|(?:ادخل|ارسل|شارك|اعطنا|زودنا|اكمل|اكد|حدث)[^.!؟\n]{0,30}(?:رمز|كلمه المرور|كلمه السر|الرقم السري|رقم البطاقه|بيانات البطاقه|بيانات)/];
+function mzR4Hard(rt,ctx,flags,asks,st){const H=new Set(),has=id=>flags.some(f=>f.id===id),hasAny=a=>a.some(has);
+const claims=mzR4Claims(rt,ctx),orgNamed=ctx.orgs.length>0;
+const realAsk=[...asks].filter(a=>R4B_REAL.has(a));const RWb=st.raw||rt;
+const threatDl=flags.some(f=>R4B_THFLAGS.has(f.id))||R4B_THDL.test(RWb)||R4B_THDL_AR.test(RWb)||R4B_THDL.test(rt);
+const freeMail=RX_FREEMAIL.test(rt);
+const askTxt=R4B_ASKRX.some(r=>r.test(RWb)||r.test(rt))||R4_SECRETASK.test(rt)||flags.some(f=>R4B_ASKFLAGS.has(f.id));
+const partnerOk=!(realAsk.length||askTxt||threatDl||freeMail);  /* nothing here turns a link or number that is not the organisation's into a hard sign */
+if(hasAny(['cred_ask','remote_app','job_docs','injection','reply_trick']))H.add('H1');
+{const cr=flags.find(f=>f.id==='card_request');if(cr&&(claims||/\b(?:card number|card no|cvv|cvc|expiry|pin|password|otp|16[- ]digit)\b|رقم البطاقه|cvv/i.test(rt)))H.add('H1')}
+const cf=flags.find(f=>f.id==='code_request'||(f.id==='id_request'&&f.k!=='id_soft'));
+if(cf&&!st.pinCase&&claims)H.add('H1');
+if(asks.has('install')&&claims)H.add('H1');
+if(st.x.includes('H1'))H.add('H1');
+if(claims&&R4_SECRETASK.test(rt)&&!st.pinCase)H.add('H1');
+{const df=flags.find(f=>f.id==='dob_ask');if(df&&/\b(?:date of birth|dob|birth ?date|mother'?s maiden)\b|\bbirthday\b[^.!?\n]{0,30}\b(?:security|answer|verify)\b|تاريخ ميلاد/i.test(rt))H.add('H1')}
+if(R4_AZSECRET.test(rt)&&(claims||ctx.unofficial.length>0||R4_VOICE.test(rt)))H.add('H1');
+{const of_=flags.find(f=>f.id==='org_never');if(of_&&(['code','card','id'].includes(of_.ask)||((ctx.unofficial.length||ctx.phones.length||ctx.links.some(l=>!l.official))&&!partnerOk)))H.add('H2')}
+for(const f of flags){
+if(f.id==='org_lookalike')H.add('H2');
+if(f.id==='org_link_other'){const L=ctx.links.find(l=>l.host===f.arg);if(L&&!mzOrgByHost(L.host)&&!partnerOk)H.add('H2')}
+if(f.id==='lookalike'||f.id==='puny'||f.id==='userinfo'||(f.id==='govdomain'&&!(orgNamed&&partnerOk)))H.add('H2');
+if((f.id==='word'||f.id==='ip')&&(claims||orgNamed||GEN_ORG.test(rt)||asks.size>0))H.add('H2');
+if(f.id==='org_phone_other'){const p=ctx.allPhones.find(x=>x.raw===f.arg);const o=f.org?MZ_BY_ID[f.org]:null;
+if(p&&o){const lp=mzLocal(p.digits||p.raw);if(!p.uae||(lp.length===9&&lp[0]==='5'))H.add('H2')}}}
+const shorts=ctx.links.some(l=>SHORTENERS.has(String(l.host).replace(/^www\./,'')));
+const thr=flags.some(f=>R4_TH.has(f.id));
+if(shorts&&(orgNamed||claims||GEN_ORG.test(rt))&&(orgNamed?!partnerOk:(thr||R4_PROBLEM.test(st.raw||rt)||realAsk.length>0||askTxt)))H.add('H2');
+if(hasAny(['job_fee','gift_cards','job_task','earn_daily','wrong_number_money','mule','visa_fee','family_imp']))H.add('H3');
+if(flags.some(f=>f.id==='rental'&&f.sev>=3))H.add('H3');
+const feeAsk=asks.has('pay')||R3_FEEWORD.test(rt)||MZ_AMT.test(rt);
+const ownOnly=(ctx.ownDest||ctx.links.length>0)&&ctx.links.every(l=>l.official)&&!ctx.phones.length;
+if(hasAny(['prize','refund','refund_gov','prize_voucher','points_offer','r3_lure'])&&feeAsk&&!ownOnly){H.add('H3');st.add.push(['r4_advfee',MZ_AMT.test(rt)?MZ_AMT:R3_FEEWORD])}
+if(hasAny(['delivery_fee','r3_fee'])&&!ownOnly&&(feeAsk||ctx.unofficial.length||ctx.phones.length)){H.add('H3');if(feeAsk)st.add.push(['r4_advfee',MZ_AMT.test(rt)?MZ_AMT:R3_FEEWORD])}
+if(has('sextort')&&(asks.has('pay')||/\b(?:bitcoin|btc|crypto|usdt|gift ?card)\b/i.test(rt)))H.add('H3');
+if(hasAny(['r3_newnum','wrong_number'])&&(asks.has('pay')||has('money_request')||has('personal_payment')||first(rt,R3_MONEYASK)||R4_MONEY_ASK.test(rt)))H.add('H3');
+if(st.x.includes('H3'))H.add('H3');
+if(R4_GUAR.test(rt)&&!/\b(?:not|no|never)\s+(?:be\s+)?guarantee/i.test(rt)){H.add('H3');st.add.push(['r4_returns',R4_GUAR])}
+if(R4_TASK.test(rt)&&R4_TASKCTX.test(rt)&&!ctx.orgs.length){H.add('H3');st.add.push(['r4_task',R4_TASK])}
+{const RW0=st.raw||rt;R4_PHONE.lastIndex=0;const ph=R4_PHONE.test(RW0);R4_PHONE.lastIndex=0;const callAsk=/\b(?:call|dial|contact|ring|phone|reach|helpline|help line|support|hotline)\b/i.test(RW0);
+if(ph&&callAsk&&R4_BRAND.test(RW0)&&R4_CHARGE.test(RW0)){H.add('H3');st.add.push(['r4_callback',R4_PHONE,RW0])}}
+const D=mzR4Dest(rt,ctx,flags);const voice=claims||orgNamed||GEN_ORG.test(rt)||ctx.govHit||R4_VOICE.test(rt);
+const RW=st.raw||rt;const probl=thr||R4_PROBLEM.test(RW);
+const partnerOnly=orgNamed&&partnerOk&&!D.nums.length&&!flags.some(f=>f.id==='personal_payment'||f.id==='mule');
+if(probl&&D.away&&voice&&!partnerOnly&&(asks.size>0||D.links.length>0||D.nums.length>0)){H.add('H4');st.prom=true}
+if((hasAny(['case_threat','authority_threat'])||(R4_AUTH.test(rt)&&claims))&&R4_STAYLINE.test(rt)){H.add('H4');st.prom=true}
+if(R4_AUTH.test(rt)&&claims&&(first(rt,R3_MONEYASK)||has('money_request'))&&!ownOnly&&!R4_APPW.test(rt)){H.add('H4');st.prom=true}
+if(D.nums.length&&(orgNamed||GEN_ORG.test(rt)||R4_DEAR.test(rt))&&(probl||asks.has('call')||ctx.flags.some(f=>f.id==='prize'||f.id==='refund'))){H.add('H2');st.prom=true}
+if(R4_GUAR2.test(rt)&&!ctx.orgs.length&&!/\b(?:not|no|never)\s+(?:be\s+)?guarantee/i.test(rt)){H.add('H3');st.add.push(['r4_returns',R4_GUAR2])}
+if(R4_PREM.test(rt)&&R4_PRIZEWORD.test(rt)){H.add('H3');st.add.push(['r4_prem',R4_PREM])}
+if(has('premium_sms')&&R4_PRIZEWORD.test(rt)){H.add('H3')}
+if(R4_WITHDRAWFEE.test(rt)&&!ownOnly){H.add('H3');st.add.push(['r4_fee',R4_WITHDRAWFEE])}
+if(R4_MISTAKE.test(rt)){H.add('H3');st.add.push(['r4_mistake',R4_MISTAKE])}
+if(R4_SAFEACCT.test(rt)){H.add('H3');st.add.push(['r4_safe',R4_SAFEACCT])}
+if(R4_BEC.test(rt)&&(asks.has('pay')||R4_PAYVERB.test(rt))&&!ctx.orgs.length){H.add('H3');st.add.push(['r4_bec',R4_BEC])}
+if(R4_PARCELFEE.test(rt)&&R4_PAYVERB.test(rt)&&(asks.has('pay')||R3_FEEWORD.test(rt)||/\b(?:karein|karo|kijiye|bhejein)\b/i.test(rt))&&!ownOnly){H.add('H3');st.add.push(['r4_fee',R4_PARCELFEE])}
+for(const L of ctx.links){if(L.official||mzOrgByHost(L.host))continue;const o=mzR4Part(L.host);
+if(o&&!flags.some(f=>f.id==='org_lookalike'&&f.arg===L.host)){H.add('H2');st.look.push({o,L})}}
+return [...H]}
+const MZ_LABELMAP=new Map();
+(function(){for(const o of MZDATA.o)for(const n of [...(o.a||[]),...(o.s||[])]){const k=n.toLowerCase().trim();if(k.length>=3&&!MZ_LABELMAP.has(k))MZ_LABELMAP.set(k,o)}})();
+function mzR4Label(rt,orgs){const m=/^\s*[(\[]?([A-Za-z][A-Za-z0-9&.' -]{1,30}?)[)\]]?\s*:/.exec(rt);if(!m)return;const o=MZ_LABELMAP.get(m[1].toLowerCase().trim());
+if(o&&!orgs.some(x=>x.o===o)){orgs.unshift({o,i:Math.max(0,m[0].indexOf(m[1]))})}}
+function mzR4Merchant(rt,l){return !l.obf&&!/^(?:https?:|hxxp)/i.test(l.raw||'')&&!/[\/?#]/.test(l.raw||'')&&/\b(?:at|@|from|to|via)\s+$/i.test(rt.slice(Math.max(0,l.i-6),l.i))&&/\b(?:card|purchase|spent|paid|debited|credited|transaction|txn|a\/c)\b/i.test(rt)&&!/-/.test(l.host||'')&&!RARE_TLDS.has(String(l.host||'').split('.').pop())&&!/\b(?:update|verify|login|log in|click|visit|confirm|restore|unlock|recharge|renew|pay now|reactivate)\b/i.test(rt)}
+const R4_LOWFLAGS=new Set(['urgency','r3_pin','money_request']);
+const R4_STATEMENT=/\b(?:has|have|was|were) been (?:debited|credited|deducted|withdrawn|transferred)\b|\bdebited (?:for|by|from)\b|\bcredited (?:to|with|by)\b|\bwithdrawn from\b|\b(?:avl|avail\w*)\.?\s*(?:bal\w*|cr\.?\s*limit|limit)|\b(?:balance|bal)\s*(?:is|:)|الرصيد|مانده|\btrx\s?id\b|\brrn\b/i;
+const R4_NOCALM=/\b(?:suspend\w*|block\w*|lock(?:ed|ing|out)?|expir\w*|renew\w*|subscri\w*|charges?|fees?|fines?|overdue|unpaid|cancel\w*|account|card|verify|confirm\w*|update|avoid|stop\w*|service|parcel|package|delivery|order|bank|payment|pay|money|transfer|prize|refund|number|whatsapp)\b|ايقاف|تجنب|ينتهي|اشتراك|تجديد|حساب|بطاقه|فورا|رقم|واتساب/i;
+const R4_DONE=/\b(?:has|have|was|were) been (?:processed|credited|refunded|issued|sent|completed|approved|delivered|received)\b|تم\s+(?:استرداد|ايداع|تحويل|اصدار|قبول|الموافقه)/i;
+const R4_ASKY=/\b(?:code|otp|pin|password|mistake|send|share|give|link|click|reply|call|text)\b|رمز|كود/i;
+const R4_IMPER=/\b(?:please|kindly|must|now|immediately|within|before|click|visit|call|reply|verify|confirm|update|urgent\w*|asap)\b/i;
+function mzR4Calm(rt,ctx,flags,asks,st){if(st.promo)return false;
+const ids=flags.map(f=>f.id);const noDest=!ctx.unofficial.length&&!ctx.phones.length;if(!noDest)return false;
+const regPhone=ctx.allPhones.some(p=>p.reg&&p.ok);const org=ctx.orgs.length>0;const ak=[...asks];
+if(st.pinCase)return org&&mzR4Claims(rt,ctx)&&ak.every(a=>a==='code')&&!ctx.links.length&&!/\b(?:i am|i'm|im)\b/i.test(rt);
+if(st.riskyReason&&org&&!ids.length&&!ak.length&&R4_DONE.test(rt)&&!/\b(?:fees?|claim|won|click|link|call|pay)\b/i.test(rt))return true;
+if(st.riskyReason)return false;
+const urgBase=ids.length>0&&ids.every(i=>i==='urgency')&&!ctx.links.some(l=>!l.official);
+if(urgBase&&!/[؀-ۿ]/.test(rt)&&!R4_NOCALM.test(rt)&&!R4_ASKY.test(rt)&&!ak.length&&(rt.match(/[\p{L}\p{N}]+/gu)||[]).length>=15)return true;
+if(urgBase&&org&&ak.every(a=>a==='call'&&regPhone))return true;
+if(urgBase&&org&&!ak.length)return true;
+if(!ids.length&&org&&ak.length&&ak.every(a=>a==='call')&&!ctx.allPhones.some(p=>!(p.reg&&p.ok)))return true;
+if(R4_STATEMENT.test(rt)&&ids.every(i=>i==='money_request'||i==='urgency')&&ak.every(a=>a==='pay'||a==='click'||a==='details')&&!R4_IMPER.test(rt.replace(/\bunauthori[sz]ed\b/ig,'')))return true;
+return false}
+function mzR4Floor(rt,ctx,ownPointer,rtR){const out=[];const raw=rtR||rt;const T=(k,res,src)=>{const h=first(src||rt,res);if(h)out.push({k,i:h.i,len:h.len})};
+let rest=raw;for(const l of ctx.links)rest=rest.slice(0,l.i)+' '.repeat(l.len)+rest.slice(l.i+l.len);
+T('fee',R4_FEEASK);T('acct',R4_ACCT2);
+const ph=[];let m;R4_PHONE.lastIndex=0;while((m=R4_PHONE.exec(rest)))ph.push(m);R4_PHONE.lastIndex=0;
+const ph2=ph.filter(x=>!/(?:rrn|ref\w*|txn|trx|id|no\.?|number|order|invoice|a\/c|acc\w*|#)\W{0,3}$/i.test(rest.slice(Math.max(0,x.index-12),x.index)));
+if(ph2.length&&R4_PHONE_WHY.test(raw))out.push({k:'phone',i:ph2[0].index,len:ph2[0][0].length});
+if(!R4_BIG_OK.test(rt))T('big',R4_BIG);
+if(!ctx.orgs.length)T('job',R4_JOB);
+if(!ctx.orgs.length)T('prem',[R4_SHORT]);
+if(!ctx.orgs.length)T('misc',R4_MISC);
+if(!ctx.orgs.length)T('addr',R4_ADDR);
+if(!ctx.orgs.length&&!ctx.links.length&&rt.length<500&&!/@/.test(rt))T('link',R4_BARE);
+return out}
+const R4_AT=/(?:\b(?:at|@|from merchant|merchant)|(?:لدى|عند|لدي))\s*$/i;
+function mzR4Sender(rt,orgs,flags){const out=[];
+for(const x of orgs){const before=rt.slice(Math.max(0,x.i-16),x.i);const shop=['marketplace','other','airline'].includes(x.o.t)&&R4_AT.test(before);if(!shop)out.push(x)}
+if(!out.length)for(const f of flags){if(f.id==='org_lookalike'&&f.org&&MZ_BY_ID[f.org]&&!out.some(y=>y.o.i===f.org))out.push({o:MZ_BY_ID[f.org],i:0})}
+return out}
 /*MZRULES:END*/
 const RULE_COUNT=TEXT_RULES.length+Object.keys(LINK_FLAGS).length+1;
 /* The rules know English and Arabic best. For text mostly in another language (or another script), they never say "Looks genuine". */
@@ -1352,7 +1600,7 @@ function newId(){return 'c'+Date.now().toString(36)+Math.random().toString(36).s
 function buildEntry(raw,o){const A=analyseRules(raw);
   return {id:newId(),at:o.at||Date.now(),exKey:o.exKey||'',lang:o.lang==='ar'?'ar':'en',red:A.red,legend:A.legend,hiddenTotal:A.total,
     links:A.links.map(l=>({raw:l.raw,host:l.host,flags:l.flags,official:l.official})),phones:A.phones.map(p=>({raw:p.raw,digits:p.digits,uae:p.uae})),linksFlagged:A.linksFlagged,notes:A.notes,orgs:A.orgs,asks:A.asks,
-    flags:A.flags.sort((a,b)=>(b.hard-a.hard)||(b.sev-a.sev)),rules:{verdict:A.verdict,type:A.type,score:A.score,hard:A.hard,capped:A.capped},family:null,final:null}}
+    flags:A.flags.sort((a,b)=>(b.hard-a.hard)||(b.sev-a.sev)),rules:{verdict:A.verdict,type:A.type,score:A.score,hard:A.hard,signs:A.signs,capped:A.capped},family:null,final:null}}
 /* The result is the rules' verdict. A result that is not "No warning signs found" always names a type. */
 function finalize(e){const v=e.rules.verdict;let type=e.rules.type;
   if(VERDICTS[v].rank>=2&&type==='none')type='other';
@@ -1432,8 +1680,9 @@ function ago(at){const m=Math.round((Date.now()-at)/60000);
 const MZ_ASKMAP={code:'code',card:'card',pay:'pay',id:'id',click:'link',details:'id'};
 function reasonsFor(e){
   const out=[],seen=new Set();const add=x=>{x=String(x||'').trim();if(!x||seen.has(x))return;seen.add(x);out.push(x)};
+  (e.notes||[]).filter(n=>n.k==='partner').map(mzNoteText).filter(Boolean).forEach(add);
   e.flags.slice().sort((a,b)=>((b.hard?9:b.sev)-(a.hard?9:a.sev))).forEach(f=>add(fLabel(f)));
-  (e.notes||[]).filter(n=>n.k!=='report'&&n.k!=='fam').map(mzNoteText).filter(Boolean).forEach(add);
+  (e.notes||[]).filter(n=>n.k!=='report'&&n.k!=='fam'&&n.k!=='partner').map(mzNoteText).filter(Boolean).forEach(add);
   return out.slice(0,3)}
 function actionFor(fv,org){
   if(VERDICTS[fv].rank>=2)return org?t('act_scam_org',{o:mzName(org)}):t('act_scam');
@@ -1471,7 +1720,7 @@ function renderResult(e){
   ${reasons.length?`<ul class="dots">${reasons.map(x=>`<li dir="auto">${esc(x)}</li>`).join('')}</ul>`:''}
   ${org?orgCardHTML(org,e,'say'):''}
   <p class="action" dir="auto">${esc(actionFor(fv,org))}</p>
-  <p class="note chk" dir="auto">${esc(t('chk_line'))}</p>
+  ${org?'':`<p class="note chk" dir="auto">${esc(t('chk_line'))}</p>`}
   ${VERDICTS[fv].rank>=2?`<div class="acts"><button type="button" class="go" data-act="report" id="reportBtn" aria-haspopup="dialog" aria-controls="sheetReport">${esc(t('rep_btn'))}</button></div>`:''}
   <div class="acts"><button type="button" class="tbtn" data-act="wrong" id="wrongBtn" aria-haspopup="dialog" aria-controls="sheetWrong">${esc(t('wr_btn'))}</button></div>
   <div id="familyBox">${familyHTML(e)}</div>
