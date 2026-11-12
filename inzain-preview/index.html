@@ -112,6 +112,8 @@ label small{font-weight:400;color:var(--muted);font-size:15px}
 .btn:disabled,.btn[aria-disabled="true"]{opacity:.6;cursor:wait}
 .actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+/* example questions are for the start page: once an answer or "I don't know" is shown they are unrelated to it */
+#result:not([hidden])~#chips{display:none}
 .chip{font-size:15px;border:0;background:var(--tile);border-radius:22px;padding:8px 16px;cursor:pointer;min-height:44px;color:var(--ink);text-align:start}
 .chip[aria-pressed="true"]{background:var(--brand);color:var(--on-brand);font-weight:600}
 .chip .tag{font-size:15px;color:var(--muted);margin-inline-start:6px}
@@ -146,11 +148,8 @@ details.tracebox>summary,details.more>summary{font-weight:600;color:var(--link);
 .scpop a,.src a,.plan p>a{display:inline-flex;align-items:center;min-height:44px}
 .k{font-size:15px;font-weight:600;border-radius:12px;padding:0 8px;background:var(--bg);color:var(--ink);white-space:nowrap;display:inline-block}
 .asked{background:var(--tint);border-radius:14px;padding:8px 12px}
-.clar{border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:14px;background:var(--tint)}
-.clar fieldset{border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;min-width:0}
-.clar legend{font-weight:600;padding:0;margin-bottom:4px}
-.clar .chip{background:var(--bg)}
-.clar .chip[aria-pressed="true"]{background:var(--brand)}
+.refine{display:flex;flex-direction:column;gap:10px;margin:8px 0}
+.refrow{display:flex;flex-direction:column;gap:6px}
 .answer{background:var(--bg);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0}
 .answer .who{font-size:15px;color:var(--muted)}
 .answer ul{margin:0;padding-inline-start:22px;display:flex;flex-direction:column;gap:6px}
@@ -239,7 +238,7 @@ span.chan{font-weight:400}
 /* sheets: the menu and the admin AI panel */
 .sheet{position:fixed;inset:auto 0 0 0;width:100%;max-width:none;height:auto;max-height:calc(100vh - 10px);max-height:calc(100dvh - 10px);margin:0;padding:0;border:0;border-radius:22px 22px 0 0;overflow:hidden;background:var(--bg);color:var(--ink)}
 .sheet[open]{display:flex;flex-direction:column}
-.sheet::backdrop{background:rgba(8,10,20,.5)}
+.sheet::backdrop{background:rgba(14,15,18,.5)}
 .sheet-bar{flex:none;display:flex;align-items:center;gap:10px;min-height:60px;padding:8px;padding-inline-start:18px;border-bottom:1px solid var(--line)}
 .sheet-bar h2{flex:1;min-width:0}
 .sheet-body{flex:1 1 auto;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:14px;padding:16px 16px calc(24px + env(safe-area-inset-bottom,0px))}
@@ -257,7 +256,7 @@ span.chan{font-weight:400}
  .tile:hover,.jcard:hover,.eitem:hover{background:var(--tile-hi)}
  .card .tile:hover,.card .jcard:hover,.card .eitem:hover{background:var(--tile-hi)}
  .ibtn:hover{background:rgba(127,127,127,.18)}
- .lang:hover,.admchip:hover{background:rgba(0,0,0,.26)}
+ .lang:hover,.admchip:hover{background:var(--tile-hi)}
 }
 @media (prefers-reduced-motion:no-preference){
  .tile,.jcard,.go,.lang,.ibtn,.chip,.mbtn,.btn{transition:transform .15s,background-color .15s}
@@ -437,7 +436,7 @@ const fmtN=n=>Number(n).toLocaleString('en-US',{maximumFractionDigits:2});
 
 /* == normalise text */
 function toWest(s){return String(s??'').replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-0x660)).replace(/[۰-۹]/g,c=>String(c.charCodeAt(0)-0x6F0))}
-function normAr(s){return String(s).replace(/[ؐ-ًؚ-ٰٟـ]/g,'').replace(/[آأإٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/ؤ/g,'و').replace(/ئ/g,'ي').replace(/ک/g,'ك').replace(/ی/g,'ي')}
+function normAr(s){return String(s).replace(/[ؐ-ًؚ-ٰٟـ]/g,'').replace(/[آأإٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/ؤ/g,'و').replace(/ئ/g,'ي').replace(/ک/g,'ك').replace(/ی/g,'ي').replace(/چ/g,'ك').replace(/گ/g,'ق').replace(/پ/g,'ب').replace(/ڤ/g,'ف').replace(/([ء-ي])\1{2,}/g,'$1')}
 function norm(s){return normAr(toWest(s).toLowerCase().replace(/n['’]t\b/g,'nt').replace(/['’]s\b/g,''))}
 const AR_LETTER=/[ء-ي]/;
 function stemEn(w){if(w.length<=3||/^\d/.test(w))return w;
@@ -448,7 +447,7 @@ if(/([b-df-hj-np-tv-z])\1$/.test(w))w=w.slice(0,-1);
 if(w.length>4&&w.endsWith('e'))w=w.slice(0,-1);
 return w}
 function stemAr(w){if(w.length<=3)return w;
-for(const p of ['وال','بال','كال','فال','لل','ال'])if(w.startsWith(p)&&w.length-p.length>=3){w=w.slice(p.length);break}
+for(const p of ['وال','بال','كال','فال','هال','لل','ال'])if(w.startsWith(p)&&w.length-p.length>=3){w=w.slice(p.length);break}
 let cut=false;
 for(const s of ['هما','كما','هم','هن','كم','كن','نا','ها','ي','ه','ك'])if(w.endsWith(s)&&w.length-s.length>=3){w=w.slice(0,-s.length);cut=true;break}
 if(!cut&&w.length>4&&w.endsWith('ا'))w=w.slice(0,-1);
@@ -458,27 +457,27 @@ return w}
 const stem=w=>AR_LETTER.test(w)?stemAr(w):/[a-z]/.test(w)?stemEn(w):w;
 const rawWords=s=>norm(s).match(/[a-z0-9ء-ي]+/g)||[];
 const STOP=new Set(('a an the of to in on at for from by with and or but is are was were be been being am i me my mine we us our you your he him his she her it its they them their this that these those what which who whom whose how why when where can could do does did have has had will would shall should may might must not no yes if then than so as about into over again also just only very too more most much many any some each every all both other such own same here there now get got please hi hello hey thanks thank dear uae u ae emirate emirates country want need know tell let im ive dont cant whats ok okay sir madam last week weeks before yesterday today tomorrow ago make made still already soon long because legal allowed allow saying said goes next wont isnt doesnt didnt hasnt havent arent wasnt wouldnt one two three four five six seven eight nine ten twenty thirty hundred affect affects effect impact happen happens happened really worried worry worth possible able sure sorry thing things something anything anyone someone everything even ever never always lot way '+
-'في من الي علي عن مع هل ما ماذا لماذا كيف متي اين وين كم هذا هذه ذلك تلك هناك هنا التي الذي الذين انا انت انتي انتم هو هي هم هن نحن لي لك له لها لنا لكم عندي عندك عنده ان او ثم قد لا لم لن كل بعض بعد قبل عند يا اي ايش وش شو شلون ليش ابي ابا ابغي ابغا اقدر ممكن يمكن يمكنني لو اذا كان كانت يكون تكون مثل غير بين حتي الان الحين بس عشان علشان يعني لازم شي شيء نعم الامارات الدوله دوله اريد ارجو سؤال سوال احتاج نحتاج يحتاج محتاج تحتاج يانا جانا نسوي اسوي يسوي تسوي سويت امس البارحه باكر بكره اسبوع مسموح يجوز يحق ممنوع منذ لدي لدينا لديه ليس ليست لست ايضا جدا فقط حاليا لان ام اما سوف يجب ينبغي عليه علينا عليها عليك اشياء احد واحد اثنين ثلاث خمس حقي حقتي حقنا حقه اعطي يعطي تعطي يصير صار قديم ماضي قادم حالي اقدم يقدم تقدم').split(' ').map(stem));
+'في من الي علي عن مع هل ما ماذا لماذا كيف متي اين وين كم هذا هذه ذلك تلك هناك هنا التي الذي الذين انا انت انتي انتم هو هي هم هن نحن لي لك له لها لنا لكم عندي عندك عنده ان او ثم قد لا لم لن كل بعض بعد قبل عند يا اي ايش وش شو شلون ليش ابي ابا ابغي ابغا شنو شنهو ويش مب مو يبي تبي نبي يبغي تبغي نبغي هاذا هاذي هذي هالحين دحين هسه وياي اقدر ممكن يمكن يمكنني لو اذا كان كانت يكون تكون مثل غير بين حتي الان الحين بس عشان علشان يعني لازم شي شيء نعم الامارات الدوله دوله اريد ارجو سؤال سوال احتاج نحتاج يحتاج محتاج تحتاج يانا جانا نسوي اسوي يسوي تسوي سويت امس البارحه باكر بكره اسبوع مسموح يجوز يحق ممنوع منذ لدي لدينا لديه ليس ليست لست ايضا جدا فقط حاليا لان ام اما سوف يجب ينبغي عليه علينا عليها عليك اشياء احد واحد اثنين ثلاث خمس حقي حقتي حقنا حقه اعطي يعطي تعطي يصير صار قديم ماضي قادم حالي اقدم يقدم تقدم').split(' ').map(stem));
 
 const SYN=[
-['visa','residence','residency','iqama','residence permit','residence visa','اقامة','فيزا','فيزه','تأشيرة'],
+['visa','residence','residency','iqama','residence permit','residence visa','اقامة','فيزا','فيزه','تأشيرة','iqama','eqama','ikama','iqamah','iqamat','eqamah','تاشيره'],
 ['visit visa','tourist visa','visit','tourist','visitor visa','زيارة','تأشيرة زيارة','فيزا زيارة','سياحة','سياحية','فيزا سياحية'],
-['cancel','cancle','كنسل','كنسلت','كنسلوا','إلغاء','ألغى','الغت','لغوا','الغوا','لغو'],
+['cancel','cancle','كنسل','كنسلت','كنسلوا','إلغاء','ألغى','الغت','لغوا','الغوا','لغو','kansel','ykansel','ykanslu','tkansel','kanselt','الغي','يكنسل','تكنسل','algha','aghi','alghi','agha'],
 ['gratuity','end of service','eos','eosb','end of service benefit','مكافأة نهاية الخدمة','نهاية الخدمة','مستحقات نهاية الخدمة'],
 ['maid','housemaid','nanny','domestic worker','domestic helper','house help','خادمة','خدامة','شغالة','عاملة منزلية','العمالة المنزلية','عامل منزلي','مربية','دريول','tadbeer','تدبير'],
 ['trade licence','trade license','business licence','business license','commercial licence','commercial license','رخصة تجارية','سجل تجاري'],
-['driving licence','driving license','driver licence','driver license','driving test','رخصة قيادة','رخصة السياقة','ليسن','رخصة السواقة'],
+['driving licence','driving license','driver licence','driver license','driving test','رخصة قيادة','رخصة السياقة','ليسن','رخصة السواقة','rukhsa','rokhsa','rakhsa','rokhsat','rukhsat','rokhsat el sewaqa','rukhsat al siyaqa'],
 ['licence','license','lisence','licens','رخصة'],
-['fine','penalty','violation','pay the fine','pay a fine','pay fines','pay my fine','غرامة','مخالفة','جزاء'],
+['fine','penalty','violation','pay the fine','pay a fine','pay fines','pay my fine','غرامة','مخالفة','جزاء','مخالفات','mokhalafa','mukhalafa','mokhalafat','mukhalafat','makhalfa','mkhalfa','mokhalfa','gharama','ghrama'],
 ['fee','fees','cost','costs','charge','charges','how much do i pay','what do i pay','رسوم','الرسوم','تكلفة','كم ادفع'],
 ['leave the country','leave the uae','leave uae','exit the country','exit the uae','depart','departure','stay','remain','مغادرة','المغادرة','اغادر','يغادر','اطلع من الدولة','اخرج من الدولة','البقاء','ابقى','اقعد'],
-['salary','pay','paid','payed','wage','paycheck','payslip','راتب','رواتب','معاش','اجر','أجور'],
-['rent','rental','tenancy','tenant','lease','ejari','pay rent','pay the rent','pay my rent','إيجار','مستأجر','عقد ايجار'],
-['landlord','owner','صاحب البيت','صاحب العقار','مالك العقار','المالك','صاحب الشقة'],
+['salary','pay','paid','payed','wage','paycheck','payslip','راتب','رواتب','معاش','اجر','أجور','rateb','raatib','ratib','rateeb','ma3ash','maash','معاشات'],
+['rent','rental','tenancy','tenant','lease','ejari','pay rent','pay the rent','pay my rent','إيجار','مستأجر','عقد ايجار','اجار','الاجار','ejar','ijar','ejaar','eijar','عقد الاجار'],
+['landlord','owner','صاحب البيت','صاحب العقار','مالك العقار','المالك','صاحب الشقة','صاحب العماره','mallak','sa7eb el beit','saheb el beit','sa7eb el bait','sa7eb elbeit'],
 ['baby','newborn','new born','infant','birth','born','مولود','مواليد','رضيع','ولادة','يهال','طفل','ولد جديد','طفل جديد','بنت جديدة','بيبي','ولدت'],
-['boss','employer','company','my company','kafeel','الشركة','الكفيل','صاحب العمل','المدير'],
-['emirates id','eid','id card','identity card','emirates identity','الهوية','بطاقة الهوية','الهوية الإماراتية','ايدي','id'],
-['passport','جواز','جواز السفر','باسبور'],
+['boss','employer','company','my company','kafeel','kafil','kfeel','kafeelna','sharika','el sharika','الشركة','الكفيل','صاحب العمل','المدير'],
+['emirates id','eid','id card','identity card','emirates identity','الهوية','بطاقة الهوية','الهوية الإماراتية','ايدي','id','hawiya','huwiya','hawiyya','hawiyah','7awiya','hawya'],
+['passport','جواز','جواز السفر','باسبور','jawaz','jawaz safar','jwaz','pasbor','basbor'],
 ['overstay','over stay','stayed after','تجاوز','تخلف','تجاوز مدة'],
 ['grace period','grace','مهلة','مهلة السماح','فترة السماح','سماح'],
 ['renew','renwal','تجديد','جدد','اجدد','يجدد'],
@@ -496,19 +495,19 @@ const SYN=[
 ['overtime','over time','extra hours','اوفر تايم','عمل إضافي','ساعات إضافية'],
 ['midday break','midday','mid day','noon','heat','sun','summer','outdoor','outdoors','afternoon','الظهيرة','الظهر','منتصف النهار','الشمس','الحر','الصيف'],
 ['deposit','security deposit','ديبوزت','العربون','مبلغ التأمين','مبلغ الضمان','ضمان'],
-['insurance','health insurance','insured','تأمين','تأمين صحي'],
+['insurance','health insurance','insured','تأمين','تأمين صحي','ta2meen','tamin','tameen','taamin'],
 ['evict','eviction','evection','vacate','notice to vacate','kick me out','إخلاء','طرد','يطلعني'],
 ['increase','raise','rise','hike','incrase','goes up','go up','went up','put up','زيادة','يزيد','رفع','يرفع'],
 ['notice','notify','notification','إشعار','إنذار','تبليغ'],
 ['golden visa','golden','10 year visa','الإقامة الذهبية','الذهبية','الفيزا الذهبية','الغولدن'],
 ['green visa','الإقامة الخضراء','الخضراء'],
-['sponsor family','family visa','dependent','spouse','wife','husband','كفالة','اكفل','زوجتي','عيالي','أولادي','الأسرة','العائلة'],
+['sponsor family','family visa','dependent','spouse','wife','husband','كفالة','اكفل','زوجتي','عيالي','أولادي','الأسرة','العائلة','زوجي','زوجه','مرتي','حرمتي','zawja','zawjati','zawji','mrati','3yali','3iyali'],
 ['parents','mother','father','والدي','أمي','ابوي'],
 ['marriage','married','wedding','marry','زواج','عقد قران','ملكة','عرس'],
 ['divorce','talaq','طلاق','مطلقة'],
-['school','school fees','tuition','مدرسة','المدارس','رسوم مدرسية'],
+['school','school fees','tuition','مدرسة','المدارس','رسوم مدرسية','madrasa','madrasah','madrasa hukumiya'],
 ['university','college','جامعة','كلية'],
-['hospital','clinic','doctor','medical','مستشفى','عيادة','دكتور','طبيب','صحي'],
+['hospital','clinic','doctor','medical','مستشفى','عيادة','دكتور','طبيب','صحي','mustashfa','mostashfa','doktor'],
 ['sick leave','sick note','medical leave','إجازة مرضية','سك ليف'],
 ['annual leave','vacation','holiday','إجازة','عطلة'],
 ['vat','value added tax','ضريبة القيمة المضافة','القيمة المضافة'],
@@ -532,16 +531,22 @@ const SYN=[
 ['attest','legalise','legalize','تصديق','مصدق'],
 ['tawtheeq','توثيق'],
 ['dewa','electricity','water bill','utility','كهرباء','فاتورة الكهرباء','ديوا'],
-['resign','quit','notice period','استقالة','استقيل','فترة الإنذار'],
-['fired','terminated','termination','dismissed','laid off','sacked','فصل','إنهاء الخدمة','تفنيش','فنشوني'],
-['absconding','بلاغ هروب','هروب','تغيب'],
+['resign','quit','notice period','استقالة','استقيل','فترة الإنذار','astaqil','astaqeel','esteqala','istiqala'],
+['fired','terminated','termination','dismissed','laid off','sacked','فصل','إنهاء الخدمة','تفنيش','فنشوني','فصلوني','فصلتني','tafneesh','fasalouni','fasalni'],
+['absconding','بلاغ هروب','هروب','تغيب','هربت','هرب','harabat','harbat','harab'],
 ['inheritance','inherit','estate','ورث','ميراث','وصية','تركة','ترث','يرث','ارث'],
 ['death','died','passed away','وفاة','توفي','متوفي'],
 ['lost','stolen','فقدت','ضاع','ضايع','مفقود','بدل فاقد'],
 ['register','registration','registered','sign up','تسجيل','اسجل','يسجل','تسجل'],
-['unpaid','not paid','not payed','not been paid','hasnt paid','havent been paid','didnt pay','not pay','no salary','withheld','لم تدفع','لم يدفع','لم يصرف','لم تصرف','ما دفع','ما دفعوا','ما عطاني','ما عطتني','ما عطوني','ما استلمت','لم استلم'],
-['late','delay','delayed','overdue','متاخر','تاخر','تاخير','تاخرت'],
-['year','years','yearly','سنة','سنوات','سنين','سنويا']
+['unpaid','not paid','not payed','not been paid','hasnt paid','havent been paid','didnt pay','not pay','no salary','withheld','لم تدفع','لم يدفع','لم يصرف','لم تصرف','ما دفع','ما دفعوا','ما عطاني','ما عطتني','ما عطوني','ما استلمت','لم استلم','ما نزل','ما نزلت','ما وصل','ما وصلت','ما وصلني','ما سددوا','ما سدد','ما عطتنا','ما عطانا','ما يدفعون','ما يعطوني','ma 3atatni','ma 3atani','ma dafa3o','ma nazal','ma wasal'],
+['late','delay','delayed','overdue','متاخر','تاخر','تاخير','تاخرت','متاخره','met2akher','mt2akher','mtakher','metakher','mit2akher','ta2akhar','takhar'],
+['year','years','yearly','سنة','سنوات','سنين','سنويا'],
+['money','cash','فلوس','فلوسي','مصاري','flous','fulous','floos','flus'],
+['bank','banks','بنك','البنك','مصرف','بنوك','المصرف'],
+['account','accounts','حساب','حسابي','الحساب','hesab','7esab','hisab','hesabi','7esabi'],
+['freeze','frozen','block','blocked','suspend','suspended','جمد','جمدوا','جمدت','تجميد','مجمد','موقوف','jamad','jammad','jamdo'],
+['travel ban','exit ban','منع سفر','منع من السفر','منع السفر','man3 safar','mane3 safar','mn3 safar'],
+['birth certificate','شهاده ميلاد','شهادة الميلاد','shihadat milad']
 ];
 const EMI_GROUP={dubai:'dubai','abu-dhabi':'abu dhabi',sharjah:'sharjah',ajman:'ajman','umm-al-quwain':'umm al quwain','ras-al-khaimah':'ras al khaimah',fujairah:'fujairah'};
 const EMIRATES=Object.keys(EMI_GROUP);
@@ -594,11 +599,71 @@ const k1=1.6,b=.75;
 const res=I.docs.map(d=>{let s=0,cov=0;for(const [t,w,em,fw] of q){const f=d.tf.get(t);if(!f)continue;const sc=idf(t)*(f*(k1+1))/(f+k1*(1-b+b*d.len/I.avg));s+=(w<1?.8:1)*(em?.5:1)*fw*sc;if(nc(t))cov+=idf(t)*w}
 if(opt.topic&&(d.topic===opt.topic||(Array.isArray(d.topic)&&d.topic.includes(opt.topic))))s*=1.2;if(qe.length&&!d.em.includes('all')&&!qe.some(x=>d.em.includes(x)))s*=.6;const cr=covTot?cov/covTot:0;if(COV_W)s*=(1-COV_W)+COV_W*2*cr;return {id:d.id,score:Math.round(s*100)/100,cov:covTot?Math.round(cov/covTot*100)/100:0}});
 return res.filter(r=>r.score>0).sort((a,b)=>b.score-a.score||b.cov-a.cov)}
-function search(text,opt){return searchIdx(IDX,text,opt)}
-/* coverage skips numbers and emirates */
-const GAP_MIN=1.5,GAP_COV=.3,OOV_W=.75;
-const isGap=res=>!res.length||res[0].score<GAP_MIN||res[0].cov<GAP_COV||(res[0].cov<.5&&res[0].score<1.5*Math.log(1+((IDX?IDX.N:0)+.5)/.5));
-function rulesChosen(c){if(!c.length)return [];const top=c[0],tp=(BY_ID[top.id]||{}).topic;return c.filter((r,i)=>i===0||(r.cov>=GAP_COV&&r.score>=top.score*((BY_ID[r.id]||{}).topic===tp?.6:.85))).slice(0,3).map(r=>r.id)}
+/* == Search over the library entries (12 Nov 2026): BM25 over the question, the search phrases and the extra phrases
+   (field weights), plus a second matcher on character pieces (Arabic word forms, typos, Arabizi). A long post is also
+   searched sentence by sentence, and the topic with the most evidence gets a small lift. Measured with search_bench.js. */
+const RK={wq:2,wa:2.5,wp:1,k1:3,b:.75,topicB:.15,ngW:.3,sentG:.3,sentMin:200,topK:40,emPen:.6};
+let PHRASE={};
+function qWords(text){return (norm(text).match(/[a-z0-9ء-ي]+/g)||[]).map(stem).filter(w=>w.length>=3&&!STOP.has(w)&&!/^\d+$/.test(w))}
+const grams=w=>{const g='#'+w+'#',o=[];for(let i=0;i+3<=g.length;i++)o.push(g.slice(i,i+3));return o};
+function buildEntries(entries){const docs=[],post=new Map(),gpost=new Map(),gsets=[],dfq=new Map();let tot=0;
+entries.forEach((e,di)=>{const fq=new Map(),fa=new Map(),fp=new Map();let lq=0,la=0,lp=0;
+const add=(m,txt)=>{let n=0;for(const x of terms(txt)){m.set(x,(m.get(x)||0)+1);n++}return n};
+const ph=PHRASE[e.id]||'',ask=arr(e.ask).join(' \n ');
+lq=add(fq,both(e.q));la=add(fa,ask);lp=add(fp,ph);
+const len=RK.wq*lq+RK.wa*la+RK.wp*lp;docs.push({id:e.id,topic:e.topic,em:e.emirates||['all'],len});tot+=len;
+const fx=new Map();if(!e._stub){add(fx,both(e.a));for(const f of arr(e.facts))add(fx,both(f))}
+for(const t of new Set([...fq.keys(),...fa.keys(),...fx.keys()]))dfq.set(t,(dfq.get(t)||0)+1);
+for(const t of new Set([...fq.keys(),...fa.keys(),...fp.keys()])){let l=post.get(t);if(!l)post.set(t,l=[]);l.push(di,RK.wq*(fq.get(t)||0)+RK.wa*(fa.get(t)||0)+RK.wp*(fp.get(t)||0))}
+const gs=new Set();for(const w of qWords(both(e.q)+' '+ask+' '+ph))for(const g of grams(w))gs.add(g);gsets.push(gs);for(const g of gs){let l=gpost.get(g);if(!l)gpost.set(g,l=[]);l.push(di)}});
+const N=docs.length,df=new Map();for(const [t,l] of post)df.set(t,l.length/2);
+const gnorm=new Float64Array(N);gsets.forEach((gs,di)=>{let n=0;for(const g of gs){const i=Math.log(1+N/gpost.get(g).length);n+=i*i}gnorm[di]=Math.sqrt(n)||1});
+const vo=m=>[...m.keys()].filter(v=>!v.startsWith('~')&&!/^\d+$/.test(v));
+return {docs,post,gpost,gnorm,df,N,avg:tot/Math.max(1,N),vocab:vo(df),dfq,vocabq:vo(dfq)}}
+function rkRaw(I,text,opt){opt=opt||{};const N=I.N,qs=[...new Set(terms(text))];if(!qs.length)return [];
+const idf=t=>{const n=I.df.get(t)||0;return Math.log(1+(N-n+.5)/(n+.5))},maxIdf=Math.log(1+(N+.5)/.5),focus=qFocus(text);
+const q=[],qe=EMIRATES.filter(x=>qs.includes(EMI_KEY[x])),nc=t=>!EMI_KEYS.has(t)&&!/^\d/.test(t);let covTot=0;
+for(const t of qs){let term=t,w=1;if(!I.df.has(t)){const x=expandTerm(t,I);if(x){[term,w]=x}else{if(nc(t))covTot+=maxIdf*OOV_W;continue}}
+if(nc(term))covTot+=idf(term);q.push([term,w,EMI_KEYS.has(term),focus.has(t)?FOCUS_W:1,idf(term),nc(term)])}
+const sc=new Float64Array(N),cv=new Float64Array(N),seen=[];
+for(const [term,w,em,fw,ix,isnc] of q){const l=I.post.get(term);if(!l)continue;
+for(let i=0;i<l.length;i+=2){const d=l[i],f=l[i+1],dd=I.docs[d];if(sc[d]===0&&cv[d]===0)seen.push(d);
+sc[d]+=(w<1?.8:1)*(em?.5:1)*fw*ix*(f*(RK.k1+1))/(f+RK.k1*(1-RK.b+RK.b*dd.len/I.avg));if(isnc)cv[d]+=ix*w}}
+const qg=new Set();for(const w of qWords(text))for(const g of grams(w))qg.add(g);
+const gs=new Map();for(const g of qg){const l=I.gpost.get(g);if(!l)continue;const i=Math.log(1+N/l.length);for(const d of l)gs.set(d,(gs.get(d)||0)+i*i)}
+let gmax=0,bmax=0;for(const [d,v] of gs){const x=v/I.gnorm[d];gs.set(d,x);if(x>gmax)gmax=x;if(sc[d]===0&&cv[d]===0)seen.push(d)}for(const d of seen)if(sc[d]>bmax)bmax=sc[d];
+const out=[];
+for(const d of seen){const dd=I.docs[d];let s=sc[d];s=((bmax?s/bmax:0)*(1-RK.ngW)+RK.ngW*(gmax?(gs.get(d)||0)/gmax:0))*bmax;
+if(opt.topic&&(dd.topic===opt.topic||(Array.isArray(dd.topic)&&dd.topic.includes(opt.topic))))s*=1.2;
+if(qe.length&&!dd.em.includes('all')&&!qe.some(x=>dd.em.includes(x)))s*=RK.emPen;
+const cr=covTot?cv[d]/covTot:0;if(s>0)out.push({id:dd.id,score:Math.round(s*100)/100,cov:Math.round(cr*100)/100,nq:q.length,d})}
+out.sort((a,b)=>b.score-a.score||b.cov-a.cov);
+const ts=new Map();for(const x of out.slice(0,10))ts.set(I.docs[x.d].topic,(ts.get(I.docs[x.d].topic)||0)+x.score);let mx=0;for(const v of ts.values())if(v>mx)mx=v;
+if(mx){for(const x of out)x.score=Math.round(x.score*(1+RK.topicB*(ts.get(I.docs[x.d].topic)||0)/mx)*100)/100;out.sort((a,b)=>b.score-a.score||b.cov-a.cov)}
+return out.slice(0,RK.topK).map(x=>({id:x.id,score:x.score,cov:x.cov,nq:x.nq}))}
+function searchEntries(I,text,opt){if(!I||!I.N)return [];const str=String(text||'');
+if(str.length>=RK.sentMin){const ss=str.split(/(?<=[.!?؟\n])\s+/).map(x=>x.trim()).filter(x=>x.length>=15);
+if(ss.length>=2){const whole=rkRaw(I,str,opt),best=new Map(),wmax=whole.length?whole[0].score:1;
+for(const sn of ss){const r=rkRaw(I,sn,opt);if(!r.length)continue;const m=r[0].score;for(const x of r.slice(0,15)){const v=x.score/(m||1);if(v>(best.get(x.id)||0))best.set(x.id,v)}}
+const out=whole.map(x=>({...x,score:Math.round((x.score/wmax*(1-RK.sentG)+(best.get(x.id)||0)*RK.sentG)*wmax*100)/100})),have=new Set(whole.map(x=>x.id));
+for(const [id,v] of best)if(!have.has(id)&&v>.6)out.push({id,score:Math.round(v*RK.sentG*wmax*100)/100,cov:0});
+out.sort((a,b)=>b.score-a.score);return out.slice(0,RK.topK)}}
+return rkRaw(I,str,opt)}
+/* a question about a place outside the UAE (and no UAE word), or about cooking, code, football results, prices of gadgets: not a question about UAE rules */
+const FOREIGN=new Set(('argentina australia austria belgium brazil britain canada china colombia cuba denmark finland france germany greece hungary indonesia ireland japan korea malaysia mexico morocco netherlands norway poland portugal romania russia singapore spain sweden switzerland thailand tunisia turkey ukraine usa america england scotland paris london berlin madrid rome tokyo beijing moscow toronto texas california florida chicago boston europe '+
+'الارجنتين استراليا النمسا بلجيكا البرازيل بريطانيا كندا الصين كولومبيا كوبا الدنمارك فنلندا فرنسا المانيا اليونان المجر اندونيسيا ايرلندا اليابان كوريا ماليزيا المكسيك المغرب هولندا النرويج بولندا البرتغال رومانيا روسيا سنغافوره اسبانيا السويد سويسرا تايلاند تونس تركيا اوكرانيا امريكا انجلترا اسكتلندا باريس لندن برلين مدريد روما طوكيو بكين موسكو تورنتو تكساس كاليفورنيا اوروبا').split(' '));
+const FOREIGN_MULTI=['new zealand','south africa','united states','united kingdom','new york','hong kong','los angeles'];
+const UAE_RX=/\b(uae|emirates?|emirati|emiratis|dubai|abu ?dhabi|sharjah|ajman|fujairah|ras al khaimah|umm al quwain|al ain|dxb|rak|mohre|mohap|gdrfa|icp|rta|dewa|salik|ejari|tasheel|amer|tawtheeq|iloe|nafis|dirhams?|aed|dhs)\b|الامارات|اماراتي|الدوله|دبي|ابوظبي|ابو ظبي|الشارقه|عجمان|الفجيره|راس الخيمه|ام القيوين|العين|درهم|الدرهم/;
+const NOT_RULES_RX=/\b(recipes?|bake|baking|cake|biryani|python|javascript|docker|ubuntu|linux|premier league|champions league|football match|celebrity|romantic movie|horoscope|lose weight|workout|bitcoin price|price of bitcoin|who won)\b|طريقه عمل|كيكه|بايثون|جافاسكريبت|دوكر|الدوري|مباراه|فيلما|سعر البيتكوين|المندي/;
+function offTopic(text){const n=norm(text);if(NOT_RULES_RX.test(n))return true;if(UAE_RX.test(n))return false;
+if((n.match(/[a-z0-9ء-ي]+/g)||[]).some(x=>FOREIGN.has(x)))return true;return FOREIGN_MULTI.some(m=>n.includes(m))}
+function search(text,opt){const r=searchEntries(IDX,text,opt);if(r.length&&offTopic(text))r[0].off=true;return r}
+/* "I don't know" when the best entry is weak, covers too little of the question, or the question is not about UAE rules */
+const GAP_REL=2.25,GAP_COV=.12,GAP_COV2=.3,GAP_NQ=10,GAP_HI=1.9,ALSO_COV=.3,OOV_W=.75;
+const gapMin=()=>GAP_REL*Math.log(1+((IDX?IDX.N:0)+.5)/.5);
+const GAP_SHORT=[1,1,.65,.8,.9];  /* a question with only 1 to 4 matched words scores lower: the bar is lower too */
+const isGap=res=>{if(!res.length||res[0].off===true)return true;const r=res[0],m=gapMin(),lo=m*(r.nq>=1&&r.nq<=4?GAP_SHORT[r.nq]:1);return r.score<lo||r.cov<GAP_COV||(r.cov<GAP_COV2&&(r.nq||99)<=GAP_NQ&&r.score<m*GAP_HI)};
+function rulesChosen(c){if(!c.length)return [];const top=c[0],tp=(BY_ID[top.id]||{}).topic;return c.filter((r,i)=>i===0||(r.cov>=ALSO_COV&&r.score>=top.score*((BY_ID[r.id]||{}).topic===tp?.6:.85))).slice(0,3).map(r=>r.id)}
 
 /* == Shield: mask personal numbers */
 const MASK_TAG={email:'[email]',eid:'[ID number]',iban:'[IBAN]',card:'[card number]',passport:'[passport number]',phone:'[phone]',plate:'[plate]',caseno:'[case number]',name:'[name]'};
@@ -631,7 +696,7 @@ function injections(text){const n=norm(text);const out=[];for(const r of INJ_RX)
 /* == Number check */
 const NUM_RX=/\d{1,3}(?:[,٬]\d{3})+(?:[.٫]\d+)?|\d+(?:[.٫]\d+)?/g;
 function numsIn(s){const out=[];for(const m of toWest(s).matchAll(NUM_RX)){let v=m[0].replace(/[,٬]/g,'').replace('٫','.');if(v.includes('.'))v=v.replace(/\.?0+$/,'');v=v.replace(/^0+(?=\d)/,'');out.push(v)}return out}
-function splitSentences(t){return String(t||'').match(/(?:\bNo\.\s|\d[.٫]\d|[^.!?؟\n])+(?:[.!?؟]+\s*|\n+|$)/g)||[]}
+function splitSentences(t){return String(t||'').match(/(?:\bNo\.\s|\d[.٫]\d|(?<=\w)\.(?=\w)|[^.!?؟\n])+(?:[.!?؟]+\s*|\n+|$)/g)||[]}
 function numberCheck(text,allowed){const ok=allowed instanceof Set?allowed:new Set(numsIn(Array.isArray(allowed)?allowed.join(' '):String(allowed||'')));
 let removed=0;const bad=[];const keep=splitSentences(text).filter(s=>{const b=numsIn(s).filter(n=>!ok.has(n));if(b.length){removed++;bad.push(...b);return false}return true});
 return {text:keep.join('').replace(/\s+$/,'').trim(),removed,bad}}
@@ -666,7 +731,7 @@ const kept=splitSentences(nc.text).filter(x=>{if(unbackedLink(x,backing)||numWor
 for(const p of arr(o.points).slice(0,6)){if(!p||!isStr(p.text))continue;if(!ids.has(p.entry)){r.dropped++;continue}
 const tx=p.text.trim().replace(/^\s*(?:\d{1,2}[.)]|[-*•])\s+/,'');if(!tx)continue;const own=chosen.find(e=>e.id===p.entry),ownNums=numSetOf([own]),ownW=new Set(numWordsIn(entryText(own)));
 if(numsIn(tx).some(n=>!ownNums.has(n))||unbackedLink(tx,backing)||numWordsIn(tx).some(w=>!ownW.has(w))||!lexOK(tx,lex)){r.removed++;continue}r.points.push({text:clip(tx,300),entry:p.entry})}
-if(isStr(o.missing)){const m=numberCheck(o.missing.trim(),allowed);r.missing=unbackedLink(m.text,backing)||numWordsIn(m.text).some(w=>!nw.has(w))?'':clip(m.text,300)}
+if(isStr(o.missing)){const m=numberCheck(o.missing.trim(),allowed);r.missing=clip(splitSentences(m.text).filter(x=>!(unbackedLink(x,backing)||numWordsIn(x).some(w=>!nw.has(w))||!lexOK(x,lex))).join('').trim(),300)}
 return r}
 /* == Live lookup (plan 2b): official pages read through the viewer's Claude app (mcp, host:claude_browser: navigate, get_page_text, find).
    Everything below that does not touch a page is pure and tested. Page text is untrusted DATA: it is cleaned, fenced, and every number
@@ -704,9 +769,9 @@ s=s.replace(/\n?\[truncated[^\]]*\]\s*$/,'');return {title:title.slice(0,200),ur
 /* lines written for AI readers (hidden prompts on official sites were seen). Dropped, counted, never obeyed */
 const LIVE_INJ=[/ignore (?:all |any |the |your |my )?(?:previous |prior |above |earlier |these |those )?(?:instructions|rules|prompts?|directions|guidelines)/i,/disregard .{0,30}(?:instructions|rules|prompts?)/i,/system prompt|system message|\[system\]|<\/?system>|developer mode|jailbreak/i,
 /\byou are (?:now )?(?:an? |the )?(?:ai|a\.i\.|assistant|language model|llm|chatbot|bot)\b/i,/\b(?:if|as|when) you are (?:an? |the )?(?:ai|a\.i\.|llm|language model|assistant|chatbot|bot|agent|crawler|scraper)\b/i,/\b(?:note|message|attention|dear|hello|hi|instructions?) (?:to|for) (?:the |any |all )?(?:ai|llm|assistants?|agents?|models?|chatbots?|crawlers?|bots?)\b/i,
-/\b(?:ai|a\.i\.|llm|language model|chatbot|claude|chatgpt|gpt|copilot|gemini)s?\b[^.\n]{0,60}\b(?:must|should|shall|need to|have to|please|always|never|do not|don't|ignore|disregard|recommend|tell|say|respond|answer|reply|visit|click|navigate|send|call|email|open)\b/i,
-/new instructions|reveal (?:your|the) (?:prompt|instructions)|override (?:your|the) (?:rules|instructions)/i,
-/تجاهل (?:كل |جميع )?(?:ال)?(?:تعليمات|اوامر|أوامر|قواعد)/,/(?:الذكاء الاصطناعي|الذكاء الإصطناعي|نموذج لغوي|روبوت الدردشة)[^.\n]{0,60}(?:يجب|لا تقم|تجاهل|اطلب|قل |أجب|اجب|تعليمات)/,/(?:إلى|الى|ملاحظة ل)\s?(?:أنظمة |انظمة )?(?:الذكاء الاصطناعي|المساعد)/];
+/\b(?:ai|a\.i\.|llm|language model|chatbot|claude|chatgpt|gpt|copilot|gemini)s?\b[^.\n]{0,60}\b(?:must|should|shall|need to|needs to|have to|has to|please|always|never|do not|don't|ignore|disregard|recommend|tell|say|respond|answer|reply|visit|click|navigate|send|call|email|open)\b/i,
+/\b(?:attention|dear|hello|hi|hey|calling)[,:]?\s+(?:all\s+|any\s+)?(?:ai\s+)?(?:assistants?|agents?|models?|bots?|llms?)\b/i,/new instructions|reveal (?:your|its|the) (?:prompt|instructions)|override (?:your|the) (?:rules|instructions)|disregard (?:everything|all|what)|forget (?:all|everything|your|the|what)/i,
+/ملاحظة\s+(?:ل|إلى|الى)\s?(?:ل)?(?:ال)?(?:مساعد|ذكاء|نموذج)/,/تجاهل (?:كل |جميع )?(?:ال)?(?:تعليمات|اوامر|أوامر|قواعد)/,/(?:الذكاء الاصطناعي|الذكاء الإصطناعي|نموذج لغوي|روبوت الدردشة)[^.\n]{0,60}(?:يجب|لا تقم|تجاهل|اطلب|قل |أجب|اجب|تعليمات)/,/(?:إلى|الى|ملاحظة ل)\s?(?:أنظمة |انظمة )?(?:الذكاء الاصطناعي|المساعد)/];
 const liveBadLine=l=>{const n=norm(l);return LIVE_INJ.some(r=>r.test(l)||r.test(n))};
 /* page text to safe data: no invisible or direction-control characters, no angle brackets (the fence), no lines aimed at AI, capped */
 function cleanLiveText(text,max){let s=String(text==null?'':text).replace(/[​-‏‪-‮⁠-⁤﻿]|\udb40[\udc00-\udc7f]/g,'').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g,' ').replace(/[<>＜＞]/g,' ');
@@ -734,7 +799,7 @@ const nc=numberCheck(ans,all);r.removed+=nc.removed;r.answer=splitSentences(nc.t
 for(const p of arr(o.points).slice(0,6)){if(!p||!isStr(p.text))continue;const i=Number.isInteger(p.page)?p.page:/^\d{1,2}$/.test(String(p.page))?+p.page:0,pg=pages[i-1];if(!pg){r.dropped++;continue}
 const tx=p.text.trim().replace(/^\s*(?:\d{1,2}[.)]|[-*•])\s+/,'');if(!tx)continue;const own=new Set(numsIn(pg.text)),ownW=new Set(numWordsIn(pg.text));
 if(numsIn(tx).some(n=>!own.has(n))||hasLink(tx)||numWordsIn(tx).some(w=>!ownW.has(w))||!lexOK(tx,lex)){r.removed++;continue}r.points.push({text:clip(tx,300),url:pg.url,title:pg.title,n:i})}
-if(isStr(o.missing)){const m=numberCheck(o.missing.trim(),all);r.missing=hasLink(m.text)||numWordsIn(m.text).some(w=>!nwAll.has(w))?'':clip(m.text,300)}
+if(isStr(o.missing)){const m=numberCheck(o.missing.trim(),all);r.missing=clip(splitSentences(m.text).filter(x=>!(hasLink(x)||numWordsIn(x).some(w=>!nwAll.has(w))||!lexOK(x,lex))).join('').trim(),300)}
 return r}
 /* == UI words */
 const I18N={
@@ -816,9 +881,7 @@ tr_find_none:"Searched {n}. Nothing close.",
 tr_pick:"Kept {n} of {m}.",
 tr_pick_none:"None answers it.",
 tr_pick_drop:"Ignored {n} unknown id(s).",
-tr_clarify:"Asked {n} questions.",
-tr_clarify1:"Asked 1 question.",
-tr_clarify_none:"No questions needed.",
+tr_clarify_none:"No questions asked.",
 tr_answered:"You said: {list}.",
 tr_fit_ok:"Fits your case.",
 tr_fit_flag:"{n} may not fit.",
@@ -861,17 +924,9 @@ pf_sector:"Work",
 profChange:"Change: {what}",
 profClear:"Clear",
 profNote:"Kept on this device.",
-clarH:"Quick questions",
-clarP:"",
-why:"Why:",
 q_emirate:"Which emirate?",
 q_status:"You are…",
 q_sector:"Where do you work?",
-why_emirate:"Rules differ by emirate.",
-why_emirate_over:"In {em}, {auth} handles this, not {base}.",
-why_status:"Rules differ by status.",
-why_sector:"Rules differ by job type.",
-skipQs:"Skip",
 ansAI:"Written by AI · {name}",
 ansRule:"Rule · from the library",
 ansLang:"Written in {lang}.",
@@ -1514,9 +1569,7 @@ tr_find_none:"بحثت في {n}. لا شيء قريب.",
 tr_pick:"أبقيت {n} من {m}.",
 tr_pick_none:"لا شيء يجيب.",
 tr_pick_drop:"تجاهلت {n} معرّف غير معروف.",
-tr_clarify:"سألت {n} أسئلة.",
-tr_clarify1:"سألت سؤالاً واحداً.",
-tr_clarify_none:"لا أسئلة مطلوبة.",
+tr_clarify_none:"لم أطرح أسئلة.",
 tr_answered:"قلت: {list}.",
 tr_fit_ok:"يناسب حالتك.",
 tr_fit_flag:"{n} قد لا يناسب.",
@@ -1559,17 +1612,9 @@ pf_sector:"العمل",
 profChange:"غيّر: {what}",
 profClear:"مسح",
 profNote:"محفوظ على جهازك.",
-clarH:"أسئلة سريعة",
-clarP:"",
-why:"السبب:",
 q_emirate:"أي إمارة؟",
 q_status:"أنت…",
 q_sector:"أين تعمل؟",
-why_emirate:"الأنظمة تختلف بين الإمارات.",
-why_emirate_over:"في {em} تتولى {auth} الأمر، لا {base}.",
-why_status:"الأنظمة تختلف حسب الصفة.",
-why_sector:"الأنظمة تختلف حسب نوع العمل.",
-skipQs:"تخطّي",
 ansAI:"كتبه الذكاء الاصطناعي · {name}",
 ansRule:"قاعدة · من المكتبة",
 ansLang:"مكتوب بـ{lang}.",
@@ -2169,7 +2214,7 @@ return loadData(d,null)}
 /* lazy mode: the index (data/index.json) has one small item per entry, table, place and so on; full entries load when shown */
 function loadIndex(ix,au){ix=ix&&typeof ix==='object'?ix:{};au=au&&typeof au==='object'?au:{};
 const n=loadData({brand:ix.brand,authorities:au.authorities,authChecked:au.checked,journeys:ix.journeys,evalset:ix.evalset,chips:ix.chips},ix);if(LAZY)LAZY.ready=true;return n}
-function loadData(d,ix){
+function loadData(d,ix){PHRASE={};
 KB={topics:arr(d.topics),brand:d.brand&&typeof d.brand==='object'?d.brand:{},authorities:arr(d.authorities),journeys:arr(d.journeys),evalset:arr(d.evalset),chips:arr(d.chips)};
 BRAND=KB.brand;ENTRIES=[];BY_ID={};AUTH={};TOPICS=[];OTHER={tables:[],places:[],directory:[],services:[],laws:[],freezones:[]};OTHER_BY={};OTHER_IDX=null;TOPIC_AUTH={};
 const S=arr(d.str);
@@ -2181,11 +2226,11 @@ AUTH_CHECKED=validISO(d.authChecked)||'';LIB_CHECKED=TOPICS.map(x=>x.checked).fi
 KB.journeys=KB.journeys.filter(j=>j&&isStr(j.id)).map(j=>({id:j.id,title:bi(j.title),icon:isStr(j.icon)?j.icon:'',ask:arr(j.ask).filter(k=>['emirate','status','sector'].includes(k)),entries:arr(j.entries).filter(isStr)}));
 KB.evalset=KB.evalset.filter(x=>x&&isStr(x.q)&&Array.isArray(x.expect));
 KB.chips=KB.chips.filter(c=>c&&(isStr(c.en)||isStr(c.ar))).map(c=>({...bi(c),gap:c.gap===true}));
-IDX=buildIndex(ENTRIES);BASE={entries:ENTRIES.slice(),topics:TOPICS.map(x=>({...x}))};loadBreadth(ix?{}:d);if(ix)buildOther();return ENTRIES.length}
+IDX=buildEntries(ENTRIES);BASE={entries:ENTRIES.slice(),topics:TOPICS.map(x=>({...x}))};loadBreadth(ix?{}:d);if(ix)buildOther();return ENTRIES.length}
 /* rebuild the working library (after a live merge): ids, topic counts and the search index */
 function setEntries(list){ENTRIES=list.slice();BY_ID={};for(const e of ENTRIES)BY_ID[e.id]=e;
 const tps=BASE.topics.map(x=>({...x,count:0}));for(const e of ENTRIES){let x=tps.find(z=>z.key===e.topic);if(!x){x={key:e.topic,title:{en:e.topic,ar:e.topic},checked:'',count:0};tps.push(x)}x.count++}
-TOPICS=tps.filter(x=>x.count>0);IDX=buildIndex(ENTRIES);return ENTRIES.length}
+TOPICS=tps.filter(x=>x.count>0);IDX=buildEntries(ENTRIES);return ENTRIES.length}
 let ALIAS={};const canon=id=>isStr(id)&&!hasOwn(BY_ID,id)&&hasOwn(ALIAS,id)&&isStr(ALIAS[id])?ALIAS[id]:id;
 const entryById=id=>{id=canon(id);return isStr(id)&&hasOwn(BY_ID,id)?BY_ID[id]:null};
 
@@ -2201,7 +2246,7 @@ function stubEntry(it,tm){const em=arr(it.em).filter(isStr);return {id:String(it
 function otherItem(it){const em=arr(it.em).filter(isStr);return {id:String(it.id),type:it.type,kind:isStr(it.kind)?it.kind:'',name:bi(it.name),keywords:arr(it.k).filter(isStr),emirates:em.length?em:['all'],topic:isStr(it.topic)?it.topic:'',verified:it.v===1,unchecked:it.nc===1,n:Number.isInteger(it.n)?it.n:0,by:it.by&&typeof it.by==='object'?it.by:{}}}
 function fillIndex(ix){const meta={},cnt={};for(const tp of arr(ix.topics))if(tp&&isStr(tp.key)){meta[tp.key]=tp;TOPIC_AUTH[tp.key]=isStr(tp.auth)?tp.auth:''}
 for(const it of arr(ix.items)){if(!it||!isStr(it.id)||!isStr(it.type))continue;
-if(it.type==='entry'){if(!isStr(it.topic)||hasOwn(BY_ID,it.id))continue;const e=stubEntry(it,meta[it.topic]);ENTRIES.push(e);BY_ID[e.id]=e;cnt[e.topic]=(cnt[e.topic]||0)+1}
+if(it.type==='entry'){if(!isStr(it.topic)||hasOwn(BY_ID,it.id))continue;const e=stubEntry(it,meta[it.topic]);if(isStr(it.ph)&&it.ph)PHRASE[e.id]=it.ph;ENTRIES.push(e);BY_ID[e.id]=e;cnt[e.topic]=(cnt[e.topic]||0)+1}
 else if(hasOwn(OTHER_KIND,it.type)){const o=otherItem(it);OTHER[OTHER_KIND[it.type]].push(o);OTHER_BY[o.id]=o}}
 TOPICS=arr(ix.topics).filter(tp=>tp&&isStr(tp.key)&&cnt[tp.key]).map(tp=>({key:tp.key,title:bi(tp.title),checked:validISO(tp.checked)||'',count:cnt[tp.key]}))}
 const otherFields=o=>[[both(o.name),3],...o.keywords.map(k=>[k,2.5])];
@@ -2263,19 +2308,20 @@ function placeViewHTML(){const back=`<div class="actions"><button type="button" 
 if(OTV.state==='load')return back+loadingHTML();const p=OTV.state==='ok'&&OTV.data&&OTV.data.id===OTV.plc?OTV.data:null;if(!p)return back+`<p class="warn">${T('loadFail')}</p>`;
 const sec=(k,h)=>h?`<div class="plcsec"><h3>${T(k)}</h3>${h}</div>`:'',li=(a,f)=>a.length?`<ul class="brl">${a.map(f).join('')}</ul>`:'';
 const tel=n=>{const d=String(n||'').replace(/[^\d+]/g,'');return d?`<a href="tel:${esc(d)}">${esc(n)}</a>`:''};
-let h=`<article class="card plan"><h2 dir="auto" tabindex="-1" id="plcH">${esc(BL(p.name))}</h2><div class="badges">${p.confidence==='verified'?`<span class="pill ok">✓ ${T('verified')}</span>`:`<span class="pill bad">${T('stPartial')}</span>`}${ncPill(p.nc)}${p.emirate?`<span class="pill">${esc(emName(p.emirate))}</span>`:''}${validISO(p.checked)?`<span class="pill">${T('checkedB',{date:fmtDate(p.checked)})}</span>`:''}</div>`;
+let h=`<article class="card plan"><h2 dir="auto" tabindex="-1" id="plcH">${esc(BL(p.name))}</h2><div class="badges">${p.confidence==='verified'?`<span class="pill ok">✓ ${T('verified')}</span>`:''}${p.disagree?`<span class="pill bad">${T('disagreeB')}</span>`:''}${ncPill(p.nc)}${p.emirate?`<span class="pill">${esc(emName(p.emirate))}</span>`:''}${validISO(p.checked)?`<span class="pill">${T('checkedB',{date:fmtDate(p.checked)})}</span>`:''}</div>`;
 if(p.summary)h+=`<p dir="auto">${esc(BL(p.summary))}</p>`;
-h+=plcFactsHTML(p)+`<div class="plcsec plcask"><h3>${T('plcAskH')}</h3><p class="tip">${T('plcAskP')}</p><label for="plcAskQ" class="sr">${T('plcAskH')}</label><div class="row"><input type="search" id="plcAskQ" dir="auto" placeholder="${T('plcAskPh')}" value="${esc(OTV.askq||'')}"><button type="button" class="btn teal sm" data-plcask>${T('plcAskGo')}</button></div><div id="plcAskOut" aria-live="polite">${OTV.askq?plcAskHTML(p,OTV.askq):''}</div></div>`;
-h+=sec('plcAddr',(p.address?`<p dir="auto">${esc(BL(p.address))}</p>`:'')+(p.map_url?`<p>${link(p.map_url,t('plcMap'))}</p>`:''));
-h+=sec('plcHours',li(arr(p.hours).filter(x=>x&&x.what),x=>`<li><b dir="auto">${esc(BL(x.what))}</b>: <span dir="auto">${esc(BL(x.when))}</span></li>`));
-h+=sec('plcContact',li(arr(p.contact).filter(x=>x&&x.what),x=>`<li><span dir="auto">${esc(BL(x.what))}</span> ${x.phone?tel(x.phone):''} ${x.url?link(x.url,t('openPage')):''}</li>`));
-h+=sec('plcEntr',li(arr(p.entrances).filter(x=>x&&x.name),x=>`<li><b dir="auto">${esc(BL(x.name))}</b>${x.for?`<br><span dir="auto">${esc(BL(x.for))}</span>`:''}${x.where?`<br><span class="tip" dir="auto">${esc(BL(x.where))}</span>`:''}</li>`));
+h+=`<div class="plcsec plcask"><h3>${T('plcAskH')}</h3><p class="tip">${T('plcAskP')}</p><label for="plcAskQ" class="sr">${T('plcAskH')}</label><div class="row"><input type="search" id="plcAskQ" dir="auto" placeholder="${T('plcAskPh')}" value="${esc(OTV.askq||'')}"><button type="button" class="btn teal sm" data-plcask>${T('plcAskGo')}</button></div><div id="plcAskOut" aria-live="polite">${OTV.askq?plcAskHTML(p,OTV.askq):''}</div></div>`+plcFactsHTML(p);
 if(arr(p.directory).length)h+=`<div class="plcsec"><h3>${T('plcWhere')}</h3><label for="plcQ" class="sr">${T('plcFind')}</label><input type="search" id="plcQ" dir="auto" placeholder="${T('plcFind')}" value="${esc(OTV.pq||'')}"><ul class="elist" id="plcDir">${plcDirItems(p)}</ul><p class="tip">${T('plcAsk')}</p></div>`;
 h+=sec('plcProc',arr(p.procedures).filter(x=>x&&x.title).map(x=>`<details class="more"><summary dir="auto">${esc(BL(x.title))}</summary><ol>${arr(x.steps).map(z=>`<li dir="auto">${esc(BL(z))}</li>`).join('')}</ol></details>`).join(''));
-h+=sec('plcPark',p.parking?`<p dir="auto">${esc(BL(p.parking))}</p>`:'')+sec('plcVisit',p.visiting?`<p dir="auto">${esc(BL(p.visiting))}</p>`:'');
-h+=sec('plcApps',li(arr(p.apps).filter(x=>x&&x.name),x=>`<li>${x.url?link(x.url,x.name):esc(x.name)}${x.for?` <span class="tip" dir="auto">${esc(BL(x.for))}</span>`:''}</li>`));
-h+=sec('plcTips',li(arr(p.tips).filter(x=>x&&(x.en||x.ar)),x=>`<li dir="auto">${esc(BL(x))}</li>`));
-h+=sec('plcGaps',p.gaps&&(p.gaps.en||p.gaps.ar)?`<p dir="auto">${esc(BL(p.gaps))}</p>`:'');
+let m=sec('plcAddr',(p.address?`<p dir="auto">${esc(BL(p.address))}</p>`:'')+(p.map_url?`<p>${link(p.map_url,t('plcMap'))}</p>`:''));
+m+=sec('plcHours',li(arr(p.hours).filter(x=>x&&x.what),x=>`<li><b dir="auto">${esc(BL(x.what))}</b>: <span dir="auto">${esc(BL(x.when))}</span></li>`));
+m+=sec('plcContact',li(arr(p.contact).filter(x=>x&&x.what),x=>`<li><span dir="auto">${esc(BL(x.what))}</span> ${x.phone?tel(x.phone):''} ${x.url?link(x.url,t('openPage')):''}</li>`));
+m+=sec('plcEntr',li(arr(p.entrances).filter(x=>x&&x.name),x=>`<li><b dir="auto">${esc(BL(x.name))}</b>${x.for?`<br><span dir="auto">${esc(BL(x.for))}</span>`:''}${x.where?`<br><span class="tip" dir="auto">${esc(BL(x.where))}</span>`:''}</li>`));
+m+=sec('plcPark',p.parking?`<p dir="auto">${esc(BL(p.parking))}</p>`:'')+sec('plcVisit',p.visiting?`<p dir="auto">${esc(BL(p.visiting))}</p>`:'');
+m+=sec('plcApps',li(arr(p.apps).filter(x=>x&&x.name),x=>`<li>${x.url?link(x.url,x.name):esc(x.name)}${x.for?` <span class="tip" dir="auto">${esc(BL(x.for))}</span>`:''}</li>`));
+m+=sec('plcTips',li(arr(p.tips).filter(x=>x&&(x.en||x.ar)),x=>`<li dir="auto">${esc(BL(x))}</li>`));
+m+=sec('plcGaps',p.gaps&&(p.gaps.en||p.gaps.ar)?`<p dir="auto">${esc(BL(p.gaps))}</p>`:'');
+if(m)h+=`<details class="more"><summary>${T('moreH')}</summary><div class="plan">${m}</div></details>`;
 return back+h+srcLinks(arr(p.sources).map(x=>({...x,publisher:x&&x.publisher,title:x&&x.title})))+`<p class="legal">${T('legalNote')}</p></article>`}
 async function openDirectory(kind,opt){if(!KEBAB.test(String(kind)))return;DIRV={...newDirv(),kind,state:'load'};LIB.sec='directory';LIB.open='';ED=null;renderLibrary();showTab('library');
 try{const D=await fetchData('directory/'+kind+'.json'),by={};for(const x of arr(D&&D.items))by[x.e]=(by[x.e]||0)+1;if(DIRV.kind===kind){DIRV.data=D;DIRV.by=by;DIRV.state='ok'}}catch(e){if(DIRV.kind===kind)DIRV.state='err'}if(DIRV.kind===kind){renderLibrary();focusEl($('dirH'))}}
@@ -2451,9 +2497,6 @@ const emM=list.some(e=>!e.emirates.includes('all')||e.depends.some(d=>d.key==='e
 const stM=list.some(e=>(!e.who.includes('any')&&STATUSES.some(s=>!e.who.includes(s)))||e.depends.some(d=>d.key==='status'));
 const scM=list.some(e=>!e.sector.includes('any')||e.depends.some(d=>d.key==='sector'));
 if(emM&&!sit.emirate)need.push('emirate');if(stM&&!sit.status)need.push('status');if(scM&&!sit.sector)need.push('sector');return need.slice(0,3)}
-function whyFor(key,list){for(const e of list){const d=e.depends.find(x=>x.key===key);if(d)return {en:d.en,ar:d.ar};if(clarifyKeys([e],{}).includes(key))break}
-if(key==='emirate'){for(const e of list){const ov=(AUTH[e.authority]||{}).overrides||{};const k=Object.keys(ov).find(x=>EMIRATES.includes(x));if(k)return {k:'why_emirate_over',v:{em:{k:keyName('em',k)},auth:{a:ov[k]},base:{a:e.authority}}}}return {k:'why_emirate'}}
-return {k:key==='status'?'why_status':'why_sector'}}
 const OPTS={emirate:[...EMIRATES,'unsure'],status:STATUSES,sector:SECTORS};
 const optName=(key,v)=>key==='emirate'?emName(v):key==='status'?stName(v):scName(v);
 
@@ -2636,7 +2679,7 @@ try{const r=await fetch(base+'/models',{headers:headers||{},signal:ctl.signal});
 const models=(j.data||j.models||[]).map(m=>String(m.id||m.name||m.model||'').replace(/^models\//,'')).filter(Boolean);return {ok:true,models}}
 catch(e){return {ok:false}}finally{clearTimeout(tm)}}
 async function running(base){const ctl=new AbortController();const tm=setTimeout(()=>ctl.abort(),2000);try{await fetch(base+'/models',{mode:'no-cors',signal:ctl.signal});return true}catch(e){return false}finally{clearTimeout(tm)}}
-async function scanLocal(){if(!LOCAL_ORIGIN&&!adminMode){for(const Lc of LOCAL_AIS)scan.local[Lc.id]={status:'missing',models:[]};renderAIPanel();return}scannedLocal=true;await Promise.all(LOCAL_AIS.map(async Lc=>{scan.local[Lc.id]={status:'checking',models:[]};renderAIPanel();const r=await probe(Lc.base);
+async function scanLocal(){if(!adminMode){for(const Lc of LOCAL_AIS)scan.local[Lc.id]={status:'missing',models:[]};renderAIPanel();return}scannedLocal=true;await Promise.all(LOCAL_AIS.map(async Lc=>{scan.local[Lc.id]={status:'checking',models:[]};renderAIPanel();const r=await probe(Lc.base);
 scan.local[Lc.id]=r.ok&&r.models.length?{status:'found',models:r.models}:(!inClaude&&await running(Lc.base))?{status:'blocked',models:[]}:{status:'missing',models:[]};renderAIPanel()}))}
 function cloudHeaders(kind,key){return kind==='anthropic'?{'x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'}:{Authorization:'Bearer '+key}}
 async function connectCloud(id,key,remember){const C=CLOUD_AIS.find(x=>x.id===id);if(!C)return t('cc_pick');key=String(key||'').trim();if(key.length<8)return t('cc_full');
@@ -2806,10 +2849,10 @@ points:/\d+\s*(?:black\s+)?points?|\d+\s*نقط|\d+\s*نقاط/i};
 function entryFigureText(e){const L2=o=>o?[o.en,o.ar].join(' '):'';return toWest([L2(e.a),...arr(e.facts).map(L2),...arr(e.steps).map(L2),...arr(e.docs).map(L2),L2(e.caveats),...arr(e.depends).map(L2)].join(' \n '))}
 const conceptTerms=text=>[...new Set(terms(text))].filter(x=>!/^\d/.test(x)&&!EMI_KEYS.has(x)&&!GATE_GENERIC.has(x));
 /* share (by weight) of the question's key terms that the entry covers; words the library has never seen are not judged */
-function conceptCov(text,e){if(!IDX||!IDX.N)return {cov:1,n:0,miss:[]};const qs=conceptTerms(text),et=new Set(terms(entryText(e)+' \n '+arr(e.ask).join(' \n ')));
-const idf=k=>{const n=IDX.df.get(k)||0;return Math.log(1+(IDX.N-n+.5)/(n+.5))};let tot=0,got=0,n=0,top='',topW=-1,topMissed=false;const miss=[];
+function conceptCov(text,e){if(!IDX||!IDX.N)return {cov:1,n:0,miss:[]};const GI={df:IDX.dfq,N:IDX.N,vocab:IDX.vocabq},qs=conceptTerms(text),et=new Set(terms(entryText(e)+' \n '+arr(e.ask).join(' \n ')+' \n '+(PHRASE[e.id]||'')));
+const idf=k=>{const n=GI.df.get(k)||0;return Math.log(1+(GI.N-n+.5)/(n+.5))};let tot=0,got=0,n=0,top='',topW=-1,topMissed=false;const miss=[];
 let oov=0;const mI=Math.log(1+(IDX.N+.5)/.5);
-for(const t of qs){let k=t;if(!IDX.df.has(t)){const x=expandTerm(t,IDX);if(!x){if(t.length>=4&&!AR_LETTER.test(t))oov++;continue}k=x[0]}const w=idf(k);n++;tot+=w;const hit=et.has(t)||et.has(k);if(hit)got+=w;else miss.push(t);if(w>topW&&!AR_LETTER.test(t)){topW=w;top=t;topMissed=!hit}}
+for(const t of qs){let k=t;if(!GI.df.has(t)){const x=expandTerm(t,GI);if(!x){if(t.length>=4&&!AR_LETTER.test(t))oov++;continue}k=x[0]}const w=idf(k);n++;tot+=w;const hit=et.has(t)||et.has(k);if(hit)got+=w;else miss.push(t);if(w>topW&&!AR_LETTER.test(t)){topW=w;top=t;topMissed=!hit}}
 const ta=tot+oov*mI*OOV_W;return {cov:tot?got/tot:1,covAll:ta?got/ta:1,n,oov,top,miss,topMiss:top!==''&&topMissed}}
 /* {ok:true} or {ok:false, why:'nonum'|'concept', kind|miss}. figText is what the person wrote; text is what was searched */
 function gateOf(text,e,figText){if(!e||e._stub)return {ok:true};const kinds=figureKinds(figText==null?text:figText);
@@ -2865,7 +2908,7 @@ return label?label+(bits.length?' · ':'')+bits.join(' · '):bits.join(' · ')}
 function tblForText(x){const tb=x.table,lk=tb.lookup;if(x.kind==='band'){const b=colVal({key:'band_en'},x.row);return t('tblFor',{v:fmtN(x.value),what:BL(lk.input)})+(b?' · '+b:'')}
 if(x.kind==='below')return t('tblBelow',{v:fmtN(x.value),what:BL(lk.input),from:fmtN(x.from)});return t('tblRowsNote')}
 /* the entries that explain what happens next: the closest ones to the question and to the table */
-async function nextEntries(R,tb){const ids=[],take=l=>{for(const c of l)if(c.cov>=.3&&c.score>=GAP_MIN&&!ids.includes(c.id))ids.push(c.id)};take(arr(R.cands));take(search(L(tb.title)+' '+arr(tb.keywords).slice(0,3).join(' ')).slice(0,3));
+async function nextEntries(R,tb){const ids=[],take=l=>{for(const c of l)if(c.cov>=.3&&c.score>=gapMin()&&!ids.includes(c.id))ids.push(c.id)};take(arr(R.cands));take(search(L(tb.title)+' '+arr(tb.keywords).slice(0,3).join(' ')).slice(0,3));
 const pick=ids.slice(0,3);if(LAZY)await hydrate(pick);return pick.map(id=>BY_ID[id]).filter(e=>e&&!e._stub)}
 function tableAnswerHTML(R){const x=R.tbl,tb=x.table,src=arr(tb.sources).find(s=>s&&s.url),sit=R.sit||{};
 const lines=x.kind==='rows'?x.rows.map(r=>tblLineText(tb,r)):x.kind==='below'?[]:[tblLineText(tb,x.row)];
@@ -2933,8 +2976,9 @@ const failTrace=(R,step,e)=>{if(e&&e.code==='inj')return;const f=aiFailed(e);tra
 const hintNames=h=>[h.emirate&&{k:keyName('em',h.emirate)},h.status&&{k:keyName('st',h.status)},h.sector&&{k:keyName('sc',h.sector)}].filter(Boolean);
 async function tableStage(R,gen,text,nums){if(!OTHER.tables.length)return false;R.tbl=await tableLookup(text,nums);if(gen!==GEN)return true;
 if(R.tbl&&(R.tbl.row||R.tbl.rows||R.tbl.kind==='below')){trace(R,'rule','find','tr_tbl',{t:R.tbl.table.title});R.next=await nextEntries(R,R.tbl.table);if(gen!==GEN)return true;R.stage='table';renderCounts();renderRunBody();focusEl($('runH'));return true}R.tbl=null;return false}
+let PENDQ='';  /* a question typed while the library is still loading runs by itself when it is ready */
 async function ask(text){const raw=String(text||'').trim(),err=$('askErr');err.textContent='';
-if(!raw){err.textContent=t('askEmpty');$('q').focus();return}if(!ENTRIES.length){err.textContent=t(LAZY&&!LAZY.err?'lazyLoading':LAZY?'lazyErr':'noKB');return}
+if(!raw){err.textContent=t('askEmpty');$('q').focus();return}if(!ENTRIES.length){err.textContent=t(LAZY&&!LAZY.err?'lazyLoading':LAZY?'lazyErr':'noKB');if(LAZY&&!LAZY.err)PENDQ=raw;return}
 const nk=nearestIntent(raw);if(nk){openDirectory(nk.kind);return}
 const gen=++GEN,btn=$('askBtn');btn.disabled=true;btn.innerHTML='<span class="spin" style="margin:0"></span>';
 try{const ql=scriptLang(raw),sw=ql&&ql!==LANG;if(sw)setLang(ql);
@@ -2962,18 +3006,17 @@ let gap=(isGap(res)&&isGap(base))||!R.cands.length?'low':'';
 if(!gap){if(aiReady()){try{const p=vPick(await aiJSON(pickPrompt(R.q,R.cands),{tier:'quick'}),R.cands);R.ai=true;if(gen!==GEN)return;if(p.dropped)trace(R,'rule','pick','tr_pick_drop',{n:p.dropped});
 if(p.ids.length){R.chosen=p.ids;trace(R,'ai','pick','tr_pick',{n:p.ids.length,m:R.cands.length})}else{trace(R,'ai','pick','tr_pick_none');gap='pick'}}
 catch(e){if(gen!==GEN)return;failTrace(R,'pick',e);R.chosen=rulesChosen(R.cands)}}
-else R.chosen=rulesChosen(R.cands)}
-if(!gap){const fig=sq+' '+rw,gs=R.chosen.map(id=>({id,g:gateOf(R.stext,BY_ID[id],fig)})),okc=gs.filter(x=>x.g.ok).map(x=>x.id);
-if(!okc.length){gap='gate';R.gate=gs[0].g;trace(R,'rule','gate',R.gate.why==='nonum'?'tr_gate_nonum':'tr_gate_concept',{what:R.gate.kind?t('fig_'+R.gate.kind):'',miss:(R.gate.miss||[]).join(', ')})}else if(okc.length<R.chosen.length){trace(R,'rule','gate','tr_gate_drop',{n:R.chosen.length-okc.length});R.chosen=okc}}
+else{R.chosen=rulesChosen(R.cands)}}
 if(gap){await doGap(R,gap,gen);return}
-const sit=sitOf(PROFILE,R.hints),ro=routeOf(BY_ID[R.chosen[0]],sit);R.routed=ro.authority;for(const l of ro.lines)trace(R,'rule','route',l.k,l.v);
-const need=clarifyKeys(R.chosen.map(id=>BY_ID[id]),sit);
-if(need.length){R.need=need;R.answered={};R.stage='clarify';trace(R,'rule','clarify',need.length===1?'tr_clarify1':'tr_clarify',{n:need.length});renderRunBody();focusEl($('runH'));return}
-trace(R,'rule','clarify','tr_clarify_none');await finish(R,gen)}
+R.fig=sq+' '+rw;await answerNow(R,gen)}
 catch(e){console.error(e);if(gen===GEN){const R=RUN;if(R&&R.stage==='work'){try{await doGap(R,'error',gen)}catch(e2){R.stage='gap';renderRunBody()}}else err.textContent=t('lazyErr')}}
 finally{if(gen===GEN||!btn.disabled){btn.disabled=false;btn.innerHTML=ASK_ARROW}}}
-function answerClarify(k,v){const R=RUN;if(!R||R.stage!=='clarify'||!OPTS[k].includes(v))return;PROFILE[k]=v;saveProfile();R.answered[k]=v;renderProfiles();
-if(R.need.every(x=>R.answered[x])){trace(R,'rule','clarify','tr_answered',{list:{list:R.need.map(x=>({k:keyName(x==='emirate'?'em':x==='status'?'st':'sc',R.answered[x])}))}});finish(R,++GEN)}else renderRunBody()}
+async function answerNow(R,gen){let gap='';
+const fig=R.fig,gs=R.chosen.map(id=>({id,g:gateOf(R.stext,BY_ID[id],fig)})),okc=gs.filter(x=>x.g.ok).map(x=>x.id);
+if(!okc.length){gap='gate';R.gate=gs[0].g;trace(R,'rule','gate',R.gate.why==='nonum'?'tr_gate_nonum':'tr_gate_concept',{what:R.gate.kind?t('fig_'+R.gate.kind):'',miss:(R.gate.miss||[]).join(', ')})}else if(okc.length<R.chosen.length){trace(R,'rule','gate','tr_gate_drop',{n:R.chosen.length-okc.length});R.chosen=okc}
+if(gap){await doGap(R,gap,gen);return}
+const sit=sitOf(PROFILE,R.hints),ro=routeOf(BY_ID[R.chosen[0]],sit);R.routed=ro.authority;for(const l of ro.lines)trace(R,'rule','route',l.k,l.v);
+trace(R,'rule','clarify','tr_clarify_none');await finish(R,gen)}
 async function finish(R,gen){R.stage='work';renderRunBody();const sit=sitOf(PROFILE,R.hints);R.sit=sit;
 const list=R.chosen.map(id=>BY_ID[id]).filter(Boolean);const sc=list.map((e,i)=>{const iss=fitIssues(e,sit),c=R.cands.find(x=>x.id===e.id);return {e,i,iss,v:(c?c.score:0)*(iss.length?.6:1)}}).sort((a,b)=>b.v-a.v||a.i-b.i);
 R.order=sc.map(x=>x.e.id);R.issues={};for(const x of sc)R.issues[x.e.id]=x.iss;const fl=sc.filter(x=>x.iss.length).length;trace(R,'rule','fit',fl?'tr_fit_flag':'tr_fit_ok',{n:fl});
@@ -3032,10 +3075,17 @@ function renderRunTrace(){const R=RUN;if(!R)return;$('asked').textContent=t('you
 function renderRunBody(){const R=RUN,box=$('runBody');if(!R||!box)return;let h='';
 if(R.stage==='done'||R.stage==='gap'||R.stage==='table')h+=`<div id="profileRun">${profileHTML('run',sitOf(PROFILE,R.hints))}</div>`;
 if(R.stage==='work')h+=`<p class="tip"><span class="spin"></span>${T('working')}</p>`;
-else if(R.stage==='clarify')h+=clarifyHTML(R);else if(R.stage==='gap')h+=gapCardHTML(R,R.gapAuth,false);else if(R.stage==='table')h+=tableAnswerHTML(R);else if(R.stage==='done')h+=BY_ID[R.order[0]]?answerHTML(R):`<p class="warn">${T('liveGone')}</p>`;
+else if(R.stage==='gap')h+=gapCardHTML(R,R.gapAuth,false);else if(R.stage==='table')h+=tableAnswerHTML(R);else if(R.stage==='done')h+=BY_ID[R.order[0]]?answerHTML(R):`<p class="warn">${T('liveGone')}</p>`;
 box.innerHTML=h}
-function clarifyHTML(R){const list=R.chosen.map(id=>BY_ID[id]);
-return `<div class="clar"><h3>${T('clarH')}</h3><p class="tip">${T('clarP')}</p>${R.need.map(k=>`<fieldset><legend>${T('q_'+k)}</legend><p class="why"><b>${T('why')}</b> <span dir="auto">${esc(resolveVar(whyFor(k,list)))}</span></p><div class="chips">${OPTS[k].map(v=>`<button type="button" class="chip" data-clar="${k}:${v}" aria-pressed="${R.answered[k]===v}">${esc(optName(k,v))}</button>`).join('')}</div></fieldset>`).join('')}<div class="actions"><button type="button" class="btn ghost sm" data-skipq>${T('skipQs')}</button></div></div>`}
+/* under the answer: only the choices that change THIS answer, taken from this entry (never another one) */
+function refineKeys(e,sit){const out=[],dep=k=>e.depends.find(d=>d&&d.key===k),ov=Object.keys((AUTH[e.authority]||{}).overrides||{}).filter(x=>EMIRATES.includes(x));
+const em=!e.emirates.includes('all')&&e.emirates.length>1?e.emirates:ov.length?ov:dep('emirate')?EMIRATES:[];
+if(em.length>1&&(!sit.emirate||sit.emirate==='unsure'))out.push({k:'emirate',opts:em,why:dep('emirate')});
+const st=!e.who.includes('any')&&e.who.length>1?e.who:dep('status')?STATUSES:[];if(st.length>1&&!sit.status)out.push({k:'status',opts:st,why:dep('status')});
+const sc=!e.sector.includes('any')&&e.sector.length>1?e.sector:dep('sector')?SECTORS.filter(x=>x!=='none'):[];if(sc.length>1&&!sit.sector)out.push({k:'sector',opts:sc,why:dep('sector')});
+return out.slice(0,2)}
+function refineHTML(e,sit){const ks=refineKeys(e,sit);if(!ks.length)return '';
+return `<div class="refine">${ks.map(x=>`<div class="refrow" role="group" aria-label="${T('q_'+x.k)}"><span class="tip">${T('q_'+x.k)}${x.why&&L(x.why)?' <span dir="auto">'+esc(L(x.why))+'</span>':''}</span><div class="chips">${x.opts.map(v=>`<button type="button" class="chip" data-refine="${x.k}:${v}">${esc(optName(x.k,v))}</button>`).join('')}</div></div>`).join('')}</div>`}
 function statusHTML(e,sit){const x=entryBadges(e)[0];return x?`<div class="badges">${badgeHTML(x,true,e,sit)}</div>`:''}
 function firstSrcHTML(e){const f=e.facts.find(x=>x&&x.src!=null&&e.sources[x.src]);return f?`<div>${srcChip(e,f.src,1)}</div>`:''}
 function moreHTML(inner){return inner?`<details class="more"><summary>${T('moreH')}</summary><div class="plan">${inner}</div></details>`:''}
@@ -3044,7 +3094,7 @@ if(W.source==='ai')h+=`<div class="answer"><span class="who">${T('ansAI',{name:W
 else h+=`<div class="answer rules"><span class="who">${T('ansRule')}</span><p dir="auto">${esc(L(e.a))}</p><ul>${e.facts.slice(0,3).map(f=>`<li dir="auto">${esc(L(f))}</li>`).join('')}</ul></div>`;
 h+=firstSrcHTML(e)+`<p class="legal">${T(W.source==='ai'?'legalNoteAI':'legalNote')}</p>`;
 for(const x of R.issues[e.id]||[])h+=`<p class="warn">${esc(t(x.k,x.v))}</p>`;
-h+=planHTML(e,sit,'run','steps')+actHTML(e.id,'run','main');
+h+=refineHTML(e,sit)+planHTML(e,sit,'run','steps')+actHTML(e.id,'run','main');
 const rest=R.order.slice(1).map(id=>BY_ID[id]).filter(Boolean);
 let more=badgesHTML(e,sit)+routeHTML(e,sit)+handoffHTML(e)+planHTML(e,sit,'run','rest')+breadthHTML(R.br||relatedBreadth(e,unmaskQ(R.q),sit))+relHTML(R)+personHTML(e,sit);
 if(rest.length)more+=`<h3>${T('alsoH')}</h3>`+rest.map(x=>`<details class="more"><summary dir="auto">${esc(L(x.q))}</summary>${(R.issues[x.id]||[]).map(i=>`<p class="warn">${esc(t(i.k,i.v))}</p>`).join('')}${entryFullHTML(x,sit,'alt')}</details>`).join('');
@@ -3224,7 +3274,7 @@ function chipList(){if(KB.chips.length)return KB.chips;const seen=new Set();retu
 const jHTML=j=>`<button type="button" class="jcard" data-journey="${esc(j.id)}"><span class="jicon" aria-hidden="true">${JICON}</span><span><b dir="auto">${esc(L(j.title))}</b><br><span class="tip">${T('nAnswers',{n:j.entries.filter(id=>BY_ID[id]).length})}</span></span></button>`;
 function renderHome(){const nk=$('noKB');nk.dataset.i=LAZY&&!LAZY.err&&!LAZY.ready?'lazyLoading':LAZY&&LAZY.err?'lazyErr':'noKB';nk.textContent=t(nk.dataset.i);if(nk.dataset.i==='lazyErr'){const b=document.createElement('button');b.type='button';b.className='btn ghost sm';b.dataset.retrylazy='1';b.textContent=t('retry');nk.append(' ',b)}nk.hidden=ENTRIES.length>0;
 $('chips').innerHTML=chipList().slice(0,3).map((c,i)=>`<button type="button" class="chip${c.gap?' gap':''}" data-chip="${i}"><span dir="auto">${esc(L(c))}</span>${c.gap?`<span class="tag">${T('gapTag')}</span>`:''}</button>`).join('');
-$('tiles').innerHTML=[...TOPICS].sort((a,b)=>b.count-a.count).slice(0,8).map(x=>`<button type="button" class="tile" data-topic="${esc(x.key)}"><b dir="auto">${esc(L(x.title))}</b></button>`).join('')+(TOPICS.length>8?`<button type="button" class="tile" data-topic=""><b dir="auto">${T('libAll')}</b></button>`:'');
+$('tiles').innerHTML=[...TOPICS].sort((a,b)=>b.count-a.count).slice(0,8).map(x=>`<button type="button" class="tile" data-topic="${esc(x.key)}"><b dir="auto">${esc(L(x.title))}</b></button>`).join('')+(TOPICS.length>8?`<button type="button" class="tile" data-topic=""><b dir="auto">${T('libAll')}</b></button>`:'')+(OTHER.places.length?`<button type="button" class="tile" data-homeplaces><b dir="auto">${T('secPlaces')}</b></button>`:'');
 $('homeLife').hidden=!KB.journeys.length;$('homeJourneys').innerHTML=KB.journeys.map(jHTML).join('');renderProfiles()}
 let LIB={topic:'',q:'',open:''},LIFE={open:'',all:false},SAVEDV='',libTimer=null,gapArmed=null,repArmed=null,ED=null;
 function libList(){let list=ENTRIES.filter(e=>!LIB.topic||e.topic===LIB.topic);if(LIB.q.trim()){const sc=new Map(search(LIB.q).map(x=>[x.id,x.score]));list=list.filter(e=>sc.has(e.id)).sort((a,b)=>sc.get(b.id)-sc.get(a.id))}return list}
@@ -3338,6 +3388,7 @@ if(tg.closest('#adminLink')){closeSheets();toggleAIPanel(true);return}
 if(tg.closest('#backBtn')){goTab('ask');window.scrollTo(0,0);return}
 if(tg.closest('#aiStatus')){toggleAIPanel();return}if(tg.closest('#aiPanel')){await aiPanelClick(e);return}
 const c=s=>tg.closest(s);let x;
+if(c('[data-homeplaces]')){LIB={topic:'',q:'',open:'',sec:'places'};OTV.open='';OTV.plc='';renderLibrary();goTab('library');return}
 if(c('[data-retrylazy]')){loadLazy();renderHome();return}
 if((x=c('[data-chip]'))){const ch=chipList()[+x.dataset.chip];if(ch){$('q').value=L(ch);ask(L(ch))}return}
 if((x=c('[data-topic]'))){LIB={topic:x.dataset.topic,q:'',open:''};renderLibrary();goTab('library');return}
@@ -3368,8 +3419,7 @@ if(c('[data-libback]')){LIB.open='';renderLibrary();return}
 if((x=c('[data-journey]'))){LIFE={open:x.dataset.journey,all:false};renderLife();showTab('life');focusEl($('lifeH2'));return}
 if(c('[data-lifeback]')){LIFE.open='';renderLife();return}
 if(c('[data-lifeall]')){LIFE.all=!LIFE.all;renderLife();return}
-if((x=c('[data-clar]'))){const [k,v]=x.dataset.clar.split(':');answerClarify(k,v);return}
-if(c('[data-skipq]')){if(RUN&&RUN.stage==='clarify')finish(RUN,++GEN);return}
+if((x=c('[data-refine]'))){const [k,v]=x.dataset.refine.split(':');if(RUN&&RUN.stage==='done')setProfile(k,v,'run');return}
 if((x=c('[data-prof]'))){const k=x.dataset.prof,w=x.dataset.where;chooser=chooser&&chooser.key===k&&chooser.where===w?null:{key:k,where:w};renderProfiles();return}
 if((x=c('[data-setprof]'))){const [k,v]=x.dataset.setprof.split(':');setProfile(k,v,x.dataset.where);return}
 if(c('[data-profclear]')){PROFILE={emirate:'',status:'',sector:''};saveProfile();chooser=null;renderProfiles();renderLife();return}
@@ -3419,7 +3469,7 @@ const q0=QS.get('q');if(q0){$('q').value=String(q0).slice(0,600);growQ()}
 renderAll();showTab('ask');setupVoice();if(!/\.github\.io$/.test(location.hostname))rescan();if(ADMIN_URL&&LOCAL_ORIGIN)toggleAIPanel(true);
 const autoAsk=()=>{if(EMBED&&q0)ask(String(q0).slice(0,600))};
 /* live library, owner tools and shared feedback light up later, only inside claude.ai; never before first paint */
-if(LAZY&&!LAZY.ready)loadLazy().then(()=>{autoAsk();setTimeout(()=>{initRuntime().catch(()=>{})},0)});else{autoAsk();setTimeout(()=>{initRuntime().catch(()=>{})},0)}}
+if(LAZY&&!LAZY.ready)loadLazy().then(()=>{autoAsk();if(PENDQ&&ENTRIES.length){const p=PENDQ;PENDQ='';ask(p)}setTimeout(()=>{initRuntime().catch(()=>{})},0)});else{autoAsk();setTimeout(()=>{initRuntime().catch(()=>{})},0)}}
 if(!(typeof window!=='undefined'&&window.WADEH_TEST))boot();
 </script>
 </body>
