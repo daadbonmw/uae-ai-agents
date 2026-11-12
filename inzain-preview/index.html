@@ -187,6 +187,8 @@ span.chan{font-weight:400}
 .atitle{margin:0}
 .notmean{display:flex;flex-direction:column;gap:8px}
 .notmean h3{margin:0;font-size:17px;font-weight:600}
+.partsbox{border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}.partsbox h3{margin:0;font-size:17px;font-weight:600}
+.part{background:var(--tile);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:6px;min-width:0}.part b{font-size:17px}.part .one{font-size:15px;color:var(--muted)}.part .pill{align-self:flex-start}
 .eitem{width:100%}
 .eitem b{font-size:17px}.eitem .one{font-size:15px;color:var(--muted)}
 .check{flex-direction:row;align-items:flex-start;gap:10px;font-weight:400;cursor:pointer;min-height:44px;padding:10px 14px;border-radius:14px;background:var(--bg)}
@@ -302,7 +304,7 @@ span.chan{font-weight:400}
   <form class="ask" id="askForm" novalidate>
    <label for="q" class="vh" data-i="askLabel"></label>
    <div class="field">
-    <textarea id="q" dir="auto" maxlength="600" rows="1" enterkeyhint="go" data-ip="askPh" placeholder=""></textarea>
+    <textarea id="q" dir="auto" maxlength="2500" rows="1" enterkeyhint="go" data-ip="askPh" placeholder=""></textarea>
     <button class="go" type="submit" id="askBtn" data-ia="askBtn" aria-label="Go"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h13M12.5 6l6 6-6 6"/></svg></button>
    </div>
    <p class="routeline" id="tagline"></p>
@@ -429,7 +431,7 @@ if(cut&&w.length>=4&&w.endsWith('ت'))w=w.slice(0,-1);
 return w}
 const stem=w=>AR_LETTER.test(w)?stemAr(w):/[a-z]/.test(w)?stemEn(w):w;
 const rawWords=s=>norm(s).match(/[a-z0-9ء-ي]+/g)||[];
-const STOP=new Set(('a an the of to in on at for from by with and or but is are was were be been being am i me my mine we us our you your he him his she her it its they them their this that these those what which who whom whose how why when where can could do does did have has had will would shall should may might must not no yes if then than so as about into over again also just only very too more most much many any some each every all both other such own same here there now get got please hi hello hey thanks thank dear uae u ae emirate emirates country want need know tell let im ive dont cant whats ok okay sir madam last week weeks before yesterday today tomorrow ago make made still already soon long because legal allowed allow saying said goes next wont isnt doesnt didnt hasnt havent arent wasnt wouldnt one two three four five six seven eight nine ten twenty thirty hundred affect affects effect impact happen happens happened really worried worry worth possible able sure sorry thing things something anything anyone someone everything even ever never always lot way '+
+const STOP=new Set(('a an the of to in on at for from by with and or but is are was were be been being am i me my mine we us our you your he him his she her it its they them their this that these those what which who whom whose how why when where can could do does did have has had will would shall should may might must not no yes if then than so as about into over again also just only very too more most much many any some each every all both other such own same here there now get got please hi hello hey thanks thank dear uae u ae emirate emirates country want need know tell let im ive dont cant whats ok okay sir madam last week weeks before yesterday today tomorrow ago make made still already soon long because legal entitled entitle allowed allow saying said goes next wont isnt doesnt didnt hasnt havent arent wasnt wouldnt one two three four five six seven eight nine ten twenty thirty hundred affect affects effect impact happen happens happened really worried worry worth possible able sure sorry thing things something anything anyone someone everything even ever never always lot way '+
 'في من الي علي عن مع هل ما ماذا لماذا كيف متي اين وين كم هذا هذه ذلك تلك هناك هنا التي الذي الذين انا انت انتي انتم هو هي هم هن نحن لي لك له لها لنا لكم عندي عندك عنده ان او ثم قد لا لم لن كل بعض بعد قبل عند يا اي ايش وش شو شلون ليش ابي ابا ابغي ابغا شنو شنهو ويش مب مو يبي تبي نبي يبغي تبغي نبغي هاذا هاذي هذي هالحين دحين هسه وياي اقدر ممكن يمكن يمكنني لو اذا كان كانت يكون تكون مثل غير بين حتي الان الحين بس عشان علشان يعني لازم شي شيء نعم الامارات الدوله دوله اريد ارجو سؤال سوال احتاج نحتاج يحتاج محتاج تحتاج منو منهو يانا جانا نسوي اسوي يسوي تسوي سويت امس البارحه باكر بكره اسبوع مسموح يجوز يحق ممنوع منذ لدي لدينا لديه ليس ليست لست ايضا جدا فقط حاليا لان ام اما سوف يجب ينبغي عليه علينا عليها عليك اشياء احد واحد اثنين ثلاث خمس حقي حقتي حقنا حقه اعطي يعطي تعطي يصير صار قديم ماضي قادم حالي اقدم يقدم تقدم').split(' ').map(stem));
 
 const SYN=[
@@ -483,6 +485,7 @@ const SYN=[
 ['hospital','clinic','doctor','medical','مستشفى','عيادة','دكتور','طبيب','صحي','mustashfa','mostashfa','doktor'],
 ['sick leave','sick note','medical leave','إجازة مرضية','سك ليف'],
 ['annual leave','vacation','holiday','إجازة','عطلة'],
+['rest day','day off','days off','weekly rest','weekly rest day','weekly day off','يوم الراحة','يوم راحة','يوم الاجازة','يوم اجازة','الراحة الاسبوعية','اجازة اسبوعية','اجازتي الاسبوعية'],
 ['vat','value added tax','ضريبة القيمة المضافة','القيمة المضافة'],
 ['corporate tax','ضريبة الشركات'],
 ['tax','taxes','taxation','ضريبة','ضرائب'],
@@ -1254,6 +1257,7 @@ tblRowsNote:"Closest rows in the table. Open it to see every row.",
 tblAllNote:"The first rows of the table. Open it to see every row and the notes.",
 ansClosest:"Closest answer we have",
 notMeanH:"Not what you meant?",
+partsH:"Your question has several parts",partsNone:"No verified answer yet",partsFull:"Full answer",partsMore:"Parts left: {n}. Ask them one at a time.",partsLawyer:"A case with several disputes needs a lawyer.",tr_parts:"Several issues in one question. Answered in parts.",
 tr_swap:"You chose another answer: {q}",
 tblCheck:"Partly checked. Confirm with {auth} before relying on it.",
 tblNext:"What happens next",
@@ -1780,6 +1784,7 @@ tblRowsNote:"أقرب الصفوف في الجدول. افتحه لرؤية كل
 tblAllNote:"أول صفوف الجدول. افتحه لرؤية كل الصفوف والملاحظات.",
 ansClosest:"أقرب جواب لدينا",
 notMeanH:"ليس هذا ما تقصده؟",
+partsH:"سؤالك فيه عدة أجزاء",partsNone:"لا جواب موثّق بعد",partsFull:"الجواب كاملاً",partsMore:"أجزاء متبقية: {n}. اسألها واحداً واحداً.",partsLawyer:"القضية التي فيها عدة نزاعات تحتاج إلى محامٍ.",tr_parts:"عدة مسائل في سؤال واحد. الجواب على أجزاء.",
 tr_swap:"اخترت جواباً آخر: {q}",
 tblCheck:"روجع جزئياً. تأكد من {auth} قبل الاعتماد عليه.",
 tblNext:"ماذا يحدث بعد ذلك",
@@ -1919,7 +1924,7 @@ function ensureBreadth(){if(!LAZY)return Promise.resolve();if(BREADTH_P)return B
 BREADTH_P=Promise.all(['services','laws','freezones'].map(k=>!OTHER[k].length?Promise.resolve(null):fetchData((k==='freezones'?'free-zones':k)+'.json').then(o=>arr(o&&o[k])).catch(()=>null))).then(r=>{LAZY.btried=true;if(r.some(Boolean))loadBreadth({services:r[0]||[],laws:r[1]||[],freezones:r[2]||[]})}).catch(()=>{LAZY.btried=true}).then(()=>{BREADTH_P=null});return BREADTH_P}
 /* search-extra.json (extra search words and the Arabic/English word table) is fetched after the page is usable; a question waits for it a few seconds at most */
 let EXTRA_P=null;
-function loadExtra(x){if(!x||typeof x!=='object')return false;PHRASE={};OWN_T.clear();if(x.ph&&typeof x.ph==='object')for(const k of Object.keys(x.ph))if(isStr(x.ph[k]))PHRASE[k]=x.ph[k];loadXL(x.xl);MO=Array.isArray(x.mo)?new Set(x.mo.filter(isStr)):null;DT=Array.isArray(x.dt)?new Set(x.dt.filter(isStr)):null;if(x.ak&&typeof x.ak==='object')for(const id of Object.keys(x.ak)){const e=BY_ID[id],more=Array.isArray(x.ak[id])?x.ak[id].filter(isStr):[];if(e&&e._stub&&more.length){if(e._n0==null)e._n0=e.ask.length;e.ask=e.ask.slice(0,e._n0).concat(more)}}
+function loadExtra(x){if(!x||typeof x!=='object')return false;PHRASE={};KG=Array.isArray(x.kg)?x.kg.filter(g=>g&&Array.isArray(g.all)).map(g=>({id:String(g.id||''),all:g.all.map(a=>(Array.isArray(a)?a:[]).map(w=>stem(norm(String(w)).trim())).filter(Boolean)),closest:Array.isArray(g.closest)?g.closest.filter(isStr):[]})).filter(g=>g.all.length&&g.all.every(a=>a.length)):[];OWN_T.clear();if(x.ph&&typeof x.ph==='object')for(const k of Object.keys(x.ph))if(isStr(x.ph[k]))PHRASE[k]=x.ph[k];loadXL(x.xl);MO=Array.isArray(x.mo)?new Set(x.mo.filter(isStr)):null;DT=Array.isArray(x.dt)?new Set(x.dt.filter(isStr)):null;if(x.ak&&typeof x.ak==='object')for(const id of Object.keys(x.ak)){const e=BY_ID[id],more=Array.isArray(x.ak[id])?x.ak[id].filter(isStr):[];if(e&&e._stub&&more.length){if(e._n0==null)e._n0=e.ask.length;e.ask=e.ask.slice(0,e._n0).concat(more)}}
 if(ENTRIES.length)IDX=buildEntries(ENTRIES);return true}
 function ensureExtra(){if(!LAZY)return Promise.resolve();if(!EXTRA_P)EXTRA_P=fetchData('search-extra.json').then(loadExtra).catch(()=>{DATA_CACHE.delete('search-extra.json')});return EXTRA_P}
 function loadLazy(){EXTRA_P=null;if(LAZY)LAZY.err=false;return Promise.all([fetchData('index.json'),fetchData('authorities.json').catch(()=>null),fetchData('aliases.json').catch(()=>null)]).then(([ix,au,al])=>{DATA_CACHE.delete('index.json');if(al&&typeof al==='object'&&!Array.isArray(al))ALIAS=al;loadIndex(ix,au);try{renderAll()}catch(e){console.error(e)}setTimeout(ensureExtra,0)},()=>{if(LAZY)LAZY.err=true;renderHome()}).catch(e=>{console.error(e)})}
@@ -2089,7 +2094,15 @@ if(e.caveats)p.c=B(e.caveats);if(e.law&&e.law.name)p.l=[s(e.law.name),s(e.law.ar
 if(isStr(e.handoff))p.h=e.handoff;if(e.calc&&typeof e.calc==='object')p.cl=e.calc;
 if(e.disagree){const dg=e.disagree;p.dg=[...(isStr(dg)?[dg,dg]:B(dg)),Array.isArray(dg.src)?dg.src:Number.isInteger(dg.src)?[dg.src]:[]]}
 return [p,S]}
-function liveEntry(id,data,baseE){const plain={...data,id,topic:isStr(data.topic)&&data.topic?data.topic:baseE?baseE.topic:''};
+/* the console's editor does not ask for who/where/sector/office/confidence/checked: a correction takes them from the entry it replaces,
+   a new answer gets the widest values (verified only when every source is marked official) */
+function liveDefaults(data,baseE,topic){const b=baseE||{},pick=(k,d)=>Array.isArray(data[k])&&data[k].length?data[k]:Array.isArray(b[k])&&b[k].length?b[k]:d,srcs=arr(data.sources);
+return {emirates:pick('emirates',['all']),who:pick('who',['any']),sector:pick('sector',['any']),
+authority:isStr(data.authority)&&data.authority?data.authority:b.authority||topicAuthority(topic),
+confidence:['verified','partial'].includes(data.confidence)?data.confidence:srcs.length&&srcs.every(s=>s&&s.official===true)?'verified':'partial',
+checked:validISO(data.checked)||validISO(data.updated)||todayISO()}}
+function liveEntry(id,data,baseE){const topic=isStr(data.topic)&&data.topic?data.topic:baseE?baseE.topic:'',plain={...liveDefaults(data,baseE,topic),...data,id,topic};
+for(const k of ['emirates','who','sector','authority','confidence','checked'])if(!plain[k]||Array.isArray(plain[k])&&!plain[k].length)plain[k]=liveDefaults(data,baseE,topic)[k];
 const v=validateEntry(plain,{});if(v.errors.length)return {errors:v.errors};const [p,S]=packPlain(plain);
 const e=cleanEntry(p,{topic:plain.topic,checked:plain.checked},S);e.live={date:validISO(data.updated)||validISO(plain.checked)};return {e}}
 function mergeLive(base,docs){const byBase=new Map(base.map(e=>[e.id,e])),over=new Map(),retired=[],rejected=[];
@@ -2197,7 +2210,8 @@ ${fence(q)}
 >>>
 Facts:
 ${e.facts.map(f=>'- '+lx(f,l)).join('\n')}`}
-function routePrompt(q){return `${MARK.route}
+function routePrompt(q){const rows=Object.values(AUTH),line=(a,n)=>`- ${a.id}: ${a.name.en}${n&&a.handles.en?' | '+a.handles.en.slice(0,n):''}`,
+head=`${MARK.route}
 Which UAE office most likely handles this question? Choose one id from the list, or "none".
 ${DATA_LINE}
 Return only JSON: {"authority":"<id or none>"}
@@ -2205,7 +2219,9 @@ Return only JSON: {"authority":"<id or none>"}
 ${fence(q)}
 >>>
 Offices:
-${Object.values(AUTH).map(a=>`- ${a.id}: ${a.name.en}${a.handles.en?' | '+a.handles.en:''}`).join('\n')}`}
+`;
+/* the server takes at most 12,000 characters (SPEC): a short note on what each office handles, or the names alone when the list is still too long */
+let list=rows.map(a=>line(a,80)).join('\n');if(head.length+list.length>11800)list=rows.map(a=>line(a,0)).join('\n');return head+list}
 function vPick(o,cands){if(!o||typeof o!=='object')throw {code:'invalid_json'};const ok=new Set(cands.map(c=>c.id));const ids=[];let dropped=0;
 for(const x of arr(o.ids||o.entries)){if(isStr(x)&&ok.has(x)){if(!ids.includes(x))ids.push(x)}else dropped++}return {ids:ids.slice(0,3),dropped}}
 function vRoute(o){if(!o||typeof o!=='object')throw {code:'invalid_json'};const a=isStr(o.authority)?o.authority.trim():'';return hasOwn(AUTH,a)?a:''}
@@ -2378,7 +2394,7 @@ const mainOk=(text,id)=>{const m=mainCov(text,id);return !(m.n>=2&&m.n<=VD.maxn&
 function sureOf(res,text,mc){const top=res[0],ratio=res[1]?top.score/(res[1].score||1e-9):9;if(ratio>=VD.hiLead)return true;
 return ((String(text).match(/[a-z0-9ء-ي]+/gi)||[]).length<=VD.shortN&&mc.cov>=VD.shortCov&&top.cov>=VD.shortTop&&ratio>=VD.shortLead)}
 /* 'gap' (no verified answer), 'close' (the closest answer we have, no tick) or 'ok' (the checked answer to this question, with the tick) */
-function verdict(res,text){if(!res||!res.length||res[0].off===true)return {kind:'gap'};
+function verdict(res,text){if(!res||!res.length||res[0].off===true)return {kind:'gap'};const kg=knownGap(text);if(kg)return {kind:'gap',known:kg};
 const top=res[0],mc=mainCov(text,top.id),few=mc.n>=1&&mc.n<=VD.maxn,low=isGap(res.slice(0,5));
 if(low){if(few&&mc.cov>=.99&&top.cov>=.5&&top.score>=gapMin()*VD.rescue)return {kind:sureOf(res,text,mc)?'ok':'close',cov:mc.cov,rescued:true};return {kind:'gap',cov:mc.cov}}
 if(mc.n>=2&&few&&mc.hit*2<mc.n)return {kind:'gap',cov:mc.cov,miss:mc.miss};
@@ -2524,7 +2540,9 @@ const m=mask(raw);R.q=m.text;$('result').hidden=false;renderTour();renderRunTrac
 if(sw)trace(R,'rule','shield','tr_lang',{lang:{k:'langName_'+LANG}});
 if(m.total)trace(R,'rule','shield','tr_masked',{list:{list:Object.entries(m.counts).filter(([,n])=>n).map(([k,n])=>({k:'m_'+k+(n===1?'1':'n'),v:{n}}))}});else trace(R,'rule','shield','tr_nomask');
 const inj=injections(raw);if(inj.length){R.noAI=true;trace(R,'rule','shield','tr_inj',{p:inj[0]})}
-const sq0=Object.values(MASK_TAG).reduce((x,y)=>x.split(y).join(' '),R.q);if(await tableStage(R,gen,sq0,{}))return;if(gen!==GEN)return;
+const sq0=Object.values(MASK_TAG).reduce((x,y)=>x.split(y).join(' '),R.q);
+if(await partsStage(R,gen,sq0))return;if(gen!==GEN)return;
+if(await tableStage(R,gen,sq0,{}))return;if(gen!==GEN)return;
 let rd=readQuestion(R,null);
 if(aiReady('understand')&&(rd.gap||await noRuleAnswer(R,rd))){if(gen!==GEN)return;let inz=null;try{inz=await serverUnderstand(R.q)}catch(e){if(gen!==GEN)return;failTrace(R,'understand',e)}
 if(gen!==GEN)return;if(inz){R.ai=true;rd=readQuestion(R,inz)}}
@@ -2533,7 +2551,7 @@ if(LAZY&&R.cands.length){await hydrate(R.cands.map(c=>c.id));if(gen!==GEN)return
 if(R.cands.length)trace(R,'rule','find','tr_find',{n:ENTRIES.length,q:BY_ID[R.cands[0].id].q,s:R.cands[0].score});else trace(R,'rule','find','tr_find_none',{n:ENTRIES.length});
 R.sit=sitOf(PROFILE,R.hints);
 if(!R.tbl&&await tableStage(R,gen,R.stext+' '+sq,R.nums||{}))return;if(gen!==GEN)return;
-const vdR=verdict(res,R.stext),vdB=base===res?vdR:verdict(base,sq);R.vdKind=vdR.kind!=='gap'?vdR.kind:vdB.kind;
+const vdR=verdict(res,R.stext),vdB=base===res?vdR:verdict(base,sq);R.vdKind=vdR.kind!=='gap'?vdR.kind:vdB.kind;R.kg=vdR.known||null;if(R.kg&&LAZY&&R.kg.closest.length){await hydrate(R.kg.closest);if(gen!==GEN)return}
 let gap=(vdR.kind==='gap'&&vdB.kind==='gap')||!R.cands.length?'low':'';
 if(!gap){if(aiReady('pick')){try{const p=vPick(await aiJSON('pick',pickPrompt(R.q,R.cands)),R.cands);R.ai=true;if(gen!==GEN)return;if(p.dropped)trace(R,'rule','pick','tr_pick_drop',{n:p.dropped});
 if(p.ids.length){R.chosen=p.ids;trace(R,'ai','pick','tr_pick',{n:p.ids.length,m:R.cands.length})}else{trace(R,'ai','pick','tr_pick_none');gap='pick'}}
@@ -2543,6 +2561,11 @@ if(gap){await doGap(R,gap,gen);return}
 R.fig=sq+' '+rw;await answerNow(R,gen)}
 catch(e){console.error(e);if(gen===GEN){const R=RUN;if(R&&R.stage==='work'){try{await doGap(R,'error',gen)}catch(e2){R.stage='gap';renderRunBody()}}else err.textContent=t('lazyErr')}}
 finally{if(gen===GEN||!btn.disabled){btn.disabled=false;btn.innerHTML=ASK_ARROW}}}
+async function partsStage(R,gen,text){const pp=partsOf(text);if(!pp)return false;
+if(LAZY)await hydrate(pp.parts.map(p=>p.id).filter(Boolean));if(gen!==GEN)return true;
+const la=search('free legal advice legal aid lawyer');R.legalAid=la.length&&!la[0].off?la[0].id:'';if(LAZY&&R.legalAid)await hydrate([R.legalAid]);if(gen!==GEN)return true;
+R.parts=pp.parts.filter(p=>!p.id||(BY_ID[p.id]&&!BY_ID[p.id]._stub));R.partsMore=pp.more;R.sit=sitOf(PROFILE,R.hints);R.order=[];R.chosen=[];R.cands=[];R.pool=[];
+trace(R,'rule','find','tr_parts');R.stage='parts';renderRunBody();focusEl($('runH'));return true}
 /* the rules found candidates, but none of them passes the page's own relevance check: the same as finding nothing */
 async function noRuleAnswer(R,rd){if(LAZY)await hydrate(R.cands.map(c=>c.id));return !R.cands.some(c=>BY_ID[c.id]&&!BY_ID[c.id]._stub&&gateOf(R.stext,BY_ID[c.id],rd.sq+' '+rd.rw).ok)}
 /* the question read by rules, or by rules plus the trained model's reading */
@@ -2589,12 +2612,12 @@ const A=AUTH[aid];if(A&&sit.emirate&&hasOwn(A.overrides,sit.emirate))aid=A.overr
 R.gapTopic=tp;const bq=unmaskQ(R.q),bo={topic:tp,emirate:sit.emirate};R.br={svc:breadthTop('services',bq,3,bo),laws:breadthTop('laws',bq,2,bo)};if(R.br.svc.length)trace(R,'rule','gap','tr_gapBr',{s:R.br.svc.length});
 addGap({q:R.q,topic:tp,emirate:sit.emirate,reason});trace(R,'rule','gap','tr_gap');if(!AI_ON)trace(R,'rule','gap','tr_nothing');R.stage='gap';renderCounts();renderGaps();renderRunBody();focusEl($('runH'))}
 function notHelpful(){const R=RUN;if(!R||R.fb)return;const e=BY_ID[R.order[0]];addGap({q:R.q,topic:e?e.topic:R.topic,emirate:(R.sit||{}).emirate,reason:'fb',entry:e&&e.id});R.fb=true;renderCounts();renderGaps();renderRunBody();toast(t('gapSaved'))}
-function renderRunTrace(){const R=RUN;if(!R)return;$('asked').textContent=t('youAsked',{q:R.q});$('traceList').innerHTML=R.trace.map(traceLi).join('')}
+function renderRunTrace(){const R=RUN;if(!R)return;$('asked').textContent=t('youAsked',{q:clip(R.q,260)});$('traceList').innerHTML=R.trace.map(traceLi).join('')}
 /* the answer always comes first; the choices that tune it (who it is for) come after it */
 const profBox=R=>`<div id="profileRun">${profileHTML('run',sitOf(PROFILE,R.hints))}</div>`;
 function renderRunBody(){const R=RUN,box=$('runBody');if(!R||!box)return;let h='';
 if(R.stage==='work')h+=`<p class="tip"><span class="spin"></span>${T('working')}</p>`;
-else if(R.stage==='gap')h+=gapCardHTML(R,R.gapAuth,false)+profBox(R);else if(R.stage==='table')h+=tableAnswerHTML(R)+profBox(R);else if(R.stage==='done')h+=BY_ID[R.order[0]]?answerHTML(R):`<p class="warn">${T('liveGone')}</p>`;
+else if(R.stage==='parts')h+=partsHTML(R)+profBox(R);else if(R.stage==='gap')h+=gapCardHTML(R,R.gapAuth,false)+profBox(R);else if(R.stage==='table')h+=tableAnswerHTML(R)+profBox(R);else if(R.stage==='done')h+=BY_ID[R.order[0]]?answerHTML(R):`<p class="warn">${T('liveGone')}</p>`;
 box.innerHTML=h}
 /* under the answer: only the choices that change THIS answer, taken from this entry (never another one) */
 function refineKeys(e,sit){const out=[],dep=k=>e.depends.find(d=>d&&d.key===k),ov=Object.keys((AUTH[e.authority]||{}).overrides||{}).filter(x=>EMIRATES.includes(x));
@@ -2641,7 +2664,45 @@ h+=moreHTML(more+actHTML(e.id,'run','more'));if(R.fb)h+=gapCardHTML(R,routeOf(e,
 function liveLinkHTML(R){const ws=searchWords(unmaskQ(R.q));if(!ws.length)return '';
 return `<div class="actions">${link(officialSearchUrl(ws,LANG),t('liveGo'),'btn teal sm')}</div>`}
 function liveLookupHTML(R){const l=liveLinkHTML(R);return l?`<div class="live"><h3>${T('liveH')}</h3><p class="tip">${T('liveP')}</p>${l}</div>`:''}
-function gapCardHTML(R,aid,fb){const close=fb?[]:arr(R.cands).filter(c=>c.cov>=GATE_COV&&mainOk(R.stext||unmaskQ(R.q||''),c.id)).map(c=>BY_ID[c.id]).filter(e=>e&&!e._stub&&gateOf(R.stext||unmaskQ(R.q||''),e,unmaskQ(R.q||'')).ok).slice(0,3),br=(!fb&&R.br)||{svc:[],laws:[]},p=personIds(null,R.sit||{},R.gapTopic);
+/* == several issues in one question: the page answers in parts. One entry cannot answer a list of problems, and a tick on one would mislead.
+   A question counts only when it is long (40 words or more) AND says so (several problems, the following, separately, a numbered list, four or more question marks).
+   Each sentence is searched on its own; a sentence with a clear entry is a part (up to six, in the order asked); a sentence that tells of a problem and finds no entry is a part named as having no verified answer.
+   A short question, or one story told at length, is never split. */
+const PT={words:40,qmarks:6,cov:.5,sure:.9,lead:1.25,max:6,minParts:1,minAll:3};
+const MULTI_CUE=/\b(?:simultaneous(?:ly)?|at the same time|several|multiple|numerous|all of the following|the following (?:legal )?(?:problems?|issues?|events?|questions?|disputes?|matters?)|each (?:issue|problem|matter|dispute|question)|separately|(?:problems?|issues?|disputes?) (?:at once|together))\b|عده (?:مشاكل|قضايا|مسائل|اسئله|امور)|في نفس الوقت|كل (?:مشكله|مس[أا]له|قضيه)|(?:المشاكل|الاسئله|الامور|القضايا) التاليه|بشكل منفصل|على حده/;
+const PROB_ST=new Set(rawWords('unpaid owe owes owed claims claim filed case frozen freeze cancelled canceled cancel threatening threatens threatened refuses refused dispute disputes evict eviction transferred withheld terminated fired loan debt ban fraud complaint fine bounced suspended suspend arrest arrested expired overstay penalty penalised lawsuit sued sue stopped blocked دين قرض قضيه شكوى اخلاء طرد فصل الغاء الغيت تجميد منع احتيال غرامه مخالفه بلاغ متاخر لم يدفع ما دفع تهديد يهدد رفض يرفض مطالبه يطالب مدين يدعي يدعو دين').map(stem));
+const hasProblem=s=>rawWords(s).some(w=>PROB_ST.has(stem(w)));
+const ISSUE_ST=new Set(rawWords('want wants wish wishes need needs can could should must how what whether would paid salary wage wages تبي ابي اريد احتاج هل كيف ماذا ماهي راتب').map(stem));
+const ASKS_RX=/^(?:please |kindly )?(?:determine|identify|analy[sz]e|explain|provide|describe|advise|list|assess|tell|give|prepare|set out|summari[sz]e)/i;
+const isIssue=s=>/[?؟]\s*$/.test(s)||hasProblem(s)||rawWords(s).some(w=>ISSUE_ST.has(stem(w)));
+/* the entry's own question must carry at least one of the two rarest main words of the sentence: a sentence about debts to suppliers is not answered by an entry about buying a business */
+function headHit(sn,id){const df=IDX.dfq,et=ownTerms(id),ts=mainTerms(sn).filter(t=>df.has(t)).map(t=>[t,df.get(t)]).sort((a,b)=>a[1]-b[1]).slice(0,2);
+if(!ts.length)return true;return ts.some(([t])=>{const xm=XMAP&&XMAP.get(t);return et.has(t)||(xm&&et.has(xm))})}
+function partsOf(text){const raw=String(text||''),n=norm(raw);if(rawWords(raw).length<PT.words)return null;
+const qm=(raw.match(/[?؟]/g)||[]).length,lines=(raw.match(/(?:^|\n)\s*(?:\d+[.)]|[-•*])\s/g)||[]).length;if(!(MULTI_CUE.test(n)||qm>=PT.qmarks||lines>=3))return null;
+const ss=raw.split(/(?<=[.!?؟…])\s+|\n+|:\s+/).map(x=>x.replace(/^\s*(?:\d+[.)]|[-•*])\s*/,'').trim()).filter(x=>rawWords(x).length>=4);if(ss.length<4)return null;
+const whole=new Set(search(raw).map(x=>x.id)),items=[];
+for(const sn of ss){let id='',cov=0;const iss=isIssue(sn);
+if(iss){const res=search(sn);if(res.length&&!res[0].off&&!isGap(res))for(const [i,x] of res.slice(0,8).entries()){const mc=mainCov(sn,x.id);if(mc.n<2)continue;if(!headHit(sn,x.id))continue;const w=whole.has(x.id),lead=i===0&&res[1]&&x.score/res[1].score>=PT.lead;if((w&&mc.cov>=PT.cov&&x.cov>=PT.cov)||(mc.cov>=PT.sure&&x.cov>=PT.sure)||(lead&&mc.cov>=.6&&x.cov>=.55)){id=x.id;cov=mc.cov;break}}}
+items.push({s:sn,id,cov,prob:hasProblem(sn),iss})}
+const seen=[],ans=[];for(const it of items){if(!it.id)continue;if(seen.some(x=>x===it.id||sameSubject(x,it.id)))continue;seen.push(it.id);ans.push(it)}
+const none=items.filter(it=>!it.id&&it.prob&&!ASKS_RX.test(it.s)).slice(0,PT.max);
+if(ans.length<PT.minParts||ans.length+none.length<PT.minAll)return null;
+const qn=x=>/[?؟]\s*$/.test(x.s)?1:0;let keep=ans.length>PT.max?ans.slice().sort((a,b)=>qn(b)-qn(a)||b.cov-a.cov).slice(0,PT.max):ans;
+const room=PT.max-keep.length,nk=none.slice(0,room),all=[...keep,...nk].sort((a,b)=>items.indexOf(a)-items.indexOf(b));
+return {parts:all.map(x=>({id:x.id,s:x.s})),more:ans.length+none.length-all.length}}
+/* subjects the library is known not to answer yet (expansion/known-gaps.json): every group needs one of its words in the question */
+let KG=[];
+function knownGap(text){if(!KG.length)return null;const st=new Set(rawWords(text).map(stem));return KG.find(g=>g.all.every(grp=>grp.some(w=>st.has(w))))||null}
+const twoLines=a=>splitSentences(a).slice(0,2).map(x=>x.trim()).join(' ');
+function partsHTML(R){const sit=R.sit||{};let h=`<div class="partsbox"><h3>${T('partsH')}</h3><ul class="elist">`;
+for(const p of R.parts){const e=p.id&&BY_ID[p.id];
+if(e&&!e._stub)h+=`<li class="part"><b dir="auto">${esc(L(e.q))}</b><span class="one" dir="auto">${esc(twoLines(L(e.a)))}</span><details class="more"><summary>${T('partsFull')}</summary>${entryFullHTML(e,sit,'alt',true)}</details></li>`;
+else h+=`<li class="part"><b dir="auto">${esc(clip(p.s,110))}</b><span class="pill bad">${T('partsNone')}</span></li>`}
+h+='</ul>';if(R.partsMore)h+=`<p class="tip">${T('partsMore',{n:R.partsMore})}</p>`;
+h+=`<p class="tip">${T('partsLawyer')}</p>`;const la=R.legalAid&&BY_ID[R.legalAid];if(la&&!la._stub)h+=`<ul class="elist">${itemHTML(la,true)}</ul>`;
+return h+`<p class="legal">${T('legalNote')}</p></div>`}
+function gapCardHTML(R,aid,fb){const close=fb?[]:R.kg?[...arr(R.kg.closest),...arr(R.cands).map(c=>c.id)].filter((id,i,a)=>a.indexOf(id)===i).map(id=>BY_ID[id]).filter(e=>e&&!e._stub).slice(0,3):arr(R.cands).filter(c=>c.cov>=GATE_COV&&mainOk(R.stext||unmaskQ(R.q||''),c.id)).map(c=>BY_ID[c.id]).filter(e=>e&&!e._stub&&gateOf(R.stext||unmaskQ(R.q||''),e,unmaskQ(R.q||'')).ok).slice(0,3),br=(!fb&&R.br)||{svc:[],laws:[]},p=personIds(null,R.sit||{},R.gapTopic);
 p.legal=p.legal.filter(x=>x!==aid);p.gov=p.gov.filter(x=>x!==aid);
 const gw=!fb&&R.gate?`<p class="warn" role="status">${R.gate.why==='nonum'?T('gate_nonum',{what:t('fig_'+R.gate.kind)}):T('gate_concept',{miss:(R.gate.miss||[]).join(', ')||'—'})}</p>`:'',live=!fb&&FEAT.live_lookup?liveLookupHTML(R):'';
 return `<div class="gapcard"><h3>${T('gapH')}</h3>${gw}${close.length?`<h3>${T('gapClosest')}</h3><ul class="elist">${close.map(e=>itemHTML(e,true)).join('')}</ul>`:''}${live}<details class="more"><summary>${T('gapMore')}</summary><div class="plan"><p>${T(aid==='u-ae'?'gapPortal':'gapP')}</p>${aid?`<h3>${T('gapAuthH')}</h3>${authCard(aid)}`:`<p class="tip">${T('gapNoAuth')}</p>`}${br.svc.length?`<h3>${T('svcH')}</h3><ul class="brl">${br.svc.map(s=>svcHTML(s,true)).join('')}</ul>`:''}${br.laws.length?`<h3>${T('lawsH')}</h3><ul class="brl">${br.laws.map(l=>lawHTML(l,true)).join('')}</ul>`:''}${fb?'':relHTML(R)}${personBox(p)}</div></details><p class="tip">${T('gapSaved')}</p><p class="legal">${T('legalNote')}</p></div>`}
@@ -2722,8 +2783,8 @@ if(e.law)h+=`<section><h3>${T('lawH')}</h3><p dir="auto">${[esc(lawNameText(e.la
 if(ctx!=='alt')return h;/* main views show the office inside "Talk to a person" */
 const r=routeOf(e,sit),ov=(AUTH[r.base]||{}).overrides||{};const ids=[r.authority,...(sit&&sit.emirate&&sit.emirate!=='unsure'?[]:Object.values(ov).filter(isStr))].filter((x,i,a)=>x&&a.indexOf(x)===i);
 return h+`<section><h3>${T('authH')}</h3>${ids.map(authCard).join('')||`<p class="tip">${T('noChannels')}</p>`}</section>`}
-function entryFullHTML(e,sit,ctx){const main=ctx!=='alt';const ans=`<div class="answer rules"><p dir="auto">${esc(L(e.a))}</p></div>`;
-if(!main)return badgesHTML(e,sit)+ans+routeHTML(e,sit)+handoffHTML(e)+planHTML(e,sit,ctx);
+function entryFullHTML(e,sit,ctx,close){const main=ctx!=='alt';const ans=`<div class="answer rules"><p dir="auto">${esc(L(e.a))}</p></div>`;
+if(!main)return badgesHTML(e,sit,close)+ans+routeHTML(e,sit)+handoffHTML(e)+planHTML(e,sit,ctx);
 return statusHTML(e,sit)+ans+firstSrcHTML(e)+`<p class="legal">${T('legalNote')}</p>`+planHTML(e,sit,ctx,'steps')+actHTML(e.id,ctx,'main')+moreHTML(badgesHTML(e,sit)+routeHTML(e,sit)+handoffHTML(e)+planHTML(e,sit,ctx,'rest')+breadthHTML(relatedBreadth(e,'',sit))+personHTML(e,sit)+actHTML(e.id,ctx,'more'))}
 function itemHTML(e,noTick){return `<li><button type="button" class="eitem" data-open="${esc(e.id)}"><b dir="auto">${esc(L(e.q))}</b>${e._stub?'':`<span class="one" dir="auto">${esc(firstSentence(L(e.a)))}</span>`}<span class="badges"><span class="pill">${esc(scopeText(e))}</span>${badgeList(e,noTick).map(x=>badgeHTML(x,false,e)).join('')}</span></button></li>`}
 
@@ -2940,9 +3001,9 @@ $('tabs').addEventListener('click',e=>{const b=e.target.closest('[role="tab"]');
 $('tabs').addEventListener('keydown',e=>{const i=TABS.indexOf(curTab),rtl=LANG==='ar';let n=null;if(e.key==='ArrowRight')n=rtl?i-1:i+1;else if(e.key==='ArrowLeft')n=rtl?i+1:i-1;else if(e.key==='Home')n=0;else if(e.key==='End')n=TABS.length-1;if(n!=null){e.preventDefault();showTab(TABS[(n+TABS.length)%TABS.length],true)}});
 twoTap($('reset'),'reset','resetConfirm',()=>{for(const k of [K.profile,K.saved,K.gaps,K.ticks,K.tour,K.reports])store.del(k);GEN++;RUN=null;CALC={};chooser=null;LIB={topic:'',q:'',open:''};LIFE={open:'',all:false};SAVEDV='';loadProfile();$('result').hidden=true;$('q').value='';$('askErr').textContent='';renderAll();showTab('ask');closeSheets();toast(t('resetDone'))});
 if(EMBED)document.documentElement.classList.add('embed');
-const q0=QS.get('q');if(q0){$('q').value=String(q0).slice(0,600);growQ()}
+const q0=QS.get('q');if(q0){$('q').value=String(q0).slice(0,2500);growQ()}
 renderAll();showTab('ask');
-const autoAsk=()=>{if(EMBED&&q0)ask(String(q0).slice(0,600))};
+const autoAsk=()=>{if(EMBED&&q0)ask(String(q0).slice(0,2500))};
 /* the server's approved corrections arrive after the library, never before first paint */
 if(LAZY&&!LAZY.ready)loadLazy().then(()=>{autoAsk();if(PENDQ&&ENTRIES.length){const p=PENDQ;PENDQ='';ask(p)}loadOverrides()});else{autoAsk();loadOverrides()}}
 if(!(typeof window!=='undefined'&&window.INZAIN_TEST))boot();
