@@ -233,7 +233,28 @@ a.tel{display:inline-block;margin:-10px 0;padding:10px 4px;font-weight:600}
  @keyframes side-rtl{from{transform:translateX(-48px);opacity:.3}to{transform:none;opacity:1}}
 }
 @media (max-width:359px){.tile{padding:12px}.tile .ico{width:40px;height:40px}}
+/* the line shown before the main script has started (and, if it never does, the "could not start" message) */
+.bootnote{margin:0 0 12px;padding:12px 14px;color:var(--muted);font-size:15px;line-height:22px}
+.bootnote span{display:block}
+.bootnote span+span{margin-top:6px}
+.bootfail{color:var(--ink);background:var(--tile);border:1px solid var(--line);border-radius:18px}
+/* until the main script has run, the Check button says the page is still starting, in the page's language */
+#checkBtn:disabled{opacity:.75;cursor:progress}
+html[lang=ar] #checkBtn .stl[lang=en],html:not([lang=ar]) #checkBtn .stl[lang=ar]{display:none}
 </style>
+<script id="guard">/* Never a silent dead page. Oldest plain JavaScript on purpose (no let, const, arrows or template strings), so it runs on any phone.
+   The main script sets PAGE_STARTED as its first act (and removes the "Loading" line) and PAGE_READY when the Check button works.
+   The main script is inline, so by DOMContentLoaded it has run or failed: if it never started (a browser that cannot read it) or stopped
+   before the end, this shows in English and Arabic that the page could not start here and what to do. */
+(function(){var shown=false;
+function fail(){if(shown||window.PAGE_READY)return;shown=true;var el=document.getElementById('bootNote');
+if(!el){el=document.createElement('p');el.id='bootNote';var m=document.getElementsByTagName('main')[0]||document.body;if(!m)return;m.insertBefore(el,m.firstChild)}
+el.className='bootnote bootfail';el.setAttribute('role','alert');
+el.innerHTML='<span lang="en" dir="ltr">This page could not start on this phone or browser. On Android, update Chrome and Android System WebView from the Play Store, or open the link in your phone\'s browser instead of inside an app. On an iPhone, update iOS in Settings.</span><span lang="ar" dir="rtl">تعذّر تشغيل هذه الصفحة على هذا الهاتف أو المتصفح. على أندرويد: حدّث Chrome و Android System WebView من متجر Play، أو افتح الرابط في متصفح الهاتف بدلًا من فتحه داخل تطبيق. على الآيفون: حدّث نظام iOS من الإعدادات.</span>'}
+window.PAGE_BOOT_FAIL=fail;
+if(window.addEventListener){window.addEventListener('error',function(){if(!window.PAGE_READY)setTimeout(function(){if(document.readyState!=='loading')fail()},0)},true);
+document.addEventListener('DOMContentLoaded',function(){if(!window.PAGE_READY)setTimeout(fail,1000)})}
+else{setTimeout(fail,8000)}})();</script>
 </head>
 <body>
 <a class="skip" href="#msg" data-t="skip">Skip to the message box</a>
@@ -266,7 +287,7 @@ a.tel{display:inline-block;margin:-10px 0;padding:10px 4px;font-weight:600}
     </div>
     <div class="tools" id="tools">
      <button type="button" class="ibtn" id="clearBtn" data-ta="clearA" aria-label="Clear" hidden><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
-     <button type="button" class="go" id="checkBtn" data-t="check">Check</button>
+     <button type="button" class="go" id="checkBtn" data-t="check" disabled><span class="stl" lang="en">Starting…</span><span class="stl" lang="ar">جارٍ التشغيل…</span></button>
     </div>
    </div>
    <p class="route"><span class="soft" id="bandHint">ID and card numbers are hidden first.</span><button type="button" class="wbtn" id="exBtn" aria-haspopup="dialog" aria-controls="sheetEx" data-t="exBtn">Examples</button></p>
@@ -275,6 +296,7 @@ a.tel{display:inline-block;margin:-10px 0;padding:10px 4px;font-weight:600}
 </header>
 
 <main class="wrap">
+ <p class="bootnote" id="bootNote" role="status"><span lang="en" dir="ltr">Loading…</span><span lang="ar" dir="rtl">جارٍ التحميل…</span></p>
  <p class="exnote note" id="exNote" aria-live="polite"></p>
  <p class="err" id="checkErr" role="alert"></p>
  <section id="result" aria-label="Result" data-ta="resultA"></section>
@@ -377,8 +399,10 @@ a.tel{display:inline-block;margin:-10px 0;padding:10px 4px;font-weight:600}
 <p class="vh" id="live" aria-live="polite"></p>
 <script id="app">
 'use strict';
+/* first act: tell the guard script the page started and take the "Loading" line away */
+try{window.PAGE_STARTED=true;const bn=document.getElementById('bootNote');if(bn&&bn.parentNode)bn.parentNode.removeChild(bn)}catch(e){}
 const $=id=>document.getElementById(id);
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const has=(o,k)=>typeof k==='string'&&Object.prototype.hasOwnProperty.call(o,k);
 const uniq=a=>Array.from(new Set(a));
 const reduced=()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}};
@@ -857,7 +881,7 @@ for(let i=0;i<src.length;i++){const ch=src[i];if(ch==='\\'){i++;continue}if(cls)
 if(ch==='('&&src[i+1]!=='?'){n++;if(src[i+1]===')'){marks.push(n);at.push(i)}}}
 if(marks.length!==bad.length)throw new Error('mzLB: '+marks.length+' marks, '+bad.length+' checks');
 return new MzLB(re,re.flags,{src,fl,marks,at,u:/u/.test(fl),bad:bad.map(b=>new RegExp('(?:'+b.source+')$',fl)),scan:[],alt:{}})}
-const MZ_BY_ID={},MZ_DOMS=[],MZ_PH={},MZ_ALIAS=[],MZ_DOMMAP=new Map();
+const MZ_BY_ID={},MZ_DOMS=[],MZ_PH={},MZ_DOMMAP=new Map();
 const MZ_2LD=new Set(['co','com','net','org','gov','edu','ac','or','ne']);
 function mzSplit(h){const p=String(h).replace(/^www\./,'').split('.');const n=p.length;if(n<2)return {label:p[0]||'',suf:''};let i=n-2;if(n>=3&&MZ_2LD.has(p[n-2])&&p[n-1].length===2)i=n-3;return {label:p[i],suf:p.slice(i+1).join('.')}}
 function mzLocal(s){let d=String(s).replace(/\D/g,'');if(d.startsWith('00'))d=d.slice(2);if(d.startsWith('971')&&d.length>8)d=d.slice(3);if(d.startsWith('0'))d=d.slice(1);return d}
@@ -881,17 +905,27 @@ const MZ_PAYFLAGS_B=new Set(['personal_payment','money_request','delivery_fee','
 function mzR5bWaOwn(links,phones){for(const L of links){if(!mzWaNum(L.raw))continue;const p=phones.find(x=>x.fromLink===L.raw);if(p&&p.reg&&p.ok)L.official=true}}
 (function(){for(const o of MZDATA.o){MZ_BY_ID[o.i]=o;
 for(const d of o.d||[]){MZ_DOMMAP.set(d,o);if(mzLinkSvc(d))continue;/* round 8: an organisation's own sub-address on a link service is its own address, never a model for look-alikes */const sp=mzSplit(d);MZ_DOMS.push({o,d,label:sp.label,suf:sp.suf})}
-for(const [n] of o.p||[]){(MZ_PH[n]=MZ_PH[n]||[]).push(o)}
+for(const [n] of o.p||[]){(MZ_PH[n]=MZ_PH[n]||[]).push(o)}}})();
+const mzFold=s=>String(s).toLowerCase().replace(/ſ/g,'s');
+const MZ_SAFE=/^[\x21-\x7e؀-ۿ]+$/;
+const MZ_XTPL=/^\(\?:\\b\(\?:from\|by\|via\|visit\)\\s\+\(\?:((?:\\[^A-Za-z0-9]|[^\\.*+?^${}()|[\]])+(?:\|(?:\\[^A-Za-z0-9]|[^\\.*+?^${}()|[\]])+)*)\)\\b\|\\b\(\?:\1\)\\s\+\(\?:[^()]*\)\\b\|\^\\s\*\(\?:\1\)\\s\*:\)$/;
+function mzNeedles(names){const out=[];for(const n of names){const w=String(n).split(/\s+/).filter(Boolean);if(!w.length||!w.every(x=>MZ_SAFE.test(x)))return null;out.push(w.map(mzFold))}return out.length?out:null}
+let MZ_ALIAS=null;
+function mzAliases(){if(MZ_ALIAS)return MZ_ALIAS;const L=[];
+for(const o of MZDATA.o){
 const add=(n,cs,ar)=>{const pat=mzEsc(n).replace(/\s+/g,'\\s+');
 const src=ar?'(^|[^\\u0621-\\u064A])('+(/^(?:كريم|طلبات|نون|سالك|دو|ديوا)$/.test(n)?'':'[وفبلك]?(?:ال)?')+pat+')(?![\\u0621-\\u064A])':'(^|[^\\p{L}\\p{N}])('+pat+')(?![\\p{L}\\p{N}])';
-try{MZ_ALIAS.push({o,len:n.length,re:new RegExp(src,cs?'u':'iu'),doc:/^(?:emirates id|ejari|nol card|الهويه الاماراتيه|بطاقه الهويه)$/i.test(n)})}catch(e){}};
+L.push({o,len:n.length,src,fl:cs?'u':'iu',re:undefined,nd:mzNeedles([n]),doc:/^(?:emirates id|ejari|nol card|الهويه الاماراتيه|بطاقه الهويه)$/i.test(n)})};
 for(const n of o.a||[])add(n,false,false);for(const n of o.s||[])add(n,true,false);for(const n of o.b||[])add(n,false,true);
-if(o.x)MZ_ALIAS.push({o,len:o.x.length,re:new RegExp('()('+o.x+')','i')})}
-MZ_ALIAS.sort((a,b)=>b.len-a.len)})();
+if(o.x){const m=MZ_XTPL.exec(o.x);L.push({o,len:o.x.length,src:'()('+o.x+')',fl:'i',re:undefined,nd:m&&!/\\\|/.test(m[1])?mzNeedles(m[1].split('|').map(s=>s.replace(/\\(.)/g,'$1'))):null})}}
+L.sort((a,b)=>b.len-a.len);return MZ_ALIAS=L}
 function mzOrgByHost(h){h=String(h||'').replace(/^www\./,'');let x=h;while(x.includes('.')){const o=MZ_DOMMAP.get(x);if(o)return o;x=x.slice(x.indexOf('.')+1)}return null}
 const mzName=o=>(UI==='ar'&&o.n[1])?o.n[1]:o.n[0];
 const mzNameIn=(o,l)=>(l==='ar'&&o.n[1])?o.n[1]:o.n[0];
-function mzOrgsIn(rt){let w=rt;const out=[];for(const a of MZ_ALIAS){let m,g=0;while(g++<4&&(m=a.re.exec(w))){const st=m.index+m[1].length,ln=m[2].length;const ex=out.find(x=>x.o===a.o);if(!ex)out.push({o:a.o,i:st,doc:!!a.doc});else if(ex.doc&&!a.doc){ex.doc=false;ex.i=Math.min(ex.i,st)}w=w.slice(0,st)+' '.repeat(ln)+w.slice(st+ln)}}
+function mzOrgsIn(rt){let w=rt;const out=[],lo=mzFold(rt);for(const a of mzAliases()){
+if(a.nd&&!a.nd.some(ws=>ws.every(x=>lo.indexOf(x)>=0)))continue;
+if(a.re===undefined){try{a.re=new RegExp(a.src,a.fl)}catch(e){a.re=null}}if(!a.re)continue;
+let m,g=0;while(g++<4&&(m=a.re.exec(w))){const st=m.index+m[1].length,ln=m[2].length;const ex=out.find(x=>x.o===a.o);if(!ex)out.push({o:a.o,i:st,doc:!!a.doc});else if(ex.doc&&!a.doc){ex.doc=false;ex.i=Math.min(ex.i,st)}w=w.slice(0,st)+' '.repeat(ln)+w.slice(st+ln)}}
 return out.sort((a,b)=>a.i-b.i)}
 function mzDist(a,b,max){if(Math.abs(a.length-b.length)>max)return max+1;const n=a.length,m=b.length;let p2=null,p1=Array.from({length:m+1},(_,j)=>j);
 for(let i=1;i<=n;i++){const c=[i];let mn=i;for(let j=1;j<=m;j++){let v=Math.min(p1[j]+1,c[j-1]+1,p1[j-1]+(a[i-1]===b[j-1]?0:1));if(i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1])v=Math.min(v,p2[j-2]+1);c.push(v);if(v<mn)mn=v}
@@ -2123,7 +2157,7 @@ if(st.chat==='wa'){mzlNote(R,'lk_chat');return done('unclear','chat')}
 if(st.chat==='tg'){const b=mzlBrandWords(mzlWords(path.split('/')[1]||''));if(brandOk(b)){R.org=b.o;R.certain=true;R.strongCopy=true;mzlNote(R,'lk_chat_copy',b.o);return done('scam','chat')}mzlNote(R,'lk_chat');return done('unclear','chat')}
 if(st.apps){let words=[];
 if(st.apps==='apple'){const m=/\/app\/([^\/?#]+)/.exec(path);words=mzlWords(m?m[1]:'')}
-else if(st.apps==='play'){const m=/[?&]id=([^&#]+)/.exec(path);words=(m?m[1]:'').split('.').flatMap(x=>mzlWords(x)).filter(w=>w!=='com'&&w!=='ae'&&w!=='org'&&w!=='net')}
+else if(st.apps==='play'){const m=/[?&]id=([^&#]+)/.exec(path);words=(m?m[1]:'').split('.').reduce((acc,x)=>acc.concat(mzlWords(x)),[]).filter(w=>w!=='com'&&w!=='ae'&&w!=='org'&&w!=='net')}
 const b=mzlBrandWords(words);
 if(b&&(!b.short||b.rest.some(w=>MZL_SHORTOK.has(w)))){
 const o=b.o,comp=words.join('');
@@ -2593,9 +2627,13 @@ function copyFrom(taId,msgId){const ta=$(taId),msg=$(msgId);if(!ta)return;const 
   fallback()}
 
 /* ---------- State: saved checks (this device only) ---------- */
-/* Ready-made checks are marked "seeded" and show no made-up time. */
+/* Ready-made checks are marked "seeded" and show no made-up time. They are the examples below, checked by the same rules when
+   research/scams/tools/build_mazboot_data.py builds the page (it runs this page's rules in Node and writes MZSEED), so the page does no
+   checking at start-up: on an old phone that took about 1.4 s. Each copy gets its own id and time, as a check made now would. */
+const SEED_KEYS=['a','b','g'];
+/*MZSEED:BEGIN*/const MZSEED=[{"id":"","at":0,"exKey":"a","lang":"en","red":"This is Officer Khalid from the Government Verification Office. Your Emirates ID [hidden 1] is linked to a suspicious transfer. To stop your UAE Pass being suspended, share the 6-digit code we just sent to your phone within 30 minutes. If you can't, call me back on +44 7700 900123.","legend":[{"n":1,"type":"eid"}],"hiddenTotal":1,"links":[],"phones":[{"raw":"+44 7700 900123","digits":"447700900123","uae":false}],"linksFlagged":0,"notes":[{"k":"code_never"},{"k":"report","o":"icp"}],"orgs":["uae-pass"],"asks":["code","id","call"],"flags":[{"id":"code_request","sev":3,"hard":true,"label":"Asks for a code, PIN or password","why":"Banks and officials say they never ask for these by phone, text or link. Whoever has one can get in.","snip":{"b":"…To stop your UAE Pass being suspended, ","m":"share the 6-digit code","a":" we just sent to your phone within 30…"}},{"id":"id_request","sev":3,"hard":true,"label":"Asks for UAE Pass or Emirates ID details","why":"Fake officials want these to take over your accounts, including by SIM swap.","snip":{"b":"…to a suspicious transfer. To stop your ","m":"UAE Pass being suspended, share","a":" the 6-digit code we just sent to your…"}},{"id":"missed_call","sev":5,"hard":false,"label":"Missed-call bait with a number to call back","why":"Calling back an unknown or foreign number can cost money and shows the caller your number is real.","snip":{"b":"…phone within 30 minutes. If you can't, ","m":"call me back","a":" on +44 7700 900123."}},{"id":"blocked","sev":3,"hard":false,"label":"Says your account, card or ID is blocked","why":"A classic way to scare you into acting fast.","snip":{"b":"…to a suspicious transfer. To stop your ","m":"UAE Pass being suspended","a":", share the 6-digit code we just sent to…"}},{"id":"official_ask","sev":3,"hard":false,"label":"Claims to be official and asks for something","why":"Officials don’t ask for details or money this way.","snip":{"b":"This is ","m":"Officer","a":" Khalid from the Government Verification…"}},{"id":"foreign_number","sev":3,"hard":false,"label":"Foreign number, but claims to be local","why":"UAE numbers start with +971.","snip":{"b":"…minutes. If you can't, call me back on ","m":"+44 7700 900123","a":"."}},{"id":"r9_codeask","sev":3,"hard":false,"label":"Asks you to pass on a one-time code","why":"A one-time code is only for you to type into the real app or website yourself. No bank, telecom or company asks you to send it, reply with it or read it out.","snip":{"b":"…To stop your UAE Pass being suspended, ","m":"share the 6-digit code","a":" we just sent to your phone within 30…"}},{"id":"urgency","sev":2,"hard":false,"label":"Rushes you","why":"So you don’t stop to check.","snip":{"b":"…6-digit code we just sent to your phone ","m":"within 30 minutes","a":". If you can't, call me back on +44 7700…"}},{"id":"org_phone_other","sev":2,"hard":false,"label":"The number is not one the organisation publishes","why":"{w} is not a published number of {o}.{n}","snip":{"b":"…minutes. If you can't, call me back on ","m":"+44 7700 900123","a":"."},"org":"icp","arg":"+44 7700 900123"}],"rules":{"verdict":"scam","type":"fake_official","score":26,"hard":true,"signs":["H1","H2","H4"],"capped":false},"lonly":false,"family":null,"final":{"verdict":"scam","type":"fake_official"},"snd":"","lk":null,"seeded":true},{"id":"","at":0,"exKey":"b","lang":"en","red":"YOUR BANK: Your debit card is BLOCKED because of unusual activity. Verify your card details within 24 hours at http://yourbank-secure-verify.top/login or short.example/3xVrfy to avoid permanent closure. Your verification code is [hidden 1]. Our agent will call you now. Read the code to them to stop the block.","legend":[{"n":1,"type":"otp"}],"hiddenTotal":1,"links":[{"raw":"http://yourbank-secure-verify.top/login","host":"yourbank-secure-verify.top","flags":["word","http","tld"],"official":false},{"raw":"short.example/3xVrfy","host":"short.example","flags":["shortener"],"official":false}],"phones":[],"linksFlagged":2,"notes":[{"k":"code_never"}],"orgs":[],"asks":["code","card","click","details"],"flags":[{"id":"code_request","sev":3,"hard":true,"label":"Asks for a code, PIN or password","why":"Banks and officials say they never ask for these by phone, text or link. Whoever has one can get in.","snip":{"b":"…[hidden 1]. Our agent will call you now. ","m":"Read the code","a":" to them to stop the block."}},{"id":"card_request","sev":3,"hard":true,"label":"Asks for card or bank details","why":"Officials never ask for these by phone or link.","snip":{"b":"…is BLOCKED because of unusual activity. ","m":"Verify your card details","a":" within 24 hours at…"}},{"id":"blocked","sev":3,"hard":false,"label":"Says your account, card or ID is blocked","why":"A classic way to scare you into acting fast.","snip":{"b":"YOUR BANK: Your debit ","m":"card is BLOCKED","a":" because of unusual activity. Verify your…"}},{"id":"word","sev":3,"hard":false,"label":"Official-sounding name on an unofficial address","why":"Anyone can put “bank” in an address.","arg":"bank","snip":{"b":"…your card details within 24 hours at ","m":"http://yourbank-secure-verify.top/login","a":" or short.example/3xVrfy to avoid…"},"link":true},{"id":"shortener","sev":3,"hard":false,"label":"Short link hides where it goes","why":"You can’t see where you’d land.","arg":"short.example","snip":{"b":"…or ","m":"short.example/3xVrfy","a":" to avoid permanent closure. Your…"},"link":true},{"id":"urgency","sev":2,"hard":false,"label":"Rushes you","why":"So you don’t stop to check.","snip":{"b":"…activity. Verify your card details ","m":"within 24 hours","a":" at…"}},{"id":"tld","sev":2,"hard":false,"label":"Unusual address ending","why":"Endings like .top are cheap to set up.","arg":"top","snip":{"b":"…your card details within 24 hours at ","m":"http://yourbank-secure-verify.top/login","a":" or short.example/3xVrfy to avoid…"},"link":true},{"id":"http","sev":1,"hard":false,"label":"Link isn’t secure (http)","why":"Banks and government use https.","arg":"yourbank-secure-verify.top","snip":{"b":"…your card details within 24 hours at ","m":"http://yourbank-secure-verify.top/login","a":" or short.example/3xVrfy to avoid…"},"link":true}],"rules":{"verdict":"scam","type":"bank_or_card","score":22,"hard":true,"signs":["H1","H2","H4"],"capped":false},"lonly":false,"family":null,"final":{"verdict":"scam","type":"bank_or_card"},"snd":"","lk":null,"seeded":true},{"id":"","at":0,"exKey":"g","lang":"en","red":"Reminder from Class 4B: tomorrow is Sports Day. Please send your child in the sports uniform with a water bottle and a cap. School finishes at the usual time. Thank you, Ms Priya","legend":[],"hiddenTotal":0,"links":[],"phones":[],"linksFlagged":0,"notes":[],"orgs":[],"asks":[],"flags":[],"rules":{"verdict":"likely_genuine","type":"none","score":0,"hard":false,"signs":[],"capped":false},"lonly":false,"family":null,"final":{"verdict":"likely_genuine","type":"none"},"snd":"","lk":null,"seeded":true}];/*MZSEED:END*/
 function seed(){const n=Date.now();
-  return ['a','b','g'].map((k,i)=>{const e=finalize(buildEntry(EXAMPLES[k].text,{exKey:k,at:n-i*1000}));e.seeded=true;return e})}
+  return MZSEED.map((x,i)=>{const e=JSON.parse(JSON.stringify(x));e.id=newId();e.at=n-i*1000;return e})}
 /* Saved checks come back from localStorage, so every field the page draws is checked; anything malformed is dropped. */
 function okEntry(e){
   const Sx=v=>typeof v==='string',A=Array.isArray,V=v=>has(VERDICTS,v),N=Number.isFinite;
@@ -2807,12 +2845,15 @@ function renderPic(){const pic=MODE==='pic',msgOn=MODE==='msg';
 function picClear(){if(!picSrc&&!picSnd&&!picQr)return;picSrc=false;picSnd=false;picQr=false;renderPic()}
 function picDrop(){clearTimeout(rd.idle);const w=rd.worker;rd.worker=null;rd.raw=null;rd.loading=null;if(w){try{w.terminate()}catch(e){}}}
 function picCancel(){rd.token++;const r=rd.raw;rd.raw=null;rd.worker=null;rd.loading=null;if(r){try{r.terminate()}catch(e){}}rd.busy=false;picStat='';picKey='';renderPic()}
+/* import() written out would stop the whole page on a browser that cannot read it (Chrome before 63, and the 2018 check); made only
+   here, when a picture is chosen, it fails just the picture reader there, which then says it could not read the picture. */
+function picImport(u){return (new Function('u','return import(u)'))(u)}
 function picWorker(){
   if(rd.worker)return Promise.resolve(rd.worker);
   if(rd.loading)return rd.loading;
   const tk=rd.token;
   const pr=(async()=>{
-    const T=rd.T||(rd.T=await import(OCR_BASE+'tesseract.esm.min.js'));
+    const T=rd.T||(rd.T=await picImport(OCR_BASE+'tesseract.esm.min.js'));
     if(tk!==rd.token)throw new Error('cancelled');
     const make=T.createWorker||(T.default&&T.default.createWorker);
     /* The library starts its worker straight away; keep a hold of it so Cancel can stop the downloads. */
@@ -2971,6 +3012,9 @@ if(Q0)$('msg').value=Q0.slice(0,4000);
 applyTheme();
 /* A bad saved history can never stop the page: it is replaced by the ready-made checks. */
 try{renderAll()}catch(err){hist=seed();saveHist();currentId=null;renderAll()}
+/* last act: the Check button works now (it said "Starting…" until here), and the guard script is told the page is ready */
+$('checkBtn').disabled=false;
+try{window.PAGE_READY=true}catch(e){}
 </script>
 </body>
 </html>
