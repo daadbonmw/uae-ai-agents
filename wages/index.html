@@ -135,12 +135,14 @@ input[type=file]::file-selector-button{min-height:44px;margin-inline-end:10px;pa
 .tbtn svg{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .acts{display:flex;flex-wrap:wrap;align-items:center;gap:4px 18px}
 .note{font-size:15px;color:var(--muted)}
-.err{font-weight:600}
+.err{display:flex;gap:6px;font-weight:600}
 .err:empty{display:none}
-.err::before{content:"! "}
+/* the mark is a box of its own, first in the line: on the left in English, on the right in Arabic */
+.err::before{content:"!";flex:none}
 .stat{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;padding:4px 12px;border-radius:12px;background:var(--tint);color:var(--ink);font-size:15px;font-weight:600;line-height:22px}
 .tag{font-size:15px;font-weight:400;color:var(--muted)}
-.mstat{flex:none;font-weight:600}
+.mstat{flex:none;display:inline-flex;align-items:baseline;gap:6px;font-weight:600}
+.mk{flex:none;unicode-bidi:isolate}
 .say{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap}
 
 /* "More": details stay folded */
@@ -167,6 +169,10 @@ details[open]>summary::after{transform:translateY(2px) rotate(-135deg)}
 .rhead h3:focus{outline:none}
 .rhead h3:focus-visible{outline:3px solid var(--focus)}
 .mline{font-size:15px;color:var(--muted)}
+.parts{gap:4px}
+.parts li{font-size:15px}
+.mstate{font-size:15px;font-weight:600}
+.askfrom{display:flex;flex-direction:column;gap:8px;padding:12px 14px;border-radius:16px;background:var(--tint);box-shadow:inset 0 0 0 2px var(--spot)}
 .chan{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0 12px;min-height:52px;padding-block:4px;padding-inline:14px 6px;border-radius:16px;background:var(--bg)}
 .chan.full{flex-direction:column;align-items:flex-start;padding:12px 14px;background:var(--bg)}
 .urgent{display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:22px;background:var(--tint)}
@@ -332,7 +338,7 @@ dialog:not([open]){display:none}
     <fieldset><legend class="lbl" data-t="payForQ">Pay for a month comes</legend><div class="opts">
      <label class="opt"><input type="radio" name="payFor" value="next" checked><span data-t="payNext">Next month</span></label>
      <label class="opt"><input type="radio" name="payFor" value="same"><span data-t="paySame">Same month</span></label>
-    </div></fieldset>
+    </div><p class="note" id="payForEx" aria-live="polite"></p></fieldset>
     <fieldset><legend class="lbl" data-t="workQ">I work for</legend><div class="opts">
      <label class="opt"><input type="radio" name="work" value="company" checked><span data-t="workCo">A company</span></label>
      <label class="opt"><input type="radio" name="work" value="household"><span data-t="workHh">A family or Tadbeer</span></label>
@@ -356,6 +362,7 @@ dialog:not([open]){display:none}
       <label for="voice"><span data-t="voiceQ">Voice note</span><span class="note" data-t="voiceLbl">Kept on this phone.</span><input type="file" id="voice" accept="audio/*"></label><div id="voiceOut"></div>
      </div>
     </details>
+    <div class="askfrom" id="payFromSet" hidden><label for="payFrom"><span class="lbl" data-t="payFromQ">From which month does this apply?</span><select id="payFrom"></select></label><p class="note" id="payFromNote" aria-live="polite"></p></div>
     <button type="button" class="main" id="savePay" data-t="save">Save</button>
     <p class="err" id="saveErr" role="alert"></p>
     <div id="saveMsg" role="status"></div>
@@ -519,9 +526,14 @@ savedMsg:'Saved: pay day the {d}, {amt} a month.',
 trYouSaved:'You checked and saved the details',trSetDay:'Set the pay day and pay to check against',trLocal:'Kept in this browser only',
 wpsLineDom:'Uses the 10-day rule for domestic workers',wpsLineYes:'Does not apply the WPS rule (free zone, bank or government)',wpsLineNo:'Also checks the WPS rule',wpsLineUnsure:'Checks the WPS rule, marked “may”',
 chipPay:'{amt} a month · the {d} · {rule}',change:'Change',setFirst:'Set up your pay first.',goPay:'Go to My pay',ruleDom:'10-day rule',ruleNo:'WPS rule',ruleYes:'check the official source',ruleUnsure:'WPS rule may apply',
-gapIssues:'Months to check: {n}',gapAmt:'not arrived: {amt}',gapNone:'Nothing missing so far.',gapNote:'Your own numbers, not a legal amount.',dueOn:'Due {d}.',shortBy:'{amt} short.',noMonths:'No months yet.',
+gapIssues:'Months to check: {n}',gapAmt:'not arrived: {amt}',gapNone:'Nothing missing so far.',gapNote:'Your own numbers, not a legal amount.',domDue:'Domestic rule: due by {d}.',shortBy:'{amt} short.',noMonths:'No months yet.',
 remove:'Remove',removeAria:'Remove the payment of {d}',removeEntry:'Remove this entry',fullPay:'full pay',partPay:'part pay',
-unset:'Pay day not set. Set it in My pay.',ownNone:'Nothing logged. Due {d}, {days} ago.',ownWait:'Due {d}.',ownLate:'Came {last}: {days} after pay day ({d}).',ownOk:'Came {last}: on time.',
+payForEx:'So pay for {m} is expected on {d}.',mPart:'{days} after pay day ({d})',mPartOk:'on time (pay day {d})',came:'Came {d}',frOwn:'pay day ({d})',frWps:'the WPS rule due date ({d})',
+mPaid:'Paid {total} of {exp}. Still owed: {owe}.',mOver:'Paid {total} of {exp}: {over} more than expected.',sFullOk:'Paid in full, on time.',sFullLate:'Paid in full, {days} after {from}.',
+sPartLate:'Part paid: {owe} still owed. Today is {days} after {from}.',sPartWait:'Part paid: {owe} still owed. Not due yet: {from}.',sNone:'Nothing paid. Today is {days} after {from}.',
+payFromQ:'From which month does this apply?',payFromNote:'Months before {m} keep {old}.',payDescAmt:'{amt} a month',payDescDay:'{amt} a month, pay day the {d} {when}',
+cfPayChange:'Pay changed from {m}: before, {old}; from {m}, {new}.',rsChange:'The pay changed from {m}: {old} before, {new} from then.',tlChange:'Pay changed from {m}: {new}. Before: {old}.',tlsChange:'Pay from {m}: {new}',
+unset:'Pay day not set. Set it in My pay.',ownNone:'Nothing logged. Pay day: {d}, {days} ago.',ownWait:'Pay day: {d}.',ownLate:'Came {last}: {days} after pay day ({d}).',ownOk:'Came {last}: on time.',
 wpsExempt:'If you work in a free zone or for the government, a different authority may handle your pay complaint. Call MOHRE on 80084 and ask.',wpsNone:'WPS rule: due {d}. Nothing logged. {counts}',wpsDue:'WPS rule: due {d}.',wpsFull:'WPS rule: paid in full by {d}.',
 wps85:'WPS rule: {p}% by {d}. Allowed only if the rest is a lawful cut. Ask MOHRE if unsure.',wpsBy:'WPS rule: came by {d}.',wpsLate:'WPS rule: due {d}. {by} {counts}',byNone:'Nothing came by then.',byP:'Only {p}% came by then.',byAmt:'Only {amt} came by then.',
 counts:'Counts as late. Official steps grow stronger over about 3 weeks.',mayCount:'May count as late.',wpsBefore:'Before the WPS rule (1 June 2026).',domNone:'Domestic rule: due by {d}. Nothing logged.',domLate:'Domestic rule: came {days} after {d}.',domOk:'Domestic rule: came within 10 days.',
@@ -547,13 +559,13 @@ cfChecked:'Checked by (name, role, date): ____________',cfWorker:'Worker: {x}',c
 cfWork:'Work: {x}',cfDomestic:'Domestic worker',cfCompany:'Company, private sector',cfScope:'Employer in a free zone, a bank or the government: {x}.',cfAgreed:'Agreed pay: {amt} a month. Pay day: the {d} {when}.',
 ofSame:'of the same month',ofNext:'of the next month',cfSUMMARY:'SUMMARY',
 cfRulesSum:' (automatic summary from rules, {d})',cfRulesSum2:' (automatic summary from rules)',cfWrittenFor:'(This summary was written for: {aud}.)',cfTIMELINE:'TIMELINE',cfCHECKS:'PAY DIARY CHECKS (rules)',
-cfReceived:'{amt} received',cfNothing:'Nothing received',cfOf:' of {amt}',cfLate:' {days} after it was due.',cfGap:"Not arrived, by the worker's own records: {amt}. This is not a legal calculation.",
+cfReceived:'{amt} received',cfNothing:'Nothing received',cfOf:' of {amt}',cfLate:' Came {days} after {from}.',cfSoFar:' Today is {days} after {from}.',cfGap:"Not arrived, by the worker's own records: {amt}. This is not a legal calculation.",
 cfCHANNELS:'OFFICIAL CHANNELS (checked by the app)',cfSource:' Source: {x}.',cfEnd:'Bil Tareekh never contacts employers. The worker chose to share this file.',
 rsDom:'The worker is a domestic worker in the UAE',rsCo:'The worker works for a company in the UAE',rsHome:' and comes from {x}',rsPay:'Agreed pay is {amt} a month, due on the {d} {when}.',rsDiary:'The pay diary shows: {x}.',
 rsGap:"By the worker's own records, {amt} has not arrived.",rsProbs:'Problems reported: {x}.',rsRec:'Recorded: {x}.',rsAsk:'The worker asks for advice on the next steps.',
-tlStart:'First month in the pay diary: {m}. Agreed pay: {amt} a month, pay day the {d}.',tlPay:'Pay received for {m}: {amt} ({kind}){note}.',tlNote:'. Note: {x}',tlMiss:'No pay logged for {m}. It was due {d}.',
-tlFlag:'{m} pay: {label}.{late}{part}',tlFlagLate:' It came {days} after it was due ({d}).',tlFlagPart:' {total} of {exp} came.',tlCase:'Problem reported: {x}. {y}',kindFull:'full',kindPart:'part',
-tlsStart:'Diary starts: {m}, {amt} a month',tlsPay:'{amt} for {m}{part}',tlsPart:' (part)',tlsMiss:'{m}: nothing came',tlsCase:'Problem: {x}',
+tlStart:'First month in the pay diary: {m}. Agreed pay: {amt} a month, pay day the {d}.',tlPay:'Pay received for {m}: {amt} ({kind}){note}.',tlNote:'. Note: {x}',tlMiss:'No pay logged for {m}. It was due on {from}.',
+tlFlag:'{m} pay: {label}.{late}{part}',tlFlagLate:' It came {days} after {from}.',tlFlagSoFar:' Today is {days} after {from}.',tlFlagPart:' {total} of {exp} came.',tlCase:'Problem reported: {x}. {y}',kindFull:'full',kindPart:'part',
+tlsStart:'Diary starts: {m}, {amt} a month',tlsPay:'{amt} for {m}{part}',tlsPart:' (part)',tlsMiss:'{m}: nothing came by {from}',tlsLate:'{days} after {from}',tlsSoFar:'today: {days} after {from}',tlsCase:'Problem: {x}',
 priv:'Nothing you type leaves your device. Saved only in this browser. Your name stays hidden unless you show it.',
 },ar:{
 name:'بالتاريخ',skip:'انتقل إلى السجل',menu:'المزيد',h1:'راتبك متأخر؟ احفظ الإثبات.',hLabel:'ماذا حدث؟',hPh:'ماذا حدث في راتبك؟',hGo:'ماذا أفعل الآن',
@@ -590,9 +602,14 @@ savedMsg:'تم الحفظ: يوم الراتب {d}، {amt} شهريًا.',
 trYouSaved:'راجعت التفاصيل وحفظتها',trSetDay:'حدّدنا يوم الراتب والمبلغ للفحص',trLocal:'محفوظ في هذا المتصفح فقط',
 wpsLineDom:'يستخدم قاعدة الأيام العشرة للعمالة المساعدة',wpsLineYes:'لا يطبّق قاعدة حماية الأجور (منطقة حرة أو بنك أو جهة حكومية)',wpsLineNo:'يفحص أيضًا قاعدة حماية الأجور',wpsLineUnsure:'يفحص قاعدة حماية الأجور مع كلمة «قد»',
 chipPay:'{amt} شهريًا · يوم {d} · {rule}',change:'تغيير',setFirst:'أدخل راتبك أولًا.',goPay:'اذهب إلى «راتبي»',ruleDom:'قاعدة الأيام العشرة',ruleNo:'قاعدة حماية الأجور',ruleYes:'تحقق من المصدر الرسمي',ruleUnsure:'قد تنطبق قاعدة حماية الأجور',
-gapIssues:'أشهر للمراجعة: {n}',gapAmt:'لم يصل: {amt}',gapNone:'لا شيء ناقص حتى الآن.',gapNote:'أرقامك أنت، وليست مبلغًا قانونيًا.',noMonths:'لا أشهر بعد.',dueOn:'الموعد {d}.',shortBy:'ناقص {amt}.',
+gapIssues:'أشهر للمراجعة: {n}',gapAmt:'لم يصل: {amt}',gapNone:'لا شيء ناقص حتى الآن.',gapNote:'أرقامك أنت، وليست مبلغًا قانونيًا.',noMonths:'لا أشهر بعد.',domDue:'قاعدة العمالة المساعدة: الموعد حتى {d}.',shortBy:'ناقص {amt}.',
 remove:'حذف',removeAria:'حذف دفعة {d}',removeEntry:'حذف هذا الإدخال',fullPay:'راتب كامل',partPay:'جزء من الراتب',
-unset:'يوم الراتب غير محدد. حدّده في «راتبي».',ownNone:'لم يُسجَّل شيء. الموعد {d}، قبل {days}.',ownWait:'الموعد {d}.',ownLate:'وصل {last}: بعد يوم الراتب ({d}) بـ{days}.',ownOk:'وصل {last}: في موعده.',
+payForEx:'أي أن راتب {m} متوقع يوم {d}.',mPart:'بعد يوم الراتب ({d}) بـ{days}',mPartOk:'في موعده (يوم الراتب {d})',came:'وصل {d}',frOwn:'يوم الراتب ({d})',frWps:'موعد قاعدة حماية الأجور ({d})',
+mPaid:'المدفوع {total} من {exp}. المتبقي: {owe}.',mOver:'المدفوع {total} من {exp}: أكثر من المتوقع بـ{over}.',sFullOk:'وصل كاملًا في موعده.',sFullLate:'وصل كاملًا بعد {from} بـ{days}.',
+sPartLate:'وصل جزء فقط: المتبقي {owe}. مضى حتى اليوم {ndays} على {from}.',sPartWait:'وصل جزء فقط: المتبقي {owe}. لم يحن موعده بعد: {from}.',sNone:'لم يصل شيء. مضى حتى اليوم {ndays} على {from}.',
+payFromQ:'من أي شهر يُطبَّق هذا؟',payFromNote:'الأشهر قبل {m} تبقى على {old}.',payDescAmt:'{amt} شهريًا',payDescDay:'{amt} شهريًا، ويوم الراتب {d} {when}',
+cfPayChange:'تغيّر الراتب ابتداءً من {m}: قبله {old}، ومنه {new}.',rsChange:'تغيّر الراتب ابتداءً من {m}: كان {old}، وأصبح {new}.',tlChange:'تغيّر الراتب ابتداءً من {m}: {new}. قبله: {old}.',tlsChange:'الراتب من {m}: {new}',
+unset:'يوم الراتب غير محدد. حدّده في «راتبي».',ownNone:'لم يُسجَّل شيء. يوم الراتب: {d}، قبل {days}.',ownWait:'يوم الراتب: {d}.',ownLate:'وصل {last}: بعد يوم الراتب ({d}) بـ{days}.',ownOk:'وصل {last}: في موعده.',
 wpsExempt:'إن كنت تعمل في منطقة حرة أو جهة حكومية فقد تتولى جهة أخرى شكوى الأجور. اتصل بالوزارة على 80084 واسأل.',wpsNone:'قاعدة حماية الأجور: الموعد {d}. لم يُسجَّل شيء. {counts}',wpsDue:'قاعدة حماية الأجور: الموعد {d}.',wpsFull:'قاعدة حماية الأجور: وصل كاملًا بحلول {d}.',
 wps85:'قاعدة حماية الأجور: وصل {p}% بحلول {d}. يجوز فقط إن كان الباقي خصمًا قانونيًا. اسأل الوزارة إن لم تكن متأكدًا.',wpsBy:'قاعدة حماية الأجور: وصل بحلول {d}.',wpsLate:'قاعدة حماية الأجور: الموعد {d}. {by} {counts}',byNone:'لم يصل شيء بحلوله.',byP:'وصل {p}% فقط بحلوله.',byAmt:'وصل {amt} فقط بحلوله.',
 counts:'يُعدّ تأخيرًا. وتشتد الإجراءات الرسمية خلال نحو 3 أسابيع.',mayCount:'قد يُعدّ تأخيرًا.',wpsBefore:'قبل قاعدة حماية الأجور (1 يونيو 2026).',domNone:'قاعدة العمالة المساعدة: الموعد حتى {d}. لم يُسجَّل شيء.',domLate:'قاعدة العمالة المساعدة: وصل بعد {d} بـ{days}.',domOk:'قاعدة العمالة المساعدة: وصل خلال 10 أيام.',
@@ -618,16 +635,18 @@ cfChecked:'راجعه (الاسم، الصفة، التاريخ): ____________',
 cfWork:'العمل: {x}',cfDomestic:'عمالة مساعدة (منزلية)',cfCompany:'شركة، قطاع خاص',cfScope:'صاحب العمل في منطقة حرة أو بنك أو جهة حكومية: {x}.',cfAgreed:'الراتب المتفق عليه: {amt} شهريًا. يوم الراتب: {d} {when}.',
 ofSame:'من الشهر نفسه',ofNext:'من الشهر التالي',cfSUMMARY:'الملخص',
 cfRulesSum:' (ملخص آلي من القواعد، {d})',cfRulesSum2:' (ملخص آلي من القواعد)',cfWrittenFor:'(كُتب هذا الملخص لـ: {aud}.)',cfTIMELINE:'السجل الزمني',cfCHECKS:'فحوصات سجل الراتب (قواعد)',
-cfReceived:'وصل {amt}',cfNothing:'لم يصل شيء',cfOf:' من {amt}',cfLate:' بعد موعده بـ{days}.',cfGap:'لم يصل، حسب سجل العامل: {amt}. هذا ليس حسابًا قانونيًا.',
+cfReceived:'وصل {amt}',cfNothing:'لم يصل شيء',cfOf:' من {amt}',cfLate:' بعد {from} بـ{days}.',cfSoFar:' مضى حتى اليوم {ndays} على {from}.',cfGap:'لم يصل، حسب سجل العامل: {amt}. هذا ليس حسابًا قانونيًا.',
 cfCHANNELS:'القنوات الرسمية (تحقق منها التطبيق)',cfSource:' المصدر: {x}.',cfEnd:'بالتاريخ لا يتواصل مع أصحاب العمل أبدًا. اختار العامل مشاركة هذا الملف.',
 rsDom:'العامل من العمالة المساعدة في الإمارات',rsCo:'العامل يعمل لدى شركة في الإمارات',rsHome:'، وبلده {x}',rsPay:'الراتب المتفق عليه {amt} شهريًا، ويُستحق يوم {d} {when}.',rsDiary:'يُظهر سجل الراتب: {x}.',
 rsGap:'حسب سجل العامل، لم يصل {amt}.',rsProbs:'مشكلات مُبلَّغ عنها: {x}.',rsRec:'مُسجَّل: {x}.',rsAsk:'يطلب العامل المشورة بشأن الخطوات التالية.',
-tlStart:'أول شهر في سجل الراتب: {m}. الراتب المتفق عليه: {amt} شهريًا، يوم الراتب {d}.',tlPay:'راتب {m}: {amt} ({kind}){note}.',tlNote:'. ملاحظة: {x}',tlMiss:'لا راتب مُسجَّل عن {m}. كان موعده {d}.',
-tlFlag:'راتب {m}: {label}.{late}{part}',tlFlagLate:' وصل بعد موعده ({d}) بـ{days}.',tlFlagPart:' وصل {total} من {exp}.',tlCase:'مشكلة مُبلَّغ عنها: {x}. {y}',kindFull:'كامل',kindPart:'جزء',
-tlsStart:'بداية السجل: {m}، {amt} شهريًا',tlsPay:'{amt} عن {m}{part}',tlsPart:' (جزء)',tlsMiss:'{m}: لم يصل شيء',tlsCase:'مشكلة: {x}',
+tlStart:'أول شهر في سجل الراتب: {m}. الراتب المتفق عليه: {amt} شهريًا، يوم الراتب {d}.',tlPay:'راتب {m}: {amt} ({kind}){note}.',tlNote:'. ملاحظة: {x}',tlMiss:'لا راتب مُسجَّل عن {m}. كان مستحقًا في {from}.',
+tlFlag:'راتب {m}: {label}.{late}{part}',tlFlagLate:' وصل بعد {from} بـ{days}.',tlFlagSoFar:' مضى حتى اليوم {ndays} على {from}.',tlFlagPart:' وصل {total} من {exp}.',tlCase:'مشكلة مُبلَّغ عنها: {x}. {y}',kindFull:'كامل',kindPart:'جزء',
+tlsStart:'بداية السجل: {m}، {amt} شهريًا',tlsPay:'{amt} عن {m}{part}',tlsPart:' (جزء)',tlsMiss:'{m}: لم يصل شيء حتى {from}',tlsLate:'بعد {from} بـ{days}',tlsSoFar:'مضى حتى اليوم {ndays} على {from}',tlsCase:'مشكلة: {x}',
 priv:'لا شيء تكتبه يغادر جهازك. يُحفظ في هذا المتصفح فقط. اسمك مخفي إلا إذا أظهرته.',
 }};
-function t(k,v,l){const D=TX[l||UI]||TX.en;let s=D[k];if(s==null)s=TX.en[k];if(s==null)return k;if(v)s=s.replace(/\{(\w+)\}/g,(m,n)=>v[n]!=null?String(v[n]):'');return s}
+function t(k,v,l){const D=TX[l||UI]||TX.en;let s=D[k];if(s==null)s=TX.en[k];if(s==null)return k;if(v)s=s.replace(/\{(\w+)\}/g,(m,n)=>v[n]!=null?String(v[n]):'');
+  /* Arabic "by N days": the stretch mark stays only before a digit ("بـ4 أيام"), not before a word ("بيومين", "بيوم واحد"). */
+  if((l||UI)==='ar')s=s.replace(/بـ(?=يوم)/g,'ب');return s}
 const isAr=l=>(l||UI)==='ar';
 function fmtDate(iso,l){if(!iso)return '';const [y,m,d]=iso.split('-').map(Number);return isAr(l)?`${d} ${MN_AR[m-1]} ${y}`:`${d} ${MN[m-1]} ${y}`}
 function fmtMonth(ym,l){if(!ym)return '';const [y,m]=ym.split('-').map(Number);return isAr(l)?`${MN_AR[m-1]} ${y}`:`${MNF[m-1]} ${y}`}
@@ -638,6 +657,8 @@ const ordL=(n,l)=>isAr(l)?String(n):ord(n);
 /* Arabic counted nouns: 1 and 2 have their own forms, 3 to 10 take the plural, 11 to 99 the singular. */
 function arCount(n,one,two,few,many,sing){if(n===1)return one;if(n===2)return two;const r=n%100;if(r>=3&&r<=10)return n+' '+few;if(r>=11)return n+' '+many;return n+' '+sing}
 const daysTxt=(n,l)=>isAr(l)?arCount(n,'يوم واحد','يومين','أيام','يومًا','يوم'):plural(n,'day');
+/* The same count as the subject of a sentence ("مضى يومان"): only the Arabic dual changes. */
+const daysNom=(n,l)=>isAr(l)&&n===2?'يومان':daysTxt(n,l);
 
 /* ---------- places ---------- */
 const HOMES=[['','Not set','غير محدد'],['IN','India','الهند'],['NP','Nepal','نيبال'],['PK','Pakistan','باكستان'],['BD','Bangladesh','بنغلاديش'],['PH','Philippines','الفلبين'],['LK','Sri Lanka','سريلانكا'],['OT','Another country','بلد آخر']];
@@ -735,7 +756,7 @@ const SEED_PAY='मुझे हर महीने 1700 दिरहम मि�
 function seed(){
   const cur=ymOf(todayISO());const m=k=>addMonths(cur,k);const d=(mon,day)=>`${mon}-${pad(day)}`;
   return {v:1,home:'IN',cfFor:'embassy',
-    setup:{payDay:1,expected:1700,payFor:'next',work:'company',scope:'no',startMonth:m(-4),name:'',hideName:true,employer:'',showEmployer:false,confirmed:true,example:true,text:SEED_PAY},
+    setup:{payDay:1,expected:1700,payFor:'next',history:[{from:null,expected:1700,payDay:1,payFor:'next'}],work:'company',scope:'no',startMonth:m(-4),name:'',hideName:true,employer:'',showEmployer:false,confirmed:true,example:true,text:SEED_PAY},
     pays:[
       {id:'p1',month:m(-4),date:d(m(-3),1),amount:1700,kind:'full',note:'Bank transfer, salary SMS kept',example:true},
       {id:'p2',month:m(-3),date:d(m(-2),9),amount:1700,kind:'full',note:'Came late',example:true},
@@ -744,7 +765,7 @@ function seed(){
     cases:[],summary:null,lastTriage:null};
 }
 function emptyState(){return {v:1,home:'',cfFor:'embassy',
-  setup:{payDay:1,expected:0,payFor:'next',work:'company',scope:'unsure',startMonth:addMonths(ymOf(todayISO()),-3),name:'',hideName:true,employer:'',showEmployer:false,confirmed:false,example:false,text:''},
+  setup:{payDay:1,expected:0,payFor:'next',history:[{from:null,expected:0,payDay:1,payFor:'next'}],work:'company',scope:'unsure',startMonth:addMonths(ymOf(todayISO()),-3),name:'',hideName:true,employer:'',showEmployer:false,confirmed:false,example:false,text:''},
   pays:[],events:[],cases:[],summary:null,lastTriage:null}}
 /* Saved data is merged onto safe defaults, and every item is checked, so a damaged save cannot break the page. */
 const YM_RX=/^\d{4}-(0[1-9]|1[0-2])$/;
@@ -758,7 +779,7 @@ function normState(v){if(!v||typeof v!=='object'||v.v!==1)return null;
   const o={...d,home:HOMES.some(h=>h[0]===v.home)?v.home:'',cfFor:CF_FOR.includes(v.cfFor)?v.cfFor:'embassy'};
   const s={...d.setup,...su};const pd=+s.payDay,ex=+s.expected;
   s.payDay=Number.isInteger(pd)&&pd>=1&&pd<=31?pd:1;s.expected=Number.isFinite(ex)&&ex>=0&&ex<1e6?ex:0;
-  s.payFor=s.payFor==='same'?'same':'next';s.work=s.work==='household'?'household':'company';s.scope=['no','unsure','yes'].includes(s.scope)?s.scope:'unsure';
+  s.payFor=s.payFor==='same'?'same':'next';s.history=normHistory(su.history,s);syncPay(s);s.work=s.work==='household'?'household':'company';s.scope=['no','unsure','yes'].includes(s.scope)?s.scope:'unsure';
   s.startMonth=YM_RX.test(s.startMonth)?s.startMonth:d.setup.startMonth;
   for(const k of ['name','employer','text'])s[k]=isStr(s[k])?s[k]:'';
   s.hideName=s.hideName!==false;s.showEmployer=s.showEmployer===true;s.confirmed=s.confirmed===true;s.example=s.example===true;o.setup=s;
@@ -770,6 +791,19 @@ function normState(v){if(!v||typeof v!=='object'||v.v!==1)return null;
   o.lastTriage=R&&typeof R==='object'&&isStr(R.id)&&validISO(R.date)&&hasOwn(TOPICS,R.topic)&&strArr(R.flags)&&strArr(R.facts)&&R.facts.every(id=>hasOwn(FACTS,id))&&strArr(R.channels)&&R.channels.every(id=>hasOwn(CH,id))&&Array.isArray(R.trace)&&R.trace.every(isTrace)
     ?{id:R.id,date:R.date,topic:R.topic,flags:R.flags,facts:R.facts,channels:R.channels,trace:R.trace,summary:isStr(R.summary)?R.summary:'',added:R.added===true,danger:R.danger===true,domestic:R.domestic===true}:null;
   return o}
+/* Pay history: each entry {from, expected, payDay, payFor} applies from its month until the next entry; the first applies to every
+   month before that (from: null). A save from the live page has one pay and no history: it becomes a history of one entry.
+   setup.expected, payDay and payFor always hold the latest entry, so the pay line and the form show the pay as it is now. */
+function normHistory(hist,s){const ok=(Array.isArray(hist)?hist:[]).filter(h=>h&&typeof h==='object'&&(h.from==null||YM_RX.test(h.from))).map(h=>{const pd=+h.payDay,ex=+h.expected;
+    return {from:h.from==null?null:h.from,expected:Number.isFinite(ex)&&ex>=0&&ex<1e6?ex:0,payDay:Number.isInteger(pd)&&pd>=1&&pd<=31?pd:1,payFor:h.payFor==='same'?'same':'next'}});
+  ok.sort((a,b)=>(a.from||'')<(b.from||'')?-1:(a.from||'')>(b.from||'')?1:0);
+  const out=[];for(const h of ok){if(out.length&&(out[out.length-1].from||'')===(h.from||''))out[out.length-1]=h;else out.push(h)}
+  if(!out.length)return [{from:null,expected:s.expected,payDay:s.payDay,payFor:s.payFor}];
+  out[0].from=null;return out}
+function syncPay(s){const h=s.history[s.history.length-1];s.expected=h.expected;s.payDay=h.payDay;s.payFor=h.payFor}
+/* the entry in force for a month */
+function payAt(ym){const H=S.setup.history;let e=H[0];for(const h of H)if(h.from&&ym&&h.from<=ym)e=h;return e}
+const samePay=(a,b)=>a.expected===b.expected&&a.payDay===b.payDay&&a.payFor===b.payFor;
 function load(){try{const v=normState(JSON.parse(localStorage.getItem(KEY)||'null'));if(v)return v}catch(e){}return seed()}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 let S=load();
@@ -907,13 +941,13 @@ function middayNow(){const md=todayISO().slice(5);return md>='06-15'&&md<='09-15
 /* ---------- pay rules ---------- */
 const WPS_START='2026-06-01';
 const LEAVE_RX=/\bleave\b|unpaid|छुट्टी|چھٹی|إجازة|bakasyon|ছুটি|ലീവ്|बिदा/i;
-function dueOwn(ym){const s=S.setup;const t=s.payFor==='same'?ym:addMonths(ym,1);const [y,m]=t.split('-').map(Number);return `${t}-${pad(Math.min(s.payDay||1,lastDay(y,m)))}`}
+function dueOwn(ym){const s=payAt(ym);const t=s.payFor==='same'?ym:addMonths(ym,1);const [y,m]=t.split('-').map(Number);return `${t}-${pad(Math.min(s.payDay||1,lastDay(y,m)))}`}
 function dueWPS(ym){const d=addMonths(ym,1)+'-01';return d>=WPS_START?d:null}
 /* scope: is the employer outside the WPS rule (free zone, bank, government)? no = covered, unsure = may apply, yes = may be exempt. */
 const wpsScope=()=>S.setup.work==='household'?'':(['no','unsure','yes'].includes(S.setup.scope)?S.setup.scope:'unsure');
 /* checkMonth returns facts and short notes (codes); the words are made in the screen's language when shown. */
 function checkMonth(ym){
-  const s=S.setup,set=!!s.confirmed,exp=set?(+s.expected||0):0,today=todayISO(),company=s.work!=='household',scope=wpsScope();
+  const s=S.setup,set=!!s.confirmed,exp=set?(+payAt(ym).expected||0):0,today=todayISO(),company=s.work!=='household',scope=wpsScope();
   const pays=S.pays.filter(p=>p.month===ym).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0);
   const total=pays.reduce((n,p)=>n+(+p.amount||0),0);
   /* Without a saved pay day there is no own due date: only the salary-rule date (if it applies) is checked. */
@@ -941,13 +975,19 @@ function checkMonth(ym){
   let partial=false;
   if(pays.length){if(exp){if(total<exp){partial=true;notes.push({k:'amtShort',total,exp,diff:exp-total})}else notes.push({k:'amtFull',total})}
     else if(pays.some(p=>p.kind==='partial')){partial=true;notes.push({k:'amtPart',total})}}
-  const late=last&&dueRef?Math.max(0,diffDays(dueRef,last)):0;
+  /* The day the month was paid in full: the payment that brought the total up to the expected pay (one payment: its own date). */
+  let fullOn=null;if(pays.length&&(!exp||total>=exp)){fullOn=last;if(exp){let c=0;for(const p of pays){c+=(+p.amount||0);if(c>=exp){fullOn=p.date;break}}}}
+  const late=fullOn&&dueRef?Math.max(0,diffDays(dueRef,fullOn)):last&&dueRef?Math.max(0,diffDays(dueRef,last)):0;
   const pastDue=!!(own&&today>own)||overdue;
   const missing=!pays.length&&pastDue;
   const status=missing?'miss':partial?'part':(late>0||overdue)?'late':pays.length?(dueRef?'ok':'unset'):(dueRef?'wait':'unset');
-  const m={ym,pays,total,exp,own,wps,dom,dueRef,status,notes,flag:['miss','part','late'].includes(status),checked:pays.length>0||pastDue,gap:exp&&pastDue?Math.max(0,exp-total):0,late,last};
+  const m={ym,pays,total,exp,own,wps,dom,dueRef,status,notes,flag:['miss','part','late'].includes(status),checked:pays.length>0||pastDue,gap:exp&&pastDue?Math.max(0,exp-total):0,late,last,fullOn};
+  /* Days counted for the month, from the date its label counts from (dueRef): to the day it was paid in full, or, while money is still owed, to today. */
+  m.lt=!dueRef?null:fullOn?{n:late,soFar:false}:today>dueRef?{n:diffDays(dueRef,today),soFar:true}:{n:0,soFar:false};
   m.label=labelOf(m,'en');return m}
-function labelOf(m,l){const k={miss:'lMiss',part:m.late>0?'lPartLate':'lPart',late:'lLate',ok:m.exp?'lOkFull':'lOk',wait:'lWait',unset:m.pays.length?'lLogged':'lUnset'}[m.status];return t(k,null,l)}
+/* Which date the count is from, in the words the page uses for it: the pay day, or the WPS rule date. */
+function fromTxt(m,l){return t(m.dueRef===m.own?'frOwn':'frWps',{d:fmtDate(m.dueRef,l)},l)}
+function labelOf(m,l){const k={miss:'lMiss',part:m.late>0||(m.lt&&m.lt.soFar&&m.lt.n>0)?'lPartLate':'lPart',late:'lLate',ok:m.exp?'lOkFull':'lOk',wait:'lWait',unset:m.pays.length?'lLogged':'lUnset'}[m.status];return t(k,null,l)}
 function noteText(n,l){const D=d=>fmtDate(d,l),A=x=>fmtAED(x,l),days=x=>daysTxt(x,l);const c=n.may?t('mayCount',null,l):t('counts',null,l);
   switch(n.k){
     case 'unset':return t('unset',null,l);
@@ -974,7 +1014,21 @@ function noteText(n,l){const D=d=>fmtDate(d,l),A=x=>fmtAED(x,l),days=x=>daysTxt(
 /* The one line a month tile shows: the rule that flagged it (or the pay-day check), plus a short amount. */
 function mainNote(m){const flagNote=m.notes.find(n=>['wpsNone','wpsLate','domNone','domLate','wps85'].includes(n.k));const own=m.notes.find(n=>/^own|^unset$/.test(n.k));
   const amt=m.notes.find(n=>n.k==='amtShort');const first=(m.flag&&flagNote)||own||m.notes[0];const out=[];
-  if(first&&first.d&&m.status!=='ok')out.push(t('dueOn',{d:fmtDate(first.d)}));if(amt)out.push(t('shortBy',{amt:fmtAED(amt.diff)}));return out.join(' ')}
+  if(first&&first.d&&m.status!=='ok')out.push(t(/^wps/.test(first.k)?'wpsDue':/^dom/.test(first.k)?'domDue':'ownWait',{d:fmtDate(first.d)}));if(amt)out.push(t('shortBy',{amt:fmtAED(amt.diff)}));return out.join(' ')}
+/* Each part against the worker's own pay day, and the month in plain words: what came, what is still owed, how many days. */
+function partDays(m,p,l){if(!m.own)return '';const n=diffDays(m.own,p.date);return n>0?t('mPart',{days:daysTxt(n,l),d:fmtDate(m.own,l)},l):t('mPartOk',{d:fmtDate(m.own,l)},l)}
+/* The month's days late count from the same due date as its label (the earlier of the pay day and the WPS date), so the two never disagree. */
+function monthState(m,l){if(!m.own||!m.exp||!m.dueRef||!m.lt)return '';const F=fromTxt(m,l),n=m.lt.n,dd={days:daysTxt(n,l),ndays:daysNom(n,l),from:F};
+  if(!m.pays.length)return m.lt.soFar?t('sNone',dd,l):'';
+  const owe=Math.max(0,m.exp-m.total);
+  const paid=m.total>m.exp?t('mOver',{total:fmtAED(m.total,l),exp:fmtAED(m.exp,l),over:fmtAED(m.total-m.exp,l)},l):t('mPaid',{total:fmtAED(m.total,l),exp:fmtAED(m.exp,l),owe:fmtAED(owe,l)},l);
+  if(m.total>=m.exp)return paid+' '+(n>0?t('sFullLate',dd,l):t('sFullOk',null,l));
+  return paid+' '+(m.lt.soFar?t('sPartLate',{...dd,owe:fmtAED(owe,l)},l):t('sPartWait',{owe:fmtAED(owe,l),from:F},l))}
+/* A pay in words, for the lines that say the pay changed: the pay day too when it changed. */
+function payDesc(h,other,l){const day=h.payDay!==other.payDay||h.payFor!==other.payFor;
+  return t(day?'payDescDay':'payDescAmt',{amt:fmtAED(h.expected,l),d:ordL(h.payDay,l),when:t(h.payFor==='same'?'ofSame':'ofNext',null,l)},l)}
+/* Each change of pay: the month it applies from, the pay before and the pay from then. */
+function payChanges(){const H=S.setup.confirmed?S.setup.history:[];const out=[];for(let i=1;i<H.length;i++)out.push({from:H[i].from,old:H[i-1],nw:H[i]});return out}
 function monthRange(){const cur=ymOf(todayISO());const ms=S.pays.map(p=>p.month).filter(Boolean);
   if(!S.setup.confirmed&&!ms.length)return [];
   let start=S.setup.confirmed?(S.setup.startMonth||cur):ms.reduce((a,b)=>a<b?a:b);for(const x of ms)if(x<start)start=x;let end=cur;for(const x of ms)if(x>end)end=x;
@@ -985,11 +1039,15 @@ function gapTotal(){return monthChecks().reduce((n,m)=>n+m.gap,0)}
 /* ---------- case file ---------- */
 /* Each entry has the full text (for the case file) and a short one (for the screen). */
 function timeline(l){const s=S.setup;const ev=[];
-  if(s.confirmed&&s.startMonth)ev.push({date:s.startMonth+'-01',kind:'you',text:t('tlStart',{m:fmtMonth(s.startMonth,l),amt:fmtAED(s.expected,l),d:ordL(s.payDay,l)},l),short:t('tlsStart',{m:fmtMonth(s.startMonth,l),amt:fmtAED(s.expected,l)},l)});
+  const p0=payAt(s.startMonth);
+  if(s.confirmed&&s.startMonth)ev.push({date:s.startMonth+'-01',kind:'you',text:t('tlStart',{m:fmtMonth(s.startMonth,l),amt:fmtAED(p0.expected,l),d:ordL(p0.payDay,l)},l),short:t('tlsStart',{m:fmtMonth(s.startMonth,l),amt:fmtAED(p0.expected,l)},l)});
+  for(const c of payChanges())ev.push({date:c.from+'-01',kind:'you',text:t('tlChange',{m:fmtMonth(c.from,l),new:payDesc(c.nw,c.old,l),old:payDesc(c.old,c.nw,l)},l),short:t('tlsChange',{m:fmtMonth(c.from,l),new:fmtAED(c.nw.expected,l)},l)});
   for(const m of monthChecks()){
     for(const p of m.pays)ev.push({date:p.date,kind:'you',text:t('tlPay',{m:fmtMonth(m.ym,l),amt:fmtAED(p.amount,l),kind:p.kind==='partial'?t('kindPart',null,l):t('kindFull',null,l),note:p.note?t('tlNote',{x:p.note},l):''},l),short:t('tlsPay',{m:fmtMonth(m.ym,l),amt:fmtAED(p.amount,l),part:p.kind==='partial'?t('tlsPart',null,l):''},l)});
-    if(m.status==='miss')ev.push({date:m.dueRef,kind:'rule',text:t('tlMiss',{m:fmtMonth(m.ym,l),d:fmtDate(m.dueRef,l)},l),short:t('tlsMiss',{m:fmtMonth(m.ym,l)},l)});
-    else if(m.flag)ev.push({date:m.last,kind:'rule',text:t('tlFlag',{m:fmtMonth(m.ym,l),label:isAr(l)?labelOf(m,l):labelOf(m,l).toLowerCase(),late:m.late>0?t('tlFlagLate',{days:daysTxt(m.late,l),d:fmtDate(m.dueRef,l)},l):'',part:m.status==='part'?t('tlFlagPart',{total:fmtAED(m.total,l),exp:fmtAED(m.exp,l)},l):''},l),short:`${fmtMonth(m.ym,l)}: ${labelOf(m,l)}${m.late>0?` (${daysTxt(m.late,l)})`:''}`});
+    if(m.status==='miss')ev.push({date:m.dueRef,kind:'rule',text:t('tlMiss',{m:fmtMonth(m.ym,l),from:fromTxt(m,l)},l),short:t('tlsMiss',{m:fmtMonth(m.ym,l),from:fromTxt(m,l)},l)});
+    else if(m.flag){/* the same day count as the month's own lines: to the day it was paid in full, or to today while money is owed */
+      const lt=m.lt&&m.lt.n>0?m.lt:null,dd=lt?{days:daysTxt(lt.n,l),ndays:daysNom(lt.n,l),from:fromTxt(m,l)}:null;
+      ev.push({date:m.last,kind:'rule',text:t('tlFlag',{m:fmtMonth(m.ym,l),label:isAr(l)?labelOf(m,l):labelOf(m,l).toLowerCase(),late:lt?t(lt.soFar?'tlFlagSoFar':'tlFlagLate',dd,l):'',part:m.status==='part'?t('tlFlagPart',{total:fmtAED(m.total,l),exp:fmtAED(m.exp,l)},l):''},l),short:`${fmtMonth(m.ym,l)}: ${labelOf(m,l)}${lt?(isAr(l)?'، ':', ')+t(lt.soFar?'tlsSoFar':'tlsLate',dd,l):''}`})}
   }
   for(const c of S.cases)ev.push({date:c.date,kind:c.source==='you'?'you':'rule',text:t('tlCase',{x:tShort(topicOf(c.topic),l),y:c.summary},l),short:t('tlsCase',{x:tShort(topicOf(c.topic),l)},l),id:c.id,type:'case'});
   for(const e of S.events)ev.push({date:e.date,kind:'you',text:e.text,id:e.id,type:'event'});
@@ -997,6 +1055,7 @@ function timeline(l){const s=S.setup;const ev=[];
 function rulesSummary(l){const s=S.setup;const parts=[];
   parts.push((s.work==='household'?t('rsDom',null,l):t('rsCo',null,l))+(homeName(l)?t('rsHome',{x:homeName(l)},l):'')+'.');
   if(s.confirmed)parts.push(t('rsPay',{amt:fmtAED(s.expected,l),d:ordL(s.payDay,l),when:s.payFor==='same'?t('ofSame',null,l):t('ofNext',null,l)},l));
+  for(const c of payChanges())parts.push(t('rsChange',{m:fmtMonth(c.from,l),old:payDesc(c.old,c.nw,l),new:payDesc(c.nw,c.old,l)},l));
   const fl=monthChecks().filter(m=>m.flag);if(fl.length)parts.push(t('rsDiary',{x:fl.map(m=>`${fmtMonth(m.ym,l)} ${isAr(l)?labelOf(m,l):labelOf(m,l).toLowerCase()}`).join(isAr(l)?'؛ ':'; ')},l));
   const g=gapTotal();if(g>0)parts.push(t('rsGap',{amt:fmtAED(g,l)},l));
   const probs=[...new Set(S.cases.map(c=>isAr(l)?tShort(topicOf(c.topic),l):tShort(topicOf(c.topic),l).toLowerCase()))];if(probs.length)parts.push(t('rsProbs',{x:probs.join(isAr(l)?'، ':', ')},l));
@@ -1025,6 +1084,7 @@ function caseText(l){l=l||UI;const s=S.setup;const L=[];const name=!s.hideName&&
   L.push(t('cfWork',{x:s.work==='household'?t('cfDomestic',null,l):t('cfCompany',null,l)},l));
   if(s.work!=='household')L.push(t('cfScope',{x:t({no:'no',unsure:'unsure',yes:'yes'}[wpsScope()],null,l).toLowerCase()},l));
   if(s.confirmed)L.push(t('cfAgreed',{amt:fmtAED(s.expected,l),d:ordL(s.payDay,l),when},l));
+  for(const c of payChanges())L.push(t('cfPayChange',{m:fmtMonth(c.from,l),old:payDesc(c.old,c.nw,l),new:payDesc(c.nw,c.old,l)},l));
   L.push('',t('cfSUMMARY',null,l));
 const sm=S.summary;
   if(sm&&sm.text){L.push(clean(sm.text)+t('cfRulesSum',{d:fmtDate(sm.date,l)},l));
@@ -1032,7 +1092,13 @@ const sm=S.summary;
   else L.push(clean(rulesSummary(l))+t('cfRulesSum2',null,l));
   L.push('',t('cfTIMELINE',null,l));for(const e of timeline(l))L.push(`${fmtDate(e.date,l)}  [${e.kind==='you'?t('tagWorker',null,l):kindLabel(e.kind,l)}]  ${clean(e.text)}`);
   L.push('',t('cfCHECKS',null,l));
-  for(const m of monthChecks())if(m.checked||m.pays.length)L.push(`${fmtMonth(m.ym,l)}: ${labelOf(m,l)}. ${m.pays.length?t('cfReceived',{amt:fmtAED(m.total,l)},l):t('cfNothing',null,l)}${m.exp?t('cfOf',{amt:fmtAED(m.exp,l)},l):''}.${m.late>0?t('cfLate',{days:daysTxt(m.late,l)},l):''}`);
+  for(const m of monthChecks())if(m.checked||m.pays.length){
+    /* The first line counts the days the same way as the lines under it: to the day the month was paid in full, or, while part is
+       still owed, to today. A month with nothing paid gives its count in the line under it only, as before. */
+    const lt=m.status!=='miss'&&m.lt&&m.lt.n>0?m.lt:null;
+    L.push(`${fmtMonth(m.ym,l)}: ${labelOf(m,l)}. ${m.pays.length?t('cfReceived',{amt:fmtAED(m.total,l)},l):t('cfNothing',null,l)}${m.exp?t('cfOf',{amt:fmtAED(m.exp,l)},l):''}.${lt?t(lt.soFar?'cfSoFar':'cfLate',{days:daysTxt(lt.n,l),ndays:daysNom(lt.n,l),from:fromTxt(m,l)},l):''}`);
+    for(const p of m.pays){const dd=partDays(m,p,l);L.push(`  - ${t('came',{d:fmtDate(p.date,l)},l)}: ${fmtAED(p.amount,l)} (${p.kind==='partial'?t('kindPart',null,l):t('kindFull',null,l)})${dd?(isAr(l)?'، ':', ')+dd:''}.`)}
+    const st=monthState(m,l);if(st)L.push('  '+st)}
   const g=gapTotal();if(g>0)L.push(t('cfGap',{amt:fmtAED(g,l)},l));
   L.push('',t('cfCHANNELS',null,l));
   for(const id of caseChannels()){const c=CH[id];L.push(`- ${L2(c.name,l)}: ${howText(c,l)}${c.url?' ('+c.url+')':''}.${c.src.length?t('cfSource',{x:c.src.map(x=>`${SRC[x].pub}, ${srcDate(SRC[x],l)}, ${SRC[x].url}`).join('; ')},l):''}`)}
@@ -1086,7 +1152,23 @@ function renderSetup(){const s=S.setup;$('home').value=S.home||'';$('payDay').va
   ensureOption($('startMonth'),s.startMonth||addMonths(ymOf(todayISO()),-3));
   $('wName').value=s.name||'';$('wEmployer').value=s.employer||'';$('showName').checked=!s.hideName;$('payText').value=s.text||'';
   $('hDom').checked=s.work==='household';$('evDate').value=todayISO();
-  defaultPayForm()}
+  showPayForEx();showPayFrom();defaultPayForm()}
+/* Under "Pay for a month comes": the date the choice means, for last month, from the form as it is now. */
+function showPayForEx(){const ym=addMonths(ymOf(todayISO()),-1);const tg=radio('payFor')==='same'?ym:addMonths(ym,1);const [y,m]=tg.split('-').map(Number);
+  $('payForEx').textContent=t('payForEx',{m:fmtMonth(ym),d:fmtDate(`${tg}-${pad(Math.min(+$('payDay').value||1,lastDay(y,m)))}`)})}
+$('payDay').addEventListener('change',showPayForEx);
+document.querySelectorAll('input[name="payFor"]').forEach(x=>x.addEventListener('change',showPayForEx));
+/* The pay in the form, and whether it differs from the saved pay (the pay as it is now). */
+function formPay(){const a=Math.round(Number($('payAmt').value));return {expected:a,payDay:+$('payDay').value||1,payFor:radio('payFor')==='same'?'same':'next',ok:$('payAmt').value!==''&&a>0&&a<1e6}}
+function payAsks(){const s=S.setup,f=formPay();return !!(s.confirmed&&!s.example&&f.ok&&!samePay(f,s))}
+/* "From which month does this apply?": this month is chosen, earlier months are offered. The months before it keep the pay they had. */
+function showPayFrom(){const box=$('payFromSet'),sel=$('payFrom');const ask=payAsks();
+  if(!ask){box.hidden=true;return}
+  const cur=ymOf(todayISO());const was=box.hidden?'':sel.value;const ms=[];for(let k=0;k<24;k++)ms.push(addMonths(cur,-k));
+  sel.innerHTML=ms.map(m=>`<option value="${m}">${esc(fmtMonth(m))}</option>`).join('');sel.value=ms.includes(was)?was:cur;box.hidden=false;
+  const f=formPay(),old=payAt(addMonths(sel.value,-1));$('payFromNote').textContent=t('payFromNote',{m:fmtMonth(sel.value),old:payDesc(old,f)})}
+$('payAmt').addEventListener('input',showPayFrom);$('payDay').addEventListener('change',showPayFrom);$('payFrom').addEventListener('change',showPayFrom);
+document.querySelectorAll('input[name="payFor"]').forEach(x=>x.addEventListener('change',showPayFrom));
 function suggestedMonth(date){return S.setup.payFor==='same'?ymOf(date):addMonths(ymOf(date),-1)}
 function defaultPayForm(){const d=todayISO();$('pDate').value=d;ensureOption($('pMonth'),suggestedMonth(d))}
 function renderDiary(){const s=S.setup;
@@ -1094,9 +1176,9 @@ function renderDiary(){const s=S.setup;
   $('payChip').innerHTML=s.confirmed?`${esc(t('chipPay',{amt:fmtAED(s.expected),d:ordL(s.payDay),rule}))} <button type="button" class="tbtn small" data-go="pay">${esc(t('change'))}</button>`:`${esc(t('setFirst'))} <button type="button" class="tbtn small" data-go="pay">${esc(t('goPay'))}</button>`;
   const ms=monthChecks().slice().reverse();
   $('months').innerHTML=ms.map(m=>{const sym={miss:'✕',part:'!',late:'!',ok:'✓'}[m.status]||'';const ex=m.pays.some(p=>p.example);const srcs=[...new Set(m.notes.flatMap(n=>n.src||[]))];const main=mainNote(m);
-    return `<article class="tile month"><div class="mhead"><b>${esc(fmtMonth(m.ym))}</b><span class="mstat">${sym?`<span aria-hidden="true">${sym} </span>`:''}${esc(labelOf(m))}</span></div>${main?`<p class="mline">${esc(main)}</p>`:''}
+    return `<article class="tile month"><div class="mhead"><b>${esc(fmtMonth(m.ym))}</b><span class="mstat">${sym?`<span class="mk" aria-hidden="true">${sym}</span>`:''}${esc(labelOf(m))}</span></div>${main?`<p class="mline">${esc(main)}</p>`:''}${m.pays.length?`<ul class="plist parts">${m.pays.map(p=>{const dd=partDays(m,p);return `<li><span>${esc(t('came',{d:fmtDate(p.date)}))}</span><b>${esc(fmtAED(p.amount))}</b><span>${esc(p.kind==='partial'?t('partPay'):t('fullPay'))}</span>${dd?`<span>${esc(dd)}</span>`:''}</li>`}).join('')}</ul>`:''}${(st=>st?`<p class="mstate">${esc(st)}</p>`:'')(monthState(m))}
     <details class="more"><summary>${esc(t('more'))}</summary><div class="morebody"><ul class="trace">${m.notes.map(n=>`<li>${esc(noteText(n))}</li>`).join('')}</ul>${srcs.length?srcHTML(srcs):''}
-    ${m.pays.length?`<ul class="plist">${m.pays.map(p=>`<li><span>${esc(fmtDate(p.date))}</span><b>${esc(fmtAED(p.amount))}</b><span>${esc(p.kind==='partial'?t('partPay'):t('fullPay'))}</span>${p.note?`<span dir="auto">${esc(p.note)}</span>`:''}<button type="button" class="tbtn small" data-delpay="${esc(p.id)}" aria-label="${esc(t('removeAria',{d:fmtDate(p.date)}))}">${esc(t('remove'))}</button></li>`).join('')}</ul>`:''}</div></details></article>`}).join('')||`<p class="note">${esc(t('noMonths'))}</p>`;
+    ${m.pays.length?`<ul class="plist">${m.pays.map(p=>`<li><span>${esc(t('came',{d:fmtDate(p.date)}))}</span><b>${esc(fmtAED(p.amount))}</b><span>${esc(p.kind==='partial'?t('partPay'):t('fullPay'))}</span>${p.note?`<span dir="auto">${esc(p.note)}</span>`:''}<button type="button" class="tbtn small" data-delpay="${esc(p.id)}" aria-label="${esc(t('removeAria',{d:fmtDate(p.date)}))}">${esc(t('remove'))}</button></li>`).join('')}</ul>`:''}</div></details></article>`}).join('')||`<p class="note">${esc(t('noMonths'))}</p>`;
   const g=gapTotal();const fl=monthChecks().filter(m=>m.flag).length;
   $('gapLine').innerHTML=s.confirmed?(fl||g>0?`<p class="stat"><span aria-hidden="true">!</span>${esc(t('gapIssues',{n:fl}))}${g>0?' · '+esc(t('gapAmt',{amt:fmtAED(g)})):''}</p>${g>0?`<p class="note">${esc(t('gapNote'))}</p>`:''}`:`<p class="stat"><span aria-hidden="true">✓</span>${esc(t('gapNone'))}</p>`):''}
 function renderHelp(){const R=S.lastTriage;$('hOut').innerHTML=R?triageHTML(R):'';updateSay()}
@@ -1208,14 +1290,26 @@ function readPay(){
   SAY.setup={text:reply,lang:UI};
   $('payReply').innerHTML=`<p><span class="tag">${esc(t('tagRule'))}:</span> <span dir="auto">${esc(reply)}</span></p>${sayBtn('setup')}<details class="more"><summary>${esc(t('more'))}</summary><div class="morebody">${traceHTML(trace)}</div></details>`;
   updateSay();
-  $('payForm').classList.remove('flash');void $('payForm').offsetWidth;$('payForm').classList.add('flash')}
+  showPayForEx();showPayFrom();$('payForm').classList.remove('flash');void $('payForm').offsetWidth;$('payForm').classList.add('flash')}
 $('savePay').addEventListener('click',()=>{const amt=Math.round(Number($('payAmt').value));const day=+$('payDay').value;$('saveErr').textContent='';
   if(!($('payAmt').value!==''&&amt>0&&amt<1e6)){$('saveErr').textContent=t('needAmt');$('payAmt').focus();return}
   const sc=radio('scope');
-  S.setup={...S.setup,expected:amt,payDay:day,payFor:radio('payFor')==='same'?'same':'next',work:radio('work')==='household'?'household':'company',scope:['no','unsure','yes'].includes(sc)?sc:'unsure',startMonth:$('startMonth').value,
+  /* The pay history. The first pay saved (or one saved over the made-up example) applies to every month. A changed pay applies from
+     the month chosen: entries from that month on are replaced, the months before keep theirs. Chosen at or before the first month
+     in the diary, it simply becomes the pay of every month. */
+  const f=formPay(),nw={expected:amt,payDay:day,payFor:f.payFor},old=S.setup;let hist;
+  if(!old.confirmed||old.example)hist=[{from:null,...nw}];
+  else if(!payAsks())hist=old.history.map(h=>({...h}));
+  else{const from=YM_RX.test($('payFrom').value)?$('payFrom').value:ymOf(todayISO());
+    const first=[$('startMonth').value,...S.pays.filter(p=>!p.example).map(p=>p.month)].filter(x=>YM_RX.test(x)).reduce((a,b)=>a<b?a:b,from);
+    if(from<=first)hist=[{from:null,...nw}];
+    else{hist=old.history.filter(h=>h.from==null||h.from<from).map(h=>({...h}));if(!samePay(hist[hist.length-1],nw))hist.push({from,...nw})}}
+  /* The made-up example payments and event were built on the example pay: the worker's own pay replaces them. */
+  S.pays=S.pays.filter(p=>!p.example);S.events=S.events.filter(e=>!e.example);
+  S.setup={...S.setup,history:hist,expected:amt,payDay:day,payFor:radio('payFor')==='same'?'same':'next',work:radio('work')==='household'?'household':'company',scope:['no','unsure','yes'].includes(sc)?sc:'unsure',startMonth:$('startMonth').value,
     name:$('wName').value.trim().slice(0,80),hideName:!$('showName').checked,employer:$('wEmployer').value.trim().slice(0,120),confirmed:true,example:false,text:$('payText').value.trim().slice(0,1200)};
-  if(!S.setup.employer)S.setup.showEmployer=false;
-  S.summary=null;save();$('hDom').checked=S.setup.work==='household';defaultPayForm();renderAll();
+  if(!S.setup.employer)S.setup.showEmployer=false;syncPay(S.setup);
+  S.summary=null;save();$('hDom').checked=S.setup.work==='household';showPayFrom();defaultPayForm();renderAll();
   const wpsLine=S.setup.work==='household'?t('wpsLineDom'):S.setup.scope==='yes'?t('wpsLineYes'):S.setup.scope==='no'?t('wpsLineNo'):t('wpsLineUnsure');
   $('saveMsg').innerHTML=`<p class="stat"><span aria-hidden="true">✓</span>${esc(t('savedMsg',{d:ordL(day),amt:fmtAED(amt)}))}</p><details class="more"><summary>${esc(t('more'))}</summary><div class="morebody">${traceHTML([['you',t('trYouSaved')],['rule',t('trSetDay')],['rule',wpsLine],['rule',t('trLocal')]])}</div></details>`;});
 $('showName').addEventListener('change',()=>{S.setup.hideName=!$('showName').checked;save();renderCase()});
@@ -1230,7 +1324,7 @@ function readSms(){
   trace.push(['rule',r.date?t('trDate',{d:fmtDate(r.date)}):t('trNoDate')]);
   const month=r.date?suggestedMonth(r.date):$('pMonth').value;
   trace.push(['rule',t('trMatched',{m:fmtMonth(month)})]);
-  const exp=S.setup.confirmed?S.setup.expected:0;const kind=r.amount!=null&&exp&&r.amount<exp?'partial':'full';
+  const exp=S.setup.confirmed?payAt(month).expected:0;const kind=r.amount!=null&&exp&&r.amount<exp?'partial':'full';
   if(r.amount!=null&&exp)trace.push(['rule',kind==='partial'?t('trLess',{amt:fmtAED(exp)}):t('trMatches')]);
   trace.push(['rule',t('trFilledPay')]);
   if(r.date)$('pDate').value=r.date;if(r.amount!=null)$('pAmt').value=r.amount;ensureOption($('pMonth'),month);
@@ -1239,7 +1333,7 @@ function readSms(){
   const summ=r.amount!=null||r.date?t('smsFound',{amt:r.amount!=null?fmtAED(r.amount):t('noAmt'),on:r.date?t('smsOn',{d:fmtDate(r.date)}):'',m:fmtMonth(month)}):t('smsNone');
   $('smsOut').innerHTML=`<p><span class="tag">${esc(t('tagRule'))}:</span> ${esc(summ)}</p><details class="more"><summary>${esc(t('more'))}</summary><div class="morebody">${traceHTML(trace)}</div></details>`;
   const lf=$('pDate').closest('.tile');lf.classList.remove('flash');void lf.offsetWidth;lf.classList.add('flash')}
-$('pAmt').addEventListener('input',()=>{const exp=S.setup.confirmed?S.setup.expected:0;const v=Number($('pAmt').value);if(exp&&$('pAmt').value!==''){const el=document.querySelector(`input[name="pKind"][value="${v<exp?'partial':'full'}"]`);if(el)el.checked=true}});
+$('pAmt').addEventListener('input',()=>{const exp=S.setup.confirmed?payAt($('pMonth').value).expected:0;const v=Number($('pAmt').value);if(exp&&$('pAmt').value!==''){const el=document.querySelector(`input[name="pKind"][value="${v<exp?'partial':'full'}"]`);if(el)el.checked=true}});
 $('pDate').addEventListener('change',()=>{const v=validISO($('pDate').value);if(v)ensureOption($('pMonth'),suggestedMonth(v))});
 $('addPay').addEventListener('click',()=>{const date=validISO($('pDate').value),raw=$('pAmt').value,amt=Number(raw),month=$('pMonth').value,kind=radio('pKind')==='partial'?'partial':'full',note=$('pNote').value.trim().slice(0,140);$('pErr').textContent='';
   if(!date){$('pErr').textContent=t('needDate');return}
