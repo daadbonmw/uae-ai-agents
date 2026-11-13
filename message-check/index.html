@@ -874,13 +874,21 @@ function mzDist(a,b,max){if(Math.abs(a.length-b.length)>max)return max+1;const n
 for(let i=1;i<=n;i++){const c=[i];let mn=i;for(let j=1;j<=m;j++){let v=Math.min(p1[j]+1,c[j-1]+1,p1[j-1]+(a[i-1]===b[j-1]?0:1));if(i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1])v=Math.min(v,p2[j-2]+1);c.push(v);if(v<mn)mn=v}
 if(mn>max)return max+1;p2=p1;p1=c}return p1[m]}
 const MZ_LURE=new Set(['secure','verify','verification','login','signin','pay','payment','payments','portal','update','support','customer','service','services','online','app','official','refund','fine','fines','track','tracking','delivery','account','id','kyc','claim','bill','bills','my','e','uae','ae','dubai','abudhabi','gov','help','care','center','centre','web','site','digital','link','redeem','reward','rewards']);
-function mzLook(h,named){const hs=mzSplit(h);const lab=hs.label;if(!lab||/^\d+$/.test(lab))return null;const compact=lab.replace(/-/g,''),forms=[compact,leet(compact,'l'),leet(compact,'i')],toks=lab.split('-');
+function mzLook0(h,named){const hs=mzSplit(h);const lab=hs.label;if(!lab||/^\d+$/.test(lab))return null;const compact=lab.replace(/-/g,''),forms=[compact,leet(compact,'l'),leet(compact,'i')],toks=lab.split('-');
 for(const D of MZ_DOMS){if(h===D.d||h.endsWith('.'+D.d))continue;const dl=D.label,isN=named.some(x=>x.o===D.o);if(dl.length<3||(dl.length<4&&!isN))continue;
 if(compact===dl&&hs.suf!==D.suf&&(!D.o.sn||isN)&&(RARE_TLDS.has(hs.suf.split('.').pop())||!/^(?:com|co|net|org)\.[a-z]{2}$/.test(hs.suf)))return {o:D.o,d:D.d,kind:'ending',strong:RARE_TLDS.has(hs.suf.split('.').pop())||isN};
 if(toks.includes(dl)&&toks.length>1&&(!D.o.sn||toks.some(t=>MZ_LURE.has(t))))return {o:D.o,d:D.d,kind:'words',strong:true};
 if(compact!==dl&&dl.length>=5&&(compact.startsWith(dl)||compact.endsWith(dl))){const rest=compact.startsWith(dl)?compact.slice(dl.length):compact.slice(0,compact.length-dl.length);if(MZ_LURE.has(rest))return {o:D.o,d:D.d,kind:'words',strong:true}}
 if(dl.length>=5&&!D.o.sn){const mx=dl.length>=9?2:1;for(const f of forms)if(f!==dl&&Math.abs(f.length-dl.length)<=mx&&mzDist(f,dl,mx)<=mx)return {o:D.o,d:D.d,kind:'typo',strong:true}}}
 return null}
+let MZ_LONGKEYS=null;
+function mzLook(h,named){const r=mzLook0(h,named);if(!r)return r;
+if(!MZ_LONGKEYS){MZ_LONGKEYS=[];for(const [k,o] of MZ_PARTMAP)if(k.length>=7&&!o.sn)MZ_LONGKEYS.push([k,o]);MZ_LONGKEYS.sort((a,b)=>b[0].length-a[0].length)}
+const hh=String(h||'').toLowerCase().replace(/^www\./,''),compact=mzSplit(hh).label.replace(/-/g,''),dl=mzSplit(r.d).label.replace(/-/g,'');
+for(const [k,o] of MZ_LONGKEYS){if(o===r.o||k.length<=dl.length||!k.includes(dl)||!compact.includes(k))continue;
+if((o.d||[]).some(d=>hh===d||hh.endsWith('.'+d)))continue;
+return {o,d:(o.d||[])[0]||r.d,kind:'words',strong:true}}
+return r}
 const AMT=String.raw`(?:(?:aed|dhs?|dirhams?|usd|us\$|\$|£|€|gbp|eur|inr|rs\.?|₹|php|₱|pkr|sar|qar|kwd|bhd|omr|egp|lkr|cad|aud)\s?\d[\d,]*(?:\.\d+)?|\d[\d,]*(?:\.\d+)?\s?(?:aed|dhs?|dirhams?|usd|dollars?|pounds?|euros?|gbp|eur|inr|rupees?|rs\b|php|pesos?|pkr|sar|riyals?|qar|kwd|درهم|دراهم|دولار|ريال|جنيه|دينار|روبيه|يورو))`;
 const MZ_AMT=new RegExp(AMT,'iu');
 const rx=(a,f)=>new RegExp(a.join('|'),f||'giu');
@@ -1273,7 +1281,7 @@ for(const f of flags)if(f.id==='org_lookalike'||f.id==='org_link_other'){const L
 const claimLocal=!!govHit||RX_LOCAL.test(rt)||orgs.length>0;
 for(const p of allPhones){if(p.uae||p.ok)continue;const d=claimLocal?PHONE_FLAGS.foreign:PHONE_FLAGS.intl;flags.push({id:d.id,sev:d.sev,hard:false,label:S.en['fl_'+d.id],why:S.en['fw_'+d.id],snip:SN(p.i,p.len)})}
 const asks=mzAsks(rt.replace(RX_NONACC_G,m=>' '.repeat(m.length)),ctx);
-if(mzR5Stmt(rt)&&!R5_CREDIT.test(rt)&&!R5_PAYIMP.test(rt)&&!unofficial.some(l=>!mzLinkSvc(l.host))&&!phones.length&&!flags.some(f=>f.id!=='money_request'&&MZ_PAYFLAGS.has(f.id))){asks.delete('pay');for(let k=flags.length-1;k>=0;k--)if(flags[k].id==='money_request')flags.splice(k,1)}
+if(mzR5Stmt(rt)&&!R5_CREDIT.test(rt)&&!R5_PAYIMP.test(rt)&&!unofficial.some(l=>!mzLinkSvc(l.host)&&!SHORTENERS.has(String(l.host).replace(/^www\./,'')))&&!phones.length&&!flags.some(f=>f.id!=='money_request'&&MZ_PAYFLAGS.has(f.id))){asks.delete('pay');for(let k=flags.length-1;k>=0;k--)if(flags[k].id==='money_request')flags.splice(k,1)}
 const ownPointer=orgs.length>0&&!unofficial.length&&!phones.length&&(links.length>0||MZ_APP.test(rt));
 for(let k=flags.length-1;k>=0;k--){const f=flags[k];if(f.id==='lock_words'&&ownPointer&&/expir/i.test(f.snip.m)&&!flags.some(g=>g!==f&&g.sev>=2))flags.splice(k,1)}
 ctx.payOther=unofficial.length>0||phones.length>0||(!ownPointer&&flags.some(f=>MZ_PAYFLAGS.has(f.id)&&f.id!=='money_request'));
@@ -1322,12 +1330,14 @@ const rtR=AZ.n?rt:mzR4Strip(normAr(normDigits(ot)));const r4st={pinCase,x:r4x,ad
 const SD=sender?mzSenderCheck(sender,rt,ctx,orgs,flags,{warn,pinCase}):null;if(SD){for(const f of SD.flags)flags.push(f);if(SD.hard)r4H.push('H2');for(const n of SD.notes)notes.push(n)}
 for(const [k,res,src] of r4st.add){const h=first(src||rt,[res]);if(h&&!flags.some(f=>f.id===k))flags.push(mzFlag(k,3,SN(h.i,h.len)))}
 for(const {o,L} of r4st.look)flags.push(mzFlag('org_lookalike',6,SN(L.i,L.len),{org:o.i,arg:L.host,link:true}));
+for(const [k7,re7] of (r4st.soft7||[])){const h=first(rt,[re7]);if(h&&!warn&&!flags.some(f=>f.id===k7))flags.push(mzFlag(k7,2,SN(h.i,h.len)))}
 const r4Pass=!warn&&!pinCase&&r4H.length>0;
 if(v==='scam'&&!r4H.length)v='unclear';
 else if(v!=='scam'&&r4Pass)v='scam';
 if(v!=='scam'){const pf=flags.filter(f=>f.id==='org_link_other'||f.id==='org_phone_other');
 if(pf.length){const snd=mzR4Sender(rt,orgs,flags);const oi=snd.length?snd[0].o.i:pf[0].org;if(oi&&MZ_BY_ID[oi]){notes.push({k:'partner',o:oi});for(const f of pf)flags.splice(flags.indexOf(f),1)}}}
 if(v==='likely_genuine'&&!warn){const fl=mzR4Floor(rt,ctx,ownPointer,rtR);if(fl.length){v='unclear';for(const h of fl){const fid=h.k==='acct'?'r3_acct':'r4_'+h.k;if(!flags.some(f=>f.id===fid))flags.push(mzFlag(fid,2,SN(h.i,h.len)))}}}
+if(v==='likely_genuine'&&!warn&&flags.some(f=>/^r7_/.test(f.id)))v='unclear';
 if(v==='unclear'&&!warn&&mzR4Calm(rt,ctx,flags,asks,{pinCase,riskyReason,promo,ownPointer})){const rn4=AZ.n?rt:mzR4Strip(normAr(normDigits(ot)));
 if(!mzR3Floor(rt,ctx,ownPointer,rn4).length&&!mzR4Floor(rt,ctx,ownPointer,rtR).length){for(let k=flags.length-1;k>=0;k--)if(R4_LOWFLAGS.has(flags[k].id))flags.splice(k,1);v='likely_genuine'}}
 let capped=false;if(v==='likely_genuine'&&(langCover(rtFull)==='other'||AZ.n>=2)){v='unclear';capped=true}
@@ -1345,7 +1355,7 @@ const MZ_SECTOR_TYPE={bank:'bank_or_card',payment:'bank_or_card',courier:'delive
 const MZ_FAM_TYPE={'bank-kyc':'bank_or_card','account-takeover':'bank_or_card','otp-code':'bank_or_card','sim-swap':'bank_or_card','government-impersonation':'fake_official','police-call':'fake_official','traffic-fine':'fake_official','utility-bill':'fake_official','visa-immigration':'fake_official','delivery-fee':'delivery_fee','prize-lottery':'prize_or_refund','job-offer':'job_offer','task-job':'job_offer','rental':'rental_deposit','investment':'investment_or_crypto','crypto':'investment_or_crypto','family-emergency':'family_or_friend_impersonation','romance':'romance','loan':'other'};
 function mzType(ids,orgs,v,fam){const h=k=>ids.has(k);
 for(const k of Object.keys(MZ_TYPE2))if(h(k))return MZ_TYPE2[k];
-if(h('r6_rentpay'))return 'rental_deposit';if(h('r6_jobfee'))return 'job_offer';if(h('r6_prizereply'))return 'prize_or_refund';if(h('job_fee')||h('job_task'))return 'job_offer';if(h('rental'))return 'rental_deposit';if(h('delivery_fee')||h('delivery_trick'))return 'delivery_fee';
+if(h('r6_rentpay')||h('r7_third'))return 'rental_deposit';if(h('r7_return'))return 'investment_or_crypto';if(h('r7_jobpay')||h('r7_job')||h('r7_jobfee'))return 'job_offer';if(h('r7_prize')||h('r7_prizelink'))return 'prize_or_refund';if(h('r6_jobfee'))return 'job_offer';if(h('r6_prizereply'))return 'prize_or_refund';if(h('job_fee')||h('job_task'))return 'job_offer';if(h('rental'))return 'rental_deposit';if(h('delivery_fee')||h('delivery_trick'))return 'delivery_fee';
 if(h('prize')||h('refund')||h('refund_gov')||h('points_offer'))return 'prize_or_refund';if(h('crypto'))return 'investment_or_crypto';if(h('family_imp')||h('wrong_number')||h('r3_newnum'))return 'family_or_friend_impersonation';if(h('r3_lure')||h('r4_prem')||h('r4_big'))return 'prize_or_refund';if(h('r4_job')||h('r4_task'))return 'job_offer';if(h('r4_returns'))return 'investment_or_crypto';if(h('r4_advfee'))return h('delivery_fee')||h('r3_fee')?'delivery_fee':'prize_or_refund';if(h('r4_fee')||h('r4_addr'))return 'delivery_fee';if(h('r4_safe'))return 'bank_or_card';if(h('r4_mistake'))return 'family_or_friend_impersonation';if(h('r5_codeback'))return 'bank_or_card';if(h('r5_loanfee'))return 'prize_or_refund';if(h('r4_bec'))return 'rental_deposit';if(h('r4_callback')||h('r4_phone'))return 'bank_or_card';if(h('r3_addr')||h('r3_fee'))return 'delivery_fee';if(h('r3_telco'))return 'fake_official';if(h('r3_acct'))return 'bank_or_card';
 if(h('official_ask')||h('id_request')||h('foreign_number')||h('case_threat')||h('call_script')||h('fine_pay')||h('toll_fine')||h('authority_threat')||h('visa_fee'))return 'fake_official';
 if(h('card_request')||h('blocked')||h('lock_words')||h('code_request')||h('word')||h('lookalike'))return 'bank_or_card';
@@ -1529,7 +1539,8 @@ fl_r4_returns:'تعد بأرباح مضمونة',fw_r4_returns:'لا يوجد ا
 fl_r4_task:'وظيفة مهام تدفع لك عن كل مهمة',fw_r4_task:'وظائف المهام تطلب منك الدفع أولًا ثم تتوقف.'});
 const R4_PROBLEM0=/\b(?:suspend\w*|block\w*|lock(?:ed|ing|out)?|disabl\w*|deactivat\w*|restrict\w*|limited|limitation|frozen|freez\w*|clos(?:ed|ure)|terminat\w*|cancel+ed|expir\w+|overdue|unpaid|outstanding|penalt\w*|fines?|legal action|arrest\w*|court|violat\w*|compromis\w*|unusual|suspicious|unauthori[sz]ed|hacked|fraud\w*|failed|on hold|held|stopped|returned to sender|could not be delivered|cannot be delivered|undeliver\w*|incorrect|invalid|incomplete|wrong address|action required|urgent\w*|immediately|final notice|mandatory|verification (?:required|needed|pending)|deducted|debited|charged|pending instructions|missed)\b|ينقفل|بينقفل|راح ينقفل|يتجمد|يتوقف|مقفل|موقوف|محظور|موقوف|معلق|مجمد|مغلق|منتهي|غرامه|مخالفه|متاخر|اختراق|عاجل|فورا|حظر|تعليق|خصم|تم خصم/i;
 const R6_DONE=/\b(?:service request|request|ticket|complaint|enquiry|inquiry|query|booking|appointment|SR[- ]?\d+)\b[^.!?\n]{0,25}\b(?:has been|have been|was|is now|is|been)\s+(?:closed|resolved|completed)\b|\b(?:closed|resolved)\s+(?:your\s+)?(?:service request|request|ticket|complaint|enquiry|inquiry|query)\b|(?:تم\s+)?(?:اغلاق|اقفال|انهاء)\s+(?:ال)?(?:طلب|تذكره|شكوي|استفسار|حجز|موعد)\S*|(?:طلب|تذكره|شكوي|استفسار)\S*\s+(?:\S+\s+)?(?:تم\s+)?(?:اغلاق|اقفال|مغلق)\S*/gi;
-const R4_PROBLEM={test:t=>R4_PROBLEM0.test(String(t).replace(R6_DONE,m=>' '.repeat(m.length)))};
+const R7_ENDING=/(?:ال)?منتهي[هة]?\s*(?:ب|بال|برقم|بـ)/g;
+const R4_PROBLEM={test:t=>R4_PROBLEM0.test(String(t).replace(R6_DONE,m=>' '.repeat(m.length)).replace(R7_ENDING,m=>' '.repeat(m.length)))};
 (function(){const sk={mdmn:'guaranteed',dmn:'guarantee',khsr:'loss','5sr':'loss',mkhtr:'risk',m5tr:'risk',mkhtrh:'risk',m5trh:'risk',shhr:'month',shhrn:'monthly',stthmr:'investment',sthmr:'investment',stsmr:'investment',trb7:'earn',
 bdn:'without',rsm:'fees',shghl:'job',shgl:'job',sh8l:'job',tfl:'activation',tf3l:'activation',trj3:'refund',nrj3:'refund',td3:'pay',tdf3:'pay',t7wl:'transfer',
 sh2:'flat',shq:'flat',shqh:'flat',sh2h:'flat',ghrf:'room','7jz':'reserve','7jzh':'reserve','7jzk':'reserve','3rbn':'deposit','3qd':'contract',b3dn:'later',b3dyn:'later',
@@ -1573,6 +1584,175 @@ fl_r6_prizereply:'A prize that asks you to reply with your name or details',fw_r
 Object.assign(S.ar,{fl_r6_rentpay:'سكن «محجوز» مقابل عربون يُحوَّل إلى حساب شخص آخر',fw_r6_rentpay:'المالك أو الوسيط الحقيقي يوقّع العقد أولًا ويأخذ العربون بشيك أو عبر الشركة. لا تحوّل عربونًا إلى حساب شخص قبل أن ترى المكان وتوقّع.',
 fl_r6_jobfee:'وظيفة من البيت تطلب منك الدفع أولًا',fw_r6_jobfee:'صاحب العمل الحقيقي يدفع لك ولا يطلب منك مالًا لتبدأ. هذه الوظائف تأخذ مالك ثم تتوقف عن الرد.',
 fl_r6_prizereply:'جائزة تطلب منك الرد باسمك أو ببياناتك',fw_r6_prizereply:'الجائزة الحقيقية لا تحتاج أن ترد على رسالة باسمك أو هويتك. ردك يخبر المرسل فقط أن رقمك يعمل.'});
+const R7_P='(?:يومي[هاة]?|اسبوعي[هاة]?|شهري[هاة]?|(?:في|ب|كل)\\s*(?:ال)?(?:يوم|اسبوع|شهر))';
+const R7_INV=/\b(?:invest\w*|trading|traders?|forex|crypto\w*|bitcoin|btc|usdt|ethereum|gold|stocks?|shares|portfolio|funds?|coins?|tokens?|mining|capital)\b|استثمر\S*|استثمار\S*|تداول|فوركس|كريبتو|بيتكوين|ذهب|اسهم|محفظ\S*|عمل[هة]\s*رقمي[هة]|عملات|راس\s*المال/i;
+const R7_INV_AZ=/\b(?:istithmar|isti[st]mar|esteshmar|estismar|ista[st]mir|invest|forex|crypto|bitcoin|dhahab|thahab|zahab)\b/i;
+const R7_RATE=new RegExp('\\b\\d{1,3}(?:\\.\\d+)?\\s?%\\s*(?:(?:return|profit|roi|interest|income|gain|earnings?)\\s+)?(?:daily|weekly|monthly|(?:a|per|every|each)\\s+(?:day|week|month)|in\\s+(?:a|one|1)\\s+(?:day|week|month))\\b'
++'|\\b(?:daily|weekly|monthly|every\\s+(?:day|week|month))\\s+(?:profits?|returns?|roi|income|earnings?|payouts?|dividends?|interest|gains?)\\b'
++'|\\b(?:profits?|returns?|roi|income|earnings?|interest|payouts?|gains?|dividends?)\\b[^.!?\\n]{0,20}\\b(?:daily|weekly|monthly|every\\s+(?:day|week|month)|per\\s+(?:day|week|month)|a\\s+(?:day|week|month))\\b'
++'|(?:\\d+\\s*[%٪]|[%٪]\\s*\\d+)\\s*(?:ربح|عائد|ارباح|فايده|فائده)?\\s*'+R7_P
++'|\\b(?:earn|make|get|receive|win|gain)\\s+(?:up to\\s+)?(?:aed\\s?|usd\\s?|\\$)?\\d[\\d,.]*\\s?(?:k|aed|usd|dhs|dollars)?\\s+(?:daily|weekly|monthly|every\\s+(?:day|week|month)|per\\s+(?:day|week|month)|a\\s+(?:day|week|month))\\b'
++'|(?:ربح|ارباح|عائد|عوائد|دخل|مكسب|فايده|فوايد)\\S*\\s+(?:ال)?'+R7_P
++'|(?:ربح|ارباح|عائد|عوائد|دخل|مكسب|تربح|اربح|تكسب|اكسب|يجيك|يوصل\\S*|تحصل|احصل)\\S*[^.!؟\\n]{0,30}'+R7_P,'i');
+const R7_RATE_AZ=/\b\d{1,3}\s?%\s*(?:sh[a]?hr\w*|yaw?mi\w*|you?mi\w*|yomi\w*|us?bo\w*|esbo\w*)\b|\b(?:kol|kul)\s+(?:shahr|yom|youm|yaw?m|esbou?3|usbou?3)\b|\b(?:arb[a]?7|rib[h7]|arba7)\w*\s+(?:yaw?mi\w*|you?mi\w*|sh[a]?hri\w*)/i;
+const R7_RICH=/\b(?:millionaire|rich)\b[^.!?\n]{0,25}\b(?:in|within)\s+(?:a |one |\d+ |few |just )?(?:days?|weeks?|months?)\b|\b(?:become|be|get|turn|will be|you'?ll be|youll be)\s+(?:a\s+)?(?:millionaire|rich|wealthy)\b|\b(?:double|triple|multiply)\s+(?:your\s+)?(?:money|investment|deposit|savings|capital)\b|\bmake\s+(?:aed\s?|\$)?\d[\d,]*\s?(?:k|aed|dhs|usd)?\s+(?:a|per|every|each)\s+(?:day|week)\b|\bfinancial freedom\b[^.!?\n]{0,30}\b(?:month|week)\b|مليونير\S*|(?:ثري|غني)\s+(?:في|خلال)\s*(?:شهر|اسبوع|ايام)|(?:ضاعف|تضاعف|ضعف)\S*\s*(?:اموالك|فلوسك|مالك|راس\s*مالك|استثمارك)|(?:ترجع|يرجع|ترد|يرجعلك|ترجعلك)\S*\s*(?:لك\s+)?(?:ضعف|ضعفين|ثلاث\S*|اضعاف|مضاعف\S*)/i;
+const R7_RICH_AZ=/\b(?:mil[iy]o?n[ei]+r|milyoner|malyoneer|millioner|y?e?t?da+3af|mu?da+3af\w*)\b/i;
+const R7_GW2=/(?:ما|مافي|ما في)\s*فيه?ا?\s*(?:خساره|مخاطر\S*)/;
+const R7_AMTW=/(?:^|\s)(?:الف|الاف|الفين|مليون|ملايين)(?:\s|$)/;
+const R7_RATE2=/\b\d{1,3}(?:\.\d+)?\s?%[^.!?\n]{0,25}?\b(?:in|within|every|per|each)\s+(?:just\s+|only\s+)?(?:a\s+|one\s+|1\s+|\d+\s+)?(?:days?|weeks?|months?)\b/i;
+const R7_MULT_EN=/\b(?:invest|put|deposit|send|pay|add|give|put in)\s+(?:aed\s?|usd\s?|\$)?(\d[\d,]*(?:\.\d+)?)\s*(k)?\s*(?:aed|usd|dhs|usdt|dollars)?[^.!?\n]{0,50}?\b(?:get|receive|earn|return|back|make|become|turns?\s+into|will be|takes?)\s+(?:you\s+|back\s+|home\s+)?(?:aed\s?|usd\s?|\$)?(\d[\d,]*(?:\.\d+)?)\s*(k)?[^.!?\n]{0,40}?\b(?:in|within|after)\s+(?:just\s+)?(?:a|one|1|\d+|few)?\s*(?:days?|weeks?|months?|hours?)\b/i;
+const R7_MULT_AR=/(?:حط|ضع|ودع|استثمر|ادفع|حول|حطيت|دفعت)\s*(\d[\d,]*)\s*(الف)?[^.!؟\n]{0,50}?(?:وناخذ لك|وتاخذ|تاخذ|ياخذ|ترجع لك|ترجع|يرجع|تطلع لك|تطلع|يطلع|يصير|تصير|تصبح|يصبح|تستلم|وتستلم|احصل على|واحصل على|نعطيك|نرجع لك)\s*(\d[\d,]*)\s*(الف)?[^.!؟\n]{0,40}?(?:في|خلال|بعد)\s*(?:ال)?(?:اسبوع|شهر|ايام|يوم|ساعه|ساعات)/;
+function mzR7Mult(t){for(const re of [R7_MULT_EN,R7_MULT_AR]){const m=re.exec(t);if(m){const n=x=>parseFloat(String(x).replace(/,/g,''));const a=n(m[1])*(m[2]?1000:1),b=n(m[3])*(m[4]?1000:1);if(a>0&&b>=2*a&&b<=1e9)return re}}return null}
+const R7_PAST=/\b(?:returned|achieved|delivered|generated|posted|reported|averaged|yielded)\s+(?:a\s+)?(?:\d|net|an average)/i;
+const R7_CONTACT=/\b(?:whats\s?app|wa\.me|telegram|signal|dm me|inbox)\b|واتس\S*|تيليجرام|تلجرام|@\w{4,}/i;
+const R7_LOAN=/\b(?:(?:personal|cash|quick|instant|easy|urgent|business)\s+loans?|loans?|personal financ\w+|cash advance|need (?:cash|money|funds)|(?:quick|fast|urgent|instant) (?:cash|money)|cash (?:now|fast|today))\b|تحتاج (?:فلوس|سيوله|مبلغ|كاش)|قرض|قروض|تمويل\s*(?:شخصي|فوري|سريع|نقدي)|سلف[هة]/i;
+const R7_LOANLURE=/\b(?:no[- ]interest|interest[- ]free|(?:0|zero)\s?%\s*(?:interest|profit|markup)|no credit check|without (?:a )?credit check|no (?:guarantor|collateral|guarantee|salary (?:transfer|certificate)|documents?|paperwork)|without (?:a )?(?:guarantor|collateral|documents|salary transfer)|guaranteed (?:approval|loan)|approval (?:is )?guaranteed|(?:instant|immediate|same[- ]day|100\s?%) approval|approved (?:in|within) (?:\d+|a few|five|ten|minutes|seconds|an hour|1 hour)|bad credit|cash in (?:\d+ )?(?:minutes|hours)|(?:previously |been )refused|refused (?:elsewhere|before)|we can still help|regardless of (?:your )?(?:credit|history)|(?:approved|disbursed)[^.!?\n]{0,25}within\s+\d+\s*(?:hours?|minutes?))\b|(?:بدون|بلا|من غير|ما في|مافي|ما فيه)\s+(?:اي\s+)?(?:فوائد|فوايد|فايده|فائده|ربا|كفيل|ضمان|ضمانات|تحويل راتب|شهاده راتب|مستندات|اوراق|استعلام|سجل ائتماني)|(?:الموافقه|موافقه)\s+(?:مضمونه|فوريه|فورا|مؤكده)|مضمونه?\s+الموافقه|0\s?[%٪]\s*(?:فائده|فايده|فوائد|فوايد)/i;
+const R7_LOANLURE_AZ=/\b(?:bd?o+n|bidoon|bedoon|bdon)\s+(?:fawa[i2e]?d|faw2ed|fawaed|fayda|fa2da|kafeel|kafil|daman|credit)|\b(?:ma fi|mafi)\s+(?:fawa\w+|kafeel)|\bmawafa[ck]a?\s+(?:mada?mo+na|fawriya|moa?kad\w*)/i;
+const R7_LOAN_AZ=/\b(?:qar[dz]|qord|loan)\b/i;
+const R7_TASK=/\b(?:(?:like|liking|rate|rating|review|reviewing|watch|watching|follow|share|sharing|click|clicking)\s+(?:and\s+\w+\s+)?(?:videos?|posts?|reels?|products?|apps?|ads?|pages?|accounts?)|(?:typing|type|copy|copying)\s+(?:text|data|forms?|documents?|numbers|captcha)|data entry|copy[- ]paste|captcha|per\s+(?:task|video|like|review|click|order|rating|post)|(?:each|every)\s+(?:task|video|like|review|click|rating)|(?:simple|easy|small|quick)\s+(?:tasks?|jobs?|work)|(?:mini|micro)[- ]?tasks?|(?:complete|finish|do)\s+(?:\d+\s+)?(?:simple\s+|easy\s+|small\s+)?tasks?)\b|(?:اعجاب|لايك|مشاهده|تقييم|متابعه|كتابه|ادخال بيانات|نسخ)\S*\s*(?:ال)?(?:فيديو\S*|منتج\S*|منشور\S*|حساب\S*|بيانات|نصوص|تطبيق\S*)|مهام\s*(?:بسيطه|سهله|صغيره|يوميه)|(?:عن|على|لكل)\s*كل?\s*(?:مهمه|فيديو|اعجاب|تقييم)|ادخال بيانات/i;
+const R7_DAILY=/\b(?:earn|make|get|receive|income|pay(?:s|ing)?|paid|salary|profit|commission)\b[^.!?\n]{0,40}?\b(?:daily|per day|a day|every day|each day|everyday)\b|\b(?:daily|everyday)\s+(?:income|salary|pay|earnings?|profit|payment|cash)\b|\d[\d,]*\s?(?:aed|dhs|dirhams?|usd|\$|k)?\s*(?:per day|a day|daily|every day|\/\s?day)\b|(?:ربح|اربح|تربح|دخل|راتب|اكسب|تكسب|يجيك)\S*[^.!؟\n]{0,40}(?:يومي[هاة]?|في اليوم|كل يوم|باليوم)|\d[\d,]*\s*(?:درهم|دولار)?\s*(?:يومي[هاة]?|في اليوم|كل يوم|باليوم)/i;
+const R7_DAILY_AZ=/\b(?:arb[a]?7|ar-?ba7|rib[h7]|2arba7|akseb|ak?sab|ba3mal)\b[^.!?\n]{0,40}\b(?:yaw?mi\w*|you?mi\w*|daily|kol yom|kol youm)\b|\b\d{2,5}\s?(?:dirham|aed|dhs)?\s*(?:yaw?mi\w*|you?mi\w*|kol yo?u?m)\b/i;
+const R7_EASY=/\b(?:home|online|remote|remotely|smartphone|(?:your|from|on) (?:mobile|phone)|whatsapp|telegram|no experience|no (?:skills?|qualifications?|degree|investment)|easy|simple|part[- ]time|spare time|free time|anyone|students|housewives|wfh)\b|من البيت|من المنزل|بالبيت|في البيت|اونلاين|اون لاين|عن بعد|بدون خبر[هة]|بدون مؤهل|الجوال|بالجوال|سهل|بسيط|وقت الفراغ|دوام جزئي|ربات البيوت|طلاب/i;
+const R7_EASY_AZ=/\b(?:min el (?:bait|beit|bayt)|mn (?:el )?(?:bait|beit|bayt)|bil?bait|online|bdon khibra|bidoon khibra)\b/i;
+const R7_JOBCUE=/\b(?:jobs?|works?|working|hiring|vacanc\w+|employ\w+|recruit\w+|position|earn\w*|income|salary|part[- ]time)\b|وظيف\S*|شغل\S*|توظيف|اربح|تربح|دخل|راتب|فرص[هة]\s*عمل/i;
+const R7_EMPLOYER=/\b(?:llc|l\.l\.c|ltd|limited|fze|fzco|inc|corp|recruitment|manpower|human resources|hr department|careers? (?:page|portal))\b|شركه|مؤسسه|الموارد البشريه/i;
+const R7_FREEGIFT=/\b(?:you(?:'ve| have)?\s+(?:been\s+)?(?:selected|chosen|picked|won|got)|selected\s+(?:for|to)|lucky|winner|congratulations?|congrats|mabrouk)\b[^.?\n]{0,70}\b(?:free|prize|gift|iphone|phone|samsung|galaxy|laptop|ipad|macbook|ps5|playstation|car|tv|cash|voucher|trip|ticket|reward|aed\s?\d)\b|\bfree\s+(?:iphone|phone|samsung|galaxy|laptop|ipad|macbook|ps5|playstation|airpods|tv|gift|voucher|ticket|trip)\b|(?<!to\s)(?<!could\s)(?<!can\s)(?<!may\s)(?<!might\s)\bwin\s+(?:up to\s+)?(?:(?:aed|dhs)\s?\d|\d[\d,]*\s?(?:aed|dhs|dirhams?)|an?\s+(?:iphone|prize|gift|voucher|car|trip)|cash)|(?:مبروك|فزت|ربحت|تم اختيارك|تم اختيار رقمك|تهانينا|اخترنا)[^.!؟\n]{0,70}(?:جائز[هة]|هدي[هة]|ايفون|جوال|هاتف|سامسونج|لابتوب|سيار[هة]|مجان\S*|قسيم[هة]|رحل[هة]|كاش|\d+\s*درهم)|(?:ايفون|هاتف|جوال|جهاز)\s+مجان\S*/i;
+const R7_FREEGIFT_AZ=/\b(?:mabrook|mabruk|mabrouk|congrat\w*|selected|won|winner|lucky)\b[^.?\n]{0,70}\b(?:free|iphone|samsung|galaxy|prize|gift|jaiza|jayza|hadiya|hediye|cash|car|voucher)\b|\bfree\s+(?:iphone|samsung|galaxy|phone|gift)\b/i;
+const R7_HOSTWORD=/(?:iphone|samsung|galaxy|playstation|ps5|macbook|airpods|gift|prize|winner|giveaway|lucky|bonus|voucher|reward|freebie|claim|free)/i;
+const R7_PRIZEFEE=/\b(?:pay|send|deposit|transfer)\b[^.!?\n]{0,30}\b(?:fee|fees|charges?|tax|duty|shipping|delivery|customs|processing|insurance)\b|\b(?:fee|fees|charges?|tax|duty|shipping|customs|processing|insurance)\b[^.!?\n]{0,30}\b(?:pay|aed|dhs|\d{2,})\b|\b(?:full name|id number|emirates id|passport|iban|account number|card number|bank details|date of birth|home address)\b|ادفع\S*|رسوم|\b(?:your name|your details|your id)\b|(?:الاسم الكامل|اسمك|هويتك|رقم الهويه|رقم حسابك|بياناتك|رقم بطاقتك|بيانات بطاقتك)/i;
+const R7_BUYER=/\b(?:i (?:want|would like|wanna|am interested|am ready)|i'?m (?:interested|ready)|interested)\b[^.!?\n]{0,25}\b(?:buy\w*|purchase|your)\b|\b(?:buy|purchase)\s+(?:your|the)\s+(?:item|product|car|phone|listing|ad|stuff|furniture|sofa|laptop|bike|watch)\b|\b(?:your|the)\s+(?:item|product|ad|advert|listing|post)\b|\bis (?:it|this|that|the|your)(?: \w+)? still available\b|\bsaw (?:your|the) (?:ad|listing|post)\b|\b(?:dubizzle|olx|marketplace|dubicars|opensooq|yallamotor)\b|(?:ابي|ابغى|اريد|ودي|حاب)\s*(?:ان\s+)?(?:اشتري|اشتريه)|اشتري\s+(?:غرضك|سلعتك|منتجك|سيارتك|الغرض|الاعلان)|(?:اعلانك|غرضك|سلعتك|منتجك)|دوبيزل|اوليكس|مازال متوفر|لسا متوفر|لسه متوفر/i;
+const R7_BUYER_AZ=/\b(?:dubizzle|olx|bashtri|ashtri|ba?shtri|abi ashtri|abgha ashtri|ghrad\w*|e3lan\w*|a3lan\w*)\b/i;
+const R7_SHIP=/\b(?:pay(?:ing)?\s+(?:extra|more|additional)|extra\s+(?:for|on|to cover)\s+(?:the\s+)?(?:shipping|delivery|courier)|(?:my|our)\s+(?:courier|agent|driver|shipper|shipping agent|representative|freight|transporter)|(?:send|arrange|book|dispatch)\w*\s+(?:a|the|my)\s+(?:courier|driver|agent|shipper|transport)|(?:courier|shipping)\s+(?:will|to)\s+(?:pick|collect|come)|pay\w*\s+(?:for\s+)?(?:the\s+)?(?:shipping|delivery|courier)|overpay\w*|extra\s+(?:amount|money|payment))\b|(?:ادفع|راح ادفع|بدفع|ادفعلك)\s*(?:لك\s*)?(?:زياد[هة]|اكثر|اضافي)\S*|(?:زياد[هة]|اضافي)\S*\s+(?:للشحن|للتوصيل|عالشحن|على الشحن)|(?:مندوبي|شركه الشحن|سائقي|وكيلي|مندوب الشحن)\S*|الشحن علي|(?:اتكفل|يتكفل)\s*(?:ب)?(?:ال)?(?:شحن|توصيل)/i;
+const R7_SHIP_AZ=/\b(?:bd?fa3|dfa3|adfa3|badfa3)\w*\s+(?:ziy?ada|zyada|akthar)|\b(?:ziy?ada|zyada)\s+(?:lel|ll|3al)\s?(?:shahn|sha7n|shi?ping|tawsil)|\b(?:mandoubi|mandoub|mndoubi|courier)\b/i;
+const R7_MASK=/\b(?:bank\s+(?:details?|info\w*|account|name|statement)|iban|account\s+(?:number|no|details?|info\w*|name)|card\s+(?:details?|number|info\w*|no)|credit\s+card|debit\s+card|cvv|pin|password|login|(?:verification|otp|sms|security|6[- ]digit)\s+code|code|otp|e-?mail(?:\s+address)?|gmail|paypal)\b|بياناتك البنكي[هة]|معلومات (?:حسابك|بنكك|البنك|بطاقتك)|الايبان|ايبان|رقم (?:حسابك|بطاقتك|الحساب|البطاقه|الايبان)|ايميلك|بريدك|الايميل|البريد|كلم[هة] (?:المرور|السر)|رمز التحقق|الكود|الرمز|الرقم السري|بيانات (?:بطاق\S*|حسابك)/i;
+const R7_GIVE=/\b(?:send|share|give|provide|forward|tell|need|require|enter|confirm|write|text|whatsapp|reply with|i need|i require)\b|ارسل\S*|ابعث\S*|اعطن\S*|زودن\S*|شاركن\S*|اكتب\S*|ارفق\S*|ابي|اريد|احتاج|مطلوب|دز\S*|عطني|عطيني|هات|زل\S*/i;
+const R7_MASK_AZ=/\b(?:e?-?mail|imeel|ime[iy]l|ma3lomat\w*|m3lomat\w*|bank|iban|hesab|7sab|card|bita?qa|code|kod|otp|raqam\w*)\b/i;
+const R7_GIVE_AZ=/\b(?:ib3at\w*|ibat\w*|ba3at\w*|send|shar?e?k\w*|7ot\w*|a3ti\w*|3ti\w*|dz\w*|ezl\w*|zawed\w*|3tini|b3at\w*)\b/i;
+const R7_OPPN=/\b(?:business|investment|earning|income|money[- ]making|profitable|golden|great|amazing|unique|exciting|lucrative|financial)\s+(?:opportunit\w+|chance|proposal|deal|venture|partnership)\b|\b(?:opportunit\w+|chance)\s+(?:to|for)\s+(?:invest|earn|make\s+(?:good\s+|extra\s+|some\s+)?money|get\s+rich|start\s+(?:a\s+)?business|join\s+(?:my|our|a)\s+(?:team|business|company|project))|\b(?:invest\w*|partner\w*)\s+with\s+(?:me|us|you)\b|\bwork\s+with\s+(?:me|us)\b|\b(?:new|business)\s+venture\b|\bwant\s+to\s+(?:earn|make)\s+(?:extra|good|easy|some)?\s*(?:money|income)\b|\b(?:make|earn)\s+(?:extra|easy|quick|good)\s+(?:money|income|cash)\b|\bi\s+(?:have|got)\s+(?:a|an)\s+(?:\w+\s+)?(?:opportunit\w+|business|project|deal)\s+(?:for|to share with)\s+you\b|\b(?:investment|earning|income)\s+(?:plan|scheme|offer|project)\b|فرص[هة]\s*(?:ال)?(?:استثمار|عمل|تجاري[هة]?|ربح|ذهبي[هة]|عظيم[هة]|مميز[هة])|عندي\s+(?:لك\s+)?(?:فرص[هة]|عرض\s+(?:استثمار|عمل|تجاري)|مشروع|شغل[هة]|وظيف[هة])|عرض\s+(?:استثمار|عمل|تجاري|وظيف[هة])|(?:ابغى|ابي|اريد|ودي)\s+(?:ان\s+)?(?:اشركك|اشاركك)|شراك[هة]\s+(?:تجاري[هة]|معي)|مشروع\s+(?:تجاري|مربح)|(?:مصدر|دخل)\s+اضافي|(?:تبي|تبغى|تحب|تريد ان)\s+تربح/i;
+const R7_OPPJ=/\b(?:job|work|employment)\s+(?:opportunit\w+|offer|vacancy|opening|position|chance)\b|\b(?:opportunit\w+|chance)\s+(?:to|for)\s+work\b|فرص[هة]\s*وظيف\S*|وظيف[هة]\s+(?:شاغر[هة]|لك)/i;
+const R7_OPP_AZ=/\b(?:3ndi|3andi|ando|3indi)\s+(?:lak\s+)?(?:fur?s[ao]\w*|mashro3|3ard)\b|\bfur?s[ao]t?\s+(?:3amal|istithmar|esteshmar|tijari\w*|ribh|rib7)\b/i;
+const R7_STRANGER=/\b(?:gave me your (?:number|contact)|got your (?:number|contact|name)|found your (?:number|profile|contact)|(?:cousin|friend|brother|colleague|uncle|relative|sister|neighbou?r)'?s?\s+friend|recommended you|referred you|someone (?:gave|told)|do you know me|remember me|dear (?:friend|sir|madam|customer)|hello dear)\b|اعطاني رقمك|عطاني رقمك|اخذت رقمك|حصلت على رقمك|صديق\s+(?:ابن عمك|ولد عمك|اخوك|قريبك|زميلك|اخيك)|صاحب\s+(?:ابن عمك|ولد عمك|اخوك|قريبك)|بتعرفني|تعرفني/i;
+const R7_ROLE=/\b(?:security|bank|fraud|police|customs|court|immigration|compliance|verification)\s+(?:officer|agent|employee|staff|team|department|manager|investigator)\b|\b(?:officer|investigator|inspector|detective)\b|(?:ضابط|موظف|مندوب|محقق|المحقق|مسؤول|مسئول)\s*(?:ال)?(?:امن|حماي[هة]|بنك|شرط[هة]|امان|احتيال|تحقق|مصرف|جمارك|نياب[هة])/i;
+const R7_CODENOUN=/(?:ارسال|تزويد|اعطاء|تسليم|مشارك[هة]|تقديم|قراء[هة]|ذكر)\s+(?:\S+\s+){0,3}?(?:ب|ل)?(?:ال)?(?:رمز|كود)\s*(?:ال)?(?:تحقق|سري|otp|مؤقت|مرور|امان)|\b(?:sending|providing|giving|sharing|forwarding|reading out)\s+(?:of\s+)?(?:the\s+)?(?:verification|security|one[- ]time|sms)\s+(?:code|otp|number)\b|\b(?:provision|submission)\s+of\s+(?:the\s+)?(?:verification|security|one[- ]time)\s+code\b/i;
+const R7_PAYV=/\b(?:send|transfer\w*|pay\w*|paid|deposit\w*|wire|remit\w*|settle)\b|حول\S*|تحويل|ادفع\S*|تدفع|دفع|سداد|سدد\S*|دز\S*|ارسل\S*|ارسال|ابعث\S*|اودع\S*|ايداع|زل\S*|عطن\S*/i;
+const R7_PAYV_AZ=/\b(?:idfa3|odfa3|adfa3|dfa3|7awel|7awil|hawel|awda3|odi3|dez\w*|ib3at\w*)\b/i;
+const R7_PERS_AZ=/\b(?:7sab|hesab|7esab|hisab)\w*\s+(?:el\s+)?shakh?s\w*|\bshakh?s\w*\s+(?:7sab|hesab)/i;
+const R7_PERS=/(?:حسابي|حسابه|حسابها|حساب)\s+(?:ال)?شخصي/;
+const R7_BLDG=/\b(?:building|tower|community|property management|facility|facilities|estate|owners?\s+association|association|management|manager|maintenance|service\s+charges?|chiller|parking|school|nursery|clinic|company|office)\b|مدير\s*(?:ال)?(?:مبن[ىي]|عمار[هة]|برج|مجمع|املاك)|ادار[هة]|الصيان[هة]|رسوم\s*(?:الخدم[هة]|الصيان[هة]|المبنى|الاتحاد)|اتحاد الملاك|مدرس[هة]|حضان[هة]|مكتب|شرك[هة]/i;
+const R7_BLDG_AZ=/\b(?:mudir|modir|mdir)\s+(?:el\s+)?(?:mabna|3imara|building|borj)\b|\b(?:building|maintenance|service charge|7aris|haris)\b/i;
+const R7_DEPW=/\b(?:deposit|booking fee|advance|reservation|down payment)\b|عربون|مقدم|تامين|حجز|دفع[هة]\s*اولى/i;
+const R7_DEPW_AZ=/\b(?:3arboo?n|3rboon|3arbon|mu?qaddam|moqadam|deposit|advance)\b/i;
+const R7_FEEW2=/\b(?:activation|activate|registration fee|joining fee|processing fee|application fee|medical fee|training fee|visa fee|starter kit|uniform fee|refundable|security deposit|verification fee)\b|رسوم\s*(?:تسجيل|تفعيل|توظيف|التقديم|ملف|طبي|تدريب)|رسوم\s*(?:ال)?(?:تاشير[هة]|فيز[اه]|اقام[هة]|تصريح)|تفعيل|مسترجع\S*/i;
+const R7_JOBPAY2=/(?:ادفع|تدفع|دفع|تسدد|سداد|سدد|حول|تحول|تحويل|ارسل)\S*\s+(?:\S+\s+){0,4}?(?:رسوم|مبلغ|\d)|(?:رسوم|مبلغ)\S*\s+(?:\S+\s+){0,3}?(?:دفع|تحويل|سداد)/;
+const R7_JOBSTRICT_AZ=/\b(?:wa[zd]if[ae]h?|wazaif|wadhifa|shugh?l|shogh?l)\b/i;
+const R7_FEEW2_AZ=/\b(?:rus?oo?m|rsoom)\s+(?:el\s+)?(?:tasj?eel|tafe+l|tas3eel|tawz?if|ta7weel)\b|\b(?:tasj?eel|tafe+l)\s+(?:fee|rusoom)\b/i;
+const R7_JOBSTRICT=/\b(?:jobs?|vacanc\w+|hiring|recruit\w+|position|employment|work\s+permit)\b|وظيف\S*|توظيف|فرص[هة]\s*عمل|شغل[هة]?\b|مطلوب\s+(?:ال)?(?:موظف\S*|مندوب\S*|سائق\S*|عمال|محاسب\S*|فني\S*)/i;
+const R7H_COLLECT={tax:['fta','mof'],fine:['moi','dubai-police','abu-dhabi-police','sharjah-police','ajman-police','rak-police','uaq-police','fujairah-police','rta-dubai','parkin','salik','srta','abu-dhabi-mobility','q-mobility','dubai-courts','tamm','dubainow','uae-government-portal'],
+utility:['dewa','sewa','etihad-we','taqa-distribution','dubainow','tamm','uae-government-portal'],visa:['icp','gdrfa-dubai','mohre','moi','tamm','dubainow','uae-government-portal'],customs:['icp','dubai-customs','dubai-trade','mof','uae-government-portal']};
+const R7H_PAYV=/\b(?:pay|paid|settle|clear|remit|payment|payments)\b|ادفع\S*|تدفع|دفع|سداد|سدد\S*|تسديد|تسدد|دفعه/i;
+const R7H_THING={
+tax:/\b(?:pay|settle|clear)\w*\s+(?:\S+\s+){0,4}?(?:vat|tax(?:es)?|value added tax)\b|\b(?:vat|tax(?:es)?|value added tax)\s+(?:payment|due|dues|arrears|penalty|fine|owed|overdue|outstanding|unpaid)\b|\b(?:outstanding|unpaid|overdue|pending)\s+(?:\S+\s+)?(?:vat|tax(?:es)?)\b|(?:دفع|سداد|سدد\S*|ادفع\S*|تسديد)\s+(?:\S+\s+){0,4}?(?:ضريب[هة]|vat)|ضريب[هة]\S*\s+(?:\S+\s+){0,4}?(?:مستحق\S*|متاخر\S*|غير مدفوع\S*|واجب\S*)/i,
+fine:/\b(?:traffic|parking|speed(?:ing)?|radar|road|salik|toll|vehicle)\s+(?:fines?|violations?|tickets?|penalt(?:y|ies)|offen[cs]es?|infractions?)\b|\b(?:fines?|violations?)\s+(?:for|on|of)\s+(?:your\s+|the\s+)?(?:vehicle|car|plate|parking|traffic|license|licence)\b|\b(?:unpaid|outstanding|pending|overdue)\s+(?:traffic\s+)?(?:fines?|violations?)\b|\bfines?\s+(?:of|worth|total\w*)\s+(?:aed|dhs?)|مخالف[هة]|مخالفات|غرام[هة]\s+(?:مروري|مرور|وقوف|سرع)/i,
+utility:/\b(?:water|electricity|electric|power|gas|utility|utilities|dewa|sewa|addc|aadc|fewa)\s+(?:bills?|dues?|payments?|charges?|consumption|account)\b|\b(?:bills?|payments?)\s+(?:for|of)\s+(?:the\s+|your\s+)?(?:water|electricity|power|gas)\b|فاتور[هة]\s+(?:ال)?(?:ماء|مياه|كهرباء|غاز|طاقه|خدمات|استهلاك)|(?:ال)?(?:ماء|مياه|كهرباء)\s+(?:ال)?(?:فاتور[هة]|مستحق\S*)/i,
+visa:/\b(?:visa|residency|residence|resident|emirates id|eid|golden visa|entry permit|work permit|labou?r card|passport)\s+(?:\w+\s+){0,2}?(?:fees?|fines?|charges?|payments?|dues?)\b|\b(?:fees?|fines?|charges?)\s+(?:for|of)\s+(?:your\s+|the\s+)?(?:visa|residency|residence|emirates id|eid|permit|passport)\b|\boverstay\b|رسوم\s+(?:\S+\s+){0,2}?(?:ال)?(?:تاشير\S*|فيز[اه]|اقام[هة]|هوي[هة]|جواز|تصريح)|غرام[هة]\s+(?:ال)?(?:اقام|تاشير|تاخير|تجديد)|(?:تجديد)\s+(?:ال)?(?:اقام|هوي)\S*\s+(?:\S+\s+){0,2}?(?:رسوم|مبلغ|دفع)/i,
+customs:/\bcustoms?\b[^.!?\n]{0,30}\b(?:fees?|duty|duties|charges?|clearance|payment|tax)\b|\b(?:import|customs)\s+(?:fees?|duty|duties|tax|charges?)\b|(?:جمرك\S*|جمارك|الجمارك)[^.!؟\n]{0,30}(?:رسوم|ضريب|مبلغ|مستحق|دفع)|رسوم\s+(?:ال)?(?:جمرك\S*|جمارك)/i};
+function mzR7hKind(rt){if(!R7H_PAYV.test(rt)&&!/\b(?:due|overdue|unpaid|outstanding|required|mandatory)\b|مطلوب|مستحق\S*|متاخر\S*|واجب/i.test(rt))return '';for(const k of Object.keys(R7H_THING))if(R7H_THING[k].test(rt))return k;return ''}
+const R7I_ACT=new Set(['pay','payment','payments','paynow','verify','verification','secure','update','refund','refunds','cancel','cancellation','fine','fines','fee','fees','check','confirm','renew','renewal','unlock','restore','claim','login','signin','validate','validation','recover','recovery','settle','settlement','resolve']);
+const R7I_WORDS=new Set([...R7I_ACT,'security','safe','account','accounts','portal','online','service','services','support','help','gov','government','uae','ae','dubai','abudhabi','flight','flights','ticket','tickets','booking','bookings','customs','visa','tax','vat','traffic','parking','id','link','linked','access','app','my','e','now','fast','quick','official','express','direct','case','notice','alert','unpaid','bill','bills','water','electricity','power','bank','banking','card','wallet','center','centre','user','customer','invoice','dues','balance','status','details','info','identity','residency','emirates','emirate','sharjah','ajman','rak','fujairah','uaq','air','airline','airlines','travel','trip']);
+function mzR7iSegment(label){const s=String(label||'').toLowerCase().replace(/[^a-z]/g,' ').trim();if(!s)return null;const parts=s.split(/\s+/);let act=false,n=0;
+for(const p of parts){const best=new Array(p.length+1).fill(null);best[0]=[];
+for(let i=0;i<p.length;i++){if(!best[i])continue;for(let j=i+1;j<=p.length;j++){const w=p.slice(i,j);if(R7I_WORDS.has(w)&&(!best[j]||best[j].length>best[i].length+1))best[j]=best[i].concat([w])}}
+if(!best[p.length])return null;for(const w of best[p.length]){n++;if(R7I_ACT.has(w))act=true}}
+return n>=2&&act?{n,act}:null}
+function mzR7iLinks(ctx){const out=[];for(const L of ctx.links){if(L.official||mzOrgByHost(L.host)||mzLinkSvc(L.host)||SHORTENERS.has(String(L.host).replace(/^www\./,'')))continue;
+const h=String(L.host||'').toLowerCase().replace(/^www\./,'');const parts=h.split('.');const reg=parts.length>=3&&/^(?:com|co|gov|net|org|ac)$/.test(parts[parts.length-2])?parts[parts.length-3]:parts[parts.length-2];if(mzR7iSegment(reg))out.push(L)}return out}
+const R7I_NOW=/\b(?:now|immediately|today|urgent\w*|asap|within\s+\d+\s*(?:hours?|hrs?|days?)|deadline|avoid|otherwise|penalt\w+|fines?|suspend\w*|block\w*|cancel\w*|final|last (?:chance|warning|notice))\b|الان|فورا|فوري\S*|اليوم|خلال\s*\d*\s*(?:ساع|يوم|ايام)\S*|عاجل\S*|تجنب|والا|وإلا|غرام[هة]|ايقاف|اخطار|اخير\S*|الغاء|رسوم/i;
+const R7I_THREAT=/\b(?:account|card|wallet|profile|access|login|transaction|payment|device)\b[^.!?\n]{0,40}\b(?:linked|connected|unknown|unrecogni[sz]ed|suspended|blocked|locked|frozen|restricted|compromised|hacked|unauthori[sz]ed|suspicious|unusual|at risk|will be (?:closed|suspended|blocked|deleted))\b|\b(?:unknown|unrecogni[sz]ed|suspicious|unusual|unauthori[sz]ed)\s+(?:account|activity|login|transaction|device|access)\b|(?:حساب|بطاق|محفظ)\S*[^.!؟\n]{0,40}(?:مرتبط|ربط|غير معروف|مجهول|موقوف|معلق|محظور|مغلق|مجمد|مقيد|مخترق|مشبوه|غير مصرح|نشاط)|(?:نشاط|دخول|عمليه|جهاز)\s+(?:غير معروف|مشبوه|غير مصرح|غير عادي)|(?:تم|سيتم)\s+(?:ربط|ايقاف|تعليق|حظر|اغلاق|تجميد)\s+(?:حساب|بطاق)/i;
+const R7I_VERB=/\b(?:verify|confirm|validate|update|secure|unlock|restore|review|re-?activate|resolve)\b|تحقق|تاكيد|اكد\S*|حدث\S*|تحديث|تامين|فتح|استعاده|راجع\S*/i;
+const R7I_PAYAMT=new RegExp(AMT+'|\\b\\d{2,}\\b\\s*(?:aed|dhs?)','iu');
+const R7J_INV=/\b(?:invoices?|inv[-\s]?\d{3,}|pro-?forma|unpaid bill|overdue bill|outstanding balance)\b|فاتور[هة]|فواتير|فاتورتك/i;
+const R7J_DEMAND=/\b(?:unpaid|overdue|outstanding|pending|due|pay|settle|payment|resolve|clear|remittance)\b|غير مدفوع\S*|مستحق\S*|متاخر\S*|معلق\S*|سداد|دفع|تسديد|للمدفوعات|ادفع\S*|سدد\S*/i;
+const R7J_PRESS=/\b(?:immediately|urgent\w*|asap|right now|(?:call|pay|settle|resolve|contact)\s+(?:us\s+)?now|final (?:notice|warning|reminder|demand)|legal (?:action|proceedings?|case|notice)|lawsuit|court|suspend\w*|penalt\w+|blacklist\w*|last (?:chance|warning|notice)|failure to)\b|فورا|فوري\S*|عاجل\S*|(?:اتصل|ادفع|سدد|تواصل)\S*\s+(?:الان|حالا)|اخطار\s+(?:نهائي|اخير)|اجراء\S*\s+قانوني|قانوني\S*|قضي[هة]|غرام[هة]|تعليق|ايقاف/i;
+const R7J_BIZ=/\b(?:llc|l\.l\.c|ltd|limited|fze|fzco|est\.?|trading|company|co\.|contracting|enterprises?|group|services?\s+(?:llc|est)|invoice from|your (?:order|booking|purchase|delivery|appointment|service)|as per (?:our|the) (?:agreement|contract|quotation|order)|thank you for)\b|شرك[هة]|مؤسس[هة]|حسب\s+(?:الاتفاق|العقد|الطلب)|شكرا/i;
+function mzR7jMobileOnly(ctx,rt){if(ctx.links.length||ctx.unofficial.length||/[\w.-]+@[\w-]+\.\w+/.test(rt)||RX_FREEMAIL.test(rt))return false;
+if(!ctx.allPhones.length)return false;return ctx.allPhones.every(p=>/^5\d{8}$/.test(mzLocal(p.digits||p.raw)))}
+function mzR7b(rt,ctx,asks,flags){const hard=[],soft=[];const noOrg=!ctx.orgs.length;if(!noOrg)return {hard,soft};
+const unk=ctx.links.filter(L=>!L.official&&!mzOrgByHost(L.host)&&!mzLinkSvc(L.host));const unkAny=ctx.links.filter(L=>!L.official&&!mzOrgByHost(L.host));
+if(unkAny.length){const kind=mzR7hKind(rt);
+if(kind&&!ctx.links.some(L=>{const o=mzOrgByHost(L.host);return o&&R7H_COLLECT[kind].includes(o.i)}))hard.push(['H3','r7_govpay',R7H_THING[kind]])}
+if(!hard.length){const sl=mzR7iLinks(ctx);
+if(sl.length){const amt=R7I_PAYAMT.test(rt),pay=R7H_PAYV.test(rt),now=R7I_NOW.test(rt),threat=R7I_THREAT.test(rt),verb=R7I_VERB.test(rt)||/\b(?:verify|confirm)\b/i.test(rt);
+if((amt&&pay&&now)||(threat&&verb&&now))hard.push(['H3','r7_payaddr',R7I_NOW]);
+else if(pay||verb)soft.push(['r7_svcaddr',R7I_VERB.test(rt)?R7I_VERB:R7H_PAYV])}}
+if(!hard.length&&!soft.length){const inv=mzR7jInvoice(rt,ctx);if(inv==='hard')hard.push(['H2','r7_invoice',R7J_PRESS]);else if(inv==='soft')soft.push(['r7_invoice_m',R7J_INV])}
+return {hard,soft}}
+function mzR7jInvoice(rt,ctx){if(ctx.orgs.length||!R7J_INV.test(rt)||!R7J_DEMAND.test(rt)||!mzR7jMobileOnly(ctx,rt))return '';
+return R7J_PRESS.test(rt)&&!R7J_BIZ.test(rt)&&(R7I_PAYAMT.test(rt)||/\b(?:resolve|unpaid|overdue|outstanding)\b|غير مدفوع|مستحق|متاخر/i.test(rt))?'hard':'soft'}
+function mzR7Pick(rt,...res){for(const r of res)if(r&&r.test(rt))return r;return /\S+/}
+function mzR7Link(ctx){/* an address that is not in the register: why it looks wrong, or '' when nothing is odd */
+const out=[];for(const L of ctx.links){if(L.official||mzOrgByHost(L.host)||mzLinkSvc(L.host)||SHORTENERS.has(String(L.host).replace(/^www\./,'')))continue;
+const host=String(L.host||'').toLowerCase().replace(/^www\./,'');const tld=host.split('.').pop();let why='';
+if(R7_HOSTWORD.test(host)||host.split(/[.\-_\d]+/).some(x=>/^(?:win|wins|winner|winners|gifts?|prizes?|free|lucky|claim|rewards?|bonus|promo|giveaway)$/.test(x)))why='word';
+else{const o=mzR4Part(host);if(o)why='brand';else{const lab=mzSplit(host).label.replace(/-/g,'');for(const [k,og] of MZ_PARTMAP){if(k.length>=5&&!og.sn&&lab.includes(k)&&!(og.d||[]).some(d=>host===d||host.endsWith('.'+d))){why='brand';break}}}}
+if(!why&&RARE_TLDS.has(tld))why='ending';
+if(!why&&/^http:/i.test(L.raw||''))why='http';
+out.push({L,why})}
+for(const L of ctx.links){if(L.official)continue;const h=String(L.host||'').toLowerCase().replace(/^www\./,'');if(SHORTENERS.has(h)||mzLinkSvc(h))out.push({L,why:'hidden'})}
+return out}
+function mzR7(rt,ctx,asks,flags){const hard=[],soft=[];const ot=ctx.ot||rt;const T=(a,b)=>(a&&a.test(rt))||(b&&b.test(ot));
+const noOrg=!ctx.orgs.length;if(ctx.warn)return {hard,soft};
+const link=ctx.unofficial.length>0,contact=link||ctx.allPhones.length>0||R7_CONTACT.test(rt)||R7_CONTACT.test(ot)||RX_FREEMAIL.test(rt);
+const hasF=id=>flags.some(f=>f.id===id);
+{const inv=T(R7_INV,R7_INV_AZ),rate=T(R7_RATE,R7_RATE_AZ)||(R7_RATE2.test(rt)&&!/\b(?:off|discount|sale|cash ?back|vat)\b/i.test(rt))||((R6_GW.test(rt)||R7_GW2.test(rt))&&R7_AMTW.test(rt)),rich=T(R7_RICH,R7_RICH_AZ)||!!mzR7Mult(rt);
+if(noOrg&&((rate&&inv)||rich)&&!R6_NOGUAR.test(rt)&&!R7_PAST.test(rt)){const re=mzR7Pick(rt,R7_RATE,R7_RATE2,R7_RICH,R7_MULT_EN,R7_MULT_AR,R6_GW);if(contact)hard.push(['H3','r7_return',re]);else soft.push(['r7_return',re])}}
+{const loan=T(R7_LOAN,R7_LOAN_AZ),lure=T(R7_LOANLURE,R7_LOANLURE_AZ);
+if(noOrg&&loan&&lure){const re=mzR7Pick(rt,R7_LOANLURE,R7_LOAN);if(contact)hard.push(['H3','r7_loan',re]);else soft.push(['r7_loan',re])}}
+{const jobcue=T(R7_JOBCUE),task=T(R7_TASK),daily=T(R7_DAILY,R7_DAILY_AZ),easy=T(R7_EASY,R7_EASY_AZ);
+if(noOrg&&contact&&((task&&(daily||/\d{2,}/.test(rt)||/(?:earn|pay|paid|اربح|تربح|ربح|راتب|عمول)/i.test(rt)))||(daily&&easy)))hard.push(['H3','r7_jobpay',mzR7Pick(rt,R7_TASK,R7_DAILY)]);
+else if(noOrg&&!soft.length&&!hard.length&&jobcue&&contact&&!R7_EMPLOYER.test(rt)&&(daily||(easy&&/(?:earn|income|salary|اربح|تربح|دخل|راتب|\d+\s?k\b)/i.test(rt)))&&!hasF('r4_job')&&!hasF('r4_task'))soft.push(['r7_job',mzR7Pick(rt,R7_DAILY,R7_EASY)])}
+if(noOrg&&T(R7_FREEGIFT,R7_FREEGIFT_AZ)&&link){const w=mzR7Link(ctx).find(x=>x.why);if(w||T(R7_PRIZEFEE))hard.push(['H3','r7_prize',mzR7Pick(rt,R7_FREEGIFT,R7_PRIZEFEE)]);else soft.push(['r7_prizelink',mzR7Pick(rt,R7_FREEGIFT)])}
+if(T(R7_BUYER,R7_BUYER_AZ)&&T(R7_SHIP,R7_SHIP_AZ)&&((T(R7_GIVE)&&T(R7_MASK))||(T(R7_GIVE_AZ)&&T(R7_MASK_AZ))))hard.push(['H3','r7_market',mzR7Pick(rt,R7_MASK,R7_SHIP)]);
+{const third=R6_THIRD.test(rt)||R7_PERS.test(rt)||R7_PERS_AZ.test(ot),bl=T(R7_BLDG,R7_BLDG_AZ)&&(/personal|شخصي/i.test(rt)||R7_PERS_AZ.test(ot)),dep=T(R7_DEPW,R7_DEPW_AZ);
+if(T(R7_PAYV,R7_PAYV_AZ)&&third&&((bl&&/\d/.test(rt))||dep))hard.push(['H3',bl?'r7_personal':'r7_third',R6_THIRD])}
+if(noOrg&&T(R7_JOBSTRICT,R7_JOBSTRICT_AZ)&&T(R7_FEEW2,R7_FEEW2_AZ)&&R6_AMT.test(rt)){const t=rt.replace(R6_WEPAY,x=>' '.repeat(x.length));const ar=/[\u0600-\u06FF]/.test(rt);if((!ar&&R6_JOBPAY.test(t))||(ar&&R7_JOBPAY2.test(t.replace(/(?:ال)?راتب[^.!؟\n]{0,25}/g,' ')))||R7_PAYV_AZ.test(ot))hard.push(['H3','r7_jobfee',mzR7Pick(rt,R7_FEEW2,R6_AMT)])}
+{const b=mzR7b(rt,ctx,asks,flags);for(const h of b.hard)hard.push(h);if(!hard.length)for(const s of b.soft)soft.push(s)}
+if(noOrg&&!hard.length&&!soft.length&&(T(R7_OPPN,R7_OPP_AZ)||(T(R7_OPPJ)&&T(R7_STRANGER))))soft.push(['r7_opp',mzR7Pick(rt,R7_OPPN,R7_OPPJ)]);
+return {hard,soft}}
+Object.assign(S.en,{fl_r7_return:'Promises a daily, weekly or monthly return, or quick riches',fw_r7_return:'No licensed firm promises a return, and nobody gets rich in a month. Check any firm with the regulator before you send money.',
+fl_r7_loan:'A loan offered out of nowhere with no interest, no checks or sure approval',fw_r7_loan:'A real lender checks your income and credit and shows its rates. Do not pay or share details for a loan that comes in a message.',
+fl_r7_jobpay:'A job with no employer named that pays per day or per small task',fw_r7_jobpay:'Real employers name themselves and pay a salary, not per like, per task or per day. These offers later ask you to pay in.',
+fl_r7_job:'A job or earning offer with no employer named, only a link or number',fw_r7_job:'Find the employer yourself and apply on its own website. Never pay or send documents to start.',
+fl_r7_prize:'A free prize or phone with a link to an address that is not the brand’s',fw_r7_prize:'A real prize comes from the brand’s own website or app. Do not open the link or type any details.',
+fl_r7_prizelink:'A prize offer with a link to an address that is not in the register',fw_r7_prizelink:'Check the offer on the brand’s own website or app, never from a link in a message.',
+fl_r7_market:'A buyer who will pay extra or send a courier and asks for your bank, card, email or a code',fw_r7_market:'A real buyer never needs your bank login, card or code to pay you. This is the usual way sellers lose money.',
+fl_r7_personal:'A building or company fee asked into a personal account',fw_r7_personal:'A building, school or company takes fees through its own account or portal, not a person’s account. Call the office on a number you already have.',
+fl_r7_third:'A deposit or advance asked into another person’s account',fw_r7_third:'Do not pay a deposit or advance into a person’s account before you have met the owner and signed.',
+fl_r7_jobfee:'A job that asks you to pay first',fw_r7_jobfee:'A real employer pays you; it never asks you to pay to start. These offers take your money and stop answering.',
+fl_r7_opp:'A business, investment or job offer from someone you do not know',fw_r7_opp:'Do not reply with details or send money. Ask the person who is said to know them, on a number you already have.'});
+Object.assign(S.ar,{fl_r7_return:'تعد بعائد يومي أو أسبوعي أو شهري، أو بالثراء السريع',fw_r7_return:'لا توجد جهة مرخّصة تعد بعائد، ولا أحد يصبح غنيًا في شهر. تحقق من أي جهة لدى الهيئة المنظِّمة قبل أن ترسل أي مبلغ.',
+fl_r7_loan:'قرض يُعرض عليك من العدم بلا فوائد وبلا فحص وبموافقة مضمونة',fw_r7_loan:'المُقرِض الحقيقي يفحص دخلك وسجلك الائتماني ويعلن أسعاره. لا تدفع ولا تعطِ بياناتك مقابل قرض جاءك في رسالة.',
+fl_r7_jobpay:'وظيفة بلا اسم صاحب عمل تدفع عن كل يوم أو عن كل مهمة صغيرة',fw_r7_jobpay:'أصحاب العمل الحقيقيون يعرّفون بأنفسهم ويدفعون راتبًا، لا عن كل إعجاب أو مهمة أو يوم. هذه العروض تطلب منك الدفع لاحقًا.',
+fl_r7_job:'عرض عمل أو ربح بلا اسم صاحب عمل، برابط أو رقم فقط',fw_r7_job:'ابحث عن صاحب العمل بنفسك وقدّم من موقعه الرسمي. لا تدفع ولا ترسل مستندات لتبدأ.',
+fl_r7_prize:'جائزة أو هاتف مجاني مع رابط إلى عنوان ليس عنوان الشركة',fw_r7_prize:'الجائزة الحقيقية تأتي من موقع الشركة أو تطبيقها. لا تفتح الرابط ولا تكتب أي بيانات.',
+fl_r7_prizelink:'عرض جائزة مع رابط إلى عنوان غير مسجّل',fw_r7_prizelink:'تحقق من العرض في موقع الشركة أو تطبيقها، لا من رابط في رسالة.',
+fl_r7_market:'مشترٍ سيدفع زيادة أو سيرسل مندوبًا ويطلب حسابك البنكي أو بطاقتك أو بريدك أو رمزًا',fw_r7_market:'المشتري الحقيقي لا يحتاج بيانات حسابك أو بطاقتك أو رمزًا ليدفع لك. هكذا يخسر البائعون أموالهم عادةً.',
+fl_r7_personal:'رسوم مبنى أو شركة تُطلب في حساب شخصي',fw_r7_personal:'المبنى أو المدرسة أو الشركة تأخذ الرسوم بحسابها الرسمي أو عبر بوابتها، لا بحساب شخص. اتصل بالمكتب على رقم عندك مسبقًا.',
+fl_r7_third:'عربون أو دفعة مقدمة تُطلب في حساب شخص آخر',fw_r7_third:'لا تدفع عربونًا أو دفعة مقدمة إلى حساب شخص قبل أن تقابل المالك وتوقّع.',
+fl_r7_jobfee:'وظيفة تطلب منك الدفع أولًا',fw_r7_jobfee:'صاحب العمل الحقيقي يدفع لك ولا يطلب منك مالًا لتبدأ. هذه العروض تأخذ مالك ثم تتوقف عن الرد.',
+fl_r7_opp:'عرض تجاري أو استثماري أو وظيفي من شخص لا تعرفه',fw_r7_opp:'لا ترد ببياناتك ولا ترسل مالًا. اسأل الشخص الذي قيل إنه يعرفه، على رقم عندك مسبقًا.'});
+Object.assign(S.en,{fl_r7_govpay:'A tax, fine, bill or government fee to be paid at an address that is not in the register',fw_r7_govpay:'Only the authority itself collects these, on its own website or app (the Federal Tax Authority, the traffic police, your electricity and water authority, ICP, customs). Open that authority’s own app yourself; never pay from a link in a message.',
+fl_r7_payaddr:'Pay or verify “now” at an address made of service words',fw_r7_payaddr:'An address built from words like pay, verify, secure, account or refund, and not in the register, is made to look official. A real organisation uses its own address. Do not pay or sign in there.',
+fl_r7_svcaddr:'A pay or verify address made of service words, not in the register',fw_r7_svcaddr:'Words like pay, verify or account in an address prove nothing. Check on the organisation’s own website or app.',
+fl_r7_invoice:'An invoice you may not know, with only a mobile number to call and pressure',fw_r7_invoice:'No organisation is named, the only contact is a mobile number, and it rushes you. Real companies show a name and a number or address you can check. Do not call or pay; ask the company on a number you already have.',
+fl_r7_invoice_m:'An invoice with only a mobile number to call',fw_r7_invoice_m:'No registered organisation is named and the only contact is a mobile number. Small businesses do send invoices this way, so this is not proof of a scam: check that you really owe it, on a number you already have, before you call or pay.'});
+Object.assign(S.ar,{fl_r7_govpay:'ضريبة أو مخالفة أو فاتورة أو رسوم حكومية يُطلب دفعها على عنوان غير مسجّل',fw_r7_govpay:'الجهة نفسها هي التي تحصّل هذه المبالغ، على موقعها أو تطبيقها (الهيئة الاتحادية للضرائب، الشرطة المرورية، هيئة الكهرباء والمياه، الهوية والجنسية، الجمارك). افتح تطبيق الجهة بنفسك ولا تدفع من رابط في رسالة.',
+fl_r7_payaddr:'دفع أو تحقق «الآن» على عنوان مكوَّن من كلمات خدمية',fw_r7_payaddr:'عنوان مبني من كلمات مثل دفع وتحقق وتأمين وحساب واسترداد وغير مسجّل يُصنع ليبدو رسميًا. الجهة الحقيقية تستخدم عنوانها الخاص. لا تدفع ولا تسجّل دخولك هناك.',
+fl_r7_svcaddr:'عنوان دفع أو تحقق مكوَّن من كلمات خدمية وغير مسجّل',fw_r7_svcaddr:'كلمات مثل دفع أو تحقق أو حساب في العنوان لا تثبت شيئًا. تحقق من موقع الجهة أو تطبيقها الرسمي.',
+fl_r7_invoice:'فاتورة قد لا تعرفها برقم جوال فقط للاتصال مع استعجال',fw_r7_invoice:'لا اسم جهة، ووسيلة التواصل رقم جوال فقط، والرسالة تستعجلك. الشركات الحقيقية تذكر اسمها ورقمًا أو عنوانًا يمكنك التحقق منه. لا تتصل ولا تدفع؛ اسأل الشركة على رقم عندك مسبقًا.',
+fl_r7_invoice_m:'فاتورة برقم جوال فقط للاتصال',fw_r7_invoice_m:'لا جهة مسجّلة مذكورة، ووسيلة التواصل رقم جوال فقط. المنشآت الصغيرة ترسل فواتيرها هكذا أيضًا، فهذا ليس دليلًا على الاحتيال: تأكد أنك مدين بها فعلًا، على رقم عندك مسبقًا، قبل أن تتصل أو تدفع.'});
+const R7_CODEROLE=/(?:اعط|عط|زود|ابلغ|بلغ|هات|شارك|اذكر|قل|قول|اقرا|دز|زل|ابعث|ارسل)\S*\s+(?:\S+\s+){0,2}?(?:ال)?(?:رمز|كود)\S*(?:\s+\S+){0,2}?\s+(?:ل|الى|إلى)?(?:ال)?(?:ضابط|موظف|مندوب|محقق|مسؤول|مسئول)/i;
+const R7_ROLE_AZ=/\b(?:dab[ie]t|mowa[zd]af|mo?7aqiq|mu7aqiq|mandoub)\s+(?:el\s+)?(?:amn|amen|bank|shor?ta|sharta)\b|\b(?:officer|agent)\b/i;
+(function(){const cr=mzRule('code_request');if(cr){cr.re.push(new RegExp(R7_CODENOUN.source,'gi'));cr.re.push(new RegExp(R7_CODEROLE.source,'gi'))}})();
 const R4_VOICE=/\byour (?:parcel|package|account|card|order|item|delivery|shipment|payment|bank|wallet|apple pay|prepaid|debit|credit|council tax|tax|vehicle|visa|id|emirates id|number|sim|line|subscription|membership|points|rewards?)\b|\bdear (?:\w+\s+){0,2}(?:customer|client|user|member|holder|sir|madam|parent|tenant|owner)\b|\b(?:we have|we were|we could|we are|we noticed)\b|عزيزي|عميل|بطاقتك|حسابك|طلبك|شحنتك/i;
 const R4_CALLNUM=/(?:\b(?:call|dial|ring|reach|contact|text|whatsapp|phone|tel)\b|اتصل\S*|تواصل\S*|كلم\S*|هذا الرقم)[^.!?\n]{0,28}?(?<![\d])(\+?\d[\d\s().-]{7,15}\d)(?!\d)|(?<!\d)(\+?[2-9]\d{2}[\s.-]?\d{3}[\s.-]?\d{4})(?!\d)/gi;
 const R4_GUAR2=/\binvest\b[^.!?\n]{0,40}\b(?:and\s+)?(?:earn|get|make|win)\b[^.!?\n]{0,25}\b(?:within|in)\s+(?:a |one |\d+ )?(?:day|week|month|hours?)\b|استثمر[^.!؟\n]{0,40}(?:واربح|وتربح|اربح)|\b(?:made|earn(?:ed)?|profit(?:s)? of|returns? of|get|win|make)\s+\d{3,4}\s?%|\b\d{3,4}\s?%\s+(?:profit|return|roi|gain|in (?:a |one |\d+ )?(?:days?|weeks?|months?|hours?))|ارباح\s*مضمونه|ربح\s*مضمون|عائد\s*مضمون|مضمونه\s*\d{2,3}\s*%|\bguaranteed\s*\d{2,3}\s*%/i;
@@ -1621,6 +1801,9 @@ const threatDl=flags.some(f=>R4B_THFLAGS.has(f.id))||R4B_THDL.test(RWb)||R4B_THD
 const freeMail=RX_FREEMAIL.test(rt);
 const askTxt=R4B_ASKRX.some(r=>r.test(RWb)||r.test(rt))||R4_SECRETASK.test(rt)||flags.some(f=>R4B_ASKFLAGS.has(f.id));
 const partnerOk=!(realAsk.length||askTxt||threatDl||freeMail);  /* nothing here turns a link or number that is not the organisation's into a hard sign */
+const isShortL=l=>SHORTENERS.has(String(l.host).replace(/^www\./,''))||mzLinkSvc(l.host);
+const shortSoft=orgNamed&&ctx.links.length>0&&ctx.links.every(l=>l.official||mzOrgByHost(l.host)||isShortL(l))&&!ctx.phones.length&&!threatDl&&!askTxt&&!freeMail&&!R4_PROBLEM.test(RWb)&&!flags.some(f=>R4_TH.has(f.id))&&!R5_PAYIMP.test(rt)&&!/\b(?:pay|settle|transfer|send|wire|remit|deposit)\b|ادفع|سدد|حول/i.test(rt)
+&&!realAsk.some(a=>a!=='pay')&&!flags.some(f=>f.id==='org_lookalike'||f.id==='lookalike'||f.id==='puny'||f.id==='userinfo'||f.id==='govdomain'||f.id==='word'||f.id==='ip'||R4B_ASKFLAGS.has(f.id));
 if(hasAny(['cred_ask','remote_app','job_docs','injection','reply_trick']))H.add('H1');
 {const cr=flags.find(f=>f.id==='card_request');if(cr&&(claims||/\b(?:card number|card no|cvv|cvc|expiry|pin|password|otp|16[- ]digit)\b|رقم البطاقه|cvv/i.test(rt)))H.add('H1')}
 const cf=flags.find(f=>f.id==='code_request'||(f.id==='id_request'&&f.k!=='id_soft'));
@@ -1631,18 +1814,19 @@ if(st.x.includes('H1'))H.add('H1');
 if(claims&&R4_SECRETASK.test(rt)&&!st.pinCase)H.add('H1');
 {const df=flags.find(f=>f.id==='dob_ask');if(df&&/\b(?:date of birth|dob|birth ?date|mother'?s maiden)\b|\bbirthday\b[^.!?\n]{0,30}\b(?:security|answer|verify)\b|تاريخ ميلاد/i.test(rt))H.add('H1')}
 if(R4_AZSECRET.test(rt)&&(claims||ctx.unofficial.length>0||R4_VOICE.test(rt)))H.add('H1');
-{const of_=flags.find(f=>f.id==='org_never');if(of_&&(['code','card','id'].includes(of_.ask)||((ctx.unofficial.length||ctx.phones.length||ctx.links.some(l=>!l.official))&&!partnerOk)))H.add('H2')}
+{const of_=flags.find(f=>f.id==='org_never');if(of_&&(['code','card','id'].includes(of_.ask)||((ctx.unofficial.length||ctx.phones.length||ctx.links.some(l=>!l.official))&&!partnerOk&&!shortSoft)))H.add('H2')}
 for(const f of flags){
 if(f.id==='org_lookalike')H.add('H2');
-if(f.id==='org_link_other'){const L=ctx.links.find(l=>l.host===f.arg);if(L&&!mzOrgByHost(L.host)&&!partnerOk)H.add('H2')}
+if(f.id==='org_link_other'){const L=ctx.links.find(l=>l.host===f.arg);if(L&&!mzOrgByHost(L.host)&&!partnerOk&&!(shortSoft&&isShortL(L)))H.add('H2')}
 if(f.id==='lookalike'||f.id==='puny'||f.id==='userinfo'||(f.id==='govdomain'&&!(orgNamed&&partnerOk)))H.add('H2');
 if((f.id==='word'||f.id==='ip')&&(claims||orgNamed||GEN_ORG.test(rt)||asks.size>0))H.add('H2');
 if(f.id==='org_phone_other'){const p=ctx.allPhones.find(x=>x.raw===f.arg);const o=f.org?MZ_BY_ID[f.org]:null;
 if(p&&o){const lp=mzLocal(p.digits||p.raw);if(!p.uae||(lp.length===9&&lp[0]==='5'))H.add('H2')}}}
 const shorts=ctx.links.some(l=>SHORTENERS.has(String(l.host).replace(/^www\./,''))||mzLinkSvc(l.host));
 const thr=flags.some(f=>R4_TH.has(f.id));
-if(shorts&&(orgNamed||claims||GEN_ORG.test(rt))&&(orgNamed?!partnerOk:(thr||R4_PROBLEM.test(st.raw||rt)||realAsk.length>0||askTxt)))H.add('H2');
-if(hasAny(['job_fee','gift_cards','job_task','earn_daily','wrong_number_money','mule','visa_fee','family_imp']))H.add('H3');
+if(shorts&&(orgNamed||claims||GEN_ORG.test(rt))&&(orgNamed?(!partnerOk&&!shortSoft):(thr||R4_PROBLEM.test(st.raw||rt)||realAsk.length>0||askTxt)))H.add('H2');
+const jtOwn=(()=>{const f=flags.find(x=>x.id==='job_task');return !!f&&f.sev<3&&orgNamed&&!ctx.phones.length&&ctx.links.every(l=>l.official||mzOrgByHost(l.host))})();
+if(hasAny(['job_fee','gift_cards','earn_daily','wrong_number_money','mule','visa_fee','family_imp'])||(has('job_task')&&!jtOwn))H.add('H3'); /* check-fix: a registered employer's own advert (one pay phrase, its own address, no number) is not a task scam */
 if(flags.some(f=>f.id==='rental'&&f.sev>=3))H.add('H3');
 const feeAsk=asks.has('pay')||R3_FEEWORD.test(rt)||MZ_AMT.test(rt);
 const ownOnly=(ctx.ownDest||ctx.links.length>0)&&ctx.links.every(l=>l.official)&&!ctx.phones.length;
@@ -1661,7 +1845,7 @@ const partnerOnly=orgNamed&&partnerOk&&!D.nums.length&&!flags.some(f=>f.id==='pe
 if(probl&&D.away&&voice&&!partnerOnly&&(asks.size>0||D.links.length>0||D.nums.length>0)){H.add('H4');st.prom=true}
 if((hasAny(['case_threat','authority_threat'])||(R4_AUTH.test(rt)&&claims))&&R4_STAYLINE.test(rt)){H.add('H4');st.prom=true}
 if(R4_AUTH.test(rt)&&claims&&(first(rt,R3_MONEYASK)||has('money_request'))&&!ownOnly&&!R4_APPW.test(rt)){H.add('H4');st.prom=true}
-if(D.nums.length&&(orgNamed||GEN_ORG.test(rt)||R4_DEAR.test(rt))&&(probl||asks.has('call')||ctx.flags.some(f=>f.id==='prize'||f.id==='refund'))){H.add('H2');st.prom=true}
+if(D.nums.length&&(orgNamed||GEN_ORG.test(rt)||R4_DEAR.test(rt))&&mzR7jInvoice(rt,ctx)!=='soft'&&(probl||asks.has('call')||ctx.flags.some(f=>f.id==='prize'||f.id==='refund'))){H.add('H2');st.prom=true}
 if(R4_GUAR2.test(rt)&&!ctx.orgs.length&&!/\b(?:not|no|never)\s+(?:be\s+)?guarantee/i.test(rt)){H.add('H3');st.add.push(['r4_returns',R4_GUAR2])}
 if(R4_PREM.test(rt)&&R4_PRIZEWORD.test(rt)){H.add('H3');st.add.push(['r4_prem',R4_PREM])}
 if(has('premium_sms')&&R4_PRIZEWORD.test(rt)){H.add('H3')}
@@ -1670,6 +1854,8 @@ if(R4_MISTAKE.test(rt)){H.add('H3');st.add.push(['r4_mistake',R4_MISTAKE])}
 {const cb=mzR5CodeBack(rt);if(cb){H.add('H3');st.add.push(['r5_codeback',R5_CB_MIST])}
 const la=mzR5LoanFee(rt);if(la&&!ownOnly&&!(ctx.orgs.length&&!ctx.unofficial.length&&!ctx.phones.length&&!asks.has('pay')&&!/\b(?:pay|transfer|send)\b|ادفع|حول/i.test(rt))){H.add('H3');st.add.push(['r5_loanfee',R5_LOAN_FEE])}}
 for(const [k6,re6] of mzR6(rt,ctx,asks,flags)){H.add('H3');st.add.push([k6,re6])}
+{const r7=mzR7(rt,ctx,asks,flags);for(const [h7,k7,re7] of r7.hard){H.add(h7);st.add.push([k7,re7])}st.soft7=r7.soft}
+{const cf7=flags.find(f=>f.id==='code_request');if(cf7&&!st.pinCase&&(R7_ROLE.test(rt)||R7_ROLE_AZ.test(ctx.ot||'')))H.add('H1')}
 if(R4_SAFEACCT.test(rt)){H.add('H3');st.add.push(['r4_safe',R4_SAFEACCT])}
 if(R4_BEC.test(rt)&&(asks.has('pay')||R4_PAYVERB.test(rt))&&!ctx.orgs.length){H.add('H3');st.add.push(['r4_bec',R4_BEC])}
 if(R4_PARCELFEE.test(rt)&&R4_PAYVERB.test(rt)&&(asks.has('pay')||R3_FEEWORD.test(rt)||/\b(?:karein|karo|kijiye|bhejein)\b/i.test(rt))&&!ownOnly){H.add('H3');st.add.push(['r4_fee',R4_PARCELFEE])}
