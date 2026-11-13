@@ -2,6 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8">
+<script>(function(){try{var U=window.URLSearchParams;if(!U)return;var m=/^#q=([\s\S]*)$/.exec(location.hash||""),q=null,h=false;if(m){try{q=decodeURIComponent(m[1])}catch(e){q=m[1]}h=!!q}if(!q)q=new URLSearchParams(location.search).get("q");if(!q&&!/(^|[?&])embed=1(&|$)/.test(location.search.slice(1))){try{var s=localStorage.getItem("uaeagents-pass"),o=s?JSON.parse(s):null;if(o&&(!(Date.now()-o.at<30000)||location.pathname.slice(-String(o.p).length)===o.p))localStorage.removeItem("uaeagents-pass");if(o&&typeof o.q==="string"&&o.q&&Date.now()-o.at<30000&&location.pathname.slice(-String(o.p).length)===o.p){q=o.q;h=true}}catch(e){}}if(h){var W=function(i){var p=new U(i);if(i===location.search&&!p.has("q"))p.append("q",q);return p};W.prototype=U.prototype;window.URLSearchParams=W}function go(){if(window.URLSearchParams!==U)window.URLSearchParams=U;if(m&&history.replaceState){try{history.replaceState(history.state,"",location.pathname+location.search)}catch(e){}}var b=q&&"hText"?document.getElementById("hText"):null;if(!b)return;b.value=q;b.dispatchEvent(new Event("input",{bubbles:true}));try{b.focus({preventScroll:true})}catch(e){}}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",go);else go()}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
 <meta name="color-scheme" content="light dark">
@@ -1432,6 +1433,5 @@ try{window.PAGE_READY=true}catch(e){}
 /* ?q= fills the main box (the landing page opens agents this way). */
 if(QTEXT){HT.value=QTEXT.slice(0,1500);grow();if(!coarse())try{HT.focus({preventScroll:true})}catch(e){}}
 </script>
-<script>(function(){try{var q=new URLSearchParams(location.search).get("q");if(!q)return;function go(){var b=document.getElementById("hText");if(!b)return;b.value=q;b.dispatchEvent(new Event("input",{bubbles:true}));try{b.focus({preventScroll:true})}catch(e){}}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",go);else go()}catch(e){}})();</script>
 </body>
 </html>

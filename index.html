@@ -91,7 +91,7 @@ main.wrap{padding:16px 16px 24px}
 .ibtn{flex:none;display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:transparent;color:var(--ink);cursor:pointer}
 .ibtn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 [dir=rtl] #viewFull svg,[dir=rtl] #viewBack svg{transform:scaleX(-1)}
-#viewBack[hidden]{display:none}
+#viewBack[hidden],#viewFull[hidden]{display:none}
 .sheet-body{position:relative;flex:1;min-height:0;background:var(--bg)}
 .sheet-body iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:var(--bg)}
 .sheet-body.loading iframe{opacity:0}
@@ -187,7 +187,8 @@ body.tpad{padding-bottom:88px}
   <form class="ask" id="ask" action="answers/" method="get">
    <label for="q" class="vh" data-t="label">Your question</label>
    <div class="field">
-    <textarea id="q" name="q" rows="1" dir="auto" maxlength="800" enterkeyhint="go" placeholder="Ask anything"></textarea>
+    <!-- no name="q": if the script never runs, Go opens Inzain without the text, so the text never goes into an address -->
+    <textarea id="q" rows="1" dir="auto" maxlength="800" enterkeyhint="go" placeholder="Ask anything"></textarea>
     <button class="go" type="submit" data-ta="send" aria-label="Go"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h13M12.5 6l6 6-6 6"/></svg></button>
    </div>
    <p class="route"><span class="soft" id="hint" data-t="hint">Or pick one.</span><span id="route" aria-live="polite"></span></p>
@@ -375,7 +376,10 @@ window.addEventListener('resize',grow);
 
 // The chosen agent opens in place, in a sheet. A fresh iframe each time, so it never adds history entries of its own.
 const dlg=document.getElementById('view'),vbody=document.getElementById('viewBody'),full=document.getElementById('viewFull'),vback=document.getElementById('viewBack');
-let cur=null,opens=0,backKey=null;
+let cur=null,opens=0,backKey=null,fullText='';
+// The text for "Full page" waits in this browser's storage for a few seconds; the helper's own start-up takes it and removes it.
+try{localStorage.removeItem('uaeagents-pass')}catch(e){}
+full.addEventListener('click',()=>{if(!fullText||!cur)return;try{localStorage.setItem('uaeagents-pass',JSON.stringify({p:AGENTS[cur].path,q:fullText,at:Date.now()}))}catch(e){}});
 const slugOf=a=>a.path.replace(/\/$/,'');
 function keyFromHash(){let h='';try{h=decodeURIComponent(location.hash.slice(1))}catch(e){}return Object.keys(AGENTS).find(k=>slugOf(AGENTS[k])===h)||null}
 function paintName(){
@@ -393,7 +397,9 @@ function show(key,t,fromHistory,from){
  paintName();
  recDetach();const old=document.getElementById('frame');if(old)old.remove();
  const f=document.createElement('iframe');f.id='frame';f.title=nameOf(a);
- f.src=a.path+'?embed=1&lang='+root.lang+(t?'&q='+encodeURIComponent(t):'');   // the agent opens in the language of this page
+ // The typed text goes after "#": a browser never sends that part to the web host, so the words stay on the phone (never ?q=).
+ const hq=t?'#q='+encodeURIComponent(t):'';
+ f.src=a.path+'?embed=1&lang='+root.lang+hq;   // the agent opens in the language of this page
  const n=opens,ready=()=>{if(opens===n)vbody.classList.remove('loading')};
  vbody.classList.add('loading');f.addEventListener('load',ready,{once:true});setTimeout(ready,8000);
  if(REC)try{   // tester link only: watch the agent from here once it has loaded (the passed-in text only on its first load)
@@ -401,7 +407,10 @@ function show(key,t,fromHistory,from){
   f.addEventListener('load',()=>{if(document.getElementById('frame')===f){recHook(f,key,first?t:'',first&&typed);first=false}});
  }catch(e){}
  vbody.append(f);
- full.href=a.path+'?lang='+root.lang+(t?'&q='+encodeURIComponent(t):'');
+ // "Full page" opens a new tab, and a tab's first address goes into the browser's own history list (and its sync), even
+ // after the page has cleaned it: so the link carries no text. A click hands the text over in this browser's storage instead.
+ full.href=a.path+'?lang='+root.lang;fullText=t||'';
+ full.hidden=!!REC;  // tester link: no "Full page", the full page carries no recording and the tester's steps would stop unseen
  if(!dlg.open){dlg.showModal();root.classList.add('locked')}
  if(!fromHistory){const h='#'+slugOf(a);if(location.hash!==h)history.pushState({sheet:key},'',h)}
 }
