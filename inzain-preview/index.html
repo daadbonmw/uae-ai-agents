@@ -485,6 +485,7 @@ const SYN=[
 ['hospital','clinic','doctor','medical','مستشفى','عيادة','دكتور','طبيب','صحي','mustashfa','mostashfa','doktor'],
 ['sick leave','sick note','medical leave','إجازة مرضية','سك ليف'],
 ['annual leave','vacation','holiday','إجازة','عطلة'],
+['without my knowledge','without knowing','without being told','without telling me','without informing me','did not know','didnt know','did not tell me','unaware','بدون علمي','بدون علم','من غير علمي','ما كنت اعرف','بدون ما اعرف','وانا ما ادري','ما درت'],
 ['rest day','day off','days off','weekly rest','weekly rest day','weekly day off','يوم الراحة','يوم راحة','يوم الاجازة','يوم اجازة','الراحة الاسبوعية','اجازة اسبوعية','اجازتي الاسبوعية'],
 ['vat','value added tax','ضريبة القيمة المضافة','القيمة المضافة'],
 ['corporate tax','ضريبة الشركات'],
@@ -2676,14 +2677,25 @@ const ISSUE_ST=new Set(rawWords('want wants wish wishes need needs can could sho
 const ASKS_RX=/^(?:please |kindly )?(?:determine|identify|analy[sz]e|explain|provide|describe|advise|list|assess|tell|give|prepare|set out|summari[sz]e)/i;
 const isIssue=s=>/[?؟]\s*$/.test(s)||hasProblem(s)||rawWords(s).some(w=>ISSUE_ST.has(stem(w)));
 /* the entry's own question must carry at least one of the two rarest main words of the sentence: a sentence about debts to suppliers is not answered by an entry about buying a business */
-function headHit(sn,id){const df=IDX.dfq,et=ownTerms(id),ts=mainTerms(sn).filter(t=>df.has(t)).map(t=>[t,df.get(t)]).sort((a,b)=>a[1]-b[1]).slice(0,2);
+/* words that say a case was started, not what it is about: they must not be the word an entry has to share */
+const HEAD_SKIP=new Set(rawWords('file filed files filing against claim claims claimed raised made make case cases').map(stem));
+function headHit(sn,id){const df=IDX.dfq,et=ownTerms(id),ts=mainTerms(sn).filter(t=>df.has(t)&&!HEAD_SKIP.has(t)).map(t=>[t,df.get(t)]).sort((a,b)=>a[1]-b[1]).slice(0,2);
 if(!ts.length)return true;return ts.some(([t])=>{const xm=XMAP&&XMAP.get(t);return et.has(t)||(xm&&et.has(xm))})}
+/* who is speaking: an entry written for the other side of a dispute (a landlord's entry for a tenant, an employer's for an employee) is not an answer to this person */
+const SIDE_RX=[['tenant',/\b(?:my (?:\w+ ){0,2}(?:landlord|lessor)|my (?:\w+ ){0,2}(?:rent|lease|tenancy|deposit)\b|i (?:am|'m) (?:a )?(?:tenant|renting)|i rent (?:a|an|my|this)\b)|(?:المالك|مالك العقار|صاحب (?:العقار|الشقة|البيت)) (?:طلب|يبي|يريد|رفع|قدم|يطالب|ما)|(?<![؀-ۿ])(?:ايجاري|إيجاري|عقد ايجاري|عقد إيجاري)(?![؀-ۿ])/i],
+['landlord',/\b(?:my (?:\w+ ){0,2}(?:tenants?|renters?)|i (?:own|let|rent out|am (?:a |the )?(?:landlord|owner))|rent(?:ed)? out my)\b|(?<![؀-ۿ])(?:مستأجري|المستأجر عندي|أؤجر|اؤجر|أملك عقار)(?![؀-ۿ])/i],
+['employee',/\b(?:my (?:\w+ ){0,2}(?:employer|boss|sponsor)|i (?:work|worked) (?:for|at|in)|i was (?:fired|dismissed|terminated))\b|(?:صاحب العمل|الكفيل|مديري) (?:يهدد|ما|يبي|فصل|رفض)/i],
+['employer',/\b(?:my (?:\w+ ){0,2}(?:employees?|staff|workers?|maid|domestic worker)|(?:\d+|two|three|four|five|six|several|some|many|all) (?:\w+ )?(?:employees|workers|staff) (?:have|has|filed|are|were)|i (?:employ|hire|am an employer)|i (?:own|run) (?:a|my) (?:company|business))\b|(?<![؀-ۿ])(?:موظفي|عمالي|عاملتي)(?![؀-ۿ])/i]];
+function sidesOf(t){const s=String(t||'');return new Set(SIDE_RX.filter(([,r])=>r.test(s)).map(x=>x[0]))}
+const SIDE_PAIR={tenant:'landlord',landlord:'tenant',employee:'employer',employer:'employee'};
+function sideClash(sn,id){const e=BY_ID[id];if(!e)return false;const ts=sidesOf(sn);if(!ts.size)return false;const es=sidesOf(both(e.q));
+for(const x of ts)if(es.has(SIDE_PAIR[x])&&!es.has(x)&&!ts.has(SIDE_PAIR[x]))return true;return false}
 function partsOf(text){const raw=String(text||''),n=norm(raw);if(rawWords(raw).length<PT.words)return null;
 const qm=(raw.match(/[?؟]/g)||[]).length,lines=(raw.match(/(?:^|\n)\s*(?:\d+[.)]|[-•*])\s/g)||[]).length;if(!(MULTI_CUE.test(n)||qm>=PT.qmarks||lines>=3))return null;
 const ss=raw.split(/(?<=[.!?؟…])\s+|\n+|:\s+/).map(x=>x.replace(/^\s*(?:\d+[.)]|[-•*])\s*/,'').trim()).filter(x=>rawWords(x).length>=4);if(ss.length<4)return null;
 const whole=new Set(search(raw).map(x=>x.id)),items=[];
 for(const sn of ss){let id='',cov=0;const iss=isIssue(sn);
-if(iss){const res=search(sn);if(res.length&&!res[0].off&&!isGap(res))for(const [i,x] of res.slice(0,8).entries()){const mc=mainCov(sn,x.id);if(mc.n<2)continue;if(!headHit(sn,x.id))continue;const w=whole.has(x.id),lead=i===0&&res[1]&&x.score/res[1].score>=PT.lead;if((w&&mc.cov>=PT.cov&&x.cov>=PT.cov)||(mc.cov>=PT.sure&&x.cov>=PT.sure)||(lead&&mc.cov>=.6&&x.cov>=.55)){id=x.id;cov=mc.cov;break}}}
+if(iss){const res=search(sn);if(res.length&&!res[0].off&&!isGap(res))for(const [i,x] of res.slice(0,8).entries()){const mc=mainCov(sn,x.id);if(mc.n<2)continue;if(!headHit(sn,x.id))continue;if(sideClash(sn,x.id))continue;const w=whole.has(x.id),lead=i===0&&res[1]&&x.score/res[1].score>=PT.lead;if((w&&mc.cov>=PT.cov&&x.cov>=PT.cov)||(mc.cov>=PT.sure&&x.cov>=PT.sure)||(lead&&mc.cov>=.6&&x.cov>=.55)){id=x.id;cov=mc.cov;break}}}
 items.push({s:sn,id,cov,prob:hasProblem(sn),iss})}
 const seen=[],ans=[];for(const it of items){if(!it.id)continue;if(seen.some(x=>x===it.id||sameSubject(x,it.id)))continue;seen.push(it.id);ans.push(it)}
 const none=items.filter(it=>!it.id&&it.prob&&!ASKS_RX.test(it.s)).slice(0,PT.max);
