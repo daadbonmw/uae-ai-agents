@@ -385,15 +385,15 @@ function keyFromHash(){let h='';try{h=decodeURIComponent(location.hash.slice(1))
 function paintName(){
  if(!cur)return;const a=AGENTS[cur],p=document.createElement('span'),o=document.createElement('span');
  p.textContent=nameOf(a);p.lang=isAr()?'ar':'en';o.className='o';o.textContent=isAr()?a.en:a.ar;o.lang=isAr()?'en':'ar';
- document.getElementById('viewName').replaceChildren(p,o);
+ {const vn=document.getElementById('viewName');vn.textContent='';vn.append(p,o)}
 }
 function show(key,t,fromHistory,from){
  const a=AGENTS[key];if(!a)return;
  cur=key;opens++;tVisit(key);backKey=from&&AGENTS[from]&&from!==key?from:null;vback.hidden=!backKey;
  rec('agent',{a:key,via:backKey?'from '+backKey:fromHistory?'back or link':t?'question':'tile'});
  const ico=tileOf(key).querySelector('.ico');
- document.getElementById('viewIco').replaceChildren(ico.cloneNode(true));
- document.getElementById('loadIco').replaceChildren(ico.cloneNode(true));
+ {const vi=document.getElementById('viewIco');vi.textContent='';vi.append(ico.cloneNode(true))}
+ {const li=document.getElementById('loadIco');li.textContent='';li.append(ico.cloneNode(true))}
  paintName();
  recDetach();const old=document.getElementById('frame');if(old)old.remove();
  const f=document.createElement('iframe');f.id='frame';f.title=nameOf(a);
@@ -667,7 +667,7 @@ function tPaint(){
  tel('tsTitle').textContent=D.send;tel('tsClose').setAttribute('aria-label',D.close);
  tel('tsSum').textContent=sumText(n);tel('tsNoteL').textContent=D.note;
  tel('tsWa').textContent=D.wa;tel('tsCopy').textContent=D.copy;
- const box=tel('tsMsg'),ls=tMessage();box.replaceChildren();
+ const box=tel('tsMsg'),ls=tMessage();box.textContent='';
  ls.forEach((t,i)=>{const d=document.createElement('div');d.textContent=t;if(i===ls.length-1){d.className='code';d.dir='ltr'}else d.dir='auto';box.append(d)});
 }
 async function tCopy(text){

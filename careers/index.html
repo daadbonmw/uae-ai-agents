@@ -20,6 +20,20 @@ if(e)r.classList.add('embed');
 if(!ok(l))l=e&&ok(land)?land:ok(own)?own:ok(land)?land:(/^ar\b/i.test(navigator.language||'')?'ar':'en');
 r.lang=l;r.dir=l==='ar'?'rtl':'ltr'}catch(x){}})();
 </script>
+<script id="guard">/* Never a silent dead page. Oldest plain JavaScript on purpose (no let, const, arrows or template strings), so it runs on any phone.
+   The main script sets PAGE_STARTED as its first act (and removes the "Loading" line) and PAGE_READY when the page is drawn.
+   If it never starts (a browser that cannot read it) or stops before that, this shows in English and Arabic that the page could not
+   start here and what to do. The main script is inline, so by DOMContentLoaded it has run or failed.
+   Only script errors count: a file that fails to load (the font on a slow line) is not a reason for the message. */
+(function(){var shown=false;
+function fail(){if(shown||window.PAGE_READY)return;shown=true;var el=document.getElementById('bootNote');
+if(!el){el=document.createElement('p');el.id='bootNote';var m=document.getElementById('main')||document.body;if(!m)return;m.insertBefore(el,m.firstChild)}
+el.className='bootnote bootfail';el.setAttribute('role','alert');
+el.innerHTML='<span lang="en" dir="ltr">This page could not start on this phone or browser. Please update your browser. On an iPhone: update iOS in Settings. On Android: update Chrome and “Android System WebView” from the Play Store. If you opened this link inside another app, open it in your phone’s browser instead.</span><span lang="ar" dir="rtl">تعذّر تشغيل هذه الصفحة على هذا الهاتف أو المتصفح. حدّث المتصفح. في الآيفون: حدّث نظام iOS من الإعدادات. في أندرويد: حدّث Chrome و«Android System WebView» من متجر Play. وإذا فتحت الرابط من داخل تطبيق آخر، افتحه في متصفح هاتفك بدلاً من ذلك.</span>'}
+window.PAGE_BOOT_FAIL=fail;
+if(window.addEventListener){window.addEventListener('error',function(e){if(e&&e.target&&e.target!==window)return;if(!window.PAGE_READY)setTimeout(function(){if(document.readyState!=='loading')fail()},0)},true);
+document.addEventListener('DOMContentLoaded',function(){if(!window.PAGE_READY)setTimeout(fail,1500)})}
+else{setTimeout(fail,8000)}})();</script>
 <link rel="stylesheet" href="../fonts/rubik.css">
 <style>
 /* Zaheb: white, one government green, warm-grey tiles, Rubik.
@@ -258,6 +272,10 @@ dialog.sheet::backdrop{background:rgba(14,15,18,.5)}
 .embed .top .wrap{padding-top:10px}
 .embed h1{margin-top:10px}
 @media (min-width:760px){.embed h1{margin-top:16px}}
+.bootnote{margin:16px 0;padding:12px 16px;color:var(--muted);font-size:15px;line-height:1.5}
+.bootnote span{display:block}
+.bootnote span+span{margin-top:6px}
+.bootfail{color:var(--ink,inherit)}
 </style>
 </head>
 <body>
@@ -277,6 +295,7 @@ dialog.sheet::backdrop{background:rgba(14,15,18,.5)}
 </header>
 
 <main id="main" tabindex="-1">
+ <p class="bootnote" id="bootNote" role="status"><span lang="en" dir="ltr">Loading…</span><span lang="ar" dir="rtl">جارٍ التحميل…</span></p>
  <!-- ===================== CHOICE ===================== -->
  <section id="paneChoose" aria-labelledby="chH">
   <div class="band"><div class="wrap">
@@ -417,8 +436,10 @@ dialog.sheet::backdrop{background:rgba(14,15,18,.5)}
 
 <script>
 'use strict';
+/* first act: tell the guard script the page started and take the "Loading" line away */
+try{window.PAGE_STARTED=true;const bn=document.getElementById('bootNote');if(bn&&bn.parentNode)bn.parentNode.removeChild(bn)}catch(e){}
 const $=id=>document.getElementById(id);
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const QS=new URLSearchParams(location.search);
 const EMBED=document.documentElement.classList.contains('embed');
 
@@ -433,7 +454,7 @@ hireH:'Hire Emiratis who stay',fSize:'Staff',fSkilled:'Skilled roles',fEmirati:'
 e2H:'Emiratisation target',hireTile:'Hiring plan',ruleTag:'Rule',exampleTag:'Example',kRule:'Rule',traceH:'Agent steps',copy:'Copy',copied:'Copied',
 copyFallback:'Select and copy:',copy_map:'Copy strengths',copy_p90:'Copy plan',copy_hire:'Copy plan',ivEmpty:'Pick a job, then Start.',ivQ:'{n} of {t}',ivYou:'You',
 ivAnswerLabel:'Your answer',ivAnswerPh:'Your words',ivSend:'Send',ivEnd:'End',ivRestart:'New practice',notGov:'Not legal advice. Not a government service.',
-ivSelf:'Self-check: {m} of {t}',ivPractice:'This is practice feedback worked out on your phone from simple rules. It is not an assessment by any employer or official body.',ivMissing:'Missing:',ivSumH:'Summary',ivSumRules:'You met {m} of {t} points.',ivSumEarly:'Ended before any answer.',
+ivSelf:'Self-check: {m} of {t}',ivPractice:'This is practice feedback worked out on your phone from simple rules. It is not an assessment by any employer or official body.',ivMissing:'Missing:',ivMet:'Met:',ivSumH:'Summary',ivSumRules:'You met {m} of {t} points.',ivSumEarly:'Ended before any answer.',
 ivNeed:'Type an answer first.',ivRulesNote:'Rule: 8 set questions, 5 checks each.',an_ivFirst:'Question 1 of {t}: {q}',an_ivNext:'Question {n} of {t}: {q}',
 an_ivDone:'Practice finished.',tr_iv_role:'Job type: {role}',tr_iv_bank:'Question bank of 8',tr_iv_rulesCoach:'Answers rule-checked: {n}',tr_local:'Nothing sent; ran here',
 s1Sub:'Ideas to explore, not job matches or offers.',exMariam:'Mariam',exSaeed:'Saeed',exClear:'Clear',undo:'Undo',an_cleared:'Cleared. Undo available.',
@@ -478,7 +499,7 @@ ivLineQ:'السؤال {n} من {t}',ivLineDone:'اكتمل',mapTile:'نقاط ق
 fEmirati:'المواطنون فيها',exTry:'مثال:',exLogi:'لوجستيات، 180',exSmall:'شركة صغيرة، 35',e2H:'هدف التوطين',hireTile:'خطة التوظيف',ruleTag:'قاعدة',exampleTag:'مثال',
 kRule:'قاعدة',traceH:'خطوات الوكيل',copy:'نسخ',copied:'تم النسخ',copyFallback:'تحديد النص ونسخه:',copy_map:'نسخ نقاط القوة',copy_p90:'نسخ الخطة',
 copy_hire:'نسخ خطة التوظيف',ivEmpty:'اختيار وظيفة، ثم «بدء».',ivQ:'{n} من {t}',ivYou:'أنت',ivAnswerLabel:'إجابتك',ivAnswerPh:'الإجابة بكلماتك',ivSend:'إرسال',ivEnd:'إنهاء',
-ivRestart:'تدريب جديد',notGov:'ليست استشارة قانونية ولا خدمة حكومية.',ivSelf:'تحقق ذاتي: {m} من {t}',ivPractice:'هذه ملاحظات تدريبية تُحسب على هاتفك بقواعد بسيطة، وليست تقييماً من أي جهة عمل أو جهة رسمية.',ivMissing:'ينقص:',ivSumH:'الملخص',ivSumRules:'المستوفى: {m} من {t}.',
+ivRestart:'تدريب جديد',notGov:'ليست استشارة قانونية ولا خدمة حكومية.',ivSelf:'تحقق ذاتي: {m} من {t}',ivPractice:'هذه ملاحظات تدريبية تُحسب على هاتفك بقواعد بسيطة، وليست تقييماً من أي جهة عمل أو جهة رسمية.',ivMissing:'ينقص:',ivMet:'المستوفى:',ivSumH:'الملخص',ivSumRules:'المستوفى: {m} من {t}.',
 ivSumEarly:'انتهى قبل أي إجابة.',ivNeed:'الإجابة مطلوبة أولاً.',ivRulesNote:'قاعدة: 8 أسئلة ثابتة و5 فحوص.',an_ivFirst:'السؤال 1 من {t}: {q}',
 an_ivNext:'السؤال {n} من {t}: {q}',an_ivDone:'انتهى التدريب.',tr_iv_role:'نوع الوظيفة: {role}',tr_iv_bank:'بنك من 8 أسئلة',tr_iv_rulesCoach:'إجابات فحصتها القاعدة: {n}',
 tr_local:'لم يُرسَل شيء',s1Sub:'أفكار للاستكشاف، وليست وظائف مطابقة أو عروضاً.',exMariam:'مريم',exSaeed:'سعيد',exClear:'مسح',undo:'تراجع',an_cleared:'مُسح. التراجع متاح.',
@@ -587,7 +608,7 @@ const BANK=[
 ];
 const SELF=[
  {id:'example',en:'A real example',ar:'مثال حقيقي',re:/for example|for instance|\bwhen i\b|\bonce\b|last (?:year|summer|semester)|at (?:university|college|school)|during my|in my (?:internship|job|role|project|club)|e\.g\.|مثلاً|مثلا|عندما|ذات مرة|خلال|في الجامعة|أثناء/i},
- {id:'you',en:'What you did yourself',ar:'ما قمت به بنفسك',re:/\bi\b|\bi[’'](?:m|ve|d)\b|\bmy\b|قمت|عملت|أنا|نظّمت|نظمت|ساعدت|تعلّمت|تعلمت|أدرت|قدت|أنجزت/i},
+ {id:'you',en:'What you did yourself',ar:'ما قمت به بنفسك',re:/\bi(?:[’']ve| have| had)? (?:also |then |personally |once |first |just )?(?:(?!(?:need|feed|seed|proceed)\b)[a-z]+ed|did|done|made|led|ran|run|built|wrote|written|took|taken|found|taught|won|sold|set up|gave|got|kept|met|spoke|drove|chose|began|brought|went|put|paid|lead|manage|handle|organi[sz]e|help|build|create|plan|teach|train|support|coordinate|design|develop|deliver|look after|take care|work|serve|sell|fix|write)\b|\bmyself\b|\bon my own\b|\bmy (?:own )?(?:role|part|job|task|idea)\b|قمت|عملت|نظّمت|نظمت|ساعدت|تعلّمت|تعلمت|أدرت|قدت|أنجزت/i},
  {id:'result',en:'A result or a number',ar:'نتيجة أو رقم',re:/[0-9٠-٩]|result|so that|which meant|increase|improv|grew|saved|reduced|raised|نتيجة|زاد|زادت|تحسّن|تحسن|وفّر|وفر|ارتفع|خفّض|خفض/i},
  {id:'role',en:'Linked to the job',ar:'ربط بالوظيفة',re:/\b(?:this|the|your) (?:role|job|position|team|company)\b|\bhere\b|this field|الوظيفة|هذا الدور|شركتكم|فريقكم|هذا المجال|لديكم/i},
  {id:'length',en:'30 to 250 words',ar:'من 30 إلى 250 كلمة',re:null}
@@ -803,7 +824,7 @@ function mapText(){const r=S.map;if(!r)return '';const v=mapVM(r);
 
 /* ---------- role family selects (shared by interview and 90 days) ---------- */
 /* Long names are shortened in the closed select (full name in the tooltip), so they are not clipped on phones. */
-const capLabel=s=>{const a=[...String(s)];return a.length>34?a.slice(0,33).join('').trimEnd()+'…':String(s)};
+const capLabel=s=>{const a=[...String(s)];return a.length>34?a.slice(0,33).join('').replace(/\s+$/,'')+'…':String(s)};
 const syncSelTitle=sel=>{const o=sel.options[sel.selectedIndex];sel.title=o?o.title:''};
 function renderRoleSelects(){const opts=Object.keys(FAM).map(id=>[id,famName(id)]);document.querySelectorAll('[data-role-select]').forEach(sel=>{sel.innerHTML=opts.map(([v,l])=>`<option value="${esc(v)}" title="${esc(l)}" ${v===S.rolePick?'selected':''}>${esc(capLabel(l))}</option>`).join('');if(!opts.some(([v])=>v===S.rolePick))sel.selectedIndex=0;syncSelTitle(sel)})}
 document.querySelectorAll('[data-role-select]').forEach(sel=>sel.addEventListener('change',()=>{S.rolePick=sel.value;touch();document.querySelectorAll('[data-role-select]').forEach(x=>{x.value=sel.value;syncSelTitle(x)});save()}));
@@ -841,8 +862,8 @@ function sendAnswer(){const iv=S.iv;if(!iv||iv.done)return;const ta=$('ivAnswer'
   else{announce(t('an_ivNext',{n:iv.items.length,t:IV_TOTAL,q:qText(iv.items[iv.items.length-1])}));const nx=$('ivAnswer');if(nx)nx.focus()}}
 function endInterview(){const iv=S.iv;if(!iv)return;touch();const cur=iv.items[iv.items.length-1];if(cur&&cur.a==null)iv.items.pop();iv.done=true;S.ivDraft='';
   save();renderInterview();const s=$('ivSummary');if(s)s.focus()}
-function fbBlock(it){const miss=SELF.filter(s=>!it.checks.includes(s.id)).map(s=>L(s));
-  return `<li class="msg fb"><span class="rhead"><span class="chip">${T('ruleTag')}</span><b>${T('ivSelf',{m:it.checks.length,t:SELF.length})}</b></span>${miss.length?`<p class="note">${T('ivMissing')} ${esc(miss.join(listSep()))}</p>`:''}</li>`}
+function fbBlock(it){const miss=SELF.filter(s=>!it.checks.includes(s.id)).map(s=>L(s)),met=SELF.filter(s=>it.checks.includes(s.id)).map(s=>L(s));
+  return `<li class="msg fb"><span class="rhead"><span class="chip">${T('ruleTag')}</span><b>${T('ivSelf',{m:it.checks.length,t:SELF.length})}</b></span>${met.length?`<p class="note">${T('ivMet')} ${esc(met.join(listSep()))}</p>`:''}${miss.length?`<p class="note">${T('ivMissing')} ${esc(miss.join(listSep()))}</p>`:''}</li>`}
 function ivTrace(iv){const ans=iv.items.filter(x=>x.a!=null);const tr=[t('tr_iv_role',{role:famName(iv.role)})];
   if(iv.items.length)tr.push(t('tr_iv_bank'));
   if(ans.length)tr.push(t('tr_iv_rulesCoach',{n:ans.length}));
@@ -888,7 +909,7 @@ $('p90Btn').addEventListener('click',runP90);
 function readEmp(){const e={};for(const k in EF)e[k]=$(EF[k]).value;return e}
 function writeEmp(e){for(const k in EF)$(EF[k]).value=e[k]||'';if(!$('eSector').value)$('eSector').selectedIndex=0}
 /* Empty fields ask for input; anything filled in that is not a whole number of 0 or more is "invalid". */
-function target(e){const raw=[e.size,e.skilled,e.emirati].map(x=>String(x??'').trim());
+function target(e){const raw=[e.size,e.skilled,e.emirati].map(x=>String(x==null?'':x).trim());
   if(raw.some(x=>x===''))return {state:'need'};
   if(raw.some(x=>!/^\d+$/.test(x)))return {state:'invalid'};
   const [size,sk,cur]=raw.map(x=>parseInt(x,10));
@@ -1005,6 +1026,7 @@ $('reset').addEventListener('click',()=>{const b=$('reset');
 function boot(st){S=st;writeProfile(S.profile);writeEmp(S.emp);renderAll();setTab('');empSig=empKey()}
 try{boot(load())}catch(e){boot(seed())}
 try{applyQ()}catch(e){}
+try{window.PAGE_READY=true}catch(e){}
 </script>
 </body>
 </html>

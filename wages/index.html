@@ -20,7 +20,8 @@
 function fail(){if(shown||window.PAGE_READY)return;shown=true;var el=document.getElementById('bootNote');
 if(!el){el=document.createElement('p');el.id='bootNote';var m=document.getElementById('main')||document.body;if(!m)return;m.insertBefore(el,m.firstChild)}
 el.className='bootnote bootfail';el.setAttribute('role','alert');
-el.innerHTML='<span lang="en" dir="ltr">This page could not start on this phone or browser. Please update your browser (on an iPhone: update iOS in Settings), or open the site in another browser.</span><span lang="ar" dir="rtl">تعذّر تشغيل هذه الصفحة على هذا الهاتف أو المتصفح. حدّث المتصفح (في الآيفون: حدّث نظام iOS من الإعدادات)، أو افتح الموقع في متصفح آخر.</span>'}
+el.innerHTML='<span lang="en" dir="ltr">This page could not start on this phone or browser. On Android: update Chrome and "Android System WebView" from the Play Store. If you opened the link inside another app (like WhatsApp), open it in your phone’s browser instead. On an iPhone: update iOS in Settings, or open the site in another browser.</span>'+
+'<span lang="ar" dir="rtl">تعذّر تشغيل هذه الصفحة على هذا الهاتف أو المتصفح. في أندرويد: حدّث <bdi>Chrome</bdi> و<bdi>Android System WebView</bdi> من متجر <bdi>Play</bdi>. وإذا فتحت الرابط داخل تطبيق آخر (مثل واتساب)، افتحه في متصفح هاتفك بدلًا من ذلك. في الآيفون: حدّث نظام <bdi>iOS</bdi> من الإعدادات، أو افتح الموقع في متصفح آخر.</span>'}
 window.PAGE_BOOT_FAIL=fail;
 if(window.addEventListener){window.addEventListener('error',function(){if(!window.PAGE_READY)setTimeout(function(){if(document.readyState!=='loading')fail()},0)},true);
 document.addEventListener('DOMContentLoaded',function(){if(!window.PAGE_READY)setTimeout(fail,1500)})}
@@ -465,7 +466,7 @@ try{if(typeof HTMLDialogElement!=='function'&&typeof document!=='undefined'&&doc
 const KEY='biltareekh-demo-v1', ULKEY='uaeagents-lang';
 const DAY=864e5;
 const $=id=>document.getElementById(id);
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const pad=n=>String(n).padStart(2,'0');
 const MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const MNF=['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -516,7 +517,7 @@ f_phone:'It has a phone number. We never repeat numbers from messages.',f_link:'
 caseLineLbl:'Line for your file',addCase:'Add to case file',inCase:'In your case file',seeCase:'Case file',
 ready:'Your options are ready below.',readyUrgent:'Ready below. This may be urgent.',needTopic:'Pick what is wrong, or type it.',
 needPay:'Write a few words about your pay first.',needAmt:'Type your monthly pay as a number.',needSms:'Paste the SMS.',
-needDate:'Pick the date the money came.',needAmount:'Type the amount, as a number.',
+needDate:'Pick the date the money came.',needAmount:'Type the amount, as a number.',tooBig:'That amount is too large. Type one payment, under AED 1,000,000.',
 future:'That date is in the future.',badMonth:'Pick a month from the list.',needEvDate:'Pick the date.',needEvText:'Write a few words.',notAudio:'That is not a voice note.',
 voiceKept:'Kept on this phone. Type what you said above.',
 trReadRule:'Looked for numbers and key words',
@@ -527,7 +528,7 @@ savedMsg:'Saved: pay day the {d}, {amt} a month.',
 trYouSaved:'You checked and saved the details',trSetDay:'Set the pay day and pay to check against',trLocal:'Kept in this browser only',
 wpsLineDom:'Uses the 10-day rule for domestic workers',wpsLineYes:'Does not apply the WPS rule (free zone, bank or government)',wpsLineNo:'Also checks the WPS rule',wpsLineUnsure:'Checks the WPS rule, marked “may”',
 chipPay:'{amt} a month · the {d} · {rule}',change:'Change',setFirst:'Set up your pay first.',goPay:'Go to My pay',ruleDom:'10-day rule',ruleNo:'WPS rule',ruleYes:'check the official source',ruleUnsure:'WPS rule may apply',
-gapIssues:'Months to check: {n}',gapAmt:'not arrived: {amt}',gapNone:'Nothing missing so far.',gapNote:'Your own numbers, not a legal amount.',domDue:'Domestic rule: due by {d}.',shortBy:'{amt} short.',noMonths:'No months yet.',
+gapIssues:'Months to check: {n}',gapAmt:'not arrived: {amt}',gapNone:'Nothing missing so far.',gapNote:'Your own numbers, not a legal amount.',gapExample:'These are made-up examples. Save your own pay to start.',domDue:'Domestic rule: due by {d}.',shortBy:'{amt} short.',noMonths:'No months yet.',
 remove:'Remove',removeAria:'Remove the payment of {d}',removeEntry:'Remove this entry',fullPay:'full pay',partPay:'part pay',
 payForEx:'So pay for {m} is expected on {d}.',mPart:'{days} after pay day ({d})',mPartOk:'on time (pay day {d})',came:'Came {d}',frOwn:'pay day ({d})',frWps:'the WPS rule due date ({d})',
 mPaid:'Paid {total} of {exp}. Still owed: {owe}.',mOver:'Paid {total} of {exp}: {over} more than expected.',sFullOk:'Paid in full, on time.',sFullLate:'Paid in full, {days} after {from}.',
@@ -592,7 +593,7 @@ f_phone:'فيها رقم هاتف. لا نكرر أبدًا أرقامًا من 
 caseLineLbl:'سطر لملفك',addCase:'أضف إلى الملف',inCase:'في ملفك',seeCase:'ملف الحالة',
 ready:'خياراتك جاهزة في الأسفل.',readyUrgent:'جاهزة في الأسفل. قد يكون الأمر عاجلًا.',needTopic:'اختر المشكلة، أو اكتبها.',
 needPay:'اكتب بضع كلمات عن راتبك أولًا.',needAmt:'اكتب راتبك الشهري رقمًا.',needSms:'الصق الرسالة.',
-needDate:'اختر تاريخ وصول المال.',needAmount:'اكتب المبلغ رقمًا.',
+needDate:'اختر تاريخ وصول المال.',needAmount:'اكتب المبلغ رقمًا.',tooBig:'المبلغ كبير جدًا. اكتب مبلغ دفعة واحدة، أقل من 1,000,000 درهم.',
 future:'هذا التاريخ في المستقبل.',badMonth:'اختر شهرًا من القائمة.',needEvDate:'اختر التاريخ.',needEvText:'اكتب بضع كلمات.',notAudio:'هذا الملف ليس رسالة صوتية.',
 voiceKept:'تبقى على هذا الهاتف. اكتب ما قلته في الأعلى.',
 trReadRule:'بحثنا عن الأرقام والكلمات المهمة',
@@ -603,7 +604,7 @@ savedMsg:'تم الحفظ: يوم الراتب {d}، {amt} شهريًا.',
 trYouSaved:'راجعت التفاصيل وحفظتها',trSetDay:'حدّدنا يوم الراتب والمبلغ للفحص',trLocal:'محفوظ في هذا المتصفح فقط',
 wpsLineDom:'يستخدم قاعدة الأيام العشرة للعمالة المساعدة',wpsLineYes:'لا يطبّق قاعدة حماية الأجور (منطقة حرة أو بنك أو جهة حكومية)',wpsLineNo:'يفحص أيضًا قاعدة حماية الأجور',wpsLineUnsure:'يفحص قاعدة حماية الأجور مع كلمة «قد»',
 chipPay:'{amt} شهريًا · يوم {d} · {rule}',change:'تغيير',setFirst:'أدخل راتبك أولًا.',goPay:'اذهب إلى «راتبي»',ruleDom:'قاعدة الأيام العشرة',ruleNo:'قاعدة حماية الأجور',ruleYes:'تحقق من المصدر الرسمي',ruleUnsure:'قد تنطبق قاعدة حماية الأجور',
-gapIssues:'أشهر للمراجعة: {n}',gapAmt:'لم يصل: {amt}',gapNone:'لا شيء ناقص حتى الآن.',gapNote:'أرقامك أنت، وليست مبلغًا قانونيًا.',noMonths:'لا أشهر بعد.',domDue:'قاعدة العمالة المساعدة: الموعد حتى {d}.',shortBy:'ناقص {amt}.',
+gapIssues:'أشهر للمراجعة: {n}',gapAmt:'لم يصل: {amt}',gapNone:'لا شيء ناقص حتى الآن.',gapNote:'أرقامك أنت، وليست مبلغًا قانونيًا.',gapExample:'هذه أمثلة مختلَقة للتوضيح. احفظ راتبك أنت لتبدأ.',noMonths:'لا أشهر بعد.',domDue:'قاعدة العمالة المساعدة: الموعد حتى {d}.',shortBy:'ناقص {amt}.',
 remove:'حذف',removeAria:'حذف دفعة {d}',removeEntry:'حذف هذا الإدخال',fullPay:'راتب كامل',partPay:'جزء من الراتب',
 payForEx:'أي أن راتب {m} متوقع يوم {d}.',mPart:'بعد يوم الراتب ({d}) بـ{days}',mPartOk:'في موعده (يوم الراتب {d})',came:'وصل {d}',frOwn:'يوم الراتب ({d})',frWps:'موعد قاعدة حماية الأجور ({d})',
 mPaid:'المدفوع {total} من {exp}. المتبقي: {owe}.',mOver:'المدفوع {total} من {exp}: أكثر من المتوقع بـ{over}.',sFullOk:'وصل كاملًا في موعده.',sFullLate:'وصل كاملًا بعد {from} بـ{days}.',
@@ -1176,12 +1177,12 @@ function renderDiary(){const s=S.setup;
   const sc=wpsScope();const rule=s.work==='household'?t('ruleDom'):sc==='no'?t('ruleNo'):sc==='yes'?t('ruleYes'):t('ruleUnsure');
   $('payChip').innerHTML=s.confirmed?`${esc(t('chipPay',{amt:fmtAED(s.expected),d:ordL(s.payDay),rule}))} <button type="button" class="tbtn small" data-go="pay">${esc(t('change'))}</button>`:`${esc(t('setFirst'))} <button type="button" class="tbtn small" data-go="pay">${esc(t('goPay'))}</button>`;
   const ms=monthChecks().slice().reverse();
-  $('months').innerHTML=ms.map(m=>{const sym={miss:'✕',part:'!',late:'!',ok:'✓'}[m.status]||'';const ex=m.pays.some(p=>p.example);const srcs=[...new Set(m.notes.flatMap(n=>n.src||[]))];const main=mainNote(m);
+  $('months').innerHTML=ms.map(m=>{const sym={miss:'✕',part:'!',late:'!',ok:'✓'}[m.status]||'';const ex=m.pays.some(p=>p.example);const srcs=[];for(const n of m.notes)for(const x of [].concat(n.src||[]))if(!srcs.includes(x))srcs.push(x);const main=mainNote(m);
     return `<article class="tile month"><div class="mhead"><b>${esc(fmtMonth(m.ym))}</b><span class="mstat">${sym?`<span class="mk" aria-hidden="true">${sym}</span>`:''}${esc(labelOf(m))}</span></div>${main?`<p class="mline">${esc(main)}</p>`:''}${m.pays.length?`<ul class="plist parts">${m.pays.map(p=>{const dd=partDays(m,p);return `<li><span>${esc(t('came',{d:fmtDate(p.date)}))}</span><b>${esc(fmtAED(p.amount))}</b><span>${esc(p.kind==='partial'?t('partPay'):t('fullPay'))}</span>${dd?`<span>${esc(dd)}</span>`:''}</li>`}).join('')}</ul>`:''}${(st=>st?`<p class="mstate">${esc(st)}</p>`:'')(monthState(m))}
     <details class="more"><summary>${esc(t('more'))}</summary><div class="morebody"><ul class="trace">${m.notes.map(n=>`<li>${esc(noteText(n))}</li>`).join('')}</ul>${srcs.length?srcHTML(srcs):''}
     ${m.pays.length?`<ul class="plist">${m.pays.map(p=>`<li><span>${esc(t('came',{d:fmtDate(p.date)}))}</span><b>${esc(fmtAED(p.amount))}</b><span>${esc(p.kind==='partial'?t('partPay'):t('fullPay'))}</span>${p.note?`<span dir="auto">${esc(p.note)}</span>`:''}<button type="button" class="tbtn small" data-delpay="${esc(p.id)}" aria-label="${esc(t('removeAria',{d:fmtDate(p.date)}))}">${esc(t('remove'))}</button></li>`).join('')}</ul>`:''}</div></details></article>`}).join('')||`<p class="note">${esc(t('noMonths'))}</p>`;
   const g=gapTotal();const fl=monthChecks().filter(m=>m.flag).length;
-  $('gapLine').innerHTML=s.confirmed?(fl||g>0?`<p class="stat"><span aria-hidden="true">!</span>${esc(t('gapIssues',{n:fl}))}${g>0?' · '+esc(t('gapAmt',{amt:fmtAED(g)})):''}</p>${g>0?`<p class="note">${esc(t('gapNote'))}</p>`:''}`:`<p class="stat"><span aria-hidden="true">✓</span>${esc(t('gapNone'))}</p>`):''}
+  $('gapLine').innerHTML=s.confirmed?(fl||g>0?`<p class="stat"><span aria-hidden="true">!</span>${esc(t('gapIssues',{n:fl}))}${g>0?' · '+esc(t('gapAmt',{amt:fmtAED(g)})):''}</p>${g>0&&!hasExamples()?`<p class="note">${esc(t('gapNote'))}</p>`:''}`:`<p class="stat"><span aria-hidden="true">✓</span>${esc(t('gapNone'))}</p>`)+(hasExamples()?`<p class="note exnote">${esc(t('gapExample'))}</p>`:''):''}
 function renderHelp(){const R=S.lastTriage;$('hOut').innerHTML=R?triageHTML(R):'';updateSay()}
 function triageHTML(R){const T=topicOf(R.topic);let h='';
   if(R.danger)h+=dangerHTML(false);
@@ -1338,7 +1339,7 @@ $('pAmt').addEventListener('input',()=>{const exp=S.setup.confirmed?payAt($('pMo
 $('pDate').addEventListener('change',()=>{const v=validISO($('pDate').value);if(v)ensureOption($('pMonth'),suggestedMonth(v))});
 $('addPay').addEventListener('click',()=>{const date=validISO($('pDate').value),raw=$('pAmt').value,amt=Number(raw),month=$('pMonth').value,kind=radio('pKind')==='partial'?'partial':'full',note=$('pNote').value.trim().slice(0,140);$('pErr').textContent='';
   if(!date){$('pErr').textContent=t('needDate');return}
-  if(raw===''||!(amt>=0&&amt<1e6)){$('pErr').textContent=t('needAmount');$('pAmt').focus();return}
+  if(raw===''||!(amt>=0&&amt<1e6)){$('pErr').textContent=t(amt>=1e6&&amt<Infinity?'tooBig':'needAmount');$('pAmt').focus();return}
   if(date>addDays(todayISO(),1)){$('pErr').textContent=t('future');return}
   if(!inPayRange(month)){$('pErr').textContent=t('badMonth');return}
   const p={id:uid(),month,date,amount:Math.round(amt*100)/100,kind,note};S.pays.push(p);S.summary=null;save();

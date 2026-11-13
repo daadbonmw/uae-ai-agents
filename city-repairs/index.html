@@ -244,7 +244,25 @@ html.embed h1{margin-top:0}
  @keyframes side-rtl{from{transform:translateX(-48px);opacity:.3}to{transform:none;opacity:1}}
 }
 @media (max-width:759px){.next .btn,.sheet .actions .btn{width:100%}}
+.bootnote{margin:16px 0;padding:12px 16px;color:var(--muted);font-size:15px;line-height:1.5}
+.bootnote span{display:block}
+.bootnote span+span{margin-top:6px}
+.bootfail{color:var(--ink,inherit)}
 </style>
+<script id="guard">/* Never a silent dead page. Oldest plain JavaScript on purpose (no let, const, arrows or template strings), so it runs on any phone.
+   The main script sets PAGE_STARTED as its first act (and removes the "Loading" line) and PAGE_READY when the page is drawn.
+   If it never starts (a browser that cannot read it) or stops before that, this shows in English and Arabic that the page could not
+   start here and what to do. The main script is inline, so by DOMContentLoaded it has run or failed.
+   Only script errors count: a file that fails to load (the font on a slow line) is not a reason for the message. */
+(function(){var shown=false;
+function fail(){if(shown||window.PAGE_READY)return;shown=true;var el=document.getElementById('bootNote');
+if(!el){el=document.createElement('p');el.id='bootNote';var m=document.getElementById('main')||document.body;if(!m)return;m.insertBefore(el,m.firstChild)}
+el.className='bootnote bootfail';el.setAttribute('role','alert');
+el.innerHTML='<span lang="en" dir="ltr">This page could not start on this phone or browser. Please update your browser. On an iPhone: update iOS in Settings. On Android: update Chrome and “Android System WebView” from the Play Store. If you opened this link inside another app, open it in your phone’s browser instead.</span><span lang="ar" dir="rtl">تعذّر تشغيل هذه الصفحة على هذا الهاتف أو المتصفح. حدّث المتصفح. في الآيفون: حدّث نظام iOS من الإعدادات. في أندرويد: حدّث Chrome و«Android System WebView» من متجر Play. وإذا فتحت الرابط من داخل تطبيق آخر، افتحه في متصفح هاتفك بدلاً من ذلك.</span>'}
+window.PAGE_BOOT_FAIL=fail;
+if(window.addEventListener){window.addEventListener('error',function(e){if(e&&e.target&&e.target!==window)return;if(!window.PAGE_READY)setTimeout(function(){if(document.readyState!=='loading')fail()},0)},true);
+document.addEventListener('DOMContentLoaded',function(){if(!window.PAGE_READY)setTimeout(fail,1500)})}
+else{setTimeout(fail,8000)}})();</script>
 </head>
 <body>
 <header class="top" id="top">
@@ -265,7 +283,7 @@ html.embed h1{margin-top:0}
      <label class="tbtn" id="photoBtn"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle class="s" cx="12" cy="12.5" r="3.4"/><path d="M4 9a2.5 2.5 0 0 1 2.5-2.5h1.8l1.6-2h4.2l1.6 2h1.8A2.5 2.5 0 0 1 20 9v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17z"/><circle cx="12" cy="12.5" r="3.4"/></svg><span class="vh" data-t="photo">Add a photo</span><input type="file" id="rPhoto" accept="image/jpeg,image/png,image/webp"></label>
      <label class="tbtn" id="qrBtn"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z"/><path class="s" d="M14 14h3v3h-3zM17 17h3v3h-3z"/></svg><span class="vh" data-t="lSticker">QR sticker (demo)</span><select id="rSticker"><option value="">No sticker</option></select></label>
      <label class="place"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s-6.5-5.7-6.5-11a6.5 6.5 0 0 1 13 0c0 5.3-6.5 11-6.5 11z"/><circle class="s" cx="12" cy="10" r="2.7"/></svg><span class="vh" data-t="lLoc">Place</span><input type="text" id="rLoc" dir="auto" maxlength="160" autocomplete="off" data-tp="phLoc" placeholder="Where?"></label>
-     <button class="go" type="submit" id="rSend" data-ta="send" aria-label="Send report"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h13M12.5 6l6 6-6 6"/></svg></button>
+     <button class="go" type="submit" id="rSend" data-ta="send" aria-label="Prepare report"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h13M12.5 6l6 6-6 6"/></svg></button>
     </div>
    </div>
    <div class="thumbs" id="rThumb"></div>
@@ -276,6 +294,7 @@ html.embed h1{margin-top:0}
 </header>
 
 <main class="wrap" id="main">
+ <p class="bootnote" id="bootNote" role="status"><span lang="en" dir="ltr">Loading…</span><span lang="ar" dir="rtl">جارٍ التحميل…</span></p>
  <div id="rReply"></div>
  <section class="tile about" aria-labelledby="ah"><h2 id="ah" data-t="aboutH">What this page does</h2><p class="note" data-t="aboutP1"></p><p class="note" data-t="aboutP2"></p></section>
  <p class="err" id="storeNote" role="status"></p>
@@ -311,6 +330,8 @@ html.embed h1{margin-top:0}
 
 <script id="app">
 'use strict';
+/* first act: tell the guard script the page started and take the "Loading" line away */
+try{window.PAGE_STARTED=true;const bn=document.getElementById('bootNote');if(bn&&bn.parentNode)bn.parentNode.removeChild(bn)}catch(e){}
 const root=document.documentElement;
 const PARAMS=new URLSearchParams(location.search);
 const EMBED=PARAMS.get('embed')==='1';
@@ -318,7 +339,7 @@ const LKEY='uaeagents-lang';
 
 /* ---------- words (English and Arabic) ---------- */
 const STR={en:{
-brand:'Wareeni',h1:'What needs fixing?',lText:'What’s wrong?',phText:'Describe the problem',photo:'Add a photo',lSticker:'QR sticker',noSticker:'No sticker',lLoc:'Place',phLoc:'Where? (required)',send:'Send report',sending:'Reading the report',yourPhoto:'Your photo',
+brand:'Wareeni',h1:'What needs fixing?',lText:'What’s wrong?',phText:'Describe the problem',photo:'Add a photo',lSticker:'QR sticker',noSticker:'No sticker',lLoc:'Place',phLoc:'Where? (required)',send:'Prepare report',sending:'Reading the report',yourPhoto:'Your photo',
 cases:'Examples',menu:'More',close:'Close',all:'All agents',aboutDemo:'Demo. Examples are made up. Not a real service.',aboutData:'Your reports and photos are saved on this phone only. You can delete them any time.',notLegal:'Not legal advice. Not a government service.',demoWarn:'Demo: nothing you type leaves your device. Don’t type real names or numbers, or add photos of people.',more:'More',reset:'Reset',resetAgain:'Tap again to reset',resetDone:'Demo reset.',
 tagRule:'Rule',tagEx:'Example',
 aboutH:'What this page does',aboutP1:'It helps you prepare a report of a city problem on your phone: the words, the place and the photos. Nothing is sent and nobody receives it.',aboutP2:'A report only exists when you send it yourself through your municipality’s official channel. The status and replies shown here are examples, and the category and urgency are this page’s own guess from your words, not an official result.',
@@ -354,7 +375,7 @@ mh:'Repeat spots',noSpots:'No repeat spots yet.',bPlan:'Draft a fix-once plan',p
 
 evQR:'Reported with QR sticker {code}.',evTyped:'Reported with a typed place.',evNoLoc:'Reported without a place.',evReported:'Reported.',evTriage:'Sorted as {cat}, {urg}.',evDup:'May repeat {ids}. Kept separate.',evAskLoc:'No place yet, so asked where it is.',evAssign:'Demo: for {crew}. Target: {target} (made up).',evPhotoFlag:'Photo check flagged the after photo.',evPhotoOk:'Photo check: no copy found.',evCheck:'Checked the fix: {v}.',evCheckEx:'Checked the fix: {v} (example).',evRaised:'The photo rule set the result to “{v}”. The rules check said “{own}”.',evAskRes:'Asked the resident: “Is it fixed?”',evGaveLoc:'Gave the place: “{loc}”.',evFixedPhoto:'Marked fixed, with an after photo.',evFixedNoPhoto:'Marked fixed, no photo.',evFixedNote:'Marked fixed: {note}.',evFake:'Demo test: sent the before photo as the after photo.',evResYes:'Confirmed it is fixed.',evResNo:'Said it is still broken.',evBack:'Back to the crew. Cycle {n} needs new proof.',evNoReply:'No reply in 48 h (demo). Moved to the decision.',evClosed:'Closed after review.',evClosedWhy:'Closed despite a concern: “{why}”.',evSentBack:'Sent back: “{why}”.',evCycle:'Cycle {n} needs new proof.',evReopen:'Reopened: “{why}”.',evCycleOld:'Cycle {n} needs new proof; old photos can’t close it.'
 },ar:{
-brand:'ورّيني',h1:'شو يحتاج إصلاح؟',lText:'ما المشكلة؟',phText:'صف المشكلة',photo:'أضف صورة',lSticker:'ملصق QR',noSticker:'بدون ملصق',lLoc:'المكان',phLoc:'وين؟ (مطلوب)',send:'أرسل البلاغ',sending:'جارٍ قراءة البلاغ',yourPhoto:'صورتك',
+brand:'ورّيني',h1:'شو يحتاج إصلاح؟',lText:'ما المشكلة؟',phText:'صف المشكلة',photo:'أضف صورة',lSticker:'ملصق QR',noSticker:'بدون ملصق',lLoc:'المكان',phLoc:'وين؟ (مطلوب)',send:'جهّز البلاغ',sending:'جارٍ قراءة البلاغ',yourPhoto:'صورتك',
 cases:'أمثلة',menu:'المزيد',close:'إغلاق',all:'كل الوكلاء',aboutDemo:'تجربة. الأمثلة من صنع الخيال. ليست خدمة حقيقية.',notLegal:'ليست استشارة قانونية ولا خدمة حكومية.',demoWarn:'تجربة: لا شيء مما تكتبه يغادر جهازك. لا تكتب أسماءً أو أرقاماً حقيقية ولا تضف صور أشخاص.',aboutData:'تُحفظ بلاغاتك وصورها على هالجوال فقط. تقدر تحذفها في أي وقت.',more:'المزيد',reset:'إعادة ضبط',resetAgain:'اضغط مرة أخرى للتأكيد',resetDone:'أُعيد ضبط التجربة.',
 tagRule:'قاعدة',tagEx:'مثال',
 aboutH:'شو تسوّي هالصفحة',aboutP1:'تساعدك تجهّز بلاغ عن مشكلة في المدينة على جوالك: الوصف والمكان والصور. ما يُرسل شي ولا أحد يستلمه.',aboutP2:'البلاغ ما يصير بلاغ فعلي إلا لما ترسله بنفسك عبر القناة الرسمية لبلديتك. الحالة والردود اللي تشوفها هنا أمثلة، والتصنيف والأولوية تخمين من الصفحة حسب كلامك، مو نتيجة رسمية.',
@@ -417,8 +438,8 @@ const WHO={'Resident':'whoResident','Rule':'whoRule','Crew':'whoCrew','Operator'
 const KEY='wareeni-demo-v2';
 const H=3600e3, D=24*H;
 const $=id=>document.getElementById(id);
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const toAsciiDigits=s=>String(s??'').replace(/[٠-٩۰-۹]/g,d=>String(d.charCodeAt(0)&15));
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const toAsciiDigits=s=>String(s==null?'':s).replace(/[٠-٩۰-۹]/g,d=>String(d.charCodeAt(0)&15));
 /* Place names are compared after folding case, Arabic letter variants, diacritics and Arabic-Indic digits. */
 const norm=s=>(toAsciiDigits(s).toLowerCase().replace(/[ً-ٰٟـ]/g,'').replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').match(/[\p{L}\p{N}]+/gu)||[]).join(' ');
 /* The report's language comes from the script most of its letters use. Urdu has letters Arabic never uses. */
@@ -686,6 +707,9 @@ async function sendReport(){
   if(!ready){try{await initPromise}catch(e){}}
   const text=$('rText').value.trim();const code=$('rSticker').value;const s=stickerOf(code);const place=(s?s[2]:$('rLoc').value.trim());
   showErr('');
+  /* No words, but a place, while the last report waits for its place: the place completes that same report. */
+  const waiting=!text&&place&&lastReply?byId(lastReply.id):null;
+  if(waiting&&waiting.state==='needs_info'){placeLater(waiting,place,s);return}
   if(text.length<5){showErr('errShort');return}
   sending=true;const btn=$('rSend');btn.disabled=true;btn.classList.add('busy');btn.setAttribute('aria-label',tx('sending'));
   try{
@@ -714,6 +738,13 @@ async function sendReport(){
   if(coarse())$('rText').blur();
   }finally{sending=false;btn.disabled=false;btn.classList.remove('busy');btn.setAttribute('aria-label',tx('send'))}
 }
+function placeLater(c,place,s){
+  c.location=place;if(s)c.asset=s[0];log(c,'Resident','evGaveLoc',{loc:place});
+  const dup=similarOpen(c);if(dup.length)log(c,'Rule','evDup',{ids:dup.map(d=>d.id).join(', ')});
+  assign(c);save();
+  lastReply.reply=templateReply(c.lang,false,c.category);lastReply.trace.push(['trSent',{cat:c.category,hrs:URG[c.urgency][1]}]);renderReply();
+  $('rLoc').value='';$('rLoc').readOnly=false;$('rSticker').value='';markTools();
+  render();announce(c.id+': '+tx('st_'+c.state))}
 function renderReply(){const box=$('rReply');if(!lastReply){box.innerHTML='';return}const r=lastReply;
   const trace=r.trace.map(([key,p])=>`<li><span class="tag">${esc(tx('tagRule'))}</span><span dir="auto">${esc(tx(key,evParams(p,LANG)))}</span></li>`).join('');
   box.innerHTML=`<div class="tile reply" id="replyTile" tabindex="-1"><p class="who"><span>${esc(tx('replyTo'))}</span><span class="tag">· ${esc(tx('tagRule'))}</span></p><p dir="auto" lang="${esc(r.lang)}">${esc(r.reply)}</p><div class="actions"><button type="button" class="tlink" data-goto="${esc(r.id)}">${esc(tx('seeCase',{id:r.id}))}</button><button type="button" class="tlink" data-copy="${esc(r.id)}">${esc(tx('copy'))}</button></div><p class="note" id="cpr" role="status"></p><details class="more"><summary>${esc(tx('more'))}${icon('chev')}</summary><ul class="trace more-body">${trace}</ul></details></div>`}
@@ -939,6 +970,7 @@ if(EMBED)root.classList.add('embed');
 if(!/\/city-repairs\/(index\.html)?$/.test(location.pathname)){const a=$('allAgents');if(a)a.hidden=true}
 setLang(initialLang(),false);
 prefill();
+try{window.PAGE_READY=true}catch(e){}
 const initPromise=initStore().catch(()=>{if(!ready){cases=seed();setStore('blocked');ready=true;render()}});
 </script>
 </body>
