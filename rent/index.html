@@ -268,7 +268,7 @@ dialog.sheet::backdrop{background:rgba(14,15,18,.5)}
    <section class="tile" id="s2" aria-labelledby="h-s2">
     <div class="head"><h2 id="h-s2" tabindex="-1" data-t="s2h">Rule check</h2></div>
     <p class="note" id="cGate"></p>
-    <p class="note" id="idxNote" data-t="idxNote">How much rent may rise depends on the official rental index. Read your own figure in the Dubai Land Department calculator: this page cannot know it.</p>
+    <p class="note" id="idxNote" data-t="idxNote">How much rent may rise depends on the average rent for similar homes, and only the official Rental Index has that figure. Read yours there and type what it says. If you type a guess, the result is a guess.</p>
     <a class="tbtn" href="https://dubailand.gov.ae/en/eservices/rental-index/" target="_blank" rel="noopener noreferrer"><span data-t="calcOpen">Dubai Land Department calculator</span><svg class="flip" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14 4h6v6M20 4l-8.5 8.5M18 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/></svg></a>
     <fieldset>
      <legend data-t="calcLegend">What did it say?</legend>
@@ -467,9 +467,10 @@ const p1=p=>String(Math.round(p*10)/10);
 /* ---------- words: English here, Arabic below ---------- */
 const TX={};
 TX.en={
+ estLine:'An estimate worked out on your phone from the published rule and the numbers you typed. It is not an official result.',offLine:'Official answer: the Rental Index calculator of the Dubai Land Department. You get it from the department, not from this page.',howH:'How to get the official answer',howBody:'Open the Rental Index page on the Dubai Land Department website. It asks for the contract end date, the property type, how to find the property (the DEWA premise number, the Ejari contract number or the area) and your current yearly rent. Have those details ready. This page covers Dubai only: for other emirates it has no official calculator to point to.',guessNote:'This figure comes only from the official index. If you typed a guess, this result is a guess.',
  brand:'Masmooh',h1:'Is your rent rise allowed?',dubaiOnly:'Dubai only.',pvOne:'A demo: the examples are made up. Nothing you type leaves your device.',msgLabel:"Your landlord's message",msgPh:"Paste your landlord's message",
  check:'Check',examples:'Examples',datesSum:'Dates and how it came',fArrived:'Message reached you',fExpiry:'Contract ends',fHow:'Sent by',s2h:'Rule check',calcOpen:'Dubai Land Department calculator',
- idxNote:'How much rent may rise depends on the official rental index. Read your own figure in the Dubai Land Department calculator: this page cannot know it.',f_mid:'It asks me to leave before the contract ends',
+ idxNote:'How much rent may rise depends on the average rent for similar homes, and only the official Rental Index has that figure. Read yours there and type what it says. If you type a guess, the result is a guess.',f_mid:'It asks me to leave before the contract ends',
  calcLegend:'What did it say?',calcZero:'No rise allowed',calcUpTo:'Up to',pctL:'Percent allowed',calcUnknown:'Not checked yet',calcDemo:'Use an example result',cRun:'Check my renewal',toolsH:'Next steps',s4t:'Reply',
  s3t:'Stay or move',s5t:'Deposit',s6t:'Key dates',notAdvice:'Not legal advice. Not a government service.',more:'More',close:'Close',vStay:'Rent if you stay, a year',vComp:'Rent for a similar home, a year',
  vCosts:'Moving costs, your own quotes',aedPh:'AED',vAgent:'Agent fee',vMovers:'Movers',vConnect:'Utility connection, not refunded',vEjari:'Ejari registration',vOther:'Anything else',vFees:'Current fees:',
@@ -534,9 +535,10 @@ TX.en={
  checkFacts:'Rules read the message. Check every fact.'
 };
 TX.ar={
+ estLine:'تقدير محسوب على هاتفك من القاعدة المنشورة والأرقام التي كتبتها. ليس نتيجة رسمية.',offLine:'الجواب الرسمي: حاسبة مؤشر الإيجارات في دائرة الأراضي والأملاك بدبي. تحصل عليه من الدائرة نفسها، لا من هذه الصفحة.',howH:'كيف تحصل على الجواب الرسمي',howBody:'افتح صفحة مؤشر الإيجارات في موقع دائرة الأراضي والأملاك. تطلب الصفحة تاريخ انتهاء العقد ونوع العقار وطريقة تحديد العقار (رقم مشترك الكهرباء والماء DEWA أو رقم عقد إيجاري أو المنطقة) وإيجارك السنوي الحالي. جهّز هذه التفاصيل. هذه الصفحة لدبي فقط: لا توجد لها حاسبة رسمية أخرى تدلّك عليها لباقي الإمارات.',guessNote:'هذا الرقم يأتي من المؤشر الرسمي وحده. وإذا كتبت رقماً تخمّنه فهذه النتيجة تخمين.',
  brand:'مسموح',h1:'هل زيادة الإيجار مسموحة؟',dubaiOnly:'دبي فقط.',pvOne:'عرض تجريبي: الأمثلة افتراضية. لا شيء مما تكتبه يغادر جهازك.',msgLabel:'رسالة المالك',msgPh:'الصق رسالة المالك هنا',check:'افحص',examples:'أمثلة',
  datesSum:'التواريخ وطريقة الوصول',fArrived:'تاريخ وصول الرسالة',fExpiry:'تاريخ انتهاء العقد',fHow:'وصلت عبر',s2h:'فحص القواعد',calcOpen:'حاسبة دائرة الأراضي والأملاك',
- idxNote:'مقدار الزيادة المسموحة يعتمد على مؤشر الإيجارات الرسمي. اقرأ رقمك من حاسبة دائرة الأراضي والأملاك في دبي، فهذه الصفحة لا تعرفه.',f_mid:'يطلب مني المغادرة قبل انتهاء العقد',calcLegend:'ماذا كانت النتيجة؟',
+ idxNote:'مقدار الزيادة المسموحة يعتمد على متوسط إيجار الوحدات المماثلة، ولا يملك هذا الرقم إلا مؤشر الإيجارات الرسمي. اقرأ رقمك هناك واكتب ما تراه. وإذا كتبت رقماً تخمّنه فالنتيجة تخمين.',f_mid:'يطلب مني المغادرة قبل انتهاء العقد',calcLegend:'ماذا كانت النتيجة؟',
  calcZero:'لا يُسمح بأي زيادة',calcUpTo:'حتى',pctL:'النسبة المسموح بها',calcUnknown:'لم أتحقق بعد',calcDemo:'استخدم نتيجة مثال',cRun:'افحص التجديد',toolsH:'الخطوات التالية',s4t:'الرد',s3t:'البقاء أم الانتقال',s5t:'التأمين',
  s6t:'مواعيد مهمة',notAdvice:'ليست استشارة قانونية ولا خدمة حكومية.',more:'المزيد',close:'إغلاق',vStay:'الإيجار السنوي إذا بقيت',vComp:'الإيجار السنوي لمسكن مشابه',vCosts:'تكاليف الانتقال، حسب عروض الأسعار لديك',aedPh:'درهم',
  vAgent:'عمولة الوسيط',vMovers:'شركة النقل',vConnect:'توصيل الخدمات، غير المسترد',vEjari:'تسجيل إيجاري',vOther:'تكاليف أخرى',vFees:'الرسوم الحالية:',useEx:'استخدم أرقاماً افتراضية',vRun:'احسب',s4h:'الرد على المالك',rLang:'اللغة',
@@ -919,6 +921,11 @@ function renderCheck(){
     <p class="status" id="cResV">${symHTML(V[2])}<span>${esc(vLabel(c.verdict))}</span>${c.demo?`<span class="note">· ${esc(t('madeUpIdx'))}</span>`:''}</p>
     <p>${esc(t(c.lead))}</p>
     <p class="note">${esc(t(c.next))}</p>
+    <p class="note" id="estLine" data-official="est">${esc(t('estLine'))}</p>
+    <p id="offLine" data-official="off"><b>${esc(t('offLine'))}</b></p>
+    ${c.calc&&(c.calc.kind==='pct'||c.calc.kind==='zero')&&!c.demo?`<p class="note">${esc(t('guessNote'))}</p>`:''}
+    <details class="more" id="howBox"><summary>${esc(t('howH'))}</summary><div class="more-body"><p>${esc(t('howBody'))}</p>
+     <a class="tbtn" href="https://dubailand.gov.ae/en/eservices/rental-index/" target="_blank" rel="noopener noreferrer">${esc(t('calcOpen'))}</a></div></details>
     ${c.verdict==='unsure'?`<p class="note">${esc(t('unsureNote'))}</p>`:''}
     ${old?`<p class="note">${esc(t('rulesOld',{d:longDate(CHECKED)}))}</p>`:''}
     <div class="row"><button type="button" class="tbtn" id="pSum">${esc(t('pSum'))}</button></div>

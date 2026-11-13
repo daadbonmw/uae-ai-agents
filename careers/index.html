@@ -432,7 +432,7 @@ hireH:'Hire Emiratis who stay',fSize:'Staff',fSkilled:'Skilled roles',fEmirati:'
 e2H:'Emiratisation target',hireTile:'Hiring plan',ruleTag:'Rule',exampleTag:'Example',kRule:'Rule',traceH:'Agent steps',copy:'Copy',copied:'Copied',
 copyFallback:'Select and copy:',copy_map:'Copy strengths',copy_p90:'Copy plan',copy_hire:'Copy plan',ivEmpty:'Pick a job, then Start.',ivQ:'{n} of {t}',ivYou:'You',
 ivAnswerLabel:'Your answer',ivAnswerPh:'Your words',ivSend:'Send',ivEnd:'End',ivRestart:'New practice',notGov:'Not legal advice. Not a government service.',
-ivSelf:'Self-check: {m} of {t}',ivMissing:'Missing:',ivSumH:'Summary',ivSumRules:'You met {m} of {t} points.',ivSumEarly:'Ended before any answer.',
+ivSelf:'Self-check: {m} of {t}',ivPractice:'This is practice feedback worked out on your phone from simple rules. It is not an assessment by any employer or official body.',ivMissing:'Missing:',ivSumH:'Summary',ivSumRules:'You met {m} of {t} points.',ivSumEarly:'Ended before any answer.',
 ivNeed:'Type an answer first.',ivRulesNote:'Rule: 8 set questions, 5 checks each.',an_ivFirst:'Question 1 of {t}: {q}',an_ivNext:'Question {n} of {t}: {q}',
 an_ivDone:'Practice finished.',tr_iv_role:'Job type: {role}',tr_iv_bank:'Question bank of 8',tr_iv_rulesCoach:'Answers rule-checked: {n}',tr_local:'Nothing sent; ran here',
 s1Sub:'Ideas to explore, not job matches or offers.',exMariam:'Mariam',exSaeed:'Saeed',exClear:'Clear',undo:'Undo',an_cleared:'Cleared. Undo available.',
@@ -477,7 +477,7 @@ ivLineQ:'السؤال {n} من {t}',ivLineDone:'اكتمل',mapTile:'نقاط ق
 fEmirati:'المواطنون فيها',exTry:'مثال:',exLogi:'لوجستيات، 180',exSmall:'شركة صغيرة، 35',e2H:'هدف التوطين',hireTile:'خطة التوظيف',ruleTag:'قاعدة',exampleTag:'مثال',
 kRule:'قاعدة',traceH:'خطوات الوكيل',copy:'نسخ',copied:'تم النسخ',copyFallback:'تحديد النص ونسخه:',copy_map:'نسخ نقاط القوة',copy_p90:'نسخ الخطة',
 copy_hire:'نسخ خطة التوظيف',ivEmpty:'اختيار وظيفة، ثم «بدء».',ivQ:'{n} من {t}',ivYou:'أنت',ivAnswerLabel:'إجابتك',ivAnswerPh:'الإجابة بكلماتك',ivSend:'إرسال',ivEnd:'إنهاء',
-ivRestart:'تدريب جديد',notGov:'ليست استشارة قانونية ولا خدمة حكومية.',ivSelf:'تحقق ذاتي: {m} من {t}',ivMissing:'ينقص:',ivSumH:'الملخص',ivSumRules:'المستوفى: {m} من {t}.',
+ivRestart:'تدريب جديد',notGov:'ليست استشارة قانونية ولا خدمة حكومية.',ivSelf:'تحقق ذاتي: {m} من {t}',ivPractice:'هذه ملاحظات تدريبية تُحسب على هاتفك بقواعد بسيطة، وليست تقييماً من أي جهة عمل أو جهة رسمية.',ivMissing:'ينقص:',ivSumH:'الملخص',ivSumRules:'المستوفى: {m} من {t}.',
 ivSumEarly:'انتهى قبل أي إجابة.',ivNeed:'الإجابة مطلوبة أولاً.',ivRulesNote:'قاعدة: 8 أسئلة ثابتة و5 فحوص.',an_ivFirst:'السؤال 1 من {t}: {q}',
 an_ivNext:'السؤال {n} من {t}: {q}',an_ivDone:'انتهى التدريب.',tr_iv_role:'نوع الوظيفة: {role}',tr_iv_bank:'بنك من 8 أسئلة',tr_iv_rulesCoach:'إجابات فحصتها القاعدة: {n}',
 tr_local:'لم يُرسَل شيء',s1Sub:'أفكار للاستكشاف، وليست وظائف مطابقة أو عروضاً.',exMariam:'مريم',exSaeed:'سعيد',exClear:'مسح',undo:'تراجع',an_cleared:'مُسح. التراجع متاح.',
@@ -647,7 +647,7 @@ const FAIR_AR={
 };
 for(const k in FAIR_AR)FAIR_AR[k]=new Set(FAIR_AR[k].map(nAr));
 /* "ذكر" alone also means "mentioned" (كما ذكر المدير), so for "male" only the whole word "ذكراً" (as in "أن يكون ذكراً") is matched, with or without its marks. */
-const FAIR_AR_RE={gender:/(?<![\p{L}\p{M}])(?:[وف]\p{M}*)?ذ\p{M}*ك\p{M}*ر\p{M}*ا\p{M}*(?![\p{L}\p{M}])/gu,age:/(?:أقل|اقل|أكبر|اكبر|دون|فوق|تحت)\s+(?:من\s+)?(?:سن\s+)?(?:[0-9٠-٩]{2}\s*(?:عاماً|عاما|عام|سنة|سنوات)?|(?:ال)?(?:عشرين|ثلاثين|أربعين|اربعين|خمسين))/g,family:/الحالة\s+الاجتماعية/g};
+const FAIR_AR_RE={gender:/(^|[^\p{L}\p{M}])((?:[وف]\p{M}*)?ذ\p{M}*ك\p{M}*ر\p{M}*ا\p{M}*)(?![\p{L}\p{M}])/gu,age:/(?:أقل|اقل|أكبر|اكبر|دون|فوق|تحت)\s+(?:من\s+)?(?:سن\s+)?(?:[0-9٠-٩]{2}\s*(?:عاماً|عاما|عام|سنة|سنوات)?|(?:ال)?(?:عشرين|ثلاثين|أربعين|اربعين|خمسين))/g,family:/الحالة\s+الاجتماعية/g};
 /* Ordinary work phrases that contain a flagged word but are not about a person's traits. */
 const FAIR_SAFE=/health\s*(?:and|&)\s*safety|health\s*insurance|health\s+(?:workers?|sector|services?|centres?|centers?|clinics?|care|professionals?|and well-?being|awareness)|healthcare|mental health (?:support|services?|days?|awareness|programmes?|programs?|resources|first aid)|prayer\s+(?:rooms?|spaces?|areas?)|الصحة\s*و\s*السلامة|الرعاية\s+الصحية|القطاع\s+الصحي|الخدمات\s+الصحية|التأمين\s+الصحي|(?:ال)?مركز\s+(?:ال)?صحي|(?:ال)?مراكز\s+(?:ال)?صحية|(?:ال)?مصلى|غرفة\s+(?:ال)?صلاة|حامل(?:اً|ًا|ا|ة|ه|ات|ي|ين|و|ون)?\s+(?:لل|ل|ال)?(?:شهاد|مؤهل|درج|رخص|بكالوريوس|دبلوم|ماجستير|دكتوراه|جنسي|جواز|إقام|اقام|تأشير|تاشير)[؀-ۿ]*|(?:بيئ|ثقاف)(?:ة|ه)\s+(?:(?:ال)?عمل\s+)?(?:ال)?صحي(?:ة|ه)|(?:وجبات|عادات)\s+(?:ال)?صحي(?:ة|ه)/gi;
 /* Arabic word forms: strips the common prefixes (و ف ب ل ك ال لل), the accusative alif (ذكوراً → ذكور), the ة / ات endings
@@ -661,7 +661,7 @@ function fairScan(text){
   const sents=splitSentences(text);const hits=[];
   sents.forEach((s,i)=>{const clean=s.replace(FAIR_SAFE,' ');
     for(const [cat,re] of Object.entries(FAIR_EN)){re.lastIndex=0;let m;while((m=re.exec(clean)))hits.push({w:m[0].trim(),cat,i})}
-    for(const [cat,re] of Object.entries(FAIR_AR_RE)){re.lastIndex=0;let m;while((m=re.exec(clean)))hits.push({w:m[0].trim(),cat,i})}
+    for(const [cat,re] of Object.entries(FAIR_AR_RE)){re.lastIndex=0;let m;while((m=re.exec(clean)))hits.push({w:(m[2]!=null?m[2]:m[0]).trim(),cat,i})}
     for(const raw of clean.match(/[\p{L}\p{M}]+/gu)||[]){if(!/[؀-ۿ]/.test(raw))continue;const vs=arVariants(nAr(raw));
       for(const [cat,set] of Object.entries(FAIR_AR)){if(vs.some(x=>set.has(x))){hits.push({w:raw,cat,i});break}}}});
   const seen=new Set();const uniq=hits.filter(h=>{const k=h.cat+'|'+h.w.toLowerCase();if(seen.has(k))return false;seen.add(k);return true});
@@ -852,6 +852,7 @@ function renderInterview(){const box=$('ivBox');const iv=S.iv;
   iv.items.forEach((it,i)=>{h+=`<li class="msg"><span class="meta">${T('ivQ',{n:i+1,t:IV_TOTAL})}</span><span dir="auto">${esc(qText(it))}</span></li>`;
     if(it.a!=null)h+=`<li class="msg me"><span class="vh">${T('ivYou')}: </span><span dir="auto">${esc(it.a)}</span></li>`+fbBlock(it)});
   h+='</ol>';
+  if(iv.items.some(x=>x.checks))h+=`<p class="note" id="ivPracticeNote">${T('ivPractice')}</p>`;
   if(iv.done){const ch=iv.items.filter(x=>x.checks);
     h+=`<div class="summary" id="ivSummary" tabindex="-1"><span class="rhead"><span class="chip">${T('ruleTag')}</span><b>${T('ivSumH')}</b></span><p>${ch.length?T('ivSumRules',{m:ch.reduce((a,x)=>a+x.checks.length,0),t:ch.length*SELF.length}):T('ivSumEarly')}</p></div>`}
   else if(iv.items.length){h+=`<div class="ivform"><label class="f" for="ivAnswer"><span>${T('ivAnswerLabel')}</span><textarea id="ivAnswer" class="input" dir="auto" maxlength="1500" placeholder="${T('ivAnswerPh')}" aria-keyshortcuts="Control+Enter Meta+Enter">${esc(S.ivDraft)}</textarea></label>

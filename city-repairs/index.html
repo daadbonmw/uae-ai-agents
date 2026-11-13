@@ -133,6 +133,11 @@ h2,h3,h4{font-size:17px;line-height:24px;font-weight:600}
 .steps .now{background:var(--spot)}
 /* The sheet is white, so the steps not reached yet get the tile grey there. */
 .case-body .steps span:not(.done):not(.now){background:var(--tile)}
+.mini{display:flex;flex-wrap:wrap;gap:6px}
+.mini img{display:block;width:64px;height:48px;border-radius:10px;object-fit:cover}
+.about{display:flex;flex-direction:column;gap:8px}
+.off textarea{min-height:170px;font-size:15px;line-height:22px}
+.off a.tlink{display:inline-flex;align-items:center;text-decoration:none}
 .thumbs{display:flex;flex-wrap:wrap;gap:10px}
 .thumbs:empty{display:none}
 .thumb{display:flex;flex-direction:column;gap:4px;font-size:15px;line-height:22px;color:var(--muted)}
@@ -271,6 +276,12 @@ html.embed h1{margin-top:0}
 
 <main class="wrap" id="main">
  <div id="rReply"></div>
+ <section class="tile about" aria-labelledby="ah"><h2 id="ah" data-t="aboutH">What this page does</h2><p class="note" data-t="aboutP1"></p><p class="note" data-t="aboutP2"></p></section>
+ <p class="err" id="storeNote" role="status"></p>
+ <section class="sec" id="mineSec" aria-labelledby="mh2" hidden>
+  <div class="sec-head"><h2 id="mh2" data-t="mine">Your reports</h2><button class="tlink" type="button" id="delAll" data-t="delAll">Delete all my reports</button></div>
+  <div class="cases" id="mine"></div>
+ </section>
  <section class="sec" aria-labelledby="ch">
   <div class="sec-head"><h2 id="ch" data-t="cases">Cases</h2><div class="counts" id="tiles"></div></div>
   <div class="cases" id="cases"></div>
@@ -307,8 +318,14 @@ const LKEY='uaeagents-lang';
 /* ---------- words (English and Arabic) ---------- */
 const STR={en:{
 brand:'Wareeni',h1:'What needs fixing?',lText:'What’s wrong?',phText:'Describe the problem',photo:'Add a photo',lSticker:'QR sticker',noSticker:'No sticker',lLoc:'Place',phLoc:'Where? (required)',send:'Send report',sending:'Reading the report',yourPhoto:'Your photo',
-cases:'Cases',menu:'More',close:'Close',all:'All agents',aboutDemo:'Demo. Examples are made up. Not a real service.',aboutData:'Cases are saved in this browser only.',notLegal:'Not legal advice. Not a government service.',demoWarn:'Demo: nothing you type leaves your device. Don’t type real names or numbers, or add photos of people.',more:'More',reset:'Reset',resetAgain:'Tap again to reset',resetDone:'Demo reset.',
+cases:'Examples',menu:'More',close:'Close',all:'All agents',aboutDemo:'Demo. Examples are made up. Not a real service.',aboutData:'Your reports and photos are saved on this phone only. You can delete them any time.',notLegal:'Not legal advice. Not a government service.',demoWarn:'Demo: nothing you type leaves your device. Don’t type real names or numbers, or add photos of people.',more:'More',reset:'Reset',resetAgain:'Tap again to reset',resetDone:'Demo reset.',
 tagRule:'Rule',tagEx:'Example',
+aboutH:'What this page does',aboutP1:'It helps you prepare a report of a city problem on your phone: the words, the place and the photos. Nothing is sent and nobody receives it.',aboutP2:'A report only exists when you send it yourself through your municipality’s official channel. The status and replies shown here are examples, and the category and urgency are this page’s own guess from your words, not an official result.',
+mine:'Your reports',delAll:'Delete all my reports',delAllAgain:'Tap again to delete all',delOne:'Delete this report and its photos',delOneAgain:'Tap again to delete this report and its photos.',
+storeBlocked:'This browser is not letting the page save anything, so your reports stay only while this page is open. You can still prepare and copy a report.',storeFull:'This phone has no room left to save for this page, so the latest report was not saved. Delete old reports, or copy this one now.',
+offH:'The official step',offP:'The report is only made when you send it through the official channel. Copy it below, then send it there. In Dubai, for example, Dubai Municipality lists its helpline 800900 and the Dubai Municipality app on its contact page. In other emirates, use your own municipality’s channel (not checked here).',offLink:'Dubai Municipality contact page',offDemo:'The step shown below (crew, resident, closing) is a demo. The official status comes from the body you send the report to.',
+copy:'Copy report',copied:'Copied. Paste it into the official channel.',copyFail:'Could not copy. Select the text above and copy it.',savePhoto:'Save photo: {w}',photoNote:'Photos are not copied. Attach them yourself.',
+rtTitle:'Report of a city problem',rtPlace:'Place',rtText:'Details',rtPhotos:'Photos',rtPhotosN:'{n} on this phone (attach them yourself)',rtPhotosNone:'none',rtDate:'Prepared on',rtNoPlace:'not given yet',
 whoResident:'Resident',whoRule:'Rule',whoCrew:'Crew',whoOperator:'Operator',
 st_needs_info:'Needs place',st_crew:'With crew',st_checking:'Checking',st_resident:'Asked resident',st_decision:'Your decision',st_closed:'Closed',
 cntYou:'need you',
@@ -337,8 +354,14 @@ mh:'Repeat spots',noSpots:'No repeat spots yet.',bPlan:'Draft a fix-once plan',p
 evQR:'Reported with QR sticker {code}.',evTyped:'Reported with a typed place.',evNoLoc:'Reported without a place.',evReported:'Reported.',evTriage:'Sorted as {cat}, {urg}.',evDup:'May repeat {ids}. Kept separate.',evAskLoc:'No place yet, so asked where it is.',evAssign:'Demo: for {crew}. Target: {target} (made up).',evPhotoFlag:'Photo check flagged the after photo.',evPhotoOk:'Photo check: no copy found.',evCheck:'Checked the fix: {v}.',evCheckEx:'Checked the fix: {v} (example).',evRaised:'The photo rule set the result to “{v}”. The rules check said “{own}”.',evAskRes:'Asked the resident: “Is it fixed?”',evGaveLoc:'Gave the place: “{loc}”.',evFixedPhoto:'Marked fixed, with an after photo.',evFixedNoPhoto:'Marked fixed, no photo.',evFixedNote:'Marked fixed: {note}.',evFake:'Demo test: sent the before photo as the after photo.',evResYes:'Confirmed it is fixed.',evResNo:'Said it is still broken.',evBack:'Back to the crew. Cycle {n} needs new proof.',evNoReply:'No reply in 48 h (demo). Moved to the decision.',evClosed:'Closed after review.',evClosedWhy:'Closed despite a concern: “{why}”.',evSentBack:'Sent back: “{why}”.',evCycle:'Cycle {n} needs new proof.',evReopen:'Reopened: “{why}”.',evCycleOld:'Cycle {n} needs new proof; old photos can’t close it.'
 },ar:{
 brand:'ورّيني',h1:'شو يحتاج إصلاح؟',lText:'ما المشكلة؟',phText:'صف المشكلة',photo:'أضف صورة',lSticker:'ملصق QR',noSticker:'بدون ملصق',lLoc:'المكان',phLoc:'وين؟ (مطلوب)',send:'أرسل البلاغ',sending:'جارٍ قراءة البلاغ',yourPhoto:'صورتك',
-cases:'البلاغات',menu:'المزيد',close:'إغلاق',all:'كل الوكلاء',aboutDemo:'تجربة. الأمثلة من صنع الخيال. ليست خدمة حقيقية.',notLegal:'ليست استشارة قانونية ولا خدمة حكومية.',demoWarn:'تجربة: لا شيء مما تكتبه يغادر جهازك. لا تكتب أسماءً أو أرقاماً حقيقية ولا تضف صور أشخاص.',aboutData:'تُحفظ البلاغات في هذا المتصفح فقط.',more:'المزيد',reset:'إعادة ضبط',resetAgain:'اضغط مرة أخرى للتأكيد',resetDone:'أُعيد ضبط التجربة.',
+cases:'أمثلة',menu:'المزيد',close:'إغلاق',all:'كل الوكلاء',aboutDemo:'تجربة. الأمثلة من صنع الخيال. ليست خدمة حقيقية.',notLegal:'ليست استشارة قانونية ولا خدمة حكومية.',demoWarn:'تجربة: لا شيء مما تكتبه يغادر جهازك. لا تكتب أسماءً أو أرقاماً حقيقية ولا تضف صور أشخاص.',aboutData:'تُحفظ بلاغاتك وصورها على هالجوال فقط. تقدر تحذفها في أي وقت.',more:'المزيد',reset:'إعادة ضبط',resetAgain:'اضغط مرة أخرى للتأكيد',resetDone:'أُعيد ضبط التجربة.',
 tagRule:'قاعدة',tagEx:'مثال',
+aboutH:'شو تسوّي هالصفحة',aboutP1:'تساعدك تجهّز بلاغ عن مشكلة في المدينة على جوالك: الوصف والمكان والصور. ما يُرسل شي ولا أحد يستلمه.',aboutP2:'البلاغ ما يصير بلاغ فعلي إلا لما ترسله بنفسك عبر القناة الرسمية لبلديتك. الحالة والردود اللي تشوفها هنا أمثلة، والتصنيف والأولوية تخمين من الصفحة حسب كلامك، مو نتيجة رسمية.',
+mine:'بلاغاتك',delAll:'احذف كل بلاغاتي',delAllAgain:'اضغط مرة ثانية لحذف الكل',delOne:'احذف هذا البلاغ وصوره',delOneAgain:'اضغط مرة ثانية لحذف هذا البلاغ وصوره.',
+storeBlocked:'المتصفح ما يسمح للصفحة تحفظ شي، فبلاغاتك تبقى فقط وهالصفحة مفتوحة. تقدر مع ذلك تجهّز البلاغ وتنسخه.',storeFull:'ما بقي مكان في جوالك لحفظ هالصفحة، فآخر بلاغ ما انحفظ. احذف بلاغات قديمة أو انسخ هذا الحين.',
+offH:'الخطوة الرسمية',offP:'البلاغ ما يتم إلا لما ترسله عبر القناة الرسمية. انسخه من تحت وأرسله هناك. مثلاً في دبي، بلدية دبي تذكر في صفحة التواصل الخط الساخن 800900 وتطبيق بلدية دبي. في الإمارات الثانية استخدم قناة بلديتك (ما تحققنا منها هنا).',offLink:'صفحة التواصل في بلدية دبي',offDemo:'الخطوات اللي تحت (الفريق، المُبلّغ، الإغلاق) تجربة. الحالة الرسمية تجيك من الجهة اللي ترسل لها البلاغ.',
+copy:'انسخ البلاغ',copied:'تم النسخ. الصقه في القناة الرسمية.',copyFail:'ما قدرنا ننسخ. حدّد النص فوق وانسخه.',savePhoto:'احفظ الصورة: {w}',photoNote:'الصور ما تنتسخ. أرفقها بنفسك.',
+rtTitle:'بلاغ عن مشكلة في المدينة',rtPlace:'المكان',rtText:'التفاصيل',rtPhotos:'الصور',rtPhotosN:'{n} على هالجوال (أرفقها بنفسك)',rtPhotosNone:'لا يوجد',rtDate:'أُعدّ بتاريخ',rtNoPlace:'لم يُذكر بعد',
 whoResident:'المُبلّغ',whoRule:'قاعدة',whoCrew:'الفريق',whoOperator:'المشغّل',
 st_needs_info:'يحتاج المكان',st_crew:'عند الفريق',st_checking:'قيد الفحص',st_resident:'سُئل المُبلّغ',st_decision:'قرارك',st_closed:'مغلق',
 cntYou:'تحتاجك',
@@ -446,9 +469,57 @@ function seed(){
      events:[ev(34*D,'Resident','evReported'),ev(33*D,'Crew','evFixedNote',{note:'replaced sprinkler head'}),ev(33*D-H,'Operator','evClosed')]}
   ];
 }
-function load(){try{const v=JSON.parse(localStorage.getItem(KEY)||'null');if(Array.isArray(v)&&v.length)return v}catch(e){}return seed()}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(cases))}catch(e){try{localStorage.setItem(KEY,JSON.stringify(cases.map(c=>({...c,before:null,evidence:c.evidence&&{...c.evidence,after:null},past:(c.past||[]).map(p=>({...p,after:null}))}))))}catch(_){}}}
-let cases=load();
+/* ---------- saving on this phone (IndexedDB; nothing leaves the device) ----------
+   Case text and status go in the "cases" store; every photo goes once in the "photos" store under a key made from its content,
+   so a photo used twice is kept once. Photos that no case uses any more are removed on the next save.
+   When the browser blocks the database or has no room, the page keeps working in memory and says so. */
+const DB_NAME='wareeni-reports',IDB_STORES=['cases','photos'];
+let db=null,ready=false,storeState='ok';
+const savedPhotos=new Set();
+let saveChain=Promise.resolve();
+function hashStr(s){let a=2166136261,b=5381;for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);a=Math.imul(a^c,16777619);b=(Math.imul(b,33)+c)|0}return (a>>>0).toString(36)+(b>>>0).toString(36)+s.length.toString(36)}
+function idbOpen(){return new Promise((res,rej)=>{let r;try{r=indexedDB.open(DB_NAME,1)}catch(e){rej(e);return}
+  if(!r){rej(new Error('no database'));return}
+  r.onupgradeneeded=()=>{const d=r.result;if(!d.objectStoreNames.contains('cases'))d.createObjectStore('cases',{keyPath:'id'});if(!d.objectStoreNames.contains('photos'))d.createObjectStore('photos')};
+  r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error||new Error('database error'));r.onblocked=()=>rej(new Error('blocked'))})}
+function withTimeout(p,ms){return new Promise((res,rej)=>{const t=setTimeout(()=>rej(new Error('timeout')),ms);p.then(v=>{clearTimeout(t);res(v)},e=>{clearTimeout(t);rej(e)})})}
+function pack(c,photos){const ref=s=>{if(!s)return null;const k=hashStr(s);photos[k]=s;return k};
+  const r=Object.assign({},c);r.before=ref(c.before);
+  r.evidence=c.evidence?Object.assign({},c.evidence,{after:ref(c.evidence.after)}):null;
+  r.past=(c.past||[]).map(p=>Object.assign({},p,{after:ref(p.after)}));
+  return JSON.parse(JSON.stringify(r))}
+function unpack(r,ph){const c=Object.assign({},r);c.before=r.before?ph[r.before]||null:null;
+  if(r.evidence)c.evidence=Object.assign({},r.evidence,{after:r.evidence.after?ph[r.evidence.after]||null:null});
+  c.past=(r.past||[]).map(p=>Object.assign({},p,{after:p.after?ph[p.after]||null:null}));return c}
+function setStore(s){storeState=s;showStoreNote()}
+function showStoreNote(){const n=$('storeNote');if(!n)return;n.textContent=storeState==='blocked'?tx('storeBlocked'):storeState==='full'?tx('storeFull'):''}
+function writeAll(recs,photos){return new Promise(res=>{
+  if(!db){res();return}
+  try{const tx=db.transaction(IDB_STORES,'readwrite'),cs=tx.objectStore('cases'),ps=tx.objectStore('photos');const add=[],del=[];
+    for(const k in photos)if(!savedPhotos.has(k)){ps.put(photos[k],k);add.push(k)}
+    savedPhotos.forEach(k=>{if(!(k in photos)){ps.delete(k);del.push(k)}});
+    cs.clear();recs.forEach(r=>cs.put(r));
+    tx.oncomplete=()=>{add.forEach(k=>savedPhotos.add(k));del.forEach(k=>savedPhotos.delete(k));setStore('ok');try{localStorage.removeItem(KEY)}catch(e){}res()};
+    const bad=()=>{const e=tx.error;setStore(e&&e.name==='QuotaExceededError'?'full':'blocked');res()};
+    tx.onerror=bad;tx.onabort=bad}
+  catch(e){setStore(e&&e.name==='QuotaExceededError'?'full':'blocked');res()}})}
+/* Takes a copy of the cases now and writes it in order after any earlier save. */
+function save(){if(!db)return;let recs,photos={};try{recs=cases.map(c=>pack(c,photos))}catch(e){return}
+  saveChain=saveChain.then(()=>writeAll(recs,photos)).catch(()=>{})}
+function readAll(){return new Promise((res,rej)=>{try{const tx=db.transaction(IDB_STORES,'readonly');let recs=[];const photos={};
+    const rq=tx.objectStore('cases').getAll();rq.onsuccess=()=>{recs=rq.result||[]};
+    const cur=tx.objectStore('photos').openCursor();cur.onsuccess=()=>{const c=cur.result;if(c){photos[c.key]=c.value;c.continue()}};
+    tx.oncomplete=()=>res({recs,photos});tx.onerror=tx.onabort=()=>rej(tx.error||new Error('read failed'))}catch(e){rej(e)}})}
+/* Reports saved by the earlier version of this page (browser storage, photos inside) are read once and moved. */
+function legacy(){try{const v=JSON.parse(localStorage.getItem(KEY)||'null');if(Array.isArray(v)&&v.length)return v}catch(e){}return null}
+let cases=[];
+async function initStore(){
+  let recs=null,photos={};
+  try{db=await withTimeout(idbOpen(),4000);db.onversionchange=()=>{try{db.close()}catch(e){}db=null}}catch(e){db=null}
+  if(db){try{const r=await withTimeout(readAll(),8000);recs=r.recs;photos=r.photos;Object.keys(photos).forEach(k=>savedPhotos.add(k))}catch(e){db=null}}
+  if(db&&recs&&recs.length){cases=recs.map(r=>unpack(r,photos));setStore('ok')}
+  else{cases=legacy()||seed();if(db){setStore('ok');save()}else setStore('blocked')}
+  ready=true;render()}
 const drafts={}, busy=new Set(), openLogs=new Set();
 let reportPhoto=null;
 
@@ -465,7 +536,7 @@ const ICONS={
   repeat:'<circle class="s" cx="12" cy="12" r="2.6"/><path d="M17 4.5 19.5 7 17 9.5M19.5 7H9.5A5 5 0 0 0 4.5 12M7 19.5 4.5 17 7 14.5M4.5 17h10a5 5 0 0 0 5-5"/>'};
 const icon=(n,cls)=>`<svg class="ico${cls?' '+cls:''}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${ICONS[n]||''}</svg>`;
 
-function shrink(file){return new Promise((res,rej)=>{const url=URL.createObjectURL(file);const img=new Image();img.onload=()=>{const s=Math.min(1,720/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);res(c.toDataURL('image/jpeg',0.78))};img.onerror=()=>{URL.revokeObjectURL(url);rej(new Error('not a photo'))};img.src=url})}
+function shrink(file){return new Promise((res,rej)=>{const url=URL.createObjectURL(file);const img=new Image();img.onload=()=>{const s=Math.min(1,720/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);let u=c.toDataURL('image/jpeg',0.72);if(u.length>110000)u=c.toDataURL('image/jpeg',0.55);res(u)};img.onerror=()=>{URL.revokeObjectURL(url);rej(new Error('not a photo'))};img.src=url})}
 /* Reads the camera's "taken at" time (EXIF DateTimeOriginal) from a JPEG before it is re-encoded. Returns null when absent. */
 async function exifDate(file){try{if(!file||!/jpe?g/i.test((file.type||'')+(file.name||'')))return null;
   const v=new DataView(await file.slice(0,262144).arrayBuffer());if(v.byteLength<4||v.getUint16(0)!==0xFFD8)return null;
@@ -607,10 +678,11 @@ $('rPhoto').addEventListener('change',async e=>{const f=e.target.files&&e.target
 $('reportForm').addEventListener('submit',e=>{e.preventDefault();sendReport()});
 $('rText').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();const f=$('reportForm');if(f.requestSubmit)f.requestSubmit();else sendReport()}});
 $('rText').addEventListener('input',grow);
-$('rReply').addEventListener('click',e=>{const b=e.target.closest('[data-goto]');if(b)openCase(b.dataset.goto,b)});
+$('rReply').addEventListener('click',e=>{const b=e.target.closest('[data-goto]');if(b){openCase(b.dataset.goto,b);return}const k=e.target.closest('[data-copy]');if(k){const c=byId(k.dataset.copy);if(c)copyText(reportText(c)).then(ok=>{const el=$('cpr');if(el)el.textContent=tx(ok?'copied':'copyFail')})}});
 let sending=false,lastReply=null;
 async function sendReport(){
   if(sending)return;
+  if(!ready){try{await initPromise}catch(e){}}
   const text=$('rText').value.trim();const code=$('rSticker').value;const s=stickerOf(code);const place=(s?s[2]:$('rLoc').value.trim());
   showErr('');
   if(text.length<5){showErr('errShort');return}
@@ -643,7 +715,7 @@ async function sendReport(){
 }
 function renderReply(){const box=$('rReply');if(!lastReply){box.innerHTML='';return}const r=lastReply;
   const trace=r.trace.map(([key,p])=>`<li><span class="tag">${esc(tx('tagRule'))}</span><span dir="auto">${esc(tx(key,evParams(p,LANG)))}</span></li>`).join('');
-  box.innerHTML=`<div class="tile reply" id="replyTile" tabindex="-1"><p class="who"><span>${esc(tx('replyTo'))}</span><span class="tag">· ${esc(tx('tagRule'))}</span></p><p dir="auto" lang="${esc(r.lang)}">${esc(r.reply)}</p><div class="actions"><button type="button" class="tlink" data-goto="${esc(r.id)}">${esc(tx('seeCase',{id:r.id}))}</button></div><details class="more"><summary>${esc(tx('more'))}${icon('chev')}</summary><ul class="trace more-body">${trace}</ul></details></div>`}
+  box.innerHTML=`<div class="tile reply" id="replyTile" tabindex="-1"><p class="who"><span>${esc(tx('replyTo'))}</span><span class="tag">· ${esc(tx('tagRule'))}</span></p><p dir="auto" lang="${esc(r.lang)}">${esc(r.reply)}</p><div class="actions"><button type="button" class="tlink" data-goto="${esc(r.id)}">${esc(tx('seeCase',{id:r.id}))}</button><button type="button" class="tlink" data-copy="${esc(r.id)}">${esc(tx('copy'))}</button></div><p class="note" id="cpr" role="status"></p><details class="more"><summary>${esc(tx('more'))}${icon('chev')}</summary><ul class="trace more-body">${trace}</ul></details></div>`}
 
 /* ---------- case actions ---------- */
 async function runCheck(c){
@@ -670,6 +742,8 @@ const ACTIONS={
   'mark-fixed':c=>{const note=(drafts[c.id+':note']||'').trim();if(note.length<5)return 'errNote';const meta=drafts[c.id+':afterMeta']||{};const after=drafts[c.id+':after']||null;c.evidence={note,after,afterHash:after?drafts[c.id+':afterHash']||null:null,fileDate:after?meta.fileDate||null:null,takenAt:after?meta.takenAt||null:null,uploadedAt:after?meta.uploadedAt||null:null};['note','after','afterHash','afterMeta'].forEach(k=>delete drafts[c.id+':'+k]);log(c,'Crew',c.evidence.after?'evFixedPhoto':'evFixedNoPhoto');c.state='checking';save();runCheck(c);return 'async'},
   'fake-fix':c=>{if(!c.before)return 'errNoBefore';const note=(drafts[c.id+':note']||'').trim();c.evidence={note:note.length>=5?note:'Repaired it. All good now.',after:c.before,afterHash:c.beforeHash||null,fileDate:null,takenAt:null,uploadedAt:Date.now()};['note','after','afterHash','afterMeta'].forEach(k=>delete drafts[c.id+':'+k]);log(c,'Crew','evFake');c.state='checking';save();runCheck(c);return 'async'},
   'retry-check':c=>{runCheck(c);return 'async'},
+  'copy':c=>{copyText(reportText(c)).then(ok=>{const el=$('cp-'+c.id);if(el)el.textContent=tx(ok?'copied':'copyFail')});return 'async'},
+  'delete-one':c=>{const t=drafts[c.id+':del']||0;if(Date.now()-t>6000){drafts[c.id+':del']=Date.now();return 'delOneAgain'}delete drafts[c.id+':del'];cases=cases.filter(o=>o.id!==c.id);if(lastReply&&lastReply.id===c.id){lastReply=null;renderReply()}},
   'res-yes':c=>{c.resident='yes';log(c,'Resident','evResYes');c.state='decision'},
   'res-no':c=>{log(c,'Resident','evResNo');archive(c,'Resident said it was not fixed');log(c,'Rule','evBack',{n:c.cycle});c.state='crew'},
   'no-reply':c=>{c.resident='no_reply';log(c,'Operator','evNoReply');c.state='decision'},
@@ -683,7 +757,7 @@ $('caseBody').addEventListener('click',e=>{
   const b=e.target.closest('[data-act]');if(!b)return;const c=byId(b.dataset.id);if(!c||busy.has(c.id))return;
   const r=ACTIONS[b.dataset.act](c);
   if(r==='async')return;
-  if(typeof r==='string'){const el=document.getElementById('err-'+c.id);if(el)el.textContent=tx(r);return}
+  if(typeof r==='string'){const el=document.getElementById((b.dataset.act==='delete-one'?'oerr-':'err-')+c.id);if(el)el.textContent=tx(r);return}
   ['loc','why','ack'].forEach(k=>delete drafts[c.id+':'+k]);save();render({caseTop:true,say:c.id+': '+tx('st_'+c.state)});
 });
 $('caseBody').addEventListener('input',e=>{const t=e.target;if(t.dataset&&t.dataset.draft){drafts[t.dataset.draft]=t.type==='checkbox'?t.checked:t.value}});
@@ -693,6 +767,7 @@ $('caseBody').addEventListener('change',async e=>{const t=e.target;if(!t.dataset
   try{const u=await shrink(f);const h=await dhash(u);drafts[id+':afterMeta']=meta;drafts[id+':afterHash']=h;drafts[id+':after']=u;if(err)err.textContent='';const th=document.getElementById('after-'+id);if(th)th.innerHTML=thumb(u,tx('afterPending'))}catch(x){if(err)err.textContent=tx('errPhoto')}});
 $('caseBody').addEventListener('toggle',e=>{const d=e.target;if(d.tagName==='DETAILS'&&d.dataset.log){d.open?openLogs.add(d.dataset.log):openLogs.delete(d.dataset.log)}},true);
 $('cases').addEventListener('click',e=>{const b=e.target.closest('[data-case]');if(b)openCase(b.dataset.case,b)});
+$('mine').addEventListener('click',e=>{const b=e.target.closest('[data-case]');if(b)openCase(b.dataset.case,b)});
 
 
 /* ---------- render ---------- */
@@ -741,8 +816,19 @@ function caseCard(c){const id=esc(c.id);const place=c.location?esc(placeName(c.l
     <div class="case-head"><h3 class="case-title"><button type="button" class="case-open" data-case="${id}" aria-label="${esc(c.id+', '+catRow(c.category)[0]+', '+tx('st_'+c.state))}">${esc(catRow(c.category)[0])}</button></h3></div>
     <p class="loc">${icon('pin')}<span dir="auto">${place}</span></p>
     <p class="meta">${esc(tx('st_'+c.state))} · ${esc(ago(c.created))}</p>
-    ${stepsBar(c)}
+    ${miniPhotos(c)}${stepsBar(c)}
   </article>`}
+function miniPhotos(c){if(c.example)return '';const l=[[c.before,'before'],[c.evidence&&c.evidence.after,'after']].filter(x=>x[0]);return l.length?`<div class="mini">${l.map(x=>`<img src="${esc(x[0])}" alt="${esc(tx(x[1]))}">`).join('')}</div>`:''}
+/* The report as plain text, ready to paste into the official channel. Photos cannot travel in text. */
+function reportText(c){let d='';try{d=new Date(c.created).toLocaleDateString(LANG==='ar'?'ar-AE-u-nu-latn':'en-GB',{day:'numeric',month:'long',year:'numeric'})}catch(e){d=new Date(c.created).toISOString().slice(0,10)}
+  const n=(c.before?1:0)+(c.evidence&&c.evidence.after?1:0);
+  return [tx('rtTitle'),'',tx('rtPlace')+': '+(c.location?placeName(c.location):tx('rtNoPlace')),tx('rtText')+': '+c.text,tx('rtPhotos')+': '+(n?tx('rtPhotosN',{n}):tx('rtPhotosNone')),tx('rtDate')+': '+d].join(String.fromCharCode(10))}
+async function copyText(t){try{if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(t);return true}}catch(e){}
+  try{const ta=document.createElement('textarea');ta.value=t;ta.setAttribute('readonly','');ta.style.cssText='position:fixed;top:0;left:0;opacity:0';document.body.appendChild(ta);ta.select();ta.setSelectionRange(0,t.length);const ok=document.execCommand('copy');ta.remove();return !!ok}catch(e){return false}}
+const OFFICIAL_URL='https://www.dm.gov.ae/contact/service-centers/';
+function officialBox(c){if(c.example)return '';const id=esc(c.id);
+  const saves=[[c.before,'before'],[c.evidence&&c.evidence.after,'after']].filter(x=>x[0]).map(x=>`<a class="tlink" download="wareeni-${id}-${x[1]}.jpg" href="${esc(x[0])}">${esc(tx('savePhoto',{w:tx(x[1])}))}</a>`).join('');
+  return `<div class="next off"><h3>${esc(tx('offH'))}</h3><p class="note">${esc(tx('offP'))}</p><textarea class="in" id="rt-${id}" readonly dir="auto" aria-label="${esc(tx('copy'))}">${esc(reportText(c))}</textarea><div class="actions"><button type="button" class="btn" data-act="copy" data-id="${id}">${esc(tx('copy'))}</button><a class="tlink" href="${OFFICIAL_URL}" target="_blank" rel="noopener noreferrer">${esc(tx('offLink'))}</a></div><p class="note" id="cp-${id}" role="status"></p><p class="note">${esc(tx('photoNote'))}</p>${saves?`<div class="actions">${saves}</div>`:''}<p class="note">${esc(tx('offDemo'))}</p><div class="actions"><button type="button" class="tlink" data-act="delete-one" data-id="${id}">${esc(tx('delOne'))}</button></div><p class="err" id="oerr-${id}" role="alert"></p></div>`}
 function caseDetail(c){const id=esc(c.id);
   /* Photos only when there is at least one; an empty pair adds nothing. */
   const photos=(c.before||(c.evidence&&c.evidence.after))?`<div class="thumbs">${thumb(c.before,tx('before'))}${c.evidence?thumb(c.evidence.after,tx('after')):''}</div>`:'';
@@ -754,7 +840,7 @@ function caseDetail(c){const id=esc(c.id);
   return `<p class="meta">${id} · ${esc(urgName(c.urgency))} · ${esc(ago(c.created))}</p>
     <p class="text" dir="auto" lang="${esc(c.lang||'en')}">${esc(c.text)}</p>
     <p class="loc">${icon('pin')}<span dir="auto">${c.location?esc(placeName(c.location)):esc(tx('noPlace'))}</span></p>
-    ${stepsBar(c)}${photos}${crew}${checkLine(c)}${nextBox(c)}
+    ${stepsBar(c)}${photos}${officialBox(c)}${crew}${checkLine(c)}${nextBox(c)}
     <details class="more" data-log="${id}" ${openLogs.has(c.id)?'open':''}><summary>${esc(tx('more'))}${icon('chev')}</summary><div class="more-body">${facts.length?`<p class="note">${esc(facts.join(' · '))}</p>`:''}${checkDetails(c)}${past}<h4 class="vh">${esc(tx('timeline'))}</h4><ul class="log">${logItems}</ul></div></details>`}
 let openCaseId=null;
 function openCase(id,from){if(!byId(id))return;openCaseId=id;renderCaseSheet();openSheet('caseSheet',from);const b=$('caseBody');if(b)b.scrollTop=0}
@@ -788,13 +874,16 @@ $('memory').addEventListener('click',e=>{const b=e.target.closest('[data-plan]')
 
 /* Re-draws the list. Focus stays on the same case when the list moves; the open case sheet is redrawn too. */
 function render(o){o=o||{};
-  const box=$('cases');const ae=document.activeElement;
-  const keepCase=ae&&box.contains&&box.contains(ae)&&ae.dataset?ae.dataset.case:null;
+  if(!ready)return;
+  const box=$('cases'),mine=$('mine');const ae=document.activeElement;
+  const keepCase=ae&&ae.dataset&&ae.dataset.case&&(box.contains(ae)||mine.contains(ae))?ae.dataset.case:null;
   const order={decision:0,needs_info:1,resident:2,checking:3,crew:4,closed:5};
   const list=cases.slice().sort((a,b)=>order[a.state]-order[b.state]||b.created-a.created);
-  box.innerHTML=list.map(caseCard).join('');
+  const mineList=list.filter(c=>!c.example);
+  box.innerHTML=list.filter(c=>c.example).map(caseCard).join('');
+  mine.innerHTML=mineList.map(caseCard).join('');$('mineSec').hidden=!mineList.length;
   renderTiles();renderMemory();
-  if(keepCase){const el=box.querySelector('[data-case="'+keepCase+'"]');if(el)try{el.focus({preventScroll:true})}catch(e){}}
+  if(keepCase){const el=document.querySelector('[data-case="'+keepCase+'"]');if(el)try{el.focus({preventScroll:true})}catch(e){}}
   const cs=$('caseSheet');if(openCaseId&&cs&&cs.open)renderCaseSheet(o);
   if(o.say)announce(o.say);
 }
@@ -831,12 +920,15 @@ function setLang(l,persist){LANG=l==='ar'?'ar':'en';root.lang=LANG;root.dir=LANG
   if(persist){try{localStorage.setItem(LKEY,LANG)}catch(e){}}
   fillStickers();const s=stickerOf($('rSticker').value);if(s)$('rLoc').value=placeName(s[2]);
   if(reportPhoto)$('rThumb').innerHTML=thumb(reportPhoto,tx('yourPhoto'));
-  render();renderReply()}
+  showStoreNote();render();renderReply()}
 /* ?lang= (sent by the landing page in embed mode) wins, then the language chosen on this site, then the browser's. */
 function initialLang(){const p=PARAMS.get('lang');if(p==='ar'||p==='en')return p;let s=null;try{s=localStorage.getItem(LKEY)}catch(e){}if(s==='ar'||s==='en')return s;return (navigator.language||'').toLowerCase().startsWith('ar')?'ar':'en'}
 /* ?q= fills the report box, for when the landing page opens this agent with the visitor's words. */
 function prefill(){const q=PARAMS.get('q');if(!q)return;const b=$('rText');b.value=q.slice(0,1500);grow();if(!coarse())try{b.focus({preventScroll:true})}catch(e){}}
 
+let delAllArmed=false,delAllTimer=0;
+$('delAll').addEventListener('click',()=>{if(!delAllArmed){delAllArmed=true;$('delAll').textContent=tx('delAllAgain');clearTimeout(delAllTimer);delAllTimer=setTimeout(()=>{delAllArmed=false;$('delAll').textContent=tx('delAll')},4000);return}
+  clearTimeout(delAllTimer);delAllArmed=false;$('delAll').textContent=tx('delAll');cases=cases.filter(c=>c.example);lastReply=null;renderReply();if(openCaseId&&!byId(openCaseId))closeSheetEl('caseSheet');save();render();announce(tx('delAll'))});
 let resetArmed=false,resetTimer=0;
 $('reset').addEventListener('click',()=>{if(!resetArmed){resetArmed=true;$('reset').textContent=tx('resetAgain');clearTimeout(resetTimer);resetTimer=setTimeout(()=>{resetArmed=false;$('reset').textContent=tx('reset')},4000);return}
   clearTimeout(resetTimer);cases=seed();for(const k in drafts)delete drafts[k];busy.clear();save();lastReply=null;renderReply();planned.clear();resetArmed=false;$('reset').textContent=tx('reset');render();announce(tx('resetDone'))});
@@ -846,6 +938,7 @@ if(EMBED)root.classList.add('embed');
 if(!/\/city-repairs\/(index\.html)?$/.test(location.pathname)){const a=$('allAgents');if(a)a.hidden=true}
 setLang(initialLang(),false);
 prefill();
+const initPromise=initStore().catch(()=>{if(!ready){cases=seed();setStore('blocked');ready=true;render()}});
 </script>
 <script>(function(){try{var q=new URLSearchParams(location.search).get("q");if(!q)return;function go(){var b=document.getElementById("rText");if(!b)return;b.value=q;b.dispatchEvent(new Event("input",{bubbles:true}));try{b.focus({preventScroll:true})}catch(e){}}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",go);else go()}catch(e){}})();</script>
 </body>
