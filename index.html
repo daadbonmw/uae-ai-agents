@@ -90,7 +90,8 @@ main.wrap{padding:16px 16px 24px}
 .sheet-name .o{font-weight:400;color:var(--muted)}
 .ibtn{flex:none;display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:transparent;color:var(--ink);cursor:pointer}
 .ibtn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-[dir=rtl] #viewFull svg{transform:scaleX(-1)}
+[dir=rtl] #viewFull svg,[dir=rtl] #viewBack svg{transform:scaleX(-1)}
+#viewBack[hidden]{display:none}
 .sheet-body{position:relative;flex:1;min-height:0;background:var(--bg)}
 .sheet-body iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:var(--bg)}
 .sheet-body.loading iframe{opacity:0}
@@ -142,6 +143,8 @@ body.tpad{padding-bottom:88px}
 .tmsg{margin:14px 0;padding:12px 14px;border-radius:16px;background:var(--tile);font-size:15px;line-height:22px;overflow-wrap:anywhere}
 .tmsg .code{direction:ltr;text-align:start}
 .tact{display:grid;gap:6px}
+.tnote{margin:8px 4px 0;font-size:15px;line-height:22px;color:var(--muted)}
+.tnote[hidden]{display:none}
 @media (prefers-reduced-motion:no-preference){
  #tsheet[open]{animation:sheet .34s cubic-bezier(.2,.85,.25,1)}
  #tsheet[open]::backdrop{animation:fade .24s ease-out}
@@ -224,6 +227,7 @@ body.tpad{padding-bottom:88px}
 
 <dialog id="view" aria-labelledby="viewName">
  <div class="sheet-bar">
+  <button class="ibtn" id="viewBack" type="button" data-ta="back" aria-label="Back" hidden><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 12H6M11.5 6l-6 6 6 6"/></svg></button>
   <span id="viewIco" aria-hidden="true"></span>
   <h2 class="sheet-name" id="viewName"></h2>
   <a class="ibtn" id="viewFull" href="answers/" target="_blank" rel="noopener" data-ta="full" aria-label="Full page"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14 4h6v6M20 4l-8.5 8.5M18 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/></svg></a>
@@ -236,7 +240,7 @@ body.tpad{padding-bottom:88px}
 (function(){
 'use strict';
 const root=document.documentElement;
-const AR={brand:'وكلاء الإمارات',h1:'شو تحتاج؟',label:'سؤالك',send:'انطلق',hint:'أو اختر واحدًا.',w1:'اسأل عن الأنظمة',w2:'افحص رسالة مشبوهة',w3:'أثبت تأخر الراتب',w4:'افحص زيادة الإيجار',w5:'بلّغ عن عطل',w6:'استعد لمقابلة العمل',full:'صفحة كاملة',close:'إغلاق',foot:'ليست استشارة قانونية ولا خدمة حكومية.',ph:'اسأل أي شيء'};
+const AR={back:'رجوع',brand:'وكلاء الإمارات',h1:'شو تحتاج؟',label:'سؤالك',send:'انطلق',hint:'أو اختر واحدًا.',w1:'اسأل عن الأنظمة',w2:'افحص رسالة مشبوهة',w3:'أثبت تأخر الراتب',w4:'افحص زيادة الإيجار',w5:'بلّغ عن عطل',w6:'استعد لمقابلة العمل',full:'صفحة كاملة',close:'إغلاق',foot:'ليست استشارة قانونية ولا خدمة حكومية.',ph:'اسأل أي شيء'};
 const EN={};
 document.querySelectorAll('[data-t]').forEach(e=>{EN[e.dataset.t]=e.textContent});
 document.querySelectorAll('[data-ta]').forEach(e=>{EN[e.dataset.ta]=e.getAttribute('aria-label')});
@@ -370,8 +374,8 @@ Q.addEventListener('input',()=>{grow();showRoute()});
 window.addEventListener('resize',grow);
 
 // The chosen agent opens in place, in a sheet. A fresh iframe each time, so it never adds history entries of its own.
-const dlg=document.getElementById('view'),vbody=document.getElementById('viewBody'),full=document.getElementById('viewFull');
-let cur=null,opens=0;
+const dlg=document.getElementById('view'),vbody=document.getElementById('viewBody'),full=document.getElementById('viewFull'),vback=document.getElementById('viewBack');
+let cur=null,opens=0,backKey=null;
 const slugOf=a=>a.path.replace(/\/$/,'');
 function keyFromHash(){let h='';try{h=decodeURIComponent(location.hash.slice(1))}catch(e){}return Object.keys(AGENTS).find(k=>slugOf(AGENTS[k])===h)||null}
 function paintName(){
@@ -379,9 +383,10 @@ function paintName(){
  p.textContent=nameOf(a);p.lang=isAr()?'ar':'en';o.className='o';o.textContent=isAr()?a.en:a.ar;o.lang=isAr()?'en':'ar';
  document.getElementById('viewName').replaceChildren(p,o);
 }
-function show(key,t,fromHistory){
+function show(key,t,fromHistory,from){
  const a=AGENTS[key];if(!a)return;
- cur=key;opens++;tVisit(key);
+ cur=key;opens++;tVisit(key);backKey=from&&AGENTS[from]&&from!==key?from:null;vback.hidden=!backKey;
+ rec('agent',{a:key,via:backKey?'from '+backKey:fromHistory?'back or link':t?'question':'tile'});
  const ico=tileOf(key).querySelector('.ico');
  document.getElementById('viewIco').replaceChildren(ico.cloneNode(true));
  document.getElementById('loadIco').replaceChildren(ico.cloneNode(true));
@@ -396,7 +401,7 @@ function show(key,t,fromHistory){
  if(!dlg.open){dlg.showModal();root.classList.add('locked')}
  if(!fromHistory){const h='#'+slugOf(a);if(location.hash!==h)history.pushState({sheet:key},'',h)}
 }
-function cleanup(){root.classList.remove('locked');const f=document.getElementById('frame');if(f)f.remove();cur=null;tEnd()}
+function cleanup(){root.classList.remove('locked');backKey=null;vback.hidden=true;const f=document.getElementById('frame');if(f)f.remove();cur=null;tEnd()}
 function closeSheet(){if(dlg.open)dlg.close();cleanup()}
 // Close through history, so the phone's Back button closes the sheet instead of leaving the site.
 function requestClose(){
@@ -413,19 +418,26 @@ dlg.addEventListener('click',e=>{if(e.target===dlg)requestClose()});
 // A close the browser did by itself: tidy up and drop the sheet's history entry.
 dlg.addEventListener('close',()=>{if(dlg.open||cur===null)return;cleanup();if(history.state&&history.state.sheet)history.back()});
 document.getElementById('viewClose').addEventListener('click',requestClose);
+// A helper opened from another agent's sheet (Inzain's "More: Bil Tareekh") has a way back: the sheet goes back to that agent, in the same language.
+vback.addEventListener('click',()=>{const k=backKey;if(!k)return;if(history.state&&history.state.sheet){const n=opens;history.back();setTimeout(()=>{if(opens===n&&dlg.open&&cur!==k)show(k,'',true)},400)}else show(k,'',true)});
+window.addEventListener('message',ev=>{
+ const f=document.getElementById('frame');if(!f||ev.source!==f.contentWindow||ev.origin!==location.origin)return;
+ const d=ev.data;if(!d||d.type!=='uae-open-agent'||typeof d.agent!=='string'||!AGENTS[d.agent]||d.agent===cur)return;
+ show(d.agent,'',false,cur);
+});
 window.addEventListener('popstate',()=>{const k=keyFromHash();if(k){if(!dlg.open||cur!==k)show(k,'',true)}else if(dlg.open)closeSheet()});
 
 const form=document.getElementById('ask');
-form.addEventListener('submit',e=>{e.preventDefault();const t=Q.value.trim();if(!t){Q.focus();return}if(coarse())Q.blur();show(pick(t),t)});
+form.addEventListener('submit',e=>{e.preventDefault();const t=Q.value.trim();if(!t){Q.focus();return}if(coarse())Q.blur();const k=pick(t);recAsk(t,k,'typed');show(k,t)});
 Q.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();if(form.requestSubmit)form.requestSubmit();else form.dispatchEvent(new Event('submit',{cancelable:true}))}});
-tiles.forEach(link=>link.addEventListener('click',e=>{if(e.ctrlKey||e.metaKey||e.shiftKey||e.altKey)return;const k=keyOf(link);if(!k)return;e.preventDefault();show(k,Q.value.trim())}));
+tiles.forEach(link=>link.addEventListener('click',e=>{if(e.ctrlKey||e.metaKey||e.shiftKey||e.altKey)return;const k=keyOf(link);if(!k)return;e.preventDefault();const t=Q.value.trim();if(t)recAsk(t,k,'tile');show(k,t)}));
 
 // Test mode (?test=1, kept for the browser session): one question after each agent used for 15 seconds, then "Send my result".
 // "Tries" are answered questions, so the share is honest. Answers stay in this browser until the tester sends them.
 const TEST=(function(){let on=false;try{on=new URLSearchParams(location.search).get('test')==='1';if(on)sessionStorage.setItem('uaeagents-test','1');else on=sessionStorage.getItem('uaeagents-test')==='1'}catch(e){}return on})();
 const TX={
- en:{q:'Did {n} help?',yes:'Yes',no:'No',send:'Send my result',note:'Anything confusing?',wa:'Send on WhatsApp',copy:'Copy',copied:'Copied',close:'Close',line:'UAE Agents test. Tried: {a}. Helped: {h}.',tag:'Note: '},
- ar:{q:'هل ساعدك {n}؟',yes:'نعم',no:'لا',send:'أرسل نتيجتي',note:'أي شيء غير واضح؟',wa:'أرسل عبر واتساب',copy:'نسخ',copied:'تم النسخ',close:'إغلاق',line:'تجربة وكلاء الإمارات. جرّبت: {a}. ساعد: {h}.',tag:'ملاحظة: '}
+ en:{q:'Did {n} help?',yes:'Yes',no:'No',send:'Send my result',note:'Anything confusing?',wa:'Send on WhatsApp',copy:'Copy',copied:'Copied',close:'Close',line:'UAE Agents test. Tried: {a}. Helped: {h}.',tag:'Note: ',rec:'Test mode: what you ask here and whether it helped is shared with the project owner. Messages you paste to check are never shared.'},
+ ar:{q:'هل ساعدك {n}؟',yes:'نعم',no:'لا',send:'أرسل نتيجتي',note:'أي شيء غير واضح؟',wa:'أرسل عبر واتساب',copy:'نسخ',copied:'تم النسخ',close:'إغلاق',line:'تجربة وكلاء الإمارات. جرّبت: {a}. ساعد: {h}.',tag:'ملاحظة: ',rec:'وضع التجربة: ما تسأل عنه هنا وهل أفادك يصل إلى صاحب المشروع. أما الرسائل التي تلصقها للفحص فلا تُرسل أبدًا.'}
 };
 const tx=()=>TX[isAr()?'ar':'en'];
 let store={c:{}},visit=null,pending=null,tBar,tPill,tSheet,tNote;
@@ -433,11 +445,98 @@ const tel=id=>document.getElementById(id);
 const tSave=()=>{try{localStorage.setItem('uaeagents-test',JSON.stringify(store))}catch(e){}};
 const tCount=()=>{let a=0,h=0;AG.forEach(k=>{const c=store.c[k]||[0,0];if(c[0]>0)a++;if(c[1]>0)h++});return {a,h}};
 const tDevice=()=>coarse()?'phone':'computer';
+/*REC-START*/
+// Tester records: ONLY on the tester route (?test=1). Without it REC stays null and this page sends nothing anywhere.
+// Each step is sealed for the owner's PC alone: a fresh AES-GCM key encrypts the record, the RSA-OAEP public key below
+// wraps that key, and the body posted to the public relay is base64(wrapped key + iv + ciphertext). The private key never
+// leaves the owner's PC (tools/tester_log.cjs reads the relay and writes docs/entry/tester-log/REPORT.md).
+// What the person typed is sent only when it was typed by hand, went to an agent other than Mazboot and does not look
+// like a pasted message; text that was pasted, dropped or arrived in one jump, and any checked message, is sent as its
+// length only (recPasted, set by the listeners below REC). Written for old phones (iOS 15): no look-behind, no newer
+// built-ins; with no crypto.subtle nothing is recorded, and any failure here is swallowed so the page carries on.
+const REC_URL='https://ntfy.sh/pxz3zpxfgp6uud5ocs5oliuvheimva3cbh2aihth';
+const REC_KEY='MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAl+GOXexMo/P/tLOWZgZOVgo1SkaKqFe0pdSRYKP6/KjJs2FQNU1B8+uol7SVghFJodABhJBIuxpo7ErZNYBTIjo26JH/LjNmpJSpcaEAShXGbo76nKXUs7J7tOe9mOnuJm4Skk38CeCyM7bbcfOi0lGNusI0gQQDd3ZDCP8JiiaNpgNS7t410ki783JUgekyl7JPylh40Uh/RfNUs6tRCqo9TZvXHP/w0AXqnkfUFT/dmJ6QxRKTPGYBuWd5D/3eDEA+v5NUUiurQSZkmhVZrjXFoZVZZNEae52snK45SO5kma0ezunr/Ea1+3MahwM5vgXSSzXEhs18El/L1PRLMwIDAQAB';
+const recScrub=s=>String(s||'').replace(/[^\s@]+@[^\s@]+/g,'[email]').replace(/\d[\d\s-]{5,}\d/g,'#').replace(/\s+/g,' ').trim();
+let recPasted=false;   // true while the text in the box was pasted, dropped or arrived in one jump: such text is never sent
+function recText(raw,agent){
+ const s=String(raw||'').trim();
+ if(agent==='message'||recPasted||pasted(s))return {kind:'message',len:s.length};
+ return {kind:'question',text:recScrub(s).slice(0,300)};
+}
+function recB64(u8){let s='';for(let i=0;i<u8.length;i+=4096)s+=String.fromCharCode.apply(null,Array.prototype.slice.call(u8,i,i+4096));return btoa(s)}
+function recUnb64(s){const b=atob(s),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u}
+function recSeal(obj,keyB64){
+ const C=crypto.subtle,raw=crypto.getRandomValues(new Uint8Array(32)),iv=crypto.getRandomValues(new Uint8Array(12));
+ const data=new TextEncoder().encode(JSON.stringify(obj));
+ return Promise.all([
+  C.importKey('spki',recUnb64(keyB64),{name:'RSA-OAEP',hash:'SHA-256'},false,['encrypt']).then(pub=>C.encrypt({name:'RSA-OAEP'},pub,raw)),
+  C.importKey('raw',raw,{name:'AES-GCM'},false,['encrypt']).then(k=>C.encrypt({name:'AES-GCM',iv:iv},k,data))
+ ]).then(r=>{
+  const w=new Uint8Array(r[0]),c=new Uint8Array(r[1]),out=new Uint8Array(w.length+iv.length+c.length);
+  out.set(w,0);out.set(iv,w.length);out.set(c,w.length+iv.length);return recB64(out);
+ });
+}
+/*REC-END*/
+const REC=(function(){
+ if(!TEST)return null;
+ try{
+  // Only the tester link itself records: a tab that once had ?test=1 and now shows the plain link sends nothing.
+  if(new URLSearchParams(location.search).get('test')!=='1')return null;
+  if(!window.crypto||!crypto.subtle||!crypto.getRandomValues||!window.fetch||!window.TextEncoder||!window.Promise||!window.btoa)return null;
+  const rnd=()=>{const a='abcdefghijklmnopqrstuvwxyz0123456789',b=crypto.getRandomValues(new Uint8Array(12));let s='';for(let i=0;i<b.length;i++)s+=a[b[i]%36];return s};
+  let sid='',seq=0;
+  try{sid=sessionStorage.getItem('uaeagents-sid')||'';seq=parseInt(sessionStorage.getItem('uaeagents-seq'),10)||0}catch(e){}
+  if(!/^[a-z0-9-]{8,40}$/.test(sid)){sid=rnd();seq=0;try{sessionStorage.setItem('uaeagents-sid',sid)}catch(e){}}
+  return {sid:sid,seq:seq,chain:Promise.resolve(),last:''};
+ }catch(e){return null}
+})();
+// Pasted text is never sent, whichever agent it goes to. The box is watched for a paste or a drop, and for text that
+// arrives in one jump (a keyboard's clipboard chip, dictation, autofill); text already in the box when the page opens
+// counts too. The mark is cleared when the box is emptied, so a question typed by hand afterwards is a question again.
+if(REC)try{
+ let before=Q.value.length;recPasted=before>0;
+ const mark=()=>{recPasted=true};
+ Q.addEventListener('paste',mark);Q.addEventListener('drop',mark);
+ Q.addEventListener('input',e=>{
+  const n=Q.value.length,ty=e&&typeof e.inputType==='string'?e.inputType:'',add=e&&typeof e.data==='string'?e.data.length:0;
+  if(!n)recPasted=false;
+  else if(n-before>=16||add>=16||/^insertFrom(?:Paste|PasteAsQuotation|Drop|Yank)$/.test(ty))recPasted=true;
+  before=n;
+ });
+}catch(e){recPasted=true}
+// Records go out one after another, so they reach the relay in the order they happened. A failed send is dropped quietly.
+function rec(ev,data){
+ if(!REC)return;
+ try{
+  const r={v:1,s:REC.sid,n:++REC.seq,t:Date.now(),e:ev,l:isAr()?'ar':'en',d:tDevice()};
+  Object.keys(data||{}).forEach(k=>{r[k]=data[k]});
+  try{sessionStorage.setItem('uaeagents-seq',String(REC.seq))}catch(e){}
+  const post=body=>new Promise(done=>{
+   const tm=setTimeout(done,10000);
+   const opt={method:'POST',body:body,credentials:'omit',referrerPolicy:'no-referrer',cache:'no-store'};
+   if(body.length<60000)opt.keepalive=true;
+   let p;try{p=fetch(REC_URL,opt)}catch(e){clearTimeout(tm);done();return}
+   p.then(()=>{clearTimeout(tm);done()},()=>{clearTimeout(tm);done()});
+  });
+  REC.chain=REC.chain.then(()=>recSeal(r,REC_KEY)).then(post).catch(()=>{});
+ }catch(e){}
+}
+function recAsk(t,k,via){if(REC)try{const x=recText(t,k);x.a=k;x.via=via;rec('ask',x)}catch(e){}}
+// The result is recorded when it is shared, copied, or the sheet is closed; the same note and code are never sent twice.
+function recResult(how){
+ if(!REC)return;
+ try{
+  const c=tCount(),note=recScrub(tNote.value.replace(/UA1/gi,'')).slice(0,200),code=makeCode(store.c,root.lang,tDevice()),sig=note+'|'+code;
+  if(sig===REC.last)return;REC.last=sig;
+  rec('result',{note:note,code:code,tried:c.a,helped:c.h,how:how});
+ }catch(e){}
+}
 function tVisit(key){if(TEST){visit={key,at:Date.now()};pending=null;tPaint()}}
 function tEnd(){const v=visit;visit=null;if(TEST&&v&&Date.now()-v.at>=15000){pending=v.key;tPaint()}}
 function tAnswer(yes){
  const k=pending;if(!k)return;
  const c=store.c[k]=store.c[k]||[0,0];c[0]=Math.min(99,c[0]+1);if(yes)c[1]=Math.min(c[0],c[1]+1);
+ rec('help',{a:k,yes:!!yes});
  tSave();pending=null;tPaint();tPill.focus();
 }
 function tMessage(){
@@ -451,6 +550,7 @@ const sumText=n=>isAr()?(n===1?'جرّبت وكيلًا واحدًا':n===2?'ج�
 function tPaint(){
  if(!TEST||!tBar)return;
  const D=tx(),n=tCount().a;
+ if(tel('tNotice'))tel('tNotice').textContent=D.rec;
  tel('tqText').textContent=pending?D.q.replace('{n}',nameOf(AGENTS[pending])):'';
  tel('tqYes').textContent=D.yes;tel('tqNo').textContent=D.no;
  tBar.hidden=!pending;tPill.hidden=!!pending||!n;tPill.textContent=D.send;
@@ -476,6 +576,7 @@ if(TEST){
   +'<div class="tbody"><p class="tsum" id="tsSum"></p><label class="tl" id="tsNoteL" for="tsNote"></label><textarea id="tsNote" maxlength="200" rows="2" dir="auto"></textarea>'
   +'<div class="tmsg" id="tsMsg"></div><div class="tact"><button class="tbtn main" type="button" id="tsWa"></button><button class="tbtn link" type="button" id="tsCopy" aria-live="polite"></button></div></div>';
  document.body.append(tBar,tPill,tSheet);
+ if(REC){const p=document.createElement('p');p.className='tnote';p.id='tNotice';p.setAttribute('role','note');form.append(p)}   // said openly, before anything is sent
  tNote=tel('tsNote');
  tel('tqYes').addEventListener('click',()=>tAnswer(true));
  tel('tqNo').addEventListener('click',()=>tAnswer(false));
@@ -484,14 +585,16 @@ if(TEST){
  const shut=()=>{if(tSheet.open)tSheet.close()};
  tel('tsClose').addEventListener('click',shut);
  tSheet.addEventListener('click',e=>{if(e.target===tSheet)shut()});
- tSheet.addEventListener('close',()=>root.classList.remove('locked'));
+ tSheet.addEventListener('close',()=>{root.classList.remove('locked');recResult('closed')});
  tel('tsWa').addEventListener('click',async()=>{
+  recResult('shared');
   const text=tMessage().join('\n');
   if(navigator.share){try{await navigator.share({text});return}catch(e){if(e&&e.name==='AbortError')return}}
   window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank','noopener');
  });
  let t0=0;
  tel('tsCopy').addEventListener('click',async()=>{
+  recResult('copied');
   const ok=await tCopy(tMessage().join('\n')),b=tel('tsCopy');if(!ok)return;
   b.textContent=tx().copied;clearTimeout(t0);t0=setTimeout(()=>{b.textContent=tx().copy},1800);
  });
@@ -511,6 +614,7 @@ function set(l){
 }
 let saved=null;try{saved=localStorage.getItem('uaeagents-lang')}catch(e){}
 set(saved||((navigator.language||'').toLowerCase().startsWith('ar')?'ar':'en'));
+rec('open',{});   // the tester page was opened (the notice above is already on screen)
 document.getElementById('lang').addEventListener('click',()=>set(isAr()?'en':'ar'));
 window.addEventListener('pageshow',()=>{grow();said='';showRoute()});
 const k0=keyFromHash();if(k0)show(k0,'',true);

@@ -11,6 +11,19 @@
 <meta name="description" content="Log paydays, spot late or unpaid salary, and keep a dated case file for a MOHRE complaint.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%2392722A' d='M12 2a10 10 0 1 1 0 20H2V12A10 10 0 0 1 12 2z'/%3E%3C/svg%3E">
 <script id="boot">(function(){var r=document.documentElement;try{var p=new URLSearchParams(location.search);if(p.get('embed')==='1')r.classList.add('embed');var l=p.get('lang');if(l!=='ar'&&l!=='en'){try{l=localStorage.getItem('uaeagents-lang')}catch(e){}}if(l!=='ar'&&l!=='en')l=String(navigator.language||'').toLowerCase().indexOf('ar')===0?'ar':'en';r.lang=l;r.dir=l==='ar'?'rtl':'ltr';}catch(e){}})();</script>
+<script id="guard">/* Never a silent dead page. Oldest plain JavaScript on purpose (no let, const, arrows or template strings), so it runs on any phone.
+   The main script sets PAGE_STARTED as its first act (and removes the "Loading" line) and PAGE_READY when the diary is drawn.
+   If it never starts (a browser that cannot read it) or stops before that, this shows in English and Arabic that the page could not
+   start here and what to do. The main script is inline, so by DOMContentLoaded it has run or failed. */
+(function(){var shown=false;
+function fail(){if(shown||window.PAGE_READY)return;shown=true;var el=document.getElementById('bootNote');
+if(!el){el=document.createElement('p');el.id='bootNote';var m=document.getElementById('main')||document.body;if(!m)return;m.insertBefore(el,m.firstChild)}
+el.className='bootnote bootfail';el.setAttribute('role','alert');
+el.innerHTML='<span lang="en" dir="ltr">This page could not start on this phone or browser. Please update your browser (on an iPhone: update iOS in Settings), or open the site in another browser.</span><span lang="ar" dir="rtl">تعذّر تشغيل هذه الصفحة على هذا الهاتف أو المتصفح. حدّث المتصفح (في الآيفون: حدّث نظام iOS من الإعدادات)، أو افتح الموقع في متصفح آخر.</span>'}
+window.PAGE_BOOT_FAIL=fail;
+if(window.addEventListener){window.addEventListener('error',function(){if(!window.PAGE_READY)setTimeout(function(){if(document.readyState!=='loading')fail()},0)},true);
+document.addEventListener('DOMContentLoaded',function(){if(!window.PAGE_READY)setTimeout(fail,1500)})}
+else{setTimeout(fail,8000)}})();</script>
 <link rel="stylesheet" href="../fonts/rubik.css">
 <style>
 /* Bil Tareekh, in the "super-app" look of the landing page (tools/calm-design.md).
@@ -80,7 +93,8 @@ h1{margin:16px 0;font-size:28px;line-height:1.15;font-weight:600;color:var(--gol
 .tlang{width:auto;min-width:44px;padding:0 10px;border-radius:22px;font:inherit;font-size:15px;font-weight:600}
 .ibtn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .top .ibtn{color:var(--ink)}
-.embed #mast,.embed #foot{display:none!important}
+.embed #mast{display:none!important}
+.embed .foot{padding-bottom:16px}
 .embed .top .wrap{padding-top:4px}
 .embed h1{margin:10px 0 12px}
 
@@ -220,6 +234,13 @@ audio{width:100%}
  @keyframes side-rtl{from{transform:translateX(-48px);opacity:.3}to{transform:none;opacity:1}}
 }
 @media (max-width:359px){.step{padding:10px}.step .ico{width:30px;height:30px}}
+/* the line shown before the main script has started (and, if it never does, the "could not start" message) */
+/* without <dialog> support (iOS before 15.4) a closed sheet would sit over the page: hide it (browsers with <dialog> already do) */
+dialog:not([open]){display:none}
+.bootnote{margin:16px 0;padding:12px 16px;color:var(--muted);font-size:15px;line-height:1.5}
+.bootnote span{display:block}
+.bootnote span+span{margin-top:6px}
+.bootfail{color:var(--ink);background:var(--tile);border:1px solid var(--line);border-radius:12px}
 </style>
 </head>
 <body>
@@ -246,6 +267,7 @@ audio{width:100%}
 </header>
 
 <main class="wrap" id="main">
+ <p class="bootnote" id="bootNote" role="status"><span lang="en" dir="ltr">Loading…</span><span lang="ar" dir="rtl">جارٍ التحميل…</span></p>
  <!-- The one row of actions. Each opens a sheet; the pay diary is this page. -->
  <div class="steps" id="rowActs" data-ta="actions" aria-label="Actions">
   <button type="button" class="step" data-go="help" aria-haspopup="dialog"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path class="s" d="M24 7a17 17 0 0 1 17 17H31a7 7 0 0 0-7-7z"/><circle cx="24" cy="24" r="17"/><circle cx="24" cy="24" r="7"/><path d="M24 7v10M41 24H31M24 41V31M7 24h10"/></svg><span class="nm" data-t="tHelp">What to do now</span></button>
@@ -427,6 +449,10 @@ audio{width:100%}
 
 <script id="app">
 'use strict';
+/* first act: tell the guard script the page started and take the "Loading" line away */
+try{window.PAGE_STARTED=true;const bn=document.getElementById('bootNote');if(bn&&bn.parentNode)bn.parentNode.removeChild(bn)}catch(e){}
+/* iPhones before iOS 15.4 have no <dialog>: give the sheets open, showModal and close so they open and close there too (browsers with <dialog> skip this) */
+try{if(typeof HTMLDialogElement!=='function'&&typeof document!=='undefined'&&document.querySelectorAll)document.querySelectorAll('dialog').forEach(d=>{Object.defineProperty(d,'open',{configurable:true,get(){return this.hasAttribute('open')},set(v){if(v)this.setAttribute('open','');else this.removeAttribute('open')}});d.show=d.showModal=function(){this.setAttribute('open','')};d.close=function(){if(!this.hasAttribute('open'))return;this.removeAttribute('open');try{this.dispatchEvent(new Event('close'))}catch(e){}}})}catch(e){}
 /* ---------- basics ---------- */
 const KEY='biltareekh-demo-v1', ULKEY='uaeagents-lang';
 const DAY=864e5;
@@ -638,7 +664,7 @@ const FACTS={
   wps:{t:'From 1 June 2026, private-sector employers registered with MOHRE must pay the previous month’s wages on the 1st of each month, through the Wage Protection System. Pay after that day counts as delayed (Ministerial Resolution No. 340 of 2026). The official steps grow with the days after the due date: alerts from day 2, new work permits paused from day 5, an administrative fine from day 11, a labour dispute opened for the workers from day 16, a payment order from day 21. Some jobs are outside this rule, such as banks and financial institutions.',ar:'منذ 1 يونيو 2026، على أصحاب العمل في القطاع الخاص المسجلين لدى الوزارة دفع أجر الشهر السابق في اليوم الأول من كل شهر عبر نظام حماية الأجور، وما بعده يُعدّ تأخيرًا (القرار الوزاري رقم 340 لسنة 2026). وتتدرّج الإجراءات الرسمية بحسب الأيام بعد الموعد: تنبيهات من اليوم الثاني، وإيقاف تصاريح العمل الجديدة من اليوم الخامس، وغرامة إدارية من اليوم الحادي عشر، وتسجيل نزاع عمالي للعمال من اليوم السادس عشر، وأمر دفع من اليوم الحادي والعشرين. بعض الوظائف خارج هذه القاعدة، مثل البنوك والمؤسسات المالية.',src:['uae_wages'],who:'co'},
   wps85:{t:'Under that rule, a worker counts as paid when at least 85% of the wage arrives by the due date and the rest is a lawful deduction.',ar:'وفق هذه القاعدة، يُعدّ العامل قد تقاضى أجره إذا وصل 85% منه على الأقل في الموعد وكان الباقي خصمًا قانونيًا.',src:['uae_wages'],who:'co'},
   unpaidleave:{t:'Workers on approved unpaid leave are outside that rule for that time.',ar:'العامل في إجازة غير مدفوعة موافق عليها خارج هذه القاعدة خلال مدتها.',src:['uae_wages'],who:'co'},
-  days30:{t:'MOHRE says you can complain to it within 30 days of the employer’s breach. Complain as early as you can.',ar:'تقول الوزارة إنه يمكنك تقديم الشكوى إليها خلال 30 يومًا من مخالفة صاحب العمل. قدّم شكواك مبكرًا ما أمكن.',src:['mohre_rights'],who:'co'},
+  days30:{t:'MOHRE’s complaint rule (Ministerial Resolution 782 of 2023) says to complain to it within 30 days of the employer’s breach. Complain as early as you can. The law’s last limit for any claim is 2 years after the job ends (Article 54 of Decree-Law 33 of 2021, as amended).',ar:'تنص قاعدة الوزارة للشكاوى (القرار الوزاري 782 لسنة 2023) على تقديم الشكوى إليها خلال 30 يومًا من مخالفة صاحب العمل. قدّم شكواك مبكرًا ما أمكن. والحد الأخير في القانون لأي مطالبة هو سنتان من انتهاء العمل (المادة 54 من المرسوم بقانون 33 لسنة 2021 وتعديلاته).',src:['mohre_rights'],who:'co'},
   days14:{t:'MOHRE says it usually settles labour disputes within 14 days of the complaint.',ar:'تقول الوزارة إنها تسوّي النزاعات العمالية عادةً خلال 14 يومًا من الشكوى.',src:['mohre_rights'],who:'co'},
   dwpay:{t:'Domestic workers: the employer must pay the wage the contract sets, within 10 days of the due date. Claims under the law cannot be heard after three months from the end of the job. Complain early.',ar:'العمالة المساعدة: على صاحب العمل دفع الأجر المحدد في العقد خلال 10 أيام من تاريخ استحقاقه. لا تُسمع المطالبات الناشئة عن القانون بعد مرور ثلاثة أشهر على انتهاء الخدمة. قدّم شكواك مبكرًا.',src:['uae_domestic'],who:'dom'},
   deduct:{t:'The labour law allows cuts from wages only in the cases it lists, such as a loan you agreed to in writing, or a court order (Article 25, Federal Decree-Law No. 33 of 2021).',ar:'لا يجيز قانون العمل الخصم من الأجر إلا في الحالات التي يحددها، مثل قرض وافقت عليه كتابيًا أو حكم قضائي (المادة 25، المرسوم بقانون اتحادي رقم 33 لسنة 2021).',src:['mohre_law'],who:'co'},
@@ -676,8 +702,8 @@ function howText(c,l){if(c.num)return (c.wa?'WhatsApp ':t('callVerb',null,l)+' '
 const VERIFIED=new Set(['80084','600590000','971600590000','80046342','971543090571','0543090571','543090571','6321348','999','998']);
 const TOPICS={
   pay:{label:'Pay is late or missing',labelAr:'الراتب متأخر أو لم يصل',short:'Late or missing pay',shortAr:'راتب متأخر أو مفقود',facts:['ontime','wps','wps85','unpaidleave','dwpay','days30','days14'],ch:['claims','call','wa','app'],emb:true,
-    steps:{en:['Keep every payslip, salary SMS and message about your pay.','Log each payment in the pay diary.','Call MOHRE on 80084 for advice.','MOHRE asks for complaints within 30 days. If more time has passed, still call and ask.'],
-      ar:['احتفظ بكل قسيمة راتب ورسالة راتب.','سجّل كل دفعة في سجل الراتب.','اتصل بالوزارة على 80084 للاستشارة.','تطلب الوزارة الشكوى خلال 30 يومًا. إن مرّ وقت أطول، اتصل واسأل على أي حال.']},
+    steps:{en:['Keep every payslip, salary SMS and message about your pay.','Log each payment in the pay diary.','Call MOHRE on 80084 for advice.','MOHRE’s rule is to complain within 30 days of the breach. If more time has passed, still call and ask: the law only bars claims 2 years after the job ends.'],
+      ar:['احتفظ بكل قسيمة راتب ورسالة راتب.','سجّل كل دفعة في سجل الراتب.','اتصل بالوزارة على 80084 للاستشارة.','قاعدة الوزارة تقديم الشكوى خلال 30 يومًا من المخالفة. إن مرّ وقت أطول، اتصل واسأل على أي حال: فالقانون لا يمنع المطالبة إلا بعد سنتين من انتهاء العمل.']},
     stepsDom:{en:['Keep every payslip, salary SMS and message about your pay.','Log each payment in the pay diary.','Complain to MOHRE with the domestic worker service.','Claims cannot be heard after three months from the end of the job. Complain early.'],
       ar:['احتفظ بكل قسيمة راتب ورسالة راتب.','سجّل كل دفعة في سجل الراتب.','قدّم شكواك إلى الوزارة عبر خدمة العمالة المساعدة.','لا تُسمع المطالبات بعد ثلاثة أشهر على انتهاء الخدمة. قدّم شكواك مبكرًا.']}},
   cut:{label:'Money was cut from my pay',labelAr:'خُصم من راتبي',short:'Pay cut or overtime not paid',shortAr:'خصم أو عمل إضافي غير مدفوع',facts:['deduct','fee64','hours','wps85','dwpay','days30'],ch:['claims','call','app'],emb:false,
@@ -816,10 +842,17 @@ function stripContacts(s){
   return spelledNumbers(s)}
 /* The worker's name and the employer's name are taken out of the case file when they are hidden. Whole words only. */
 const escRe=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-function nameRx(n){try{return new RegExp('(?<![\\p{L}\\p{M}\\p{N}])'+escRe(n)+'(?![\\p{L}\\p{M}\\p{N}])','giu')}catch(e){return new RegExp('\\b'+escRe(n)+'\\b','gi')}}
+/* No regex look-behind (iPhones before iOS 16.4 cannot read one). Was new RegExp('(?LB![\\p{L}\\p{M}\\p{N}])'+name+'(?![\\p{L}\\p{M}\\p{N}])','giu'):
+   now the name is found without it and a match right after a letter, mark or digit (one code point back) is skipped, as the look-behind did. */
+function nameRx(n){try{return {rx:new RegExp(escRe(n)+'(?![\\p{L}\\p{M}\\p{N}])','giu'),lb:new RegExp('^[\\p{L}\\p{M}\\p{N}]$','iu')}}catch(e){return {rx:new RegExp('\\b'+escRe(n)+'\\b','gi'),lb:null}}}
+function replaceName(s,n,tag){const r=nameRx(n),rx=r.rx;if(!r.lb)return s.replace(rx,tag);let out='',last=0,m;rx.lastIndex=0;
+  while((m=rx.exec(s))){const i=m.index;let j=i-1;if(j>0&&/[\uDC00-\uDFFF]/.test(s[j])&&/[\uD800-\uDBFF]/.test(s[j-1]))j--;
+    if(i>0&&r.lb.test(s.slice(j,i))){rx.lastIndex=i+(/[\uD800-\uDBFF]/.test(s[i]||'')&&/[\uDC00-\uDFFF]/.test(s[i+1]||'')?2:1);continue}
+    out+=s.slice(last,i)+tag;last=i+m[0].length}
+  return out+s.slice(last)}
 function redact(s,o){const L=[];const add=(v,tag)=>{const n=String(v||'').trim();if(n.length>=2&&!L.some(x=>x[0].toLowerCase()===n.toLowerCase()))L.push([n,tag])};
   if(o.name)add(S.setup.name,'[my name]');if(o.employer)add(S.setup.employer,'[employer]');
-  let out=String(s||'');for(const [n,tag] of L.sort((a,b)=>b[0].length-a[0].length))out=out.replace(nameRx(n),tag);
+  let out=String(s||'');for(const [n,tag] of L.sort((a,b)=>b[0].length-a[0].length))out=replaceName(out,n,tag);
   return out}
 /* Amounts written with a "thousand" word ("70 ألف", "2 हज़ार") and Arabic amounts in words ("ألف وسبعمائة درهم"). */
 const AR_UNITS={'واحد':1,'اثنين':2,'اثنان':2,'ثلاث':3,'ثلاثة':3,'اربع':4,'أربع':4,'اربعة':4,'أربعة':4,'خمس':5,'خمسة':5,'ست':6,'ستة':6,'سبع':7,'سبعة':7,'ثمان':8,'ثماني':8,'ثمانية':8,'تسع':9,'تسعة':9,'عشر':10,'عشرة':10,'عشرين':20,'عشرون':20,'ثلاثين':30,'ثلاثون':30,'اربعين':40,'أربعين':40,'أربعون':40,'خمسين':50,'خمسون':50,'ستين':60,'ستون':60,'سبعين':70,'سبعون':70,'ثمانين':80,'ثمانون':80,'تسعين':90,'تسعون':90};
@@ -1301,6 +1334,7 @@ twoTap($('reset'),'reset','resetArm',()=>{S=seed();save();clearOutputs();fillSel
 /* If a saved state still breaks a render, start again from the examples. */
 try{applyLang(UI,true);renderSetup();renderAll()}
 catch(e){S=seed();save();fillSelects();renderSetup();renderAll()}
+try{window.PAGE_READY=true}catch(e){}
 /* ?q= fills the main box (the landing page opens agents this way). */
 if(QTEXT){HT.value=QTEXT.slice(0,1500);grow();if(!coarse())try{HT.focus({preventScroll:true})}catch(e){}}
 </script>

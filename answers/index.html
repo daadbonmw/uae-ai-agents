@@ -13,6 +13,19 @@
 <link rel="stylesheet" href="fonts/rubik.css">
 <script src="config.js"></script>
 <script id="boot">(function(){try{for(var i=localStorage.length-1;i>=0;i--){var o=localStorage.key(i);if(o&&o.indexOf('wadeh-')===0&&localStorage.getItem('inzain-'+o.slice(6))===null)localStorage.setItem('inzain-'+o.slice(6),localStorage.getItem(o))}}catch(e){}try{var p=new URLSearchParams(location.search),r=document.documentElement;if(p.get('embed')==='1')r.classList.add('embed');var l=p.get('lang');if(l!=='ar'&&l!=='en'){try{l=JSON.parse(localStorage.getItem('inzain-lang')||'null')}catch(e){}}if(l!=='ar'&&l!=='en')l=(navigator.language||'').toLowerCase().indexOf('ar')===0?'ar':'en';r.lang=l;r.dir=l==='ar'?'rtl':'ltr';var th=null;try{th=JSON.parse(localStorage.getItem('inzain-theme')||'null')}catch(e){}if(th==='light'||th==='dark')r.setAttribute('data-theme',th)}catch(e){}})();</script>
+<script id="guard">/* Never a silent blank page. Oldest plain JavaScript on purpose (no let, const, arrows or template strings), so it runs on any phone.
+   The main script sets INZAIN_STARTED as its first act (and removes the "Loading" line) and INZAIN_READY when the page is drawn.
+   If it never starts (a browser that cannot read it) or stops before the page is drawn, this shows in English and Arabic that the page
+   could not start here and what to do. The main script is inline, so by DOMContentLoaded it has run or failed. */
+(function(){var shown=false;
+function fail(){if(shown||window.INZAIN_READY)return;shown=true;var el=document.getElementById('bootNote');
+if(!el){el=document.createElement('p');el.id='bootNote';var m=document.getElementById('main')||document.body;if(!m)return;m.insertBefore(el,m.firstChild)}
+el.className='bootnote bootfail';el.setAttribute('role','alert');
+el.innerHTML='<span lang="en" dir="ltr">This page could not start on this phone or browser. Please update your browser (on an iPhone: update iOS in Settings), or open the site in another browser.</span><span lang="ar" dir="rtl">تعذّر تشغيل هذه الصفحة على هذا الهاتف أو المتصفح. حدّث المتصفح (في الآيفون: حدّث نظام iOS من الإعدادات)، أو افتح الموقع في متصفح آخر.</span>'}
+window.INZAIN_BOOT_FAIL=fail;
+if(window.addEventListener){window.addEventListener('error',function(){if(!window.INZAIN_READY)setTimeout(function(){if(document.readyState!=='loading')fail()},0)},true);
+document.addEventListener('DOMContentLoaded',function(){if(!window.INZAIN_READY)setTimeout(fail,1500)})}
+else{setTimeout(fail,8000)}})();</script>
 <style>
 /* Inzain, "super-app" style A (tools/calm-design.md, government colours of 12 Nov). White page, green for what you press, gold identity, near-black ink.
    Rubik for English and Arabic. Three sizes only: 15px notes, 17px body and controls, 28px title (34px on desktop). Weights 400 and 600. */
@@ -286,6 +299,13 @@ span.chan{font-weight:400}
  @keyframes side-rtl{from{transform:translateX(-48px);opacity:.3}to{transform:none;opacity:1}}
 }
 @media (max-width:359px){.tile{padding:12px}}
+/* the line shown before the main script has started (and, if it never does, the "could not start" message) */
+/* without <dialog> support (iOS before 15.4) a closed sheet would sit over the page: hide it (browsers with <dialog> already do) */
+dialog:not([open]){display:none}
+.bootnote{margin:16px;padding:12px 16px;color:var(--muted);font-size:15px;line-height:1.5}
+.bootnote span{display:block}
+.bootnote span+span{margin-top:6px}
+.bootfail{color:var(--ink);background:var(--tile);border:1px solid var(--line);border-radius:12px}
 </style>
 </head>
 <body data-tab="ask">
@@ -314,6 +334,7 @@ span.chan{font-weight:400}
 </header>
 
 <main id="main" tabindex="-1">
+  <p class="bootnote" id="bootNote" role="status"><span lang="en" dir="ltr">Loading…</span><span lang="ar" dir="rtl">جارٍ التحميل…</span></p>
   <nav class="tabs" id="tabs" role="tablist" data-ia="tabsLabel" aria-label="Sections" hidden>
     <button type="button" class="tab" role="tab" id="tab-ask" aria-controls="p-ask" aria-selected="true"><span data-i="tAsk"></span></button>
     <button type="button" class="tab" role="tab" id="tab-library" aria-controls="p-library" aria-selected="false" tabindex="-1"><span data-i="tLib"></span></button>
@@ -385,6 +406,10 @@ span.chan{font-weight:400}
 <script type="application/json" id="kb">{"lazy":1,"base":"data/"}</script>
 <script id="app">
 'use strict';
+/* first act: tell the guard script the page started and take the "Loading" line away (the page draws its own from here) */
+try{window.INZAIN_STARTED=true;if(typeof document!=='undefined'&&document.getElementById){const bn=document.getElementById('bootNote');if(bn&&bn.parentNode&&bn.parentNode.removeChild)bn.parentNode.removeChild(bn)}}catch(e){}
+/* iPhones before iOS 15.4 have no <dialog>: give the sheets open, showModal and close so they open and close there too (browsers with <dialog> skip this) */
+try{if(typeof HTMLDialogElement!=='function'&&typeof document!=='undefined'&&document.querySelectorAll)document.querySelectorAll('dialog').forEach(d=>{Object.defineProperty(d,'open',{configurable:true,get(){return this.hasAttribute('open')},set(v){if(v)this.setAttribute('open','');else this.removeAttribute('open')}});d.show=d.showModal=function(){this.setAttribute('open','')};d.close=function(){if(!this.hasAttribute('open'))return;this.removeAttribute('open');try{this.dispatchEvent(new Event('close'))}catch(e){}}})}catch(e){}
 
 /* == basics (no DOM access at load) */
 const K={lang:'inzain-lang',theme:'inzain-theme',profile:'inzain-profile',saved:'inzain-saved',gaps:'inzain-gaps',ticks:'inzain-ticks',tour:'inzain-tour',reports:'inzain-reports'};
@@ -397,6 +422,23 @@ const ASK_ARROW='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><
 const JICON='<svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M10 7h22a4 4 0 0 1 4 4v14M10 7a4 4 0 0 0-4 4v26a4 4 0 0 0 4 4h14M14 17h14M14 24h8M14 31h6"/><circle class="s" cx="34" cy="34" r="9"/><path d="m29.5 34 3 3 5.5-6"/></svg>';
 const hasOwn=(o,k)=>o!=null&&typeof k==='string'&&Object.prototype.hasOwnProperty.call(o,k);
 const pad=n=>String(n).padStart(2,'0');
+/* == No regex look-behind anywhere in this page: iPhones before iOS 16.4 cannot parse one, the whole script fails and the page stays blank.
+   A pattern that needed one is now a list of alternatives [ok, rx]: rx is the same pattern without the look-behind (global flag),
+   ok(s,i) is what the look-behind tested at position i (null: nothing). lbFind returns the same leftmost match, alternatives in the same
+   order, that the old single pattern found; lbSplit and lbReplace follow String.prototype.split and replace step by step.
+   In the one-line notes "LB=" stands for a positive look-behind and "LB!" for a negative one (the real syntax would trip the build gate). */
+const lbAfter=re=>(s,i)=>i>0&&re.test(s.charAt(i-1)),lbNot=re=>(s,i)=>!(i>0&&re.test(s.charAt(i-1)));
+function lbFind(s,alts,from){let best=null;for(let k=0;k<alts.length;k++){const ok=alts[k][0],rx=alts[k][1];rx.lastIndex=from;let m;
+while((m=rx.exec(s))){if(!ok||ok(s,m.index))break;rx.lastIndex=m.index+1}if(m&&(!best||m.index<best.index))best=m}return best}
+function lbSplit(s,alts){s=String(s);const out=[];if(!s.length)return lbFind(s,alts,0)?out:[s];let p=0,q=0;
+while(q<s.length){const m=lbFind(s,alts,q);if(!m||m.index>=s.length)break;const i=m.index,e=Math.min(i+m[0].length,s.length);if(e===p){q=i+1;continue}
+out.push(s.slice(p,i));for(let j=1;j<m.length;j++)out.push(m[j]);p=e;q=p}out.push(s.slice(p));return out}
+function lbReplace(s,alts,rep){s=String(s);let out='',last=0,from=0,m;while(from<=s.length&&(m=lbFind(s,alts,from))){const i=m.index,a=Array.prototype.slice.call(m);a.push(i,s);
+out+=s.slice(last,i)+(typeof rep==='function'?rep.apply(null,a):rep);last=i+m[0].length;from=m[0].length?last:i+1}return out+s.slice(last)}
+const SPLIT_SENT=[[lbAfter(/[.!?؟\n]/),/\s+/g]];                 /* was split(/(?LB=[.!?؟\n])\s+/) */
+const SPLIT_POINTS=[[lbAfter(/[.!?؟…]/),/\s+/g],[null,/\n+|:\s+/g]];  /* was split(/(?LB=[.!?؟…])\s+|\n+|:\s+/) */
+const SPLIT_SENT_Q=[[lbAfter(/[.!?؟]/),/\s+/g]];             /* was split(/(?LB=[.!?؟])\s+/) */
+const SPLIT_SENT_C=[[lbAfter(/[.!?؟\n،…]/),/\s*/g]];             /* was split(/(?LB=[.!?؟\n،…])\s*\/) */
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const isStr=v=>typeof v==='string';
 const arr=v=>Array.isArray(v)?v:[];
@@ -431,32 +473,32 @@ if(cut&&w.length>=4&&w.endsWith('ت'))w=w.slice(0,-1);
 return w}
 const stem=w=>AR_LETTER.test(w)?stemAr(w):/[a-z]/.test(w)?stemEn(w):w;
 const rawWords=s=>norm(s).match(/[a-z0-9ء-ي]+/g)||[];
-const STOP=new Set(('a an the of to in on at for from by with and or but is are was were be been being am i me my mine we us our you your he him his she her it its they them their this that these those what which who whom whose how why when where can could do does did have has had will would shall should may might must not no yes if then than so as about into over again also just only very too more most much many any some each every all both other such own same here there now get got please hi hello hey thanks thank dear uae u ae emirate emirates country want need know tell let im ive dont cant whats ok okay sir madam last week weeks before yesterday today tomorrow ago make made still already soon long because legal entitled entitle allowed allow saying said goes next wont isnt doesnt didnt hasnt havent arent wasnt wouldnt one two three four five six seven eight nine ten twenty thirty hundred affect affects effect impact happen happens happened really worried worry worth possible able sure sorry thing things something anything anyone someone everything even ever never always lot way '+
+const STOP=new Set(('a an the of to in on at for from by with and or but is are was were be been being am i me my mine we us our you your he him his she her it its they them their this that these those what which who whom whose how why when where can could do does did have has had will would shall should may might must not no yes if then than so as about into over again also just only very too more most much many any some each every all both other such own same here there now get got please hi hello hey thanks thank dear uae u ae emirate emirates country want need know tell let im ive dont cant whats ok okay sir madam last week weeks before yesterday today tomorrow ago make made still already soon long because legal entitled entitle allowed allow saying said goes next wont isnt doesnt didnt hasnt havent arent wasnt wouldnt one two three four five six seven eight nine ten twenty thirty hundred affect affects effect impact happen happens happened really worried worry worth possible able sure sorry thing things something anything anyone someone everything even ever never always lot way kam kem bkam gaddesh gaddeish addesh addeish shu sho wesh wish esh '+
 'في من الي علي عن مع هل ما ماذا لماذا كيف متي اين وين كم هذا هذه ذلك تلك هناك هنا التي الذي الذين انا انت انتي انتم هو هي هم هن نحن لي لك له لها لنا لكم عندي عندك عنده ان او ثم قد لا لم لن كل بعض بعد قبل عند يا اي ايش وش شو شلون ليش ابي ابا ابغي ابغا شنو شنهو ويش مب مو يبي تبي نبي يبغي تبغي نبغي هاذا هاذي هذي هالحين دحين هسه وياي اقدر ممكن يمكن يمكنني لو اذا كان كانت يكون تكون مثل غير بين حتي الان الحين بس عشان علشان يعني لازم شي شيء نعم الامارات الدوله دوله اريد ارجو سؤال سوال احتاج نحتاج يحتاج محتاج تحتاج منو منهو يانا جانا نسوي اسوي يسوي تسوي سويت امس البارحه باكر بكره اسبوع مسموح يجوز يحق ممنوع منذ لدي لدينا لديه ليس ليست لست ايضا جدا فقط حاليا لان ام اما سوف يجب ينبغي عليه علينا عليها عليك اشياء احد واحد اثنين ثلاث خمس حقي حقتي حقنا حقه اعطي يعطي تعطي يصير صار قديم ماضي قادم حالي اقدم يقدم تقدم').split(' ').map(stem));
 
 const SYN=[
-['visa','residence','residency','iqama','residence permit','residence visa','اقامة','فيزا','فيزه','تأشيرة','iqama','eqama','ikama','iqamah','iqamat','eqamah','تاشيره'],
+['visa','residence','residency','iqama','residence permit','residence visa','اقامة','فيزا','فيزه','تأشيرة','iqama','eqama','ikama','iqamah','iqamat','eqamah','تاشيره','egama','egamah','egamti','eqamti','iqamti','igama','igamti'],
 ['visit visa','tourist visa','visit','tourist','visitor visa','زيارة','تأشيرة زيارة','فيزا زيارة','سياحة','سياحية','فيزا سياحية'],
-['cancel','cancle','كنسل','كنسلت','كنسلوا','إلغاء','ألغى','الغت','لغوا','الغوا','لغو','kansel','ykansel','ykanslu','tkansel','kanselt','الغي','يكنسل','تكنسل','algha','aghi','alghi','agha'],
+['cancel','cancle','كنسل','كنسلت','كنسلوا','إلغاء','ألغى','الغت','لغوا','الغوا','لغو','kansel','ykansel','ykanslu','tkansel','kanselt','الغي','يكنسل','تكنسل','algha','aghi','alghi','agha','اشيل','اشيله','اشيلها','يشيل','يشيلون','شيل','remove','lift'],
 ['gratuity','end of service','eos','eosb','end of service benefit','مكافأة نهاية الخدمة','نهاية الخدمة','مستحقات نهاية الخدمة'],
 ['maid','housemaid','nanny','domestic worker','domestic helper','house help','خادمة','خدامة','شغالة','عاملة منزلية','العمالة المنزلية','عامل منزلي','مربية','دريول','tadbeer','تدبير'],
 ['trade licence','trade license','business licence','business license','commercial licence','commercial license','رخصة تجارية','سجل تجاري'],
 ['driving licence','driving license','driver licence','driver license','driving test','رخصة قيادة','رخصة السياقة','ليسن','رخصة السواقة','rukhsa','rokhsa','rakhsa','rokhsat','rukhsat','rokhsat el sewaqa','rukhsat al siyaqa'],
 ['licence','license','lisence','licens','رخصة'],
-['fine','penalty','violation','pay the fine','pay a fine','pay fines','pay my fine','غرامة','مخالفة','جزاء','مخالفات','mokhalafa','mukhalafa','mokhalafat','mukhalafat','makhalfa','mkhalfa','mokhalfa','gharama','ghrama'],
+['fine','penalty','violation','pay the fine','pay a fine','pay fines','pay my fine','غرامة','مخالفة','جزاء','مخالفات','mokhalafa','mukhalafa','mokhalafat','mukhalafat','makhalfa','mkhalfa','mokhalfa','gharama','ghrama','محضر مرور','محضر مخالفة'],
 ['fee','fees','cost','costs','charge','charges','how much do i pay','what do i pay','رسوم','الرسوم','تكلفة','كم ادفع'],
 ['leave the country','leave the uae','leave uae','exit the country','exit the uae','depart','departure','stay','remain','مغادرة','المغادرة','اغادر','يغادر','اطلع من الدولة','اخرج من الدولة','البقاء','ابقى','اقعد'],
 ['salary','pay','paid','payed','wage','paycheck','payslip','راتب','رواتب','معاش','اجر','أجور','rateb','raatib','ratib','rateeb','ma3ash','maash','معاشات'],
 ['rent','rental','tenancy','tenant','lease','ejari','pay rent','pay the rent','pay my rent','إيجار','مستأجر','عقد ايجار','اجار','الاجار','ejar','ijar','ejaar','eijar','عقد الاجار'],
-['landlord','owner','صاحب البيت','صاحب العقار','مالك العقار','المالك','صاحب الشقة','صاحب العماره','mallak','sa7eb el beit','saheb el beit','sa7eb el bait','sa7eb elbeit'],
+['landlord','owner','صاحب البيت','صاحب العقار','مالك العقار','المالك','صاحب الشقة','صاحب العماره','mallak','sa7eb el beit','saheb el beit','sa7eb el bait','sa7eb elbeit','ra3i el bait','ra3i al bait','ra3i elbait','ra3i el bet','sahib el bait','راعي البيت','راعي العمارة','المؤجر'],
 ['baby','newborn','new born','infant','birth','born','مولود','مواليد','رضيع','ولادة','يهال','طفل','ولد جديد','طفل جديد','بنت جديدة','بيبي','ولدت'],
 ['boss','employer','company','my company','kafeel','kafil','kfeel','kafeelna','sharika','el sharika','الشركة','الكفيل','صاحب العمل','المدير'],
 ['emirates id','eid','id card','identity card','emirates identity','الهوية','بطاقة الهوية','الهوية الإماراتية','ايدي','id','hawiya','huwiya','hawiyya','hawiyah','7awiya','hawya'],
 ['passport','جواز','جواز السفر','باسبور','jawaz','jawaz safar','jwaz','pasbor','basbor'],
 ['overstay','over stay','stayed after','تجاوز','تخلف','تجاوز مدة'],
-['grace period','grace','مهلة','مهلة السماح','فترة السماح','سماح'],
-['renew','renwal','تجديد','جدد','اجدد','يجدد'],
-['complaint','complain','claim','report','شكوى','شكاوى','اشتكي','بلاغ','ابلغ'],
+['grace period','grace','مهلة','مهلة السماح','فترة السماح','سماح','mohla','mohlah','muhla','muhlah','mohlat'],
+['renew','renwal','تجديد','جدد','اجدد','يجدد','ajaded','ajadedha','ajadid','tajdeed','tajdid','yjaded','ejaded','ejadedha','يتجدد','تجديدها','اجددها'],
+['complaint','complain','claim','report','شكوى','شكاوى','اشتكي','بلاغ','ابلغ','ashtki','ashteki','ashtiki','shakwa','yshtki','يشتكي','تشتكي'],
 ['dubai','dxb','دبي','marina','jlt','jbr','jvc','deira','bur dubai','business bay','al barsha','karama','mirdif','ديرة'],
 ['abu dhabi','abudhabi','auh','أبوظبي','أبو ظبي','العاصمة','al ain','العين','mussafah','reem island','khalifa city','yas island','مصفح'],
 ['sharjah','shj','الشارقة','شارجه'],
@@ -479,7 +521,7 @@ const SYN=[
 ['sponsor family','family visa','dependent','spouse','wife','husband','كفالة','اكفل','زوجتي','عيالي','أولادي','الأسرة','العائلة','زوجي','زوجه','مرتي','حرمتي','zawja','zawjati','zawji','mrati','3yali','3iyali'],
 ['parents','mother','father','والدي','أمي','ابوي'],
 ['marriage','married','wedding','marry','زواج','عقد قران','ملكة','عرس'],
-['divorce','talaq','طلاق','مطلقة'],
+['divorce','talaq','طلاق','مطلقة','تطلق','يطلق','طلقني','يطلقني','تطليق','طلقت','مطلق','divorced','khula','خلع'],
 ['school','school fees','tuition','مدرسة','المدارس','رسوم مدرسية','madrasa','madrasah','madrasa hukumiya'],
 ['university','college','جامعة','كلية'],
 ['hospital','clinic','doctor','medical','مستشفى','عيادة','دكتور','طبيب','صحي','mustashfa','mostashfa','doktor'],
@@ -491,7 +533,7 @@ const SYN=[
 ['corporate tax','ضريبة الشركات'],
 ['tax','taxes','taxation','ضريبة','ضرائب'],
 ['car','vehicle','سيارة','موتر','مركبة'],
-['traffic','speeding','radar','black points','مرور','مخالفة مرورية','رادار','نقاط سوداء'],
+['traffic','speeding','radar','black points','مرور','رادار','نقاط سوداء','سرعة زائدة','السرعة الزائدة','تجاوز السرعة','speed','over speed','overspeed'],
 ['police','شرطة'],
 ['fraud','scam','scammer','phishing','fake call','احتيال','نصب','نصاب','محتال'],
 ['court','lawsuit','sue','judge','محكمة','قضية','دعوى'],
@@ -532,7 +574,16 @@ const SYN=[
 ['ruler','rulers','president','presidents','حاكم','حكام','رئيس','رؤساء','تولى','تولي','تولى الحكم','تولى الرئاسة','تسلم الحكم','استلم الحكم','مسك الحكم','قبض الحكم','وصل للحكم','وصل الحكم','took power','take power','came to power','assumed power','assume power','took office'],
 ['find','locate','whereabouts','القاه','القاها','القيه','القيها','الاقيه','الاقيها','اعرف مكانه','اعرف مكانها','وين القاه','وين القاها','وين الاقيه','وين الاقيها','وين اقدر القاه','where is he','where is she','where are they','where to find'],
 ['brother','brothers','اخ','اخي','اخوي','اخوه','اخوان','اخوتي'],
-['flag','flags','uae flag','علم','اعلام','العلم','علم الدولة','علم الامارات']
+['flag','flags','uae flag','علم','اعلام','العلم','علم الدولة','علم الامارات'],
+/* round 3 part 2 (13 Nov 2026): word families found where the same question in English, Arabic and Gulf Arabic reached different entries */
+['seat belt','seatbelt','seat belts','seatbelts','seat-belt','without a seatbelt','without seatbelt','without a seat belt','not wearing a seatbelt','not wearing a seat belt','wearing a seatbelt','حزام الامان','حزام امان','حزام','عدم ارتداء حزام الامان','عدم ارتداء الحزام','ارتداء حزام الامان','بدون حزام','ما تلبس حزام الامان','ما يلبس حزام الامان','ما لبست حزام الامان','لبس الحزام','لبس حزام الامان'],
+['return the item','return a product','return goods','ارجاع','ارجع','ارجعه','استرجاع','ترجيع','arajje3','arja3'],
+['online','internet','النت','الانترنت','اونلاين','أونلاين','عبر الانترنت','عبر النت'],
+['buy','bought','purchase','purchased','اشتريت','اشترينا','اشتري','شراء','شريت','اشتريته','اشتريناه'],
+['defective','faulty','defect','defects','broken','not working','stopped working','معيب','عيب','خربان','خربت','عطلان','تعطل','عيب مصنعي'],
+['fake','counterfeit','genuine','authentic','مزور','مزورة','مزيف','حقيقي','حقيقية','اصلي'],
+['red light','red signal','traffic light','traffic signal','jumping a red light','jumped a red light','running a red light','ran a red light','run a red light','crossing a red light','الاشارة الحمراء','اشارة حمراء','قطع الاشارة','الإشارة الضوئية'],
+['check','verify','look up','inquire','enquire','تحقق','التحقق','استعلام','الاستعلام','استعلم','اتحقق','اتاكد','تاكد','كيف اعرف اذا','كيف اعرف ان','كيف نعرف اذا','how do i know if','how can i know if','how to know if']
 ];
 const EMI_GROUP={dubai:'dubai','abu-dhabi':'abu dhabi',sharjah:'sharjah',ajman:'ajman','umm-al-quwain':'umm al quwain','ras-al-khaimah':'ras al khaimah',fujairah:'fujairah'};
 const EMIRATES=Object.keys(EMI_GROUP);
@@ -551,11 +602,12 @@ const SENSE_DEF=[
  {to:'@ruler',ctx:'شيخ شيوخ حاكم حكام حكم دوله اماره امارات اتحاد رئيس زايد راشد سلطه عهد ملك امير'},
  {to:null,ctx:'راتب رواتب معاش معاشات فلوس مكافاه اجر علاوه عمولة'},
  {to:'قبض',ctx:'شرطه علي موقوف موقوفه سجن اخو اخوي اخي ابوي ابن ابني زوج زوجي زوجتي قريب قريبي نيابه بلاغ تهمه امر مطار',w:2}]},
-{keys:'علم',senses:[{to:null,raw:'علما علمت علمنا علمني اعلم يعلم يعلمون تعلم علمتني',ctx:''}]}];
+{keys:'علم',senses:[{to:null,raw:'علما علمت علمنا علمني اعلم يعلم يعلمون تعلم علمتني',ctx:''}]},
+{keys:'تجاوز تجاوزت يتجاوز',senses:[{to:'@red light',ctx:'اشاره حمراء ضوئيه اشارات'},{to:'@traffic',ctx:'سرعه رادار'},{to:'@overstay',ctx:'اقامه تاشيره فيزا مده زياره سياحيه مغادره'}]}];  /* running a red light is not a visa overstay */
 const SENSE=new Map();
-(function buildSense(){for(const d of SENSE_DEF){const sn=d.senses.map(s=>({to:s.to,w:s.w||1,raw:new Set(rawWords(s.raw||'')),ctx:new Set(rawWords(s.ctx||'').map(stem))}));for(const k of d.keys.split(' '))SENSE.set(k,sn)}})();
+(function buildSense(){for(const d of SENSE_DEF){const sn=d.senses.map(s=>({to:s.to,w:s.w||1,raw:new Set(rawWords(s.raw||'')),ctx:new Set(rawWords(s.ctx||'').map(stem))}));for(const k of d.keys.split(' '))SENSE.set(stem(k),sn)}})();
 function senseOf(sn,raw,st,i){let best=-1,pick;for(const s of sn){let n=s.raw.has(raw[i])?3:0;for(let j=0;j<st.length;j++)if(j!==i&&s.ctx.has(st[j]))n+=s.w;if(n>best){best=n;pick=s}else if(n===best)pick=undefined}
-return best>0&&pick?(pick.to===undefined?undefined:pick.to===null?null:pick.to==='@ruler'?SYN_ONE.get(stem('حاكم')):pick.to):undefined}
+if(!(best>0&&pick)||pick.to===undefined)return undefined;if(pick.to===null)return null;if(pick.to==='@ruler')return SYN_ONE.get(stem('حاكم'));if(pick.to[0]==='@'){const i=SYN.findIndex(g=>g[0]===pick.to.slice(1));return i>=0?'~'+i:undefined}return pick.to}
 /* phrases that also count as one extra word, on top of their own words ("first president" in a question matches an entry that says it too, ahead of one that only says "first vice president") */
 const ALSO=[['first ruler','first president','first sheikh','first leader','founding president','اول حاكم','اول رئيس','اول شيخ','اول زعيم','الرئيس المؤسس','اول من حكم','اول من تولى الحكم','اول من مسك الحكم']];
 const ALSO_SEQ=new Map();
@@ -567,8 +619,10 @@ if(cand)for(const [seq,key] of cand){if(seq.every((x,j)=>st[i+j]===x)){hit=[seq.
 if(hit){out.push(hit[1]);i+=hit[0]-1;continue}
 const sn=SENSE.get(w);if(sn){const r=senseOf(sn,raw,st,i);if(r===null)continue;if(r!==undefined){out.push(r);continue}}
 if(STOP.has(w)||w.length<2||(/^[وف]./.test(w)&&STOP.has(w.slice(1))))continue;
-out.push(SYN_ONE.get(w)||w)}
+out.push(SYN_ONE.get(w)||arForm(w))}
 return out}
+/* Arabic word forms (round 3 part 2): an adjective on -ي goes with its noun's word group (مروري = مرور, as "traffic fine" in English); a present-tense verb letter (ا ي ت ن) is dropped when the rest is a word group (اتحقق = تحقق) */
+function arForm(w){if(!AR_LETTER.test(w)||w.length<4)return w;if(w.endsWith('ي')&&SYN_ONE.has(w.slice(0,-1)))return SYN_ONE.get(w.slice(0,-1));if(w.length>=5&&/^[اينت]/.test(w)&&SYN_ONE.has(w.slice(1)))return SYN_ONE.get(w.slice(1));return w}
 
 /* == BM25 search, field weights (one index for the entries, one per breadth kind) */
 const FW={q:3,ask:2.5,a:1,facts:.7};
@@ -593,7 +647,8 @@ const UNIT_RAW='شهر شهور اشهر شهرين شهرا يوم ايام ي�
 const unitSet=()=>UNIT_SET||(UNIT_SET=new Set(UNIT_RAW.split(' ').flatMap(w=>termsE(w))));
 /* a long post: the sentence(s) that ask something (end in ? or start with a question word) carry the real topic; their terms count more */
 function qFocus(text){const set=new Set(),str=String(text||'');if(str.length<160)return set;
-for(const sn of str.split(/(?<=[.!?؟\n])\s+/)){if(/[?؟]\s*$/.test(sn)||/^\s*(?:how|what|can|could|do|does|is|are|will|should|where|when|which|am i|كيف|ماذا|هل|متى|اين|ما|كم|لماذا|ايش|شو|وش)(?![a-z])/i.test(sn))for(const x of termsE(sn))set.add(x)}
+for(const sn of lbSplit(str,SPLIT_SENT)){  /* was str.split(/(?LB=[.!?؟\n])\s+/) */
+if(/[?؟]\s*$/.test(sn)||/^\s*(?:how|what|can|could|do|does|is|are|will|should|where|when|which|am i|كيف|ماذا|هل|متى|اين|ما|كم|لماذا|ايش|شو|وش)(?![a-z])/i.test(sn))for(const x of termsE(sn))set.add(x)}
 return set}
 function searchIdx(I,text,opt){opt=opt||{};if(!I||!I.N)return [];
 const qs=[...new Set(terms(text))];if(!qs.length)return [];const oov=opt.oov==null?OOV_W:opt.oov;
@@ -659,7 +714,7 @@ const ts=new Map();for(const x of out.slice(0,10))ts.set(I.docs[x.d].topic,(ts.g
 if(mx){for(const x of out)x.score=Math.round(x.score*(1+K.topicB*(ts.get(I.docs[x.d].topic)||0)/mx)*100)/100;out.sort((a,b)=>b.score-a.score||b.cov-a.cov)}
 return out.slice(0,RK.topK).map(x=>({id:x.id,score:x.score,cov:x.cov,nq:x.nq}))}
 function searchEntries(I,text,opt){if(!I||!I.N)return [];const str=String(text||'');
-const SK=/[ء-ي]/.test(str)?{...RK,...RKA}:RK;if(str.length>=SK.sentMin){const ss=str.split(SK.splitC?/(?<=[.!?؟\n،…])\s*/:/(?<=[.!?؟\n])\s+/).map(x=>x.trim()).filter(x=>x.length>=15);
+const SK=/[ء-ي]/.test(str)?{...RK,...RKA}:RK;if(str.length>=SK.sentMin){const ss=lbSplit(str,SK.splitC?SPLIT_SENT_C:SPLIT_SENT).map(x=>x.trim()).filter(x=>x.length>=15);
 if(ss.length>=2){const whole=rkRaw(I,str,opt),best=new Map(),wmax=whole.length?whole[0].score:1;
 for(const sn of ss){const r=rkRaw(I,sn,opt);if(!r.length)continue;const m=r[0].score;for(const x of r.slice(0,15)){const v=x.score/(m||1);if(v>(best.get(x.id)||0))best.set(x.id,v)}}
 const out=whole.map(x=>({...x,score:Math.round((x.score/wmax*(1-SK.sentG)+(best.get(x.id)||0)*SK.sentG)*wmax*100)/100})),have=new Set(whole.map(x=>x.id));
@@ -671,12 +726,14 @@ function rkFuse(I,str,opt){const a=rkRaw(I,str,{...opt,noX:XLC.mu>0});if(!XL||!(
 const out=a.map(x=>({...x,score:Math.round(am*((1-XLC.mu)*x.score/am+XLC.mu*(bs.get(x.id)||0))*100)/100}));const have=new Set(a.map(x=>x.id));for(const x of b)if(!have.has(x.id)&&x.score/bm>XLC.add)out.push({id:x.id,score:Math.round(am*XLC.mu*x.score/bm*100)/100,cov:x.cov,nq:x.nq});out.sort((x,y)=>y.score-x.score||y.cov-x.cov);return out.slice(0,RK.topK)}
 function transTerms(text,I){const out=[];for(const w of rawWords(text)){const s=stem(w);if(s.length<2||STOP.has(s))continue;const l=(AR_LETTER.test(s)?XL.a:XL.e).get(s);if(!l)continue;for(const [x,d] of l.slice(0,XLC.n)){const k=SYN_ONE.get(x)||x;if(I.df.has(k)&&d>=XLC.dmin)out.push(k)}}return out}
 /* a question about a place outside the UAE (and no UAE word), or about cooking, code, football results, prices of gadgets: not a question about UAE rules */
-const FOREIGN=new Set(('argentina australia austria belgium brazil britain canada china colombia cuba denmark finland france germany greece hungary indonesia ireland japan korea malaysia mexico morocco netherlands norway poland portugal romania russia singapore spain sweden switzerland thailand tunisia turkey ukraine usa america england scotland paris london berlin madrid rome tokyo beijing moscow toronto texas california florida chicago boston europe '+
-'الارجنتين استراليا النمسا بلجيكا البرازيل بريطانيا كندا الصين كولومبيا كوبا الدنمارك فنلندا فرنسا المانيا اليونان المجر اندونيسيا ايرلندا اليابان كوريا ماليزيا المكسيك المغرب هولندا النرويج بولندا البرتغال رومانيا روسيا سنغافوره اسبانيا السويد سويسرا تايلاند تونس تركيا اوكرانيا امريكا انجلترا اسكتلندا باريس لندن برلين مدريد روما طوكيو بكين موسكو تورنتو تكساس كاليفورنيا اوروبا').split(' '));
-const FOREIGN_MULTI=['new zealand','south africa','united states','united kingdom','new york','hong kong','los angeles'];
+const FOREIGN=new Set(('argentina australia austria belgium brazil britain canada china colombia cuba denmark finland france germany greece hungary indonesia ireland japan korea malaysia mexico morocco netherlands norway poland portugal romania russia singapore spain sweden switzerland thailand tunisia turkey ukraine usa america england scotland paris london berlin madrid rome tokyo beijing moscow toronto texas california florida chicago boston europe cairo mumbai delhi karachi manila '+
+'الارجنتين استراليا النمسا بلجيكا البرازيل بريطانيا كندا الصين كولومبيا كوبا الدنمارك فنلندا فرنسا المانيا اليونان المجر اندونيسيا ايرلندا اليابان كوريا ماليزيا المكسيك المغرب هولندا النرويج بولندا البرتغال رومانيا روسيا سنغافوره اسبانيا السويد سويسرا تايلاند تونس تركيا اوكرانيا امريكا انجلترا اسكتلندا باريس لندن برلين مدريد روما طوكيو بكين موسكو تورنتو تكساس كاليفورنيا اوروبا القاهره').split(' '));
+const FOREIGN_MULTI=['new zealand','south africa','united states','united kingdom','new york','hong kong','los angeles',' uk ',' us green card'];
 const UAE_RX=/\b(uae|emirates?|emirati|emiratis|dubai|abu ?dhabi|sharjah|ajman|fujairah|ras al khaimah|umm al quwain|al ain|dxb|rak|mohre|mohap|gdrfa|icp|rta|dewa|salik|ejari|tasheel|amer|tawtheeq|iloe|nafis|dirhams?|aed|dhs)\b|الامارات|اماراتي|الدوله|دبي|ابوظبي|ابو ظبي|الشارقه|عجمان|الفجيره|راس الخيمه|ام القيوين|العين|درهم|الدرهم/;
-const NOT_RULES_RX=/\b(recipes?|bake|baking|cake|biryani|python|javascript|docker|ubuntu|linux|premier league|champions league|football match|celebrity|romantic movie|horoscope|lose weight|workout|bitcoin price|price of bitcoin|who won)\b|طريقه عمل|كيكه|بايثون|جافاسكريبت|دوكر|الدوري|مباراه|فيلما|سعر البيتكوين|المندي/;
-function offTopic(text){const n=norm(text);if(NOT_RULES_RX.test(n))return true;if(UAE_RX.test(n))return false;
+/* questions that are not about rules at all: cooking, code, sport results and records, shopping advice, hobbies, food and diet, word meanings, world facts */
+const NOT_RULES_RX=/\b(recipes?|bake|baking|cake|biryani|python|javascript|docker|ubuntu|linux|premier league|champions league|football match|celebrity|romantic movie|horoscope|lose weight|workout|bitcoin price|price of bitcoin|who won|(?:team|country|player|club) won|footballers?|best (?:laptop|phone|smartphone|tv|camera|headphones)|learn to play|guitar|piano|safe to eat|sushi|pizza|burgers?|pasta|grammar|what does the word)\b|طريقه عمل|كيكه|بايثون|جافاسكريبت|دوكر|الدوري|مباراه|فيلما|سعر البيتكوين|المندي|لاعب كره|سوشي|بيتزا|برجر|العزف علي|اتعلم العزف|قواعد اللغه|معني كلمه|افضل (?:حاسوب|لابتوب|جوال|هاتف)|سعر (?:الذهب|ايفون|جرام)/;
+const WORLD_RX=/\b(?:won the|world cup|fifa|olympics?|cricket|continents?|capital (?:city )?of|longest river)\b|كاس العالم|من فاز|فاز ب|الكريكيت|القارات|عاصمه|اطول نهر|نهر النيل/;  /* world facts and sport results, when the question names no UAE place */
+function offTopic(text){const n=norm(text);if(NOT_RULES_RX.test(n))return true;if(UAE_RX.test(n))return false;if(WORLD_RX.test(n))return true;
 if((n.match(/[a-z0-9ء-ي]+/g)||[]).some(x=>FOREIGN.has(x)))return true;return FOREIGN_MULTI.some(m=>n.includes(m))}
 /* a question about an amount ("speeding fine in Dubai", "how much is the visa fee") prefers the entries whose text gives amounts (the list comes with search-extra.json) */
 let MO=null;const AMT={up:1.15,down:1};
@@ -687,14 +744,23 @@ function amountAsk(text){const n=norm(text);if(figureKinds(text).includes('money
 let DT=null;const DAT={up:1.15};
 const DATE_HAS=/\b(?:1[89]\d\d|20[0-4]\d)\b|\b\d{1,2}\s+(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\b|\d{1,2}\s+(?:يناير|فبراير|مارس|ابريل|مايو|يونيو|يوليو|اغسطس|سبتمبر|اكتوبر|نوفمبر|ديسمبر)/i;
 const WHEN_Q=/\b(?:when|what (?:date|year|day)|which (?:date|year|day)|in which year)\b|متي|اي تاريخ|اي سنه|اي يوم/;
-const DATE_ASK_RX=/\b(?:when|what (?:date|year|day)|which (?:date|year|day)|in which year|on what date)\b|(?<![ء-ي])(?:متي|اي (?:تاريخ|سنه|عام|يوم|شهر)|(?:وش|شو|كم) تاريخ)(?![ء-ي])/;
-const DATE_PHRASE_RX=/(?<![ء-ي])(?:في )?اي (?:تاريخ|سنه|عام|يوم|شهر)(?![ء-ي])|(?<![ء-ي])(?:وش|شو|كم) تاريخ(?![ء-ي])|\b(?:what (?:date|year|day)|which (?:date|year|day)|on what date|in which year)\b/g;
+const DATE_ASK_RX=/\b(?:when|what (?:date|year|day)|which (?:date|year|day)|in which year|on what date)\b|(?:^|[^ء-ي])(?:متي|اي (?:تاريخ|سنه|عام|يوم|شهر)|(?:وش|شو|كم) تاريخ)(?![ء-ي])/;  /* test only, so (?:^|[^ء-ي]) finds the same; was (?LB![ء-ي]) */
+/* was /(?LB![ء-ي])(?:في )?اي (...)(?![ء-ي])|(?LB![ء-ي])(?:وش|شو|كم) تاريخ(?![ء-ي])|\b(?:what ...)\b/g, used with replace */
+const DATE_PHRASE_RX=[[lbNot(/[ء-ي]/),/(?:في )?اي (?:تاريخ|سنه|عام|يوم|شهر)(?![ء-ي])/g],[lbNot(/[ء-ي]/),/(?:وش|شو|كم) تاريخ(?![ء-ي])/g],[null,/\b(?:what (?:date|year|day)|which (?:date|year|day)|on what date|in which year)\b/g]];
 const dateAsk=text=>{const n=norm(text);return DATE_ASK_RX.test(n)&&(n.match(/[a-z0-9ء-ي]+/g)||[]).length<=9}
-const noDatePhrase=text=>DATE_ASK_RX.test(norm(text))?norm(text).replace(DATE_PHRASE_RX,' '):text;  /* "in what date" is a question phrase like "when", not a subject word */
+const noDatePhrase=text=>DATE_ASK_RX.test(norm(text))?lbReplace(norm(text),DATE_PHRASE_RX,' '):text;  /* "in what date" is a question phrase like "when", not a subject word */
 function search(text,opt){let r=searchEntries(IDX,noDatePhrase(text),opt);
 if(MO&&r.length&&amountAsk(text))r=r.map(x=>({...x,score:Math.round(x.score*(MO.has(x.id)?AMT.up:AMT.down)*100)/100})).sort((a,b)=>b.score-a.score||b.cov-a.cov);
 if(DT&&r.length&&dateAsk(text))r=r.map(x=>DT.has(x.id)?{...x,score:Math.round(x.score*DAT.up*100)/100}:x).sort((a,b)=>b.score-a.score||b.cov-a.cov);
-if(r.length&&offTopic(text))r[0].off=true;return r}
+r=generalFirst(r,text);if(r.length&&offTopic(text))r[0].off=true;return r}
+/* the general entry before a special case (round 3 part 2): in a short question, an entry whose own question names a special case the question does not
+   (abroad, church, selling, free zone, Emirati, a pet, a travel ban ... SJ_SPECIAL) or speaks for the other side of a dispute (sideClash) weighs less */
+const SPC={w:.8,side:.8,n:10,maxw:30},SPC_C=new Map();
+function spcOf(id){const e=BY_ID[id];let c=SPC_C.get(id);if(c&&c.e===e)return c.sp;const lead=s=>String(s||'').split(/,?\s*(?:and )?what about\b|،?\s*(?:و)?ماذا عن|،?\s*وماذا لو/i)[0];
+c={e,sp:e&&e.q?sjSpecial(lead(e.q.en)+' \n '+lead(e.q.ar)):[]};SPC_C.set(id,c);return c.sp}
+function generalFirst(r,text){if(!r.length||rawWords(text).length>SPC.maxw)return r;const qsp=sjSpecial(text);let ch=false;
+const o=r.map((x,i)=>{let f=1;if(i<SPC.n){if(spcOf(x.id).some(g=>!qsp.includes(g)))f*=SPC.w;if(sideClash(text,x.id))f*=SPC.side}if(f<1){ch=true;return {...x,score:Math.round(x.score*f*100)/100,s0:x.score}}return x});
+if(!ch)return r;o.sort((a,b)=>b.score-a.score||b.cov-a.cov);if(o[0].s0!=null)o[0]={...o[0],score:o[0].s0};return o}  /* a special entry that stays first keeps its own score (the "no answer" bar reads it) */
 /* "I don't know" when the best entry is weak, covers too little of the question, or the question is not about UAE rules */
 const GAP_REL=2.25,GAP_COV=.12,GAP_COV2=.3,GAP_NQ=10,GAP_HI=1.9,ALSO_COV=.3,OOV_W=.75;
 const gapMin=()=>GAP_REL*Math.log(1+((IDX?IDX.N:0)+.5)/.5);
@@ -705,19 +771,22 @@ function rulesChosen(c){if(!c.length)return [];const top=c[0],tp=(BY_ID[top.id]|
 /* == Shield: mask personal numbers */
 const MASK_TAG={email:'[email]',eid:'[ID number]',iban:'[IBAN]',card:'[card number]',passport:'[passport number]',phone:'[phone]',plate:'[plate]',caseno:'[case number]',name:'[name]'};
 function luhn(d){let s=0,alt=false;for(let i=d.length-1;i>=0;i--){let n=+d[i];if(alt){n*=2;if(n>9)n-=9}s+=n;alt=!alt}return s%10===0}
+const MASK_EID=[[lbNot(/\d/),/784[\s-]?\d{4}[\s-]?\d{7}[\s-]?\d(?!\d)/g]],MASK_CARD=[[lbNot(/[\d+]/),/(?:\d[ -]?){12,18}\d(?!\d)/g]],MASK_PHONE=[[lbNot(/[\w+]/),/(\+|00)?\d(?:[\s-]?\d){6,14}(?!\w)/g]];
 function mask(text){let s=toWest(text);const c={email:0,eid:0,iban:0,card:0,passport:0,phone:0,plate:0,caseno:0,name:0};
 const rep=(k)=>()=>{c[k]++;return MASK_TAG[k]};
 s=s.replace(/[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+/g,rep('email'));
-s=s.replace(/(?<!\d)784[\s-]?\d{4}[\s-]?\d{7}[\s-]?\d(?!\d)/g,rep('eid'));
+s=lbReplace(s,MASK_EID,rep('eid'));  /* was s.replace(/(?LB!\d)784[\s-]?\d{4}[\s-]?\d{7}[\s-]?\d(?!\d)/g,...) */
 s=s.replace(/(emirates\s*id|\beid\b|الهوية|هوية)(\W{0,8})((?:\d[\s-]?){14}\d)(?!\d)/gi,(m,a,b)=>{c.eid++;return a+b+MASK_TAG.eid});
 s=s.replace(/\bAE\s?\d{2}(?:[\s-]?\d){19}(?!\d)/gi,rep('iban'));
 s=s.replace(/((?:number\s*)?plate|لوحة|لوحه)(\s*(?:no\.?|number|#|رقم|:)?\s*)([A-Za-z]{1,2}\s?\d{1,5}|\d{1,5}\s?[A-Za-z]{1,2})(?![\w])/gi,(m,a,b)=>{c.plate++;return a+b+MASK_TAG.plate});
 s=s.replace(/\b(labou?r|file|case|complaint|ticket|transaction|reference|ref|request|permit|contract|ملف|قضية|شكوى|معاملة|طلب)(\s*(?:no\.?|number|id|رقم)?\s*[:#]?\s*)([A-Za-z]{0,4}[-\/]?\d{5,}(?:[-\/]\d+)*)(?!\d|\s*(?:aed|dhs?|dirhams?|درهم))/gi,(m,a,b)=>{c.caseno++;return a+b+MASK_TAG.caseno});
 s=s.replace(/\b(my name is|name is|اسمي|انا اسمي)\s+(?:[A-Z][a-z]+(?:\s[A-Z][a-z]+){0,2}|[؀-ۿ]+(?:\s[؀-ۿ]+){0,1})/g,(m,a)=>{c.name++;return a+' '+MASK_TAG.name});
-s=s.replace(/(?<![\d+])(?:\d[ -]?){12,18}\d(?!\d)/g,m=>{const d=m.replace(/\D/g,'');if(/^(?:00|971)/.test(d)||!luhn(d))return m;c.card++;return MASK_TAG.card});
+s=lbReplace(s,MASK_CARD,m=>{  /* was s.replace(/(?LB![\d+])(?:\d[ -]?){12,18}\d(?!\d)/g,...) */
+const d=m.replace(/\D/g,'');if(/^(?:00|971)/.test(d)||!luhn(d))return m;c.card++;return MASK_TAG.card});
 s=s.replace(/(passport|جواز(?: السفر)?)(\s*(?:no\.?|number|#|رقم|:)?\s*)([A-Za-z]{0,2}\d{6,9})(?!\d)/gi,(m,a,b)=>{c.passport++;return a+b+MASK_TAG.passport});
 s=s.replace(/\b[A-Za-z]{1,2}\d{6,9}\b/g,m=>{c.passport++;return MASK_TAG.passport});
-s=s.replace(/(?<![\w+])(\+|00)?\d(?:[\s-]?\d){6,14}(?!\w)/g,(m,plus,off,str)=>{const d=m.replace(/\D/g,'');
+s=lbReplace(s,MASK_PHONE,(m,plus,off,str)=>{  /* was s.replace(/(?LB![\w+])(\+|00)?\d(?:[\s-]?\d){6,14}(?!\w)/g,...) */
+const d=m.replace(/\D/g,'');
 const intl=!!plus||/^971/.test(d);if(d.length<(intl?8:9))return m;
 if(/^(?:19|20)\d\d(?:[\s-]+(?:19|20)\d\d)+$/.test(m.trim()))return m;
 const before=str.slice(Math.max(0,off-8),off),after=str.slice(off+m.length,off+m.length+8);
@@ -733,7 +802,9 @@ function injections(text){const n=norm(text);const out=[];for(const r of INJ_RX)
 /* == Number check */
 const NUM_RX=/\d{1,3}(?:[,٬]\d{3})+(?:[.٫]\d+)?|\d+(?:[.٫]\d+)?/g;
 function numsIn(s){const out=[];for(const m of toWest(s).matchAll(NUM_RX)){let v=m[0].replace(/[,٬]/g,'').replace('٫','.');if(v.includes('.'))v=v.replace(/\.?0+$/,'');v=v.replace(/^0+(?=\d)/,'');out.push(v)}return out}
-function splitSentences(t){return String(t||'').match(/(?:\bNo\.\s|\d[.٫]\d|(?<=\w)\.(?=\w)|[^.!?؟\n])+(?:[.!?؟]+\s*|\n+|$)/g)||[]}
+/* was /(?:\bNo\.\s|\d[.٫]\d|(?LB=\w)\.(?=\w)|[^.!?؟\n])+(...)/g: a dot between two word characters stays inside the sentence. A match never starts
+   right after a word character, so the dot now rides on the token before it (\w, or \d[.٫]\d which ends in a digit): the same pieces. */
+function splitSentences(t){return String(t||'').match(/(?:\bNo\.\s|\d[.٫]\d(?:\.(?=\w))?|\w(?:\.(?=\w))?|[^.!?؟\n])+(?:[.!?؟]+\s*|\n+|$)/g)||[]}
 function numberCheck(text,allowed){const ok=allowed instanceof Set?allowed:new Set(numsIn(Array.isArray(allowed)?allowed.join(' '):String(allowed||'')));
 let removed=0;const bad=[];const keep=splitSentences(text).filter(s=>{const b=numsIn(s).filter(n=>!ok.has(n));if(b.length){removed++;bad.push(...b);return false}return true});
 return {text:keep.join('').replace(/\s+$/,'').trim(),removed,bad}}
@@ -770,7 +841,10 @@ if(numsIn(tx).some(n=>!ownNums.has(n))||unbackedLink(tx,backing)||numWordsIn(tx)
 if(isStr(o.missing)){const m=numberCheck(o.missing.trim(),allowed);r.missing=clip(splitSentences(m.text).filter(x=>!(unbackedLink(x,backing)||numWordsIn(x).some(w=>!nw.has(w))||!lexOK(x,lex))).join('').trim(),300)}
 return r}
 /* == the official search link: the person's key words, opened on u.ae only when they tap */
-const searchName=q=>String(q||'').replace(/(?<=\S\s+)[A-Z][a-z]+(?:\s+[A-Z][a-z]+)+/g,m=>{const ws=m.split(/\s+/);return IDX&&ws.every(w=>IDX.df.has(terms(w)[0]||'~'))?m:' '});
+/* was .replace(/(?LB=\S\s+)[A-Z][a-z]+(?:\s+[A-Z][a-z]+)+/g,...): the name must follow white space that follows a non-space character */
+const afterWordSpace=(s,i)=>{let j=i-1;if(j<0||!/\s/.test(s.charAt(j)))return false;while(j>=0&&/\s/.test(s.charAt(j)))j--;return j>=0};
+const SEARCH_NAME_RX=[[afterWordSpace,/[A-Z][a-z]+(?:\s+[A-Z][a-z]+)+/g]];
+const searchName=q=>lbReplace(String(q||''),SEARCH_NAME_RX,m=>{const ws=m.split(/\s+/);return IDX&&ws.every(w=>IDX.df.has(terms(w)[0]||'~'))?m:' '});
 const searchWords=q=>rawWords(searchName(q)).filter(w=>!STOP.has(w)&&w.length>2&&!/^\d{6,}$/.test(w)).slice(0,6);
 const officialSearchUrl=(ws,lang)=>`https://u.ae/${lang==='ar'?'ar':'en'}/search-result?q=${encodeURIComponent(arr(ws).join(' '))}`;
 /* == UI words */
@@ -2314,7 +2388,8 @@ function stripThink(s){return String(s||'').replace(/<think>[\s\S]*?<\/think>/gi
 function parseJSONText(s){s=stripThink(s);const f=s.match(/```(?:json)?\s*([\s\S]*?)```/i);if(f)s=f[1].trim();
 try{return JSON.parse(s)}catch(e){}const a=s.indexOf('{'),b=s.lastIndexOf('}');if(a>=0&&b>a){try{return JSON.parse(s.slice(a,b+1))}catch(e){}}throw {code:'invalid_json',message:'The reply was not JSON'}}
 const deadline=(p,ms)=>new Promise((res,rej)=>{const tm=setTimeout(()=>rej({code:'timeout'}),ms);Promise.resolve(p).then(v=>{clearTimeout(tm);res(v)},e=>{clearTimeout(tm);rej(e)})});
-const PII_RX=/(?<!\d)784[\s-]?\d{4}[\s-]?\d{7}[\s-]?\d(?!\d)|\bAE\s?\d{2}(?:[\s-]?\d){19}(?!\d)/i;
+/* test only: (?:^|\D) finds the same as the old (?LB!\d) */
+const PII_RX=/(?:^|\D)784[\s-]?\d{4}[\s-]?\d{7}[\s-]?\d(?!\d)|\bAE\s?\d{2}(?:[\s-]?\d){19}(?!\d)/i;
 function guardPrompt(prompt){if(PII_RX.test(String(prompt)))throw {code:'pii'};if(RUN&&RUN.noAI)throw {code:'inj'}}
 
 /* == screen helpers */
@@ -2390,16 +2465,74 @@ const f=df.get(k)||0,w=Math.log(1+(IDX.N-f+.5)/(f+.5));n++;tot+=w;const xm=XMAP&
 if(et.has(t)||et.has(k)||(xm&&et.has(xm))){got+=w;hit++}else miss.push(t)}
 return {cov:tot?got/tot:1,n,hit,miss}}
 const mainOk=(text,id)=>{const m=mainCov(text,id);return !(m.n>=2&&m.n<=VD.maxn&&m.hit*2<m.n)};
-/* the tick: only where the answer is right first at least about 85% of the time. Chosen on half of the development topics, confirmed on the other half, with the Gulf and owner questions as the short-question check
-   (notes: SEARCH-NOTES.md). A clear lead alone is enough (score >= 1.6 x the next); a short question also gets it when the entry covers its main words and the lead is plain */
-function sureOf(res,text,mc){const top=res[0],ratio=res[1]?top.score/(res[1].score||1e-9):9;if(ratio>=VD.hiLead)return true;
-return ((String(text).match(/[a-z0-9ء-ي]+/gi)||[]).length<=VD.shortN&&mc.cov>=VD.shortCov&&top.cov>=VD.shortTop&&ratio>=VD.shortLead)}
+/* == the tick (round 3, 13 Nov 2026): never a score margin. One of the entry's own ways of asking (its question in English or Arabic, or a stored way of asking) must cover
+   the SUBJECT of the question: its main words (at most one in three missed, never the rarest one, a thing, an unknown word, or "fine" against "fee"), and that
+   phrasing's things must be in the question too. The entry's special case (abroad, church, selling, Emirati, government, free zone, domestic worker, baby, ...),
+   its place (an entry for one emirate) and its side of a dispute (landlord or tenant, employer or worker) must be the question's. In doubt, no tick: "Closest answer we have". */
+const SJ={q:.6,div:3,rare:6.5};
+const SJ_ASPECT=new Set(terms('procedure procedures process steps step requirements requirement conditions condition documents document papers paperwork rights right options option way ways find out know number count much long time quick quickly fast new current latest exact exactly correct correctly properly proper standard normal usually general basic main type types kind kinds detail details information info explain mean means apply applying get getting take taking go going come put give rate amount total says say told tell asks asked '+
+'اجراءات اجراء خطوات خطوه شروط شرط متطلبات مستندات اوراق ورق اوراقي حقوق حقوقي حقي حقها حقه طريقه طرق عدد مده وقت معرفه اعرف نعرف يعرف تعرف حسب يتم تتم الجديد جديد جديده الحالي المعتاد عاده تفاصيل معلومات يعني اسوي سوات السوات شسوي يقول يقولون تقول قال قالوا قالي '+
+'el al shu sho esh wesh wish fi fe min mn 3la 3ala ala ana enta inta ani abi abgha abga abiy agdar a2dar kam kif keef kaif leh lesh ya wa w ma mu mo b bel bil la li lel 3shan 3ashan ba3d ba3ad 3and 3ndi 3indi 3endi hal hatha hadha hathi hadhi yabi ybi tabi 3an asawi asawe asaweh sawi'));
+const SJ_MUST=new Set(terms('fine fee'));  /* a fine and a fee are not the same thing */
+const SJ_GEN=new Set([...GATE_GENERIC].filter(x=>!SJ_MUST.has(x)));
+/* word groups that set the scene, not the subject: the other party, work or money in general, the act of asking for help, the place */
+const SJ_CTX=new Set(terms('employer labour job year money expat complaint cancel renew register late unpaid lost find increase notice evict court police lawyer compensation fine fee without my knowledge dubai abu dhabi sharjah ajman umm al quwain ras al khaimah fujairah').filter(x=>x.startsWith('~')));
+/* special cases: when the entry's own question names one, the question must name it too */
+const SJ_SPECIAL=['abroad|outside the uae|outside uae|outside the country|overseas|from outside|living outside|خارج الدولة|خارج الإمارات|من الخارج|بالخارج|برا الدولة|من برا',
+'church|churches|non muslim|non muslims|christian|christians|hindu|civil marriage|كنيسة|غير مسلم|غير المسلمين|غير مسلمين|مسيحي|مسيحيين|زواج مدني',
+'selling|sell|sells|sold|sale|بيع|يبيع|يبي يبيع|بيبيع|باع',
+'gcc|gulf national|خليجي|خليجية|مجلس التعاون',
+'investor|investors|مستثمر|مستثمرين',
+'freelance|freelancer|freelancers|عمل حر|فريلانس',
+'retired|retiree|retirees|متقاعد|متقاعدين',
+'widow|widowed|أرملة',
+'people of determination|disabled|disability|أصحاب الهمم|إعاقة|معاق',
+'emirati|emiratis|uae national|uae nationals|citizen|citizens|مواطن|مواطنة|مواطنين',
+'government|federal|public sector|حكومي|حكومية|الحكومة|اتحادي|القطاع الحكومي',
+'free zone|freezone|adgm|difc|dmcc|jafza|rakez|منطقة حرة|المنطقة الحرة|فري زون',
+'maid|domestic worker|housemaid|nanny|خادمة|عاملة منزلية|العمالة المنزلية|خدامة|شغالة',
+'baby|newborn|infant|مولود|رضيع|طفل حديث',
+'pet|pets|dog|dogs|cat|cats|حيوان اليف|حيوانات اليفة|حيوانات أليفة|كلب|قطة',
+'travel ban|travel bans|exit ban|منع سفر|منع السفر|منع من السفر',
+'short-term|short term|holiday home|holiday homes|airbnb|بيت عطلات|ايجار قصير|قصير المدة'].map(g=>g.split('|').map(p=>norm(p).trim()));
+const sjBare=w=>w.replace(/^(?:و|ف|ب|ل|ك)?(?:ال|لل)(?=..)/,'');
+function sjSpecial(t){const n=' '+norm(t).replace(/[^a-z0-9ء-ي]+/g,' ')+' ',w=new Set((n.match(/[a-z0-9ء-ي]+/g)||[]).flatMap(x=>[x,sjBare(x)]));
+return SJ_SPECIAL.map((g,i)=>g.some(p=>p.includes(' ')?n.includes(' '+p+' '):w.has(p)||w.has(sjBare(p)))?i:-1).filter(i=>i>=0)}
+const sjIdf=k=>{const f=IDX.dfq.get(k)||0;return Math.log(1+(IDX.N-f+.5)/(f+.5))};
+const sjKeep=x=>!/^\d/.test(x)&&!EMI_KEYS.has(x)&&!SJ_GEN.has(x)&&!SJ_ASPECT.has(x)&&!x.startsWith('~a')&&!unitSet().has(x);
+const sjThing=x=>x.startsWith('~')&&!x.startsWith('~a')&&!SJ_CTX.has(x);
+/* things said with "no / without / has no" in front ("the other driver has no insurance" is not "claim from their insurance") */
+const SJ_NEG=new Set(rawWords('no not without never dont doesnt didnt isnt hasnt havent wont cannot cant بدون بلا ليس ليست لا لم عدم مافي مافيه ماعنده ماعندي'));
+const SJ_NEG2=[['ما','عنده'],['ما','عندي'],['ما','عندها'],['ما','عندهم'],['ما','فيه'],['ما','في']].map(x=>x.map(w=>norm(w)));
+function sjNeg(text){const w=rawWords(text),out=new Set();for(let i=0;i<w.length;i++){let neg=false;for(let j=Math.max(0,i-3);j<i&&!neg;j++){if(SJ_NEG.has(w[j]))neg=true;else neg=SJ_NEG2.some(p=>p.every((x,k)=>w[j+k]===x)&&j+p.length<=i)}
+if(neg)for(const t of terms(w[i]))if(sjThing(t))out.add(t)}return out}
+const SJ_PH=new Map();
+function sjPhr(id){const e=BY_ID[id],c=SJ_PH.get(id);if(c&&c.e===e)return c.p;
+const p=[e.q&&e.q.en,e.q&&e.q.ar,...arr(e.ask)].filter(isStr).map(s=>{const set=new Set([...terms(s),...termsE(s)]);return {set,things:[...set].filter(sjThing),neg:sjNeg(s)}});SJ_PH.set(id,{e,p});return p}
+function sjQ(text){const all=new Set([...terms(text),...termsE(text)]),qt=[];let oov=0;
+for(const t of new Set(terms(noDatePhrase(text)))){if(!sjKeep(t))continue;let ks=[t],k0=t;
+if(!IDX.dfq.has(t)){const x=expandTerm(t,{df:IDX.dfq,N:IDX.N,vocab:IDX.vocabq});if(!x){if(t.length>=4)oov++;continue}ks=[t,x[0]];k0=x[0]}
+const xm=XMAP&&XMAP.get(t);if(xm)ks.push(xm);for(const k of ks)all.add(k);qt.push({t,ks,w:sjIdf(k0)})}
+return {qt,all,oov,sp:sjSpecial(text),neg:sjNeg(text),em:EMIRATES.filter(x=>all.has(EMI_KEY[x])),latin:!AR_LETTER.test(text)}}
+/* {ok, why}: why is the first reason there is no tick ('none', 'cover', 'kind', 'special', 'rare', 'place', 'side') */
+function subjectOf(text,id){const e=BY_ID[id];if(!e||!IDX||!IDX.N)return {ok:false,why:'none'};const Q=sjQ(text),n=Q.qt.length+Q.oov;if(!n)return {ok:false,why:'none'};
+const mI=Math.log(1+(IDX.N+.5)/.5),tot=Q.qt.reduce((s,x)=>s+x.w,0)+Q.oov*mI*OOV_W,top=Q.qt.reduce((a,x)=>!a||x.w>a.w?x:a,null);let cover=false;
+for(const p of sjPhr(id)){const miss=Q.qt.filter(x=>!x.ks.some(k=>p.set.has(k))),got=Q.qt.filter(x=>!miss.includes(x)).reduce((s,x)=>s+x.w,0),nm=miss.length+Q.oov;
+if(tot&&got/tot<SJ.q)continue;if(nm&&(nm>Math.floor(n/SJ.div)||Q.oov||miss.includes(top)||miss.some(x=>sjThing(x.t)||SJ_MUST.has(x.t))))continue;
+if(p.things.some(k=>!Q.all.has(k)))continue;if(p.things.some(k=>Q.neg.has(k)!==p.neg.has(k))||[...Q.neg].some(k=>p.set.has(k)&&!p.neg.has(k)))continue;cover=true;break}
+if(!cover)return {ok:false,why:'cover'};
+const own=new Set([...termsE(both(e.q)),...arr(e.ask).flatMap(a=>termsE(a))]);if([...SJ_MUST].some(k=>Q.qt.some(x=>x.t===k)&&!own.has(k)))return {ok:false,why:'kind'};
+const lead=s=>String(s||'').split(/,?\s*(?:and )?what about\b|،?\s*(?:و)?ماذا عن|،?\s*وماذا لو/i)[0];  /* "..., and what about a degree from abroad?" adds a case, it is not the case */
+if(sjSpecial(e.q?lead(e.q.en)+' \n '+lead(e.q.ar):'').some(i=>!Q.sp.includes(i)))return {ok:false,why:'special'};
+if(Q.latin&&e.q&&[...new Set(termsE(e.q.en||''))].some(x=>sjKeep(x)&&!x.startsWith('~')&&!Q.all.has(x)&&sjIdf(x)>=SJ.rare))return {ok:false,why:'rare'};
+const em=arr(e.emirates);if(em.length&&!em.includes('all')&&!Q.em.some(x=>em.includes(x)))return {ok:false,why:'place'};
+if(sideClash(text,id))return {ok:false,why:'side'};return {ok:true,why:''}}
 /* 'gap' (no verified answer), 'close' (the closest answer we have, no tick) or 'ok' (the checked answer to this question, with the tick) */
 function verdict(res,text){if(!res||!res.length||res[0].off===true)return {kind:'gap'};const kg=knownGap(text);if(kg)return {kind:'gap',known:kg};
 const top=res[0],mc=mainCov(text,top.id),few=mc.n>=1&&mc.n<=VD.maxn,low=isGap(res.slice(0,5));
-if(low){if(few&&mc.cov>=.99&&top.cov>=.5&&top.score>=gapMin()*VD.rescue)return {kind:sureOf(res,text,mc)?'ok':'close',cov:mc.cov,rescued:true};return {kind:'gap',cov:mc.cov}}
+if(low){if(few&&mc.cov>=.99&&top.cov>=.5&&top.score>=gapMin()*VD.rescue){const sj=subjectOf(text,top.id);return {kind:sj.ok?'ok':'close',cov:mc.cov,rescued:true,why:sj.why}}return {kind:'gap',cov:mc.cov}}
 if(mc.n>=2&&few&&mc.hit*2<mc.n)return {kind:'gap',cov:mc.cov,miss:mc.miss};
-return {kind:sureOf(res,text,mc)?'ok':'close',cov:mc.cov}}
+const sj=subjectOf(text,top.id);return {kind:sj.ok?'ok':'close',cov:mc.cov,why:sj.why}}
 /* {ok:true} or {ok:false, why:'nonum'|'concept', kind|miss}. figText is what the person wrote; text is what was searched */
 function gateOf(text,e,figText){if(!e||e._stub)return {ok:true};const kinds=figureKinds(figText==null?text:figText);
 if(kinds.length){const ft=entryFigureText(e);if(!kinds.some(k=>FIG_HAS[k].test(ft)))return {ok:false,why:'nonum',kind:kinds[0]}}
@@ -2674,7 +2807,7 @@ const MULTI_CUE=/\b(?:simultaneous(?:ly)?|at the same time|several|multiple|nume
 const PROB_ST=new Set(rawWords('unpaid owe owes owed claims claim filed case frozen freeze cancelled canceled cancel threatening threatens threatened refuses refused dispute disputes evict eviction transferred withheld terminated fired loan debt ban fraud complaint fine bounced suspended suspend arrest arrested expired overstay penalty penalised lawsuit sued sue stopped blocked دين قرض قضيه شكوى اخلاء طرد فصل الغاء الغيت تجميد منع احتيال غرامه مخالفه بلاغ متاخر لم يدفع ما دفع تهديد يهدد رفض يرفض مطالبه يطالب مدين يدعي يدعو دين').map(stem));
 const hasProblem=s=>rawWords(s).some(w=>PROB_ST.has(stem(w)));
 const ISSUE_ST=new Set(rawWords('want wants wish wishes need needs can could should must how what whether would paid salary wage wages تبي ابي اريد احتاج هل كيف ماذا ماهي راتب').map(stem));
-const ASKS_RX=/^(?:please |kindly )?(?:determine|identify|analy[sz]e|explain|provide|describe|advise|list|assess|tell|give|prepare|set out|summari[sz]e)/i;
+const ASKS_RX=/^(?:please |kindly )?(?:determine|identify|analy[sz]e|explain|provide|describe|advise|list|assess|tell|give|prepare|set out|summari[sz]e)\b/i;
 const isIssue=s=>/[?؟]\s*$/.test(s)||hasProblem(s)||rawWords(s).some(w=>ISSUE_ST.has(stem(w)));
 /* the entry's own question must carry at least one of the two rarest main words of the sentence: a sentence about debts to suppliers is not answered by an entry about buying a business */
 /* words that say a case was started, not what it is about: they must not be the word an entry has to share */
@@ -2682,17 +2815,18 @@ const HEAD_SKIP=new Set(rawWords('file filed files filing against claim claims c
 function headHit(sn,id){const df=IDX.dfq,et=ownTerms(id),ts=mainTerms(sn).filter(t=>df.has(t)&&!HEAD_SKIP.has(t)).map(t=>[t,df.get(t)]).sort((a,b)=>a[1]-b[1]).slice(0,2);
 if(!ts.length)return true;return ts.some(([t])=>{const xm=XMAP&&XMAP.get(t);return et.has(t)||(xm&&et.has(xm))})}
 /* who is speaking: an entry written for the other side of a dispute (a landlord's entry for a tenant, an employer's for an employee) is not an answer to this person */
-const SIDE_RX=[['tenant',/\b(?:my (?:\w+ ){0,2}(?:landlord|lessor)|my (?:\w+ ){0,2}(?:rent|lease|tenancy|deposit)\b|i (?:am|'m) (?:a )?(?:tenant|renting)|i rent (?:a|an|my|this)\b)|(?:المالك|مالك العقار|صاحب (?:العقار|الشقة|البيت)) (?:طلب|يبي|يريد|رفع|قدم|يطالب|ما)|(?<![؀-ۿ])(?:ايجاري|إيجاري|عقد ايجاري|عقد إيجاري)(?![؀-ۿ])/i],
-['landlord',/\b(?:my (?:\w+ ){0,2}(?:tenants?|renters?)|i (?:own|let|rent out|am (?:a |the )?(?:landlord|owner))|rent(?:ed)? out my)\b|(?<![؀-ۿ])(?:مستأجري|المستأجر عندي|أؤجر|اؤجر|أملك عقار)(?![؀-ۿ])/i],
+/* test only (sidesOf): each (?:^|[^؀-ۿ]) finds the same as the old (?LB![؀-ۿ]) */
+const SIDE_RX=[['tenant',/\b(?:my (?:\w+ ){0,2}(?:landlord|lessor)|my (?:\w+ ){0,2}(?:rent|lease|tenancy|deposit)\b|i (?:am|'m) (?:a )?(?:tenant|renting)|i rent (?:a|an|my|this)\b)|(?:المالك|المؤجر|مالك العقار|صاحب (?:العقار|الشقة|البيت|العمارة)|راعي (?:البيت|العمارة))(?: \S+){0,2} (?:طلب|يبي|يبا|يبغى|يريد|رفع|يرفع|يزيد|زاد|قدم|يطالب|ما)|(?:^|[^؀-ۿ])(?:ايجاري|إيجاري|عقد ايجاري|عقد إيجاري)(?![؀-ۿ])/i],
+['landlord',/\b(?:my (?:\w+ ){0,2}(?:tenants?|renters?)|i (?:own|let|rent out|am (?:a |an |the )?(?:(?:\w+ )?landlord|owner))|i'm (?:a |an |the )?(?:\w+ )?landlord|as (?:a|the) landlord|rent(?:ed)? out my)\b|(?:^|[^؀-ۿ])(?:مستأجري|المستأجر عندي|أؤجر|اؤجر|أملك عقار|(?:أنا|انا) (?:مؤجر|المؤجر|مالك|المالك))(?![؀-ۿ])/i],
 ['employee',/\b(?:my (?:\w+ ){0,2}(?:employer|boss|sponsor)|i (?:work|worked) (?:for|at|in)|i was (?:fired|dismissed|terminated))\b|(?:صاحب العمل|الكفيل|مديري) (?:يهدد|ما|يبي|فصل|رفض)/i],
-['employer',/\b(?:my (?:\w+ ){0,2}(?:employees?|staff|workers?|maid|domestic worker)|(?:\d+|two|three|four|five|six|several|some|many|all) (?:\w+ )?(?:employees|workers|staff) (?:have|has|filed|are|were)|i (?:employ|hire|am an employer)|i (?:own|run) (?:a|my) (?:company|business))\b|(?<![؀-ۿ])(?:موظفي|عمالي|عاملتي)(?![؀-ۿ])/i]];
+['employer',/\b(?:my (?:\w+ ){0,2}(?:employees?|staff|workers?|maid|domestic worker)|(?:\d+|two|three|four|five|six|several|some|many|all) (?:\w+ )?(?:employees|workers|staff) (?:have|has|filed|are|were)|i (?:employ|hire|am an employer)|i (?:own|run) (?:a|my) (?:company|business))\b|(?:^|[^؀-ۿ])(?:موظفي|عمالي|عاملتي)(?![؀-ۿ])/i]];
 function sidesOf(t){const s=String(t||'');return new Set(SIDE_RX.filter(([,r])=>r.test(s)).map(x=>x[0]))}
 const SIDE_PAIR={tenant:'landlord',landlord:'tenant',employee:'employer',employer:'employee'};
 function sideClash(sn,id){const e=BY_ID[id];if(!e)return false;const ts=sidesOf(sn);if(!ts.size)return false;const es=sidesOf(both(e.q));
 for(const x of ts)if(es.has(SIDE_PAIR[x])&&!es.has(x)&&!ts.has(SIDE_PAIR[x]))return true;return false}
-function partsOf(text){const raw=String(text||''),n=norm(raw);if(rawWords(raw).length<PT.words)return null;
+function partsLong(text){const raw=String(text||''),n=norm(raw);if(rawWords(raw).length<PT.words)return null;
 const qm=(raw.match(/[?؟]/g)||[]).length,lines=(raw.match(/(?:^|\n)\s*(?:\d+[.)]|[-•*])\s/g)||[]).length;if(!(MULTI_CUE.test(n)||qm>=PT.qmarks||lines>=3))return null;
-const ss=raw.split(/(?<=[.!?؟…])\s+|\n+|:\s+/).map(x=>x.replace(/^\s*(?:\d+[.)]|[-•*])\s*/,'').trim()).filter(x=>rawWords(x).length>=4);if(ss.length<4)return null;
+const ss=lbSplit(raw,SPLIT_POINTS).map(x=>x.replace(/^\s*(?:\d+[.)]|[-•*])\s*/,'').trim()).filter(x=>rawWords(x).length>=4);if(ss.length<4)return null;
 const whole=new Set(search(raw).map(x=>x.id)),items=[];
 for(const sn of ss){let id='',cov=0;const iss=isIssue(sn);
 if(iss){const res=search(sn);if(res.length&&!res[0].off&&!isGap(res))for(const [i,x] of res.slice(0,8).entries()){const mc=mainCov(sn,x.id);if(mc.n<2)continue;if(!headHit(sn,x.id))continue;if(sideClash(sn,x.id))continue;const w=whole.has(x.id),lead=i===0&&res[1]&&x.score/res[1].score>=PT.lead;if((w&&mc.cov>=PT.cov&&x.cov>=PT.cov)||(mc.cov>=PT.sure&&x.cov>=PT.sure)||(lead&&mc.cov>=.6&&x.cov>=.55)){id=x.id;cov=mc.cov;break}}}
@@ -2703,6 +2837,26 @@ if(ans.length<PT.minParts||ans.length+none.length<PT.minAll)return null;
 const qn=x=>/[?؟]\s*$/.test(x.s)?1:0;let keep=ans.length>PT.max?ans.slice().sort((a,b)=>qn(b)-qn(a)||b.cov-a.cov).slice(0,PT.max):ans;
 const room=PT.max-keep.length,nk=none.slice(0,room),all=[...keep,...nk].sort((a,b)=>items.indexOf(a)-items.indexOf(b));
 return {parts:all.map(x=>({id:x.id,s:x.s})),more:ans.length+none.length-all.length}}
+/* a short question that lists several problems in ONE sentence (round 3 part 2): "I have a fine, my ID is expired, and I want to change my car registration. Help!"
+   Three or more clauses of 3+ words (two with "at the same time" / "each issue"), any other sentence a short "help" or "what do I do" (8 words or fewer);
+   clauses that start with or/while/if/because ... belong to the one before and are not counted. At least one clause must find its own entry
+   (its main words covered .6, the entry's cover .45); the other clauses that ask or tell a problem are parts with no verified answer.
+   An ordinary sentence with "and" in it is never split: 0 of 899 development questions. */
+const SP={maxw:40,minw:3,cov:.6,other:8,minAns:1};
+const SP_CUE=/\b(?:each (?:issue|problem|of them|question)|at the same time)\b|(?:بنفس|في نفس) الوقت|كل (?:مشكله|قضيه)/;
+const SP_JOIN=/\s*(?:[,;،؛]|\s[–—-]\s)\s*|\s+(?:and|plus)\s+(?=(?:i|my|i'm|i've|get|claim|want|need)\b)/i;
+const SP_SUB=/^(?:or|while|with|without|because|since|after|before|when|if|but|as|including|such as|او|لان|بعد|قبل|اذا|لو|مع|بدون|علما|رغم)\s/i;
+function partsShort(text){const raw=String(text||'').trim(),nw=rawWords(raw).length;if(nw>SP.maxw||nw<8)return null;
+const sents=lbSplit(raw,SPLIT_SENT_Q).filter(x=>rawWords(x).length),main=sents.reduce((a,x)=>x.split(SP_JOIN).length>a.split(SP_JOIN).length?x:a,sents[0]||'');
+if(sents.some(x=>x!==main&&rawWords(x).length>SP.other))return null;const cue=SP_CUE.test(norm(raw));
+const cl=main.replace(/[.!?؟]+\s*$/,'').split(SP_JOIN).map(x=>String(x||'').replace(/^\s*(?:and|then)\s+/i,'').replace(/^و(?=\S)/,'').trim()).filter(x=>rawWords(x).length>=SP.minw&&!SP_SUB.test(normAr(x.toLowerCase())));
+if(cl.length<(cue?2:3))return null;const items=[];
+for(const sn of cl){let id='';const res=search(sn);if(res.length&&!res[0].off&&!isGap(res))for(const x of res.slice(0,3)){const mc=mainCov(sn,x.id);if(mc.n<1||mc.cov<SP.cov||x.cov<.45)continue;if(!headHit(sn,x.id)||sideClash(sn,x.id))continue;id=x.id;break}items.push({s:sn,id,prob:isIssue(sn)})}
+const seen=[],ans=[];for(const it of items){if(!it.id)continue;if(seen.some(x=>x===it.id||sameSubject(x,it.id)))continue;seen.push(it.id);ans.push(it)}
+const own=sn=>terms(sn).some(t=>!SJ_ASPECT.has(t)&&!/^\d/.test(t)),covered=sn=>ans.some(a=>{const m=mainCov(sn,a.id);return m.n>=2&&m.cov>=.5});  /* a clause with no subject of its own ("what should I do"), or one a found part already answers ("and I want to file a complaint"), is not a part */
+const none=items.filter(it=>!it.id&&it.prob&&!ASKS_RX.test(it.s)&&own(it.s)&&!covered(it.s));if(ans.length<SP.minAns||ans.length+none.length<(cue?2:3))return null;
+const all=[...ans,...none].sort((a,b)=>items.indexOf(a)-items.indexOf(b)).slice(0,PT.max);return {parts:all.map(x=>({id:x.id,s:x.s})),more:0,short:true}}
+function partsOf(text){return partsLong(text)||partsShort(text)}
 /* subjects the library is known not to answer yet (expansion/known-gaps.json): every group needs one of its words in the question */
 let KG=[];
 function knownGap(text){if(!KG.length)return null;const st=new Set(rawWords(text).map(stem));return KG.find(g=>g.all.every(grp=>grp.some(w=>st.has(w))))||null}
@@ -2749,7 +2903,12 @@ if(BR.services.length)h+=`<section class="brk"><h3>${T('svcH')}</h3>${br.svc.len
 if(BR.laws.length)h+=`<section class="brk"><h3>${T('lawsH')}</h3>${br.laws.length?`<ul class="brl">${br.laws.map(l=>lawHTML(l,true)).join('')}</ul>`:`<p class="tip">${T('lawsNone')}</p>`}</section>`;return h}
 function routeHTML(e,sit){const r=routeOf(e,sit);return `<div class="route"><h3>${T('whoseH')} <span class="k rule">${T('kRule')}</span></h3>${r.lines.map(l=>`<p>${esc(t(l.k,l.v))}</p>`).join('')}</div>`}
 const SIB_NAME={'wage-guard':{en:'Bil Tareekh',ar:'بالتاريخ'},rentright:{en:'Masmooh',ar:'مسموح'},scamshield:{en:'Mazboot',ar:'مضبوط'},'career-compass':{en:'Zaheb',ar:'زاهب'},'proven-fixed':{en:'Wareeni',ar:'ورّيني'}};
-function handoffHTML(e){const s=e.handoff&&BRAND.siblings&&BRAND.siblings[e.handoff];if(!s||!isStr(s.name)||!s.name)return '';const nm=SIB_NAME[e.handoff]?L(SIB_NAME[e.handoff]):s.name,u=safeUrl(s.url);return `<p class="handoff">${esc(t('handoff',{name:'\u0001'})).replace('\u0001',u?link(u,nm):'<b>'+esc(nm)+'</b>')}</p>`}
+/* The helper pages sit beside this one on the public site (/answers/, /wages/, /rent/); in the project folder they are single files. Same site only: no request to anyone. */
+const SIB_PAGE={'wage-guard':{agent:'wages',pub:'wages/',dev:'wage-guard-demo.html'},rentright:{agent:'rent',pub:'rent/',dev:'rentright-desk-demo.html'}};
+function sibHref(k){const p=SIB_PAGE[k];if(!p)return '';let path='';try{path=location.pathname||''}catch(x){}return /\/answers\/(index\.html)?$/.test(path)?'../'+p.pub:/\/inzain\/(index\.html)?$/.test(path)?'../'+p.dev:/(inzain-standalone|wadeh-demo)\.html$/.test(path)?p.dev:''}
+function handoffHTML(e){const s=e.handoff&&BRAND.siblings&&BRAND.siblings[e.handoff];if(!s||!isStr(s.name)||!s.name)return '';const nm=SIB_NAME[e.handoff]?L(SIB_NAME[e.handoff]):s.name,u=safeUrl(s.url),h=sibHref(e.handoff),inner=u?link(u,nm):h?`<a class="sib" data-sib="${esc(e.handoff)}" href="${esc(h+'?lang='+LANG)}">${esc(nm)}</a>`:'<b>'+esc(nm)+'</b>';return `<p class="handoff">${esc(t('handoff',{name:'\u0001'})).replace('\u0001',inner)}</p>`}
+/* Inside the landing page's sheet the link asks the landing page to open the helper there (same origin, nothing is sent anywhere else), so the sheet title, language and Back button stay right. */
+if(typeof document!=='undefined')document.addEventListener('click',ev=>{const a=ev.target&&ev.target.closest&&ev.target.closest('a.sib');if(!a||!EMBED||window.parent===window||ev.ctrlKey||ev.metaKey||ev.shiftKey||ev.altKey||ev.button)return;const p=SIB_PAGE[a.getAttribute('data-sib')];if(!p)return;ev.preventDefault();try{window.parent.postMessage({type:'uae-open-agent',agent:p.agent,from:'answers',lang:LANG},location.origin)}catch(x){location.href=a.href+'&embed=1'}});
 function srcChip(e,i,n){const s=e.sources[i];if(!s)return '';n=n||i+1;return `<details class="sc"><summary>${T('srcChip')} ${n} · ${esc(s.publisher)}</summary><div class="scpop"><b dir="auto">${esc(s.title)}</b><span>${esc(s.publisher)} · ${s.official?T('srcOfficial'):T('srcNews')}</span>${e.checked?`<span>${T('srcChecked',{date:fmtDate(e.checked)})}</span>`:''}${s.url?link(s.url,t(s.official?'openSrc':'openPage'),'',t(s.official?'openSrc':'openPage')+', '+(s.publisher||s.title||'')+' ('+t('newTab')+')'):''}</div></details>`}
 function authCard(id){const A=hasOwn(AUTH,id)?AUTH[id]:null;if(!A)return id?`<div class="authcard"><b>${esc(authName(id))}</b><p class="tip">${T('noChannels')}</p></div>`:'';const ch=[];
 if(A.phone){const tel=A.phone.replace(/[^\d+]/g,'');if(tel)ch.push(`<a class="chan" href="tel:${esc(tel)}">${T('callN',{n:A.phone})}</a>`)}
@@ -3015,6 +3174,7 @@ twoTap($('reset'),'reset','resetConfirm',()=>{for(const k of [K.profile,K.saved,
 if(EMBED)document.documentElement.classList.add('embed');
 const q0=QS.get('q');if(q0){$('q').value=String(q0).slice(0,2500);growQ()}
 renderAll();showTab('ask');
+try{window.INZAIN_READY=true}catch(e){}
 const autoAsk=()=>{if(EMBED&&q0)ask(String(q0).slice(0,2500))};
 /* the server's approved corrections arrive after the library, never before first paint */
 if(LAZY&&!LAZY.ready)loadLazy().then(()=>{autoAsk();if(PENDQ&&ENTRIES.length){const p=PENDQ;PENDQ='';ask(p)}loadOverrides()});else{autoAsk();loadOverrides()}}
