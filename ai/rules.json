@@ -9,5 +9,359 @@
     "on": false,
     "text": "Check your draft part by part against the sources above, then write the final answer in full, in the draft's layout, with no preface and no word about this check. Change only what fails a check; keep every other sentence as it is, and cite again every sentence you keep or add. A part grows only by a fact check 5 requires. You may search at most twice, only for a point check 3 finds unsettled.\n1. Decline. If the draft declines, the final answer is that one sentence alone, in the language of the question: delete every other line, \"Next step\" too, and skip the rest.\n2. Fit. For each cited passage, check whom it covers: emirate, mainland or which free zone, kind of visa or residence, role. If it covers another group, remove it, or say in the same sentence whom it covers.\n3. Certainty. Each opener and each sentence that settles a point (yes, no, who handles it, how long) needs a passage that says it for this person's case. A page's silence is not a \"No\": for a duty, a penalty, a court order or a time limit the current law decides. If no passage settles it, write who decides and what to ask them. Two official figures that differ go in one sentence, each cited: \"[A] or [B]: [body] decides which applies to you.\"\n4. Numbers. Each figure, unit and qualifier matches its passage (working or calendar days, at least, at most, per day, per month). Two fee lines of one amount and unit for one charge are one charge.\n5. Gaps. Reread each cited service page and law passage for this person's case. If it holds, for a point asked, the main figure, a fee line, a paper, the deadline, or the body and route for this amount, and the draft left it out, add it in one short cited sentence, in every part it answers. Say plainly whether each claim the person reports (what HR or a landlord said) is right, and whether the person's case is on the list it turns on.\n6. Marks. Every sentence that states a rule, figure, period, body, route or what follows for the person carries the citation of the passage that holds it, the opener included. Join what a rule means for the person to its cited sentence. Never cite a passage for a fact it does not hold; delete a sentence no passage holds.\n7. Language. Every line is in the language of the question; Arabic in Latin letters is Arabic. An Arabic answer has no Latin letter: no \"Confirm this with\", no u.ae.\n8. Words. Rewrite every sentence whose subject or object is a page, a source, a text, a search, Inzain or \"I\" (the sources do not say, one page shows, I found, cannot be worked out; لا تذكر، لم يرد، لم يُذكر، منشورة، النص، الصفحة، المصادر، لم أجد، لا أستطيع) as a sentence about the law, the body or the person: \"The law sets no rule for this: [body] decides.\" «لا يحدد القانون ذلك: [الجهة] تقرر.» Delete a sentence that only says what is missing, mentions an order found in the question, or says what the answer is or is not. No hedge (likely, على الأرجح، غالباً، يبدو), no court words. Arabic: the person is أنت to the end, no dialect words, «سارٍ», the verb agrees with its subject, no brackets after a body's name.\n9. Length and layout. Each part is the opener and at most five more sentences, about 70 words. Cut first what nobody asked about (other people or places, later steps, an unasked total) and repeats; never the number, a condition that changes this person's answer, or a paper, fee or deadline asked about. No **, no dash lists, no web address. The answer ends with one \"Next step:\" line («الخطوة التالية:») of one sentence.",
     "searches": 2
+  },
+  "scam": {
+    "warnings": [
+      {
+        "id": "icp-fake-calls-fake-websites",
+        "title": "UAE ICP | Federal Authority for Identity, Citizenship, Customs & Port Security (home page notice)",
+        "url": "https://icp.gov.ae/en/",
+        "body": "Federal Authority for Identity, Citizenship, Customs and Port Security (ICP)",
+        "says": "An important notice on the ICP home page warns that fraudsters misuse ICP's name and logo through fake calls and counterfeit websites to steal personal data. ICP says to get its services and information only through its official channels, the Smart Services Platform and the UAEICP smart app. The page warns about such messages; it does not say what the body never asks for."
+      },
+      {
+        "id": "gdrfa-online-security",
+        "title": "Your Online Security",
+        "url": "https://www.gdrfad.gov.ae/en/online-security",
+        "body": "GDRFA Dubai (General Directorate of Identity and Foreigners Affairs, Dubai)",
+        "says": "GDRFA Dubai says it never asks for your information through email or external links. It tells people to use only www.gdrfad.gov.ae or the official smart app, not to click links from unverified sources, never to share personal or login details by phone or email, and to report a fake website or suspicious activity through official channels. On what the body never asks for, the page says: \"The Directorate never asks for your information through email or external links.\""
+      },
+      {
+        "id": "gdrfa-official-apps-only",
+        "title": "Announcement: The importance of using official applications and websites",
+        "url": "https://alsaada.gdrfad.gov.ae/en/announcement",
+        "body": "GDRFA Dubai (General Directorate of Identity and Foreigners Affairs, Dubai)",
+        "says": "GDRFA Dubai tells people to rely on its official websites and applications, not to enter personal information on unofficial websites or applications because they may be a source of manipulation or fraud, and to get support through its official applications. It lists www.gdrfad.gov.ae and the UAEICP, GDRFA Establishment, DubaiNow and GDRFA DXB apps as official channels. The page warns about such messages; it does not say what the body never asks for."
+      },
+      {
+        "id": "gdrfa-fake-visa-offers-social-media",
+        "title": "GDRFA Dubai Addresses Violations Involving the Misuse of Visa Procedures Through Social Media Platforms",
+        "url": "https://gdrfad.gov.ae/en/node/14465",
+        "body": "GDRFA Dubai (General Directorate of Identity and Foreigners Affairs, Dubai)",
+        "says": "GDRFA Dubai says it took measures against entities promoting unauthorised visa and residency services on digital platforms, which could expose people to exploitation or wrong information. It calls on the public to obtain visa and residency services only through official channels, not to respond to unreliable adverts or offers on digital platforms, to verify the source before sharing personal information or paying, and to report illegal practices. The page warns about such messages; it does not say what the body never asks for."
+      },
+      {
+        "id": "adpolice-fake-ads-fake-official-sites-20",
+        "title": "شرطة أبوظبي تحذر من أساليب الاحتيال الإلكتروني عبر الإعلانات الوهمية",
+        "url": "https://www.adpolice.gov.ae/Media-Center/News/2025/06/2006202501",
+        "body": "Abu Dhabi Police",
+        "says": "Abu Dhabi Police warn of online fraud through suspicious links, fake adverts in search engines, fake jobs and property fraud. Cheap adverts lead to fake sites that pretend to belong to official bodies or known companies, to steal personal or financial data. Police say to check links, use official apps or the known app stores, and never share account or card details, online banking passwords, ATM PINs or the CCV number. Reports go to Aman on 8002626, SMS 2828, the police app or aman@adpolice.gov.ae. The page warns about such messages; it does not say what the body never asks for."
+      },
+      {
+        "id": "moi-no-bank-details-phone-online-2012",
+        "title": "MoI warns against falling prey to electronic fraud",
+        "url": "https://www.adpolice.gov.ae/en/Media-Center/News/2021/06/28/MoI-warns-against-falling-prey-to-electronic-fraud",
+        "body": "Ministry of Interior (news item on the Abu Dhabi Police site)",
+        "says": "The Ministry of Interior warns against electronic scam gangs and urges the public not to share personal information, especially bank details, with anyone by phone or online. It asks people who get hoax calls or text messages to report them to police stations. An older item; it does not say what the ministry itself never asks for. The page warns about such messages; it does not say what the body never asks for."
+      },
+      {
+        "id": "adpolice-fake-bank-report-police-station",
+        "title": "ADP Warn against Bank Account Fraud via Internet",
+        "url": "https://www.adpolice.gov.ae/en/Media-Center/News/2021/06/30/ADP-Warn-against-Bank-Account-Fraud-via-Internet",
+        "body": "Abu Dhabi Police",
+        "says": "Abu Dhabi Police warn of scam e-mails that look like a local bank's report, claim suspicious money transfers into the reader's account and tell them to go to the nearest police station or that they are wanted for questioning. The e-mails come from overseas, use words such as 'investigation' and 'police', and may carry malware or phishing to get account numbers and passwords. Police say not to respond to such e-mails or threats, not to open attachments from unknown senders, and to tell the police quickly. The page warns about such messages; it does not say what the body never asks for."
+      },
+      {
+        "id": "adpolice-fake-fine-computer-blocked-2013",
+        "title": "Abu Dhabi Police Calls for Raising the Efficient Protection to avoid Online Financial Fraud",
+        "url": "https://www.adpolice.gov.ae/en/Media-Center/News/2021/06/30/Abu-Dhabi-Police-Calls-for-Raising-the-Efficient-Protection-to-avoid-Online-Financial-Fraud",
+        "body": "Abu Dhabi Police",
+        "says": "Abu Dhabi Police warn of fake notices, by e-mail or on screen, saying a computer is blocked for breaking copyright law or articles of the UAE Penal Code, demanding a fine paid as a CashU code to unknown parties abroad within 72 hours and threatening a criminal case. Police call it online fraud and urge people to deal very carefully with e-mails asking them to transfer money, and to use updated protection software. The page warns about such messages; it does not say what the body never asks for."
+      },
+      {
+        "id": "adpolice-cyber-blackmail-2020",
+        "title": "Abu Dhabi Police warns against Cyber-Blackmail and dealing with strangers in \"Social Media\"",
+        "url": "https://www.adpolice.gov.ae/en/Media-Center/News/2021/07/01/Abu-Dhabi-Police-warns-against-Cyber-Blackmail-and-dealing-with-strangers-in--Social-Media-",
+        "body": "Abu Dhabi Police",
+        "says": "Abu Dhabi Police describe electronic extortion: fake social media accounts gain a victim's trust, get private photos or a video call, record it and then demand money by bank transfer, exchange shop or digital currency. Police say not to trust strangers online or send them private photos or data, and if blackmailed not to give in, answer the demands or send money, but to contact Aman confidentially on 8002626, SMS 2828, aman@adpolice.gov.ae or the police smart app. The page warns about such messages; it does not say what the body never asks for."
+      },
+      {
+        "id": "adpolice-webcam-blackmail-2014",
+        "title": "Abu Dhabi Police Warns against \"Indecent\" Cyber Scams",
+        "url": "https://www.adpolice.gov.ae/en/Media-Center/News/2021/06/30/Abu-Dhabi-Police-Warns-against--Indecent--Cyber-Scams",
+        "body": "Abu Dhabi Police",
+        "says": "Abu Dhabi Police warn of gangs abroad that lure young people on social networks into intimate video chats, record them and threaten to send the footage to friends, colleagues or family, or post it online, unless money is paid, often to offshore accounts. Police say not to engage with strangers in private video chats, not to give in or pay because the blackmail continues, and to report quickly. The page warns about such messages; it does not say what the body never asks for."
+      },
+      {
+        "id": "adpolice-prize-call-sms-2009",
+        "title": "Abu Dhabi Police warns against cell phone fraud",
+        "url": "https://www.adpolice.gov.ae/en/Media-Center/News/2021/06/30/Abu-Dhabi-Police-warns-against-cell-phone-fraud",
+        "body": "Abu Dhabi Police",
+        "says": "Abu Dhabi Police warn of fraud by phone calls and SMS that tell people they have won a large prize and then ask them to send money, through balance recharge cards, to collect it. The police official urged mobile users not to respond to or believe such SMS. An older item. The page warns about such messages; it does not say what the body never asks for."
+      },
+      {
+        "id": "uae-portal-cyber-safety-sms-links",
+        "title": "Cyber safety and digital security",
+        "url": "https://u.ae/en/information-and-services/justice-safety-and-the-law/Safety/cyber-safety-and-digital-security",
+        "body": "UAE Government portal (u.ae)",
+        "says": "Under the Cyber Pulse initiative of the UAE Cybersecurity Council, the portal's general tips say web users should not publish private contact information on unreliable platforms, click on any unknown links sent by text messages, or download apps from unknown sources. It says victims of e-fraud must not give in to any threats and should report to the official authorities immediately. The page warns about such messages; it does not say what the body never asks for."
+      },
+      {
+        "id": "uae-portal-labour-visa-fraud-tips",
+        "title": "Tips to stay safe from labour and visa fraud",
+        "url": "https://u.ae/en/information-and-services/visa-and-emirates-id/Visa-information/tips-to-avoid-labour-and-visa-fraud",
+        "body": "UAE Government portal (u.ae)",
+        "says": "The portal warns that people coming to the UAE for work or a visa may meet fraud involving job contracts or entry visas. A UAE job offer must come with an offer letter issued by MOHRE, which can be checked by its reference number; the employer pays recruitment expenses under the Labour Law; a visit or tourist visa does not allow work; check the company exists; check Dubai permits with GDRFA and others on ICP eChannels; and a residency visa cannot be processed for an applicant outside the UAE. The page warns about such messages; it does not say what the body never asks for."
+      },
+      {
+        "id": "cbuae-name-misuse-fraud",
+        "title": "CBUAE | Cyber-Security Centre of Excellence | Fraudulent Reporting",
+        "url": "https://centralbank.ae/en/our-operations/risk-management/cyber-security-centre-of-excellence-1/fraudulent-reporting/",
+        "body": "Central Bank of the UAE (CBUAE)",
+        "says": "The Central Bank warns of fraudulent e-mails, faxes, copies of its website and internet postings that use its name, logo, address or staff names, offering loans, investment opportunities or transactions, or asking for an advance payment for a transaction said to go through the CBUAE. It says it never sends e-mails from Gmail, Yahoo, Hotmail or other public accounts, does not contact individuals through social media, uses only @cbuae.gov.ae addresses, and urges people not to send money to unauthorised individuals or institutions. On what the body never asks for, the page says: \"The CBUAE never sends emails from Gmail, Yahoo, Hotmail or other public email accounts such as live.com.\""
+      },
+      {
+        "id": "cbuae-national-fraud-awareness-2020",
+        "title": "CBUAE, UBF, Abu Dhabi Police, and Dubai Police join forces to launch UAE's first National Fraud Awareness campaign (PDF)",
+        "url": "https://centralbank.ae/media/avkdwwpj/cbuae-ubf-abu-dhabi-police-and-dubai-police-join-forces-to-launch-uaes-first-national-fraud-awareness-campaign_1.pdf",
+        "body": "Central Bank of the UAE with UAE Banks Federation, Abu Dhabi Police and Dubai Po",
+        "says": "A joint release says scams reach people by e-mail, SMS, phone and social media, with fraudsters posing as government bodies, banks and healthcare providers to get personal or financial information. Campaign topics include SIM swap fraud, phishing, vishing and lottery scams. Dubai Police urge caution before sharing account numbers, card numbers, passwords, PINs and card security codes and not to be deceived by fraudulent calls and messages by SMS or social media. Abu Dhabi Police report gangs posing as bank employees to get bank details. The page warns about such messages; it does not say what the body never asks for."
+      },
+      {
+        "id": "cbuae-unlicensed-crypto-providers-2022",
+        "title": "Joint Guidance on Combating the Use of Unlicensed Virtual Asset Service Providers in the UAE (PDF)",
+        "url": "https://centralbank.ae/media/g5bgxlz5/joint-guidance-on-combating-the-use-of-unlicensed-virtual-asset-providers-in-the-uae-en.pdf",
+        "body": "Central Bank of the UAE with the UAE supervisory authorities",
+        "says": "The joint guidance lists red flags of unlicensed virtual asset (crypto) providers: claiming a licence they do not have (check it on the supervisory authority's official website), no physical presence in the UAE, exceptionally high or guaranteed returns with minimal risk, pressure to invest quickly, unsolicited contact or cold calls, phishing that imitates exchanges or wallets, unapproved coin offerings, and fake wallets and exchanges that promise excessive returns and then steal deposited funds. It urges the public to deal only with licensed entities. The page warns about such messages; it does not say what the body never asks for."
+      },
+      {
+        "id": "enbd-never-asks-password-pin-otp",
+        "title": "Privacy and Security | Security Banking | Safeguard your Information | Emirates NBD",
+        "url": "https://www.emiratesnbd.com/en/security",
+        "body": "Emirates NBD",
+        "says": "Emirates NBD says it will never ask for sensitive information such as passwords, PINs or OTPs by e-mail or other channels. It lists its genuine e-mail addresses, all ending in emiratesnbd.com or statement.emiratesnbd.com, warns to be wary of e-mails urging immediate action and asking for personal details, and gives 600 540000 to check a doubtful e-mail. On what the body never asks for, the page says: \"Emirates NBD will never ask for sensitive information, such as passwords, PINs, or OTPs, via email or other channels.\""
+      },
+      {
+        "id": "fab-fraud-and-security",
+        "title": "Fraud and Security | First Abu Dhabi Bank (FAB) - UAE",
+        "url": "https://www.bankfab.com/en-ae/personal/help-and-support/fraud-and-security",
+        "body": "First Abu Dhabi Bank (FAB)",
+        "says": "FAB warns of SMS or e-mails impersonating known organisations with a link to pay first to get an order, fake restaurant websites, look-alike web addresses, unknown QR codes, unsolicited messages asking for a small fee to receive a package, unsolicited UAE Pass approval requests, unexpected OTPs to activate Apple Pay, Samsung Pay or Google Pay, and crypto scams. It says the police and Central Bank will never ask for card information or OTPs or ask you to add beneficiaries by video call, and never to download apps, grant remote access, share OTP, PIN, CVV or card details, or add a beneficiary on anyone's request. On what the body never asks for, the page says: \"Government organisations, such as the police, Central Bank, will never ask for your credit or debit card information, OTPs, or request you to add new payment beneficiaries via video calls.\""
+      },
+      {
+        "id": "fab-staff-never-ask-password-otp-pin",
+        "title": "Comprehensive Security Tips | First Abu Dhabi Bank (FAB) - UAE",
+        "url": "https://www.bankfab.com/en-ae/about-fab/security-and-certifications/comprehensive-security-tips",
+        "body": "First Abu Dhabi Bank (FAB)",
+        "says": "FAB says its staff will never ask for a password, OTP or PIN, and that FAB will never ask for account numbers, password or access code; if a call, text, e-mail or home visit asks for them, do not give them. It warns that scammers may pose as government officials, police or FAB staff and usually demand immediate response and payment, and advises not answering unsolicited SMS or calls asking for card numbers or PINs and never clicking links in e-mails. On what the body never asks for, the page says: \"FAB Staff shall never ask for any password, OTP or PIN for any banking services.\""
+      },
+      {
+        "id": "rakbank-never-asks-sensitive-details",
+        "title": "Fraud Prevention and Online Security Tips | Rakbank UAE",
+        "url": "https://www.rakbank.ae/en/digital-banking/stay-safe/fraud-prevention",
+        "body": "RAKBANK",
+        "says": "RAKBANK says it will never ask for your Digital Banking user ID or password, account number, card number, CVV, PIN, OTP or answers to identity questions, and that anyone claiming to be RAKBANK and asking for these is acting fraudulently; do not share them by e-mail, SMS or call. It also explains how to check a genuine RAKBANK website. On what the body never asks for, the page says: \"RAKBANK will never ask for sensitive information like your Digital Banking user ID or password, account number, credit/debit card number, CVV, PIN, OTP, or answers to verify your identity.\""
+      },
+      {
+        "id": "adib-safe-account-transfer-otp",
+        "title": "Report Fraud",
+        "url": "https://www.adib.ae/en/fraud-security/report-fraud",
+        "body": "Abu Dhabi Islamic Bank (ADIB)",
+        "says": "ADIB warns of unsolicited calls, SMS, WhatsApp messages or e-mails claiming to be from your bank or a government body, and says to hang up and call the bank. It says never to share OTP, PIN, CVV or passwords, to verify links before clicking, and that ADIB, the Police and the UAE Central Bank will never ask you to share passwords, OTPs, codes or banking details, or to transfer your funds to another account to secure them. On what the body never asks for, the page says: \"ADIB or Government authorities like the Police/UAE Central Bank will never ask you to : Share your passwords, OTPs or authentication codes or banking details.\""
+      },
+      {
+        "id": "cbd-link-fraud",
+        "title": "Fraud link: It Looks Real. But it's a Scam.",
+        "url": "https://www.cbd.ae/fraud-link",
+        "body": "Commercial Bank of Dubai (CBD)",
+        "says": "CBD describes link fraud by e-mail (phishing), SMS (smishing) and calls (vishing) that seem to come from banks or government bodies. Red flags: impersonation, urgency such as 'your account will be suspended', prizes or unexpected funds, poor language, sender addresses that do not match the official domain, and requests for login details, account numbers, PINs, OTPs or CVVs. It says your bank will never ask for your password, PIN, OTP or card details by e-mail, SMS or call, and not to click suspicious links, reply or call unknown numbers. On what the body never asks for, the page says: \"Your bank will never ask for your password, PIN, OTP, or card details via email, SMS or call.\""
+      },
+      {
+        "id": "mashreq-card-safety-fee-for-prize",
+        "title": "Card Safety",
+        "url": "https://www.mashreq.com/en/uae/neo/security/card-safety/",
+        "body": "Mashreq",
+        "says": "Mashreq says its staff will never ask for an OTP and to report such calls, SMS or e-mails on +971 4 424 4444. It warns that fraudsters posing as bankers or legal authorities may ask for an OTP, that fake websites with offers steal OTPs, and that e-mails or texts asking for a fee to claim offers, prizes or courier deliveries, or for payment to receive a prize, come from fraudsters. It advises never sharing card details, OTP, expiry date, CVV or PIN and not clicking suspicious links. On what the body never asks for, the page says: \"Mashreq Staff will never ask for OTP.\""
+      },
+      {
+        "id": "mashreq-phishing-emails",
+        "title": "Online Security",
+        "url": "https://www.mashreq.com/en/uae/neo/security/online-security/",
+        "body": "Mashreq",
+        "says": "Mashreq warns of phishing e-mails claiming to be from banks that lead to a page looking like the bank's and ask for banking details. Such e-mails typically say access is blocked, a wrong credit was made, or the account must be re-activated. Mashreq says it will never contact you to seek account information or passwords and never sends e-mails asking for confidential information outside the normal sign-on, and advises typing the address yourself or using a bookmark. On what the body never asks for, the page says: \"Mashreq will never send emails that ask for confidential information, other than the normal Online Banking sign on process.\""
+      },
+      {
+        "id": "adcb-fake-app-link-call",
+        "title": "New Phishing Scam",
+        "url": "https://www.adcb.com/en/consumer-education-awareness/fraud-awareness/phishing-scam",
+        "body": "Abu Dhabi Commercial Bank (ADCB)",
+        "says": "ADCB warns that scammers pose as bank representatives and call about updating account details, mobile banking help or security upgrades, then tell victims to download a new app through a link; the app is malicious and harvests card details. ADCB says it will never ask for sensitive information by unsecured e-mail or phone and never asks customers to download a banking app through customised links; apps are on the App Store and Google Play. It advises verifying a caller by contacting the bank directly and reporting on 600 50 2030. On what the body never asks for, the page says: \"The bank will never request customers to download a new banking app through customized links.\""
+      },
+      {
+        "id": "adcb-parcel-fee-and-impersonators",
+        "title": "How to Safeguard your Finances from Digital Scams | ADCB",
+        "url": "https://www.adcb.com/en/consumer-education-awareness/money-guide-expatriates-uae/spotting-common-scams",
+        "body": "Abu Dhabi Commercial Bank (ADCB)",
+        "says": "ADCB warns of e-mails or SMS asking for a small payment through a link to deliver a parcel; of callers claiming to be police or the Central Bank who want an OTP to update banking details or stop a residence visa being cancelled; and of e-mails posing as the bank about a blocked account, updates or a refund. It says financial institutions, government agencies and most organisations never ask for personal information by phone call, SMS or WhatsApp, that anyone asking for an OTP by phone is almost certainly a fraudster, and that no bank will ask for card number, CVV or OTP. On what the body never asks for, the page says: \"Financial institutions, government agencies and most organisations will never contact you requesting personal information via a phone call, SMS, or WhatsApp.\""
+      },
+      {
+        "id": "cma-warnings-unlicensed-entities",
+        "title": "Warnings | Open Data | Capital Market Authority",
+        "url": "https://www.uaecma.gov.ae/en/open-data/warnings",
+        "body": "Capital Market Authority (formerly the Securities and Commodities Authority)",
+        "says": "The securities regulator says some entities advertise activities or services it regulates without a licence, authorisation or approval from it, and warns investors not to deal with the entities on its warnings list. The list itself (name, address, unlicensed activity, date) loads separately and could not be read in this run, so this item cannot confirm that a named company is on it. The page warns about such messages; it does not say what the body never asks for."
+      },
+      {
+        "id": "emiratespost-scam-prevention",
+        "title": "Scam Prevention | Emirates Post",
+        "url": "https://www.emiratespost.ae/scam-prevention",
+        "body": "Emirates Post",
+        "says": "Emirates Post warns of e-mails, SMS and WhatsApp messages with payment links, fake staff, fake websites and fake social media accounts in its name, including texts from private numbers about a shipment you must pay for. It says it does not ask for debit or credit card details by SMS, WhatsApp or e-mail, never contacts people from Hotmail, Gmail or Yahoo, uses only @emiratespost.ae or @emiratespostshop.ae addresses, sends SMS only from EmiratesPST or AD-POSTUAE, and never handles payments between users of sites such as dubizzle. Pay only on its official website or app; report to 600599999. On what the body never asks for, the page says: \"Our team will never ask for payment via SMS or WhatsApp with their personal numbers.\""
+      },
+      {
+        "id": "emiratespost-no-outside-payment-gateway",
+        "title": "Emirates Post advises customers to only transact through its official app or website for payments",
+        "url": "https://www.emiratespost.ae/media-center/news/15778",
+        "body": "Emirates Post",
+        "says": "Emirates Post warns about e-mails and messages claiming to be from it that link to a third-party payment system or push people to create accounts and pay to get shipments delivered. It says it will never send an SMS or e-mail that links to a payment gateway outside its website, and asks customers to pay only on emiratespost.ae or its app, check the sender address, not give away personal information, and report suspicious messages. On what the body never asks for, the page says: \"Emirates Post will never send any SMS or email that links customers to a payment gateway outside their website\""
+      },
+      {
+        "id": "eand-phishing-and-fraud-rules",
+        "title": "Etisalat UAE | Phishing and Fraud",
+        "url": "https://www.eand.ae/en/c/phishing-and-fraud.html",
+        "body": "e& (Etisalat UAE)",
+        "says": "Etisalat by e& gives rules against scams in its name. It says it verifies customers only through an OTP or security PIN, will never ask for payment to a personal bank account, and will never ask for money for gifts or promotions. Do not share banking details, do not give an OTP for a request you did not start, and click or download only after checking it is safe. Signs of fraud include unknown international missed calls, requests for bank details, suspicious links, spelling errors and unknown SMS sender IDs. (The old etisalat.ae address now opens this page.) On what the body never asks for, the page says: \"We will never ask you to make any payment to a personal bank account.\""
+      },
+      {
+        "id": "eand-fraudulent-sms",
+        "title": "Etisalat UAE | How to identify fraudulent SMS",
+        "url": "https://www.eand.ae/en/c/phishing-and-fraud/sms.html",
+        "body": "e& (Etisalat UAE)",
+        "says": "Etisalat says its SMS sender ID is EtisalatINF or MY_ETISALAT; do not reply, call back or click a link before checking the sender. Never share bank or card details, do not make a payment or recharge accounts via SMS, do not share an OTP for a request you did not start unless you are on a call with an Etisalat 101 representative, check that a link's domain is etisalat.ae, and watch for spelling errors. The page warns about such messages; it does not say what the body never asks for."
+      },
+      {
+        "id": "eand-fraudulent-whatsapp-social",
+        "title": "Etisalat UAE | How to identify fraudulent WhatsApp & social media messages",
+        "url": "https://www.eand.ae/en/c/phishing-and-fraud/social.html",
+        "body": "e& (Etisalat UAE)",
+        "says": "Etisalat says it will never ask for a payment via WhatsApp or social media and never asks you to transfer a payment to a personal bank account. Its accounts carry a green verified tick. Never share bank or card details, do not make payments or recharges via WhatsApp or social media, do not share an OTP for a request you did not make, check that a link's domain is etisalat.ae, and watch for spelling errors. On what the body never asks for, the page says: \"Etisalat will never ask you to transfer any payment to a personal bank account\""
+      },
+      {
+        "id": "eand-fraudulent-calls",
+        "title": "Etisalat UAE | How to identify fraudulent calls",
+        "url": "https://www.eand.ae/en/c/phishing-and-fraud/voice.html",
+        "body": "e& (Etisalat UAE)",
+        "says": "Etisalat says a representative of Etisalat or other entities will never contact you to ask for bank or card details, which could be used to hack or empty your account. It says not to call back an unknown international number, because scammers may get you to call a value-added number that adds a high cost to your bill or takes it from your balance. On what the body never asks for, the page says: \"A customer representative from Etisalat or other entities will never contact you and ask for your personal bank information like bank details, card details etc.\""
+      },
+      {
+        "id": "du-digital-fraud",
+        "title": "Stay one step ahead of Digital Fraud | du",
+        "url": "https://www.du.ae/fraud",
+        "body": "du (Emirates Integrated Telecommunications Company, EITC)",
+        "says": "du warns of messages with urgent threats such as account suspension or disconnection, links to look-alike sites instead of du.ae, 'offers' that ask for your Emirates ID, prize messages that ask for a card number, fake parcel messages asking for delivery fees or customs charges (fraudsters pose as Aramex or Emirates Post), and calls pretending to be your bank. du says it contacts customers only from verified domains like @du.ae or through its app, that offers should be visible in the du app or website, and never to share OTPs, passwords, card numbers, PINs or Emirates ID by e-mail, text or call. Report to fc@du.ae or in the du app. On what the body never asks for, the page says: \"We will only contact you through verified domains like @du.ae or via the official app.\""
+      },
+      {
+        "id": "dewa-cyber-security-awareness",
+        "title": "DEWA Cyber Security Awareness",
+        "url": "https://www.dewa.gov.ae/en/about-us/dewa-digital-journey/dewa-cyber-security-awareness",
+        "body": "Dubai Electricity and Water Authority (DEWA)",
+        "says": "DEWA warns of social engineering, phishing e-mails and SMS impersonating DEWA, fake callers (vishing) and bill payment fraud. Signs are urgency and pressure to share confidential files or your bank card CVV or to click suspicious links. It says to check the sender's address and domain, hover over links, use DEWA's official payment channels, and call +971-4-601-9999 if in doubt; an official organisation will never ask for personal confidential information, DEWA calls from its caller ID, and DEWA bills come from noreply.greenbill@dewa.gov.ae. On what the body never asks for, the page says: \"Avoid providing any personal information through the phone and remember official organisation will never ask you for personal confidential information\""
+      },
+      {
+        "id": "tdra-fraud-links-atm-card-2019",
+        "title": "TRA warns the public of a computer virus spreading fraudulent links",
+        "url": "https://tdra.gov.ae/en/media/press-release/2019/tra-warns-the-public-of-a-computer-virus-spreading-fraudulent-links",
+        "body": "Telecommunications and Digital Government Regulatory Authority (TDRA, then calle",
+        "says": "The telecom regulator warned of fraudulent messages with links, sent by SMS and WhatsApp in the name of a well-known UAE company or bank, that ask the person to call numbers and give personal data and bank card details, for example to unblock an ATM card. It advised not opening unknown links or attachments from unverified sources, checking whether a text is genuine, not calling the numbers in it, and contacting the organisation on its official channels. An older release, also about the Emotet virus. The page warns about such messages; it does not say what the body never asks for."
+      },
+      {
+        "id": "aramex-fraud-prevention",
+        "title": "Fraud Prevention | Aramex",
+        "url": "https://www.aramex.com/ae/en/fraud-prevention",
+        "body": "Aramex",
+        "says": "Aramex lists signs of fraud using its brand: unexpected, often urgent requests for money to deliver a package; requests for personal or financial details; misspelled look-alike web addresses; e-mails asking you to open an attachment to get a delivery; tracking numbers that return no result on aramex.com (then Aramex did not send the e-mail); and prize or competition offers. It says it will never ask for your app activation key by phone or e-mail and does not and will not ask for personal or payment information by post or e-mail. On what the body never asks for, the page says: \"Aramex does not, and will not request you to provide any personal or payment information through traditional mail or via email.\""
+      },
+      {
+        "id": "dhl-uae-fraud-awareness",
+        "title": "Fraud Awareness - DHL - United Arab Emirates",
+        "url": "https://www.dhl.com/ae-en/home/footer/fraud-awareness.html",
+        "body": "DHL (UAE page)",
+        "says": "DHL asks people to report fraudulent e-mails, SMS, websites or social media accounts posing as DHL to phishing@dhl.com. It says it never sends e-mail from Gmail, Yahoo or other free services and never links to a website other than its own. Careful: it also says the only payments it requests by e-mail or SMS are customs duties and taxes, with an OTP sent to the consignee's registered contact first, so a DHL customs-duty message is not by itself proof of fraud. On what the body never asks for, the page says: \"We never use @gmail, @yahoo or other free email services to send emails.\""
+      },
+      {
+        "id": "emirates-airline-scams",
+        "title": "Contact Emirates about security issues | Emirates (section: Avoid phishing emails, 'free ticket scams', 'fraudulent invoices', phony travel agent calls, and oth",
+        "url": "https://www.emirates.com/ae/english/information/cybersecurity/",
+        "body": "Emirates (airline)",
+        "says": "Emirates warns of phishing e-mails, 'free ticket' scams, fraudulent invoices, phony travel agent calls, fake texts and instant messages that try to get your Skywards ID password or credit card information. It says it will never ask for your Skywards password, to hang up on unsolicited callers claiming to be Emirates and contact it directly, and not to follow links or open attachments in suspicious messages. Signs include a generic greeting such as 'Dear Customer' and a link that leads to an address not matching the company's. On what the body never asks for, the page says: \"Never share your Skywards ID password with anyone. Emirates will never ask you for this as part of our validation process or when providing support.\""
+      },
+      {
+        "id": "salik-phishing-recharge-links-2024",
+        "title": "Our customers - People happiness - Salik Sustainability Report 2024",
+        "url": "https://sr2024.salik.ae/en/people-happiness/our-customers",
+        "body": "Salik (Dubai toll operator)",
+        "says": "Salik's 2024 sustainability report says it saw a rise in phishing scams on social media and online platforms, including messages offering fake investment in Salik shares and counterfeit links for recharging accounts or buying tags. It advised using secure https addresses, avoiding suspicious links and pop-ups, checking information on its official website and channels, and using its legitimate platforms; it says its payment links use verified domains. The page warns about such messages; it does not say what the body never asks for."
+      },
+      {
+        "id": "rta-cyber-security-awareness",
+        "title": "Cyber Security Awareness - Roads & Transport Authority",
+        "url": "https://www.rta.ae/wps/portal/rta/ae/home/about-rta/cyber-security",
+        "body": "Roads and Transport Authority (RTA), Dubai",
+        "says": "RTA warns of fake callers (vishing) posing as trusted organisations and of fake websites that copy real ones to steal login or card details. It says official organisations will never ask for confidential information, RTA calls from the Customer Care Centre use its caller ID, never return calls to unverified numbers, avoid links in unsolicited e-mails or ads and type the address yourself, and refer to RTA's official social media accounts. It does not describe fines or toll messages. On what the body never asks for, the page says: \"Remember, official organizations will never ask for confidential information.\""
+      },
+      {
+        "id": "dld-report-fake-payment-requests",
+        "title": "Dubai Land Department - Cyber Security Awareness",
+        "url": "https://dubailand.gov.ae/en/about-dubai-land-department/cyber-security-awareness/",
+        "body": "Dubai Land Department (DLD)",
+        "says": "DLD asks the public to report fraudulent e-mails, SMS or WhatsApp messages claiming to be from DLD, fake payment requests or fraudulent property adverts under its name, unauthorised logins and unexpected changes to property records. Reports go by e-mail with screenshots, date and time and a short description, and suspicious messages should be kept until DLD confirms the investigation is complete. The page has no section on what DLD never asks for. The page warns about such messages; it does not say what the body never asks for."
+      },
+      {
+        "id": "dld-rera-verify-property-ads-2020",
+        "title": "DLD fines 10 real estate companies and warns another 30 for not adhering to advertising requirements",
+        "url": "https://dubailand.gov.ae/en/news-media/dld-fines-10-real-estate-companies-and-warns-another-30-for-not-adhering-to-advertising-requirements/",
+        "body": "Dubai Land Department (RERA)",
+        "says": "RERA at DLD urges people wishing to own property to verify advert sources and licences before paying any money, warns about fake and unlicensed property adverts on electronic platforms and social media, says every Dubai property advert needs a Trakheesi permit number, and asks customers to verify documents and broker data, which can be checked in the Dubai REST app. An older item. The page warns about such messages; it does not say what the body never asks for."
+      },
+      {
+        "id": "csc-phishing-awareness",
+        "title": "Phishing Awareness - Cyber Security Council",
+        "url": "https://csc.gov.ae/en/w/phishing-awareness",
+        "body": "UAE Cyber Security Council",
+        "says": "The Council explains phishing: scammers impersonate trusted bodies to get passwords, financial details or personal data, for example fake bank e-mails that led to unauthorised withdrawals. It advises not clicking links in unsolicited e-mails or messages, checking the sender, checking for https and official domain names, never sharing sensitive information by e-mail, chat or text, and reporting phishing to the e-mail provider and the cybersecurity authorities. The page warns about such messages; it does not say what the body never asks for."
+      },
+      {
+        "id": "csc-fake-delivery-tracking",
+        "title": "Secure Delivery and Package Tracking - Cyber Security Council",
+        "url": "https://csc.gov.ae/en/w/secure-delivery-and-package-tracking",
+        "body": "UAE Cyber Security Council",
+        "says": "The Council warns of fake shipping notifications with tracking links that lead to phishing sites and of scammers who demand extra fees for fake shipping problems; its example is a fake notice whose link stole payment details. It advises tracking parcels only through the official retailer or courier website and not clicking tracking links in unsolicited e-mails or messages. The page warns about such messages; it does not say what the body never asks for."
+      },
+      {
+        "id": "csc-faq-scam-messages",
+        "title": "Frequently Asked Questions | UAE Cybersecurity Council",
+        "url": "https://csc.gov.ae/en/faq",
+        "body": "UAE Cyber Security Council",
+        "says": "The FAQ says to avoid interacting with a message you think may be a scam and to report it at Staysafe.csc.gov.ae or to your service provider. Signs of phishing are suspicious e-mail addresses, urgent language and requests for personal information. It defines smishing as phishing by SMS or text message, and for a suspicious e-mail says not to click links or download attachments. It does not say what the Council never asks for. The page warns about such messages; it does not say what the body never asks for."
+      },
+      {
+        "id": "mohap-uae-pass-codes",
+        "title": "Safeguarding UAE Pass: A guide to a secure digital identity",
+        "url": "https://mohap.gov.ae/en/w/safeguarding-uae-pass-a-guide-to-a-secure-digital-identity",
+        "body": "Ministry of Health and Prevention (MoHAP)",
+        "says": "The ministry's guide (content from Sharik) says never to share UAE Pass login details or verification codes with anyone, that a request for them by e-mail or phone is likely a scam, to use UAE Pass only through the official app or by typing the official address, and not to click links from unknown sources. It gives a message saying a UAE Pass account will be suspended unless you click to reactivate it as an example of phishing urgency, and says to verify such claims through official UAE Pass channels. The page warns about such messages; it does not say what the body never asks for."
+      },
+      {
+        "id": "mohre-domestic-worker-social-pages-2023",
+        "title": "Ministry warns against dealing with unreliable social media pages promoting hiring of domestic workers",
+        "url": "https://mohre.gov.ae/en/media-center/news/14/3/2023/mohre-warns-against-dealing-with-unreliable-social-media-pages-promoting-hiring-of-domestic-workers",
+        "body": "Ministry of Human Resources and Emiratisation (MoHRE)",
+        "says": "MoHRE calls on employers and residents to use MoHRE-approved domestic worker recruitment agencies and avoid social media pages that promote illegal employment, warning of legal, social and health risks and no guarantees. It says to call 600590000 to check agencies that advertise on social media and to use the list of approved offices on its website. The page warns about such messages; it does not say what the body never asks for."
+      },
+      {
+        "id": "mohre-77-unlicensed-recruitment-accounts",
+        "title": "MoHRE and TDRA Shut Down 77 Social Media Accounts Engaged in Unlicensed Domestic Worker Recruitment",
+        "url": "https://www.mohre.gov.ae/en/media-center/news/23/7/2025/mohre-and-tdra-shut-down-77-social-media-accounts-engaged-in-unlicensed-domestic-worker-recruitment",
+        "body": "Ministry of Human Resources and Emiratisation (MoHRE), with TDRA",
+        "says": "MoHRE and TDRA closed 77 social media accounts that recruited domestic workers without a MoHRE licence. MoHRE urges employers and families to deal only with licensed agencies and avoid social media accounts promoting illegal domestic worker recruitment, which can cost them their legal rights. It says to call 600590000 to check any entity advertising domestic workers on social media; the list of licensed agencies is on www.mohre.gov.ae. The page warns about such messages; it does not say what the body never asks for."
+      },
+      {
+        "id": "seha-recruitment-fraud",
+        "title": "Recruitment Fraud Alerts | SEHA",
+        "url": "https://www.seha.ae/recruitment-fraud-alert",
+        "body": "SEHA (Abu Dhabi Health Services Company)",
+        "says": "SEHA warns that its name is used in fake recruitment campaigns, false job offers and fake business propositions, often asking for money to win a contract or join an investment. SEHA says it never asks third parties for money to take part in procurement or a business or investment opportunity; jobs are applied for only through the job portal on www.seha.ae and its e-mails come only from @seha.ae. Warning signs include free e-mail accounts such as Gmail or Yahoo, advance payment requests and contact from personal social media accounts. On what the body never asks for, the page says: \"SEHA will never ask for money from a third party in order for that third party to participate in its procurement process\""
+      }
+    ]
   }
 }
