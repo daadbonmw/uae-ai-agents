@@ -783,6 +783,10 @@ const GAP_REL=2.25,GAP_COV=.12,GAP_COV2=.3,GAP_NQ=10,GAP_HI=1.9,ALSO_COV=.3,OOV_
 const gapMin=()=>GAP_REL*Math.log(1+((IDX?IDX.N:0)+.5)/.5);
 const GAP_SHORT=[1,1,.65,.8,.9];  /* a question with only 1 to 4 matched words scores lower: the bar is lower too */
 const isGap=res=>{if(!res.length||res[0].off===true)return true;const r=res[0],m=gapMin(),lo=m*(r.nq>=1&&r.nq<=4?GAP_SHORT[r.nq]:1);return r.score<lo||r.cov<GAP_COV||(r.cov<GAP_COV2&&(r.nq||99)<=GAP_NQ&&r.score<m*GAP_HI)};
+/* an entry's own question, typed exactly (case and a last question mark aside): that entry first; nothing is kept */
+function ownEntry(text){const n=text.length,lo=text.toLowerCase(),is=s=>s&&(s.length===n||s.length===n+1)&&(s=s.toLowerCase(),s===lo||s===lo+'?'||s===lo+'؟');
+for(const e of ENTRIES){const q=e.q;if(q&&(is(q.en)||is(q.ar)))return e.id}return ''}
+function ownFirst(res,id){if(!id)return res;const i=res.findIndex(x=>x.id===id),t=res[0]||{score:gapMin(),cov:1,nq:9},x=i>=0?res[i]:{id,cov:1,nq:t.nq};return [{id,score:Math.max(x.score||0,t.score),cov:x.cov,nq:x.nq}].concat(res.filter(y=>y.id!==id))}
 function rulesChosen(c){if(!c.length)return [];const top=c[0],tp=(BY_ID[top.id]||{}).topic;return c.filter((r,i)=>i===0||(r.cov>=ALSO_COV&&r.score>=top.score*((BY_ID[r.id]||{}).topic===tp?.6:.85))).slice(0,3).map(r=>r.id)}
 
 /* == Shield: mask personal numbers */
@@ -2704,9 +2708,9 @@ const m=mask(raw);R.q=m.text;aiKeep(R,raw);$('result').hidden=false;renderTour()
 if(sw)trace(R,'rule','shield','tr_lang',{lang:{k:'langName_'+LANG}});
 if(m.total)trace(R,'rule','shield','tr_masked',{list:{list:Object.entries(m.counts).filter(([,n])=>n).map(([k,n])=>({k:'m_'+k+(n===1?'1':'n'),v:{n}}))}});else trace(R,'rule','shield','tr_nomask');
 const inj=injections(raw);if(inj.length){R.noAI=true;trace(R,'rule','shield','tr_inj',{p:inj[0]})}
-const sq0=Object.values(MASK_TAG).reduce((x,y)=>x.split(y).join(' '),R.q);
-if(await partsStage(R,gen,sq0))return;if(gen!==GEN)return;
-if(await tableStage(R,gen,sq0,{}))return;if(gen!==GEN)return;
+const sq0=Object.values(MASK_TAG).reduce((x,y)=>x.split(y).join(' '),R.q);R.own=ownEntry(raw);if(R.own&&BY_ID[R.own]&&fitIssues(BY_ID[R.own],sitOf(PROFILE,ruleHints(R.q))).some(x=>x.k==='fit_emirate'))R.own='';
+if(!R.own&&await partsStage(R,gen,sq0))return;if(gen!==GEN)return;
+if(!R.own&&await tableStage(R,gen,sq0,{}))return;if(gen!==GEN)return;
 let rd=readQuestion(R,null);
 if(aiReady('understand')&&(rd.gap||await noRuleAnswer(R,rd))){if(gen!==GEN)return;let inz=null;try{inz=await serverUnderstand(R.q)}catch(e){if(gen!==GEN)return;failTrace(R,'understand',e)}
 if(gen!==GEN)return;if(inz){R.ai=true;rd=readQuestion(R,inz)}}
@@ -2714,9 +2718,9 @@ const {res,base,sq,rw}=rd;
 if(LAZY&&R.cands.length){await hydrate(R.cands.map(c=>c.id));if(gen!==GEN)return;const full=R.cands.filter(c=>BY_ID[c.id]&&!BY_ID[c.id]._stub);if(full.length<R.cands.length){trace(R,'rule','find','tr_offline');R.cands=full}}
 if(R.cands.length)trace(R,'rule','find','tr_find',{n:ENTRIES.length,q:BY_ID[R.cands[0].id].q,s:R.cands[0].score});else trace(R,'rule','find','tr_find_none',{n:ENTRIES.length});
 R.sit=sitOf(PROFILE,R.hints);
-if(!R.tbl&&await tableStage(R,gen,R.stext+' '+sq,R.nums||{}))return;if(gen!==GEN)return;
-const vdR=verdict(res,R.stext),vdB=base===res?vdR:verdict(base,sq);R.vdKind=vdR.kind!=='gap'?vdR.kind:vdB.kind;R.kg=vdR.known||null;if(R.kg&&LAZY&&R.kg.closest.length){await hydrate(R.kg.closest);if(gen!==GEN)return}
-let gap=(vdR.kind==='gap'&&vdB.kind==='gap')||!R.cands.length?'low':'';
+if(!R.tbl&&!R.own&&await tableStage(R,gen,R.stext+' '+sq,R.nums||{}))return;if(gen!==GEN)return;
+const vdR=verdict(res,R.stext),vdB=base===res?vdR:verdict(base,sq);R.vdKind=vdR.kind!=='gap'?vdR.kind:vdB.kind;if(R.own&&R.vdKind==='gap')R.vdKind='close';R.kg=vdR.known||null;if(R.kg&&LAZY&&R.kg.closest.length){await hydrate(R.kg.closest);if(gen!==GEN)return}
+let gap=(!R.own&&vdR.kind==='gap'&&vdB.kind==='gap')||!R.cands.length?'low':'';
 if(!gap){if(aiReady('pick')){try{const p=vPick(await aiJSON('pick',pickPrompt(R.q,R.cands)),R.cands);R.ai=true;if(gen!==GEN)return;if(p.dropped)trace(R,'rule','pick','tr_pick_drop',{n:p.dropped});
 if(p.ids.length){R.chosen=p.ids;trace(R,'ai','pick','tr_pick',{n:p.ids.length,m:R.cands.length})}else{trace(R,'ai','pick','tr_pick_none');gap='pick'}}
 catch(e){if(gen!==GEN)return;failTrace(R,'pick',e);R.chosen=rulesChosen(R.cands)}}
@@ -2740,18 +2744,18 @@ if(inz){const tp=TOPICS.find(x=>x.key===R.topic);R.followups=inz.followups;R.num
 const hn=hintNames(R.hints);trace(R,inz&&(sl.emirate||sl.status||sl.sector)?'ai':'rule','understand',hn.length?'tr_und_rule':'tr_und_none',{hints:{list:hn}});
 if(inz){let ch=false;for(const k of ['emirate','status','sector'])if(!PROFILE[k]&&sl[k]){PROFILE[k]=sl[k];ch=true}if(ch){saveProfile();renderProfiles()}}
 if(!PROFILE.emirate&&R.hints.emirate&&R.hints.emirate!=='unsure'){PROFILE.emirate=R.hints.emirate;saveProfile();renderProfiles()}
-const sq=unmaskQ(R.q),rw=inz?[inz.rewrite_en,inz.rewrite_ar].filter(Boolean).join(' '):'',base=search(sq,{topic:R.topic});R.stext=rw||sq;
+const sq=unmaskQ(R.q),rw=inz?[inz.rewrite_en,inz.rewrite_ar].filter(Boolean).join(' '):'',base=ownFirst(search(sq,{topic:R.topic}),R.own);R.stext=rw||sq;
 let res=base;if(rw){const r2=search(rw,{topic:R.topic});if(!isGap(r2)||isGap(base))res=r2}
 R.cands=res.slice(0,5);R.pool=res.slice(0,12).map(x=>({id:x.id,score:x.score,cov:x.cov}));R.rel=relatedOther(R.stext+' '+sq,3);
 return {res,base,sq,rw,gap:(isGap(res)&&isGap(base))||!R.cands.length}}
 async function answerNow(R,gen){let gap='';
-const fig=R.fig,gs=R.chosen.map(id=>({id,g:gateOf(R.stext,BY_ID[id],fig)})),okc=gs.filter(x=>x.g.ok).map(x=>x.id);
+const fig=R.fig,gs=R.chosen.map(id=>({id,g:id===R.own?{ok:true}:gateOf(R.stext,BY_ID[id],fig)})),okc=gs.filter(x=>x.g.ok).map(x=>x.id);
 if(!okc.length){gap='gate';R.gate=gs[0].g;trace(R,'rule','gate',R.gate.why==='nonum'?'tr_gate_nonum':'tr_gate_concept',{what:R.gate.kind?t('fig_'+R.gate.kind):'',miss:(R.gate.miss||[]).join(', ')})}else if(okc.length<R.chosen.length){trace(R,'rule','gate','tr_gate_drop',{n:R.chosen.length-okc.length});R.chosen=okc}
 if(gap){await doGap(R,gap,gen);return}
 const sit=sitOf(PROFILE,R.hints),ro=routeOf(BY_ID[R.chosen[0]],sit);R.routed=ro.authority;for(const l of ro.lines)trace(R,'rule','route',l.k,l.v);
 trace(R,'rule','clarify','tr_clarify_none');await finish(R,gen)}
 async function finish(R,gen){R.stage='work';renderRunBody();const sit=sitOf(PROFILE,R.hints);R.sit=sit;
-const list=R.chosen.map(id=>BY_ID[id]).filter(Boolean);const sc=list.map((e,i)=>{const iss=fitIssues(e,sit),c=R.cands.find(x=>x.id===e.id);return {e,i,iss,v:(c?c.score:0)*(iss.length?.6:1)}}).sort((a,b)=>b.v-a.v||a.i-b.i);
+const list=R.chosen.map(id=>BY_ID[id]).filter(Boolean);const sc=list.map((e,i)=>{const iss=fitIssues(e,sit),c=R.cands.find(x=>x.id===e.id);return {e,i,iss,v:(c?c.score:0)*(iss.length&&e.id!==R.own?.6:1)}}).sort((a,b)=>b.v-a.v||a.i-b.i);
 R.order=sc.map(x=>x.e.id);R.close=R.vdKind!=='ok'||R.order[0]!==(R.cands[0]||{}).id;R.picked=false;R.issues={};for(const x of sc)R.issues[x.e.id]=x.iss;const fl=sc.filter(x=>x.iss.length).length;trace(R,'rule','fit',fl?'tr_fit_flag':'tr_fit_ok',{n:fl});
 const top=BY_ID[R.order[0]],ro=routeOf(top,sit);if(ro.authority!==R.routed){R.routed=ro.authority;for(const l of ro.lines.slice(1))trace(R,'rule','route',l.k,l.v)}
 R.write={source:'rule'};trace(R,'rule','write','tr_write_rule');
