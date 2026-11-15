@@ -306,6 +306,22 @@ dialog:not([open]){display:none}
 .bootnote span{display:block}
 .bootnote span+span{margin-top:6px}
 .bootfail{color:var(--ink);background:var(--tile);border:1px solid var(--line);border-radius:12px}
+/* the AI step (test): the box under the page's own answer, built by the script's AI block (text only) */
+.aibox{border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:8px;background:var(--bg);min-width:0}
+.aibox p{margin:0}
+.aibox .aihead{font-weight:600}
+.aibox .aitext{white-space:pre-line;overflow-wrap:anywhere}
+.aibox .aicite{font-size:12px;color:var(--muted);margin-inline-start:2px}
+.aibox h4{margin:4px 0 0;font-size:15px}
+.aibox .aisrc{margin:0;padding-inline-start:24px;display:flex;flex-direction:column;gap:10px;font-size:15px;overflow-wrap:anywhere}
+.aibox .aisrc a,.aibox .aiopen{display:inline-block;padding:4px 0;vertical-align:top}
+.aibox .aiopen{background:none;border:0;font:inherit;color:var(--link);text-decoration:underline;cursor:pointer;text-align:start}
+.aibox .aihost{display:block;color:var(--muted)}
+.aibox .btn:not(.teal):not(.ghost){background:var(--tile)}
+.aibox .aierr{border-radius:14px;padding:10px 12px;font-size:15px;background:var(--tint);color:var(--ink)}
+.aibox .aiprev{white-space:pre-wrap;overflow-wrap:anywhere;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--tile);font-size:15px}
+.aibox .aiwarn{font-weight:600}
+.aispin{display:inline-block;width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .8s linear infinite;vertical-align:-2px;margin-inline-end:6px}
 </style>
 </head>
 <body data-tab="ask">
@@ -772,6 +788,9 @@ function rulesChosen(c){if(!c.length)return [];const top=c[0],tp=(BY_ID[top.id]|
 const MASK_TAG={email:'[email]',eid:'[ID number]',iban:'[IBAN]',card:'[card number]',passport:'[passport number]',phone:'[phone]',plate:'[plate]',caseno:'[case number]',name:'[name]'};
 function luhn(d){let s=0,alt=false;for(let i=d.length-1;i>=0;i--){let n=+d[i];if(alt){n*=2;if(n>9)n-=9}s+=n;alt=!alt}return s%10===0}
 const MASK_EID=[[lbNot(/\d/),/784[\s-]?\d{4}[\s-]?\d{7}[\s-]?\d(?!\d)/g]],MASK_CARD=[[lbNot(/[\d+]/),/(?:\d[ -]?){12,18}\d(?!\d)/g]],MASK_PHONE=[[lbNot(/[\w+]/),/(\+|00)?\d(?:[\s-]?\d){6,14}(?!\w)/g]];
+/* a name after "my name is" / "اسمي": one rule for the page's own display and for the text sent to the AI step */
+const MASK_NAME=/(^|[^\w؀-ۿ])(my name is|name is|انا اسمي|اسمي)\s+(?:[A-Z][a-z]+(?:\s[A-Z][a-z]+){0,2}|[؀-ۿ]+(?:\s[؀-ۿ]+){0,1})/g;
+const maskName=(s,f)=>String(s).replace(MASK_NAME,(m,p,a)=>{if(f)f();return p+a+' '+MASK_TAG.name});
 function mask(text){let s=toWest(text);const c={email:0,eid:0,iban:0,card:0,passport:0,phone:0,plate:0,caseno:0,name:0};
 const rep=(k)=>()=>{c[k]++;return MASK_TAG[k]};
 s=s.replace(/[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+/g,rep('email'));
@@ -780,7 +799,7 @@ s=s.replace(/(emirates\s*id|\beid\b|الهوية|هوية)(\W{0,8})((?:\d[\s-]?)
 s=s.replace(/\bAE\s?\d{2}(?:[\s-]?\d){19}(?!\d)/gi,rep('iban'));
 s=s.replace(/((?:number\s*)?plate|لوحة|لوحه)(\s*(?:no\.?|number|#|رقم|:)?\s*)([A-Za-z]{1,2}\s?\d{1,5}|\d{1,5}\s?[A-Za-z]{1,2})(?![\w])/gi,(m,a,b)=>{c.plate++;return a+b+MASK_TAG.plate});
 s=s.replace(/\b(labou?r|file|case|complaint|ticket|transaction|reference|ref|request|permit|contract|ملف|قضية|شكوى|معاملة|طلب)(\s*(?:no\.?|number|id|رقم)?\s*[:#]?\s*)([A-Za-z]{0,4}[-\/]?\d{5,}(?:[-\/]\d+)*)(?!\d|\s*(?:aed|dhs?|dirhams?|درهم))/gi,(m,a,b)=>{c.caseno++;return a+b+MASK_TAG.caseno});
-s=s.replace(/\b(my name is|name is|اسمي|انا اسمي)\s+(?:[A-Z][a-z]+(?:\s[A-Z][a-z]+){0,2}|[؀-ۿ]+(?:\s[؀-ۿ]+){0,1})/g,(m,a)=>{c.name++;return a+' '+MASK_TAG.name});
+s=maskName(s,()=>c.name++);
 s=lbReplace(s,MASK_CARD,m=>{  /* was s.replace(/(?LB![\d+])(?:\d[ -]?){12,18}\d(?!\d)/g,...) */
 const d=m.replace(/\D/g,'');if(/^(?:00|971)/.test(d)||!luhn(d))return m;c.card++;return MASK_TAG.card});
 s=s.replace(/(passport|جواز(?: السفر)?)(\s*(?:no\.?|number|#|رقم|:)?\s*)([A-Za-z]{0,2}\d{6,9})(?!\d)/gi,(m,a,b)=>{c.passport++;return a+b+MASK_TAG.passport});
@@ -932,6 +951,11 @@ tr_route_ai:"Office: {auth}.",
 tr_route_rule:"Office: {auth}.",
 tr_lang:"Screen set to {lang}.",
 tr_nothing:"Nothing left this device.",
+tr_aisent:"Only the text you sent to the AI (test) left this device.",
+tr_testb:"This is a test.",
+tr_test:"On this test link, the owner sees the questions you type and the result you get.",
+tr_test_ai:"“Send to AI” also sends the text shown to you to an AI service.",
+tr_test_sent:"The text shown to you went to an AI service.",
 em_dubai:"Dubai",
 em_abu_dhabi:"Abu Dhabi",
 em_sharjah:"Sharjah",
@@ -1459,6 +1483,11 @@ tr_route_ai:"الجهة: {auth}.",
 tr_route_rule:"الجهة: {auth}.",
 tr_lang:"اللغة: {lang}.",
 tr_nothing:"لم يغادر شيء جهازك.",
+tr_aisent:"لم يغادر جهازك إلا النص الذي أرسلته إلى الذكاء الاصطناعي (تجربة).",
+tr_testb:"هذه تجربة.",
+tr_test:"على رابط التجربة هذا يرى صاحب المشروع الأسئلة التي تكتبها والنتيجة التي تحصل عليها.",
+tr_test_ai:"زر «أرسل إلى الذكاء الاصطناعي» يرسل أيضًا النص المعروض عليك إلى خدمة ذكاء اصطناعي.",
+tr_test_sent:"أُرسل النص المعروض عليك إلى خدمة ذكاء اصطناعي.",
 em_dubai:"دبي",
 em_abu_dhabi:"أبوظبي",
 em_sharjah:"الشارقة",
@@ -2656,7 +2685,7 @@ function canCantHTML(){return `<div class="cancant"><h3>${T('canH')}</h3><div cl
 
 /* == agent run */
 let RUN=null,GEN=0,CALC={};
-function traceLi(x){const [kind,step,key,vars]=x;return `<li><span class="k ${kind==='ai'?'ai':'rule'}">${kind==='ai'?T('kAI'):T('kRule')}</span><span><span class="sn">${T('s_'+step)}:</span> <span dir="auto">${esc(t(key,vars||undefined))}</span></span></li>`}
+function traceLi(x){const [kind,step,key,vars]=x;return `<li><span class="k ${kind==='ai'?'ai':'rule'}">${kind==='ai'?T('kAI'):T('kRule')}</span><span><span class="sn">${T('s_'+step)}:</span> <span dir="auto">${esc(key==='tr_nothing'||key==='tr_aisent'?trNothing(key):t(key,vars||undefined))}</span></span></li>`}
 function trace(R,kind,step,key,vars){const x=[kind,step,key,vars||null];R.trace.push(x);if(RUN===R){const ol=$('traceList');if(ol)ol.insertAdjacentHTML('beforeend',traceLi(x))}}
 const failTrace=(R,step,e)=>{if(e&&e.code==='inj')return;trace(R,'rule',step,failKey(e))};
 const hintNames=h=>[h.emirate&&{k:keyName('em',h.emirate)},h.status&&{k:keyName('st',h.status)},h.sector&&{k:keyName('sc',h.sector)}].filter(Boolean);
@@ -2670,7 +2699,7 @@ const gen=++GEN,btn=$('askBtn');btn.disabled=true;btn.innerHTML='<span class="sp
 try{const ql=scriptLang(raw),sw=ql&&ql!==LANG;if(sw)setLang(ql);
 if(LAZY){LAZY.failed.clear();await withTimeout(Promise.all([ensureBreadth(),ensureExtra()]),6000);if(gen!==GEN)return}
 const R={id:uid(),date:todayISO(),lang:LANG,q:'',hints:{emirate:'',status:'',sector:''},trace:[],cands:[],chosen:[],order:[],issues:{},stage:'work',topic:'',ai:false};RUN=R;CALC={};
-const m=mask(raw);R.q=m.text;$('result').hidden=false;renderTour();renderRunTrace();renderRunBody();
+const m=mask(raw);R.q=m.text;aiKeep(R,raw);$('result').hidden=false;renderTour();renderRunTrace();renderRunBody();
 if(sw)trace(R,'rule','shield','tr_lang',{lang:{k:'langName_'+LANG}});
 if(m.total)trace(R,'rule','shield','tr_masked',{list:{list:Object.entries(m.counts).filter(([,n])=>n).map(([k,n])=>({k:'m_'+k+(n===1?'1':'n'),v:{n}}))}});else trace(R,'rule','shield','tr_nomask');
 const inj=injections(raw);if(inj.length){R.noAI=true;trace(R,'rule','shield','tr_inj',{p:inj[0]})}
@@ -2751,8 +2780,8 @@ function renderRunTrace(){const R=RUN;if(!R)return;$('asked').textContent=t('you
 const profBox=R=>`<div id="profileRun">${profileHTML('run',sitOf(PROFILE,R.hints))}</div>`;
 function renderRunBody(){const R=RUN,box=$('runBody');if(!R||!box)return;let h='';
 if(R.stage==='work')h+=`<p class="tip"><span class="spin"></span>${T('working')}</p>`;
-else if(R.stage==='parts')h+=partsHTML(R)+profBox(R);else if(R.stage==='gap')h+=gapCardHTML(R,R.gapAuth,false)+profBox(R);else if(R.stage==='table')h+=tableAnswerHTML(R)+profBox(R);else if(R.stage==='done')h+=BY_ID[R.order[0]]?answerHTML(R):`<p class="warn">${T('liveGone')}</p>`;
-box.innerHTML=h}
+else if(R.stage==='parts')h+=partsHTML(R)+aiSlot(R)+profBox(R);else if(R.stage==='gap')h+=gapCardHTML(R,R.gapAuth,false)+aiSlot(R)+profBox(R);else if(R.stage==='table')h+=tableAnswerHTML(R)+aiSlot(R)+profBox(R);else if(R.stage==='done')h+=BY_ID[R.order[0]]?answerHTML(R):`<p class="warn">${T('liveGone')}</p>`;
+box.innerHTML=h;aiMount(R)}
 /* under the answer: only the choices that change THIS answer, taken from this entry (never another one) */
 function refineKeys(e,sit){const out=[],dep=k=>e.depends.find(d=>d&&d.key===k),ov=Object.keys((AUTH[e.authority]||{}).overrides||{}).filter(x=>EMIRATES.includes(x));
 const em=!e.emirates.includes('all')&&e.emirates.length>1?e.emirates:ov.length?ov:dep('emirate')?EMIRATES:[];
@@ -2789,7 +2818,7 @@ if(W.source==='ai')h+=`<div class="answer"><span class="who">${T('ansAI',{name:W
 else h+=`<div class="answer rules"><span class="who">${T('ansRule')}</span><p dir="auto">${esc(L(e.a))}</p><ul>${e.facts.slice(0,3).map(f=>`<li dir="auto">${esc(L(f))}</li>`).join('')}</ul></div>`;
 h+=firstSrcHTML(e)+`<p class="legal">${T(W.source==='ai'?'legalNoteAI':'legalNote')}</p>`;
 for(const x of R.issues[e.id]||[])h+=`<p class="warn">${esc(t(x.k,x.v))}</p>`;
-h+=altHTML(R,e)+refineHTML(e,sit)+profBox(R)+planHTML(e,sit,'run','steps')+actHTML(e.id,'run','main');
+h+=aiSlot(R)+altHTML(R,e)+refineHTML(e,sit)+profBox(R)+planHTML(e,sit,'run','steps')+actHTML(e.id,'run','main');
 const rest=R.order.slice(1).map(id=>BY_ID[id]).filter(Boolean);
 let more=badgesHTML(e,sit,R.close&&!R.picked)+routeHTML(e,sit)+handoffHTML(e)+planHTML(e,sit,'run','rest')+breadthHTML(R.br||relatedBreadth(e,unmaskQ(R.q),sit))+relHTML(R)+personHTML(e,sit);
 if(rest.length)more+=`<h3>${T('alsoH')}</h3>`+rest.map(x=>`<details class="more"><summary dir="auto">${esc(L(x.q))}</summary>${(R.issues[x.id]||[]).map(i=>`<p class="warn">${esc(t(i.k,i.v))}</p>`).join('')}${entryFullHTML(x,sit,'alt')}</details>`).join('');
@@ -3069,7 +3098,7 @@ else if(a==='clear'){if(gapArmed!==btn){gapArmed=btn;btn.textContent=t('clearCon
 function renderCounts(){const s=getList(K.saved).length,g=getList(K.gaps).length;const a=$('savedCnt'),b=$('gapCnt');if(a){a.hidden=!s;a.textContent=s}if(b){b.hidden=!g;b.textContent=g}}
 function renderHow(){const v=$('howView');if(!v)return;$('posText').textContent=t('tagline');const ver=ENTRIES.filter(e=>e.confidence==='verified').length;
 const note=brandText('notice')||(isStr((CFG.privacy||{})['notice_'+LANG])?CFG.privacy['notice_'+LANG].trim().slice(0,400):'');
-v.innerHTML=`<div class="card"><ul class="trust">${[1,2,3,4,5,6].filter(i=>AI_ON||(i!==2&&i!==5)).map(i=>`<li><b>${T('tr'+i+'b')}</b> ${T(i===3&&API?'tr3s':'tr'+i)}</li>`).join('')}</ul>${note?`<p class="tip" dir="auto">${esc(note)}</p>`:''}</div>
+v.innerHTML=`<div class="card"><ul class="trust">${[1,2,3,4,5,6].filter(i=>AI_ON||(i!==2&&i!==5)).map(i=>i===3&&!API&&onTest()?`<li><b>${T('tr_testb')}</b> ${esc(trNothing('tr_nothing'))}</li>`:`<li><b>${T('tr'+i+'b')}</b> ${T(i===3&&API?'tr3s':'tr'+i)}</li>`).join('')}</ul>${note?`<p class="tip" dir="auto">${esc(note)}</p>`:''}</div>
 <div class="card">${canCantHTML()}</div>
 <div class="card"><h3>${T('statsH')}</h3><div class="stats">${[[ENTRIES.length,'stEntries'],[ver,'stVerified'],[ENTRIES.length-ver,'stPartial'],[Object.keys(AUTH).length,'stAuth'],[TOPICS.length,'stTopics'],[LIB_CHECKED?fmtDate(LIB_CHECKED):'—','stChecked'],...[[BR.services.length,'stSvc'],[BR.laws.length,'stLaws'],[BR.freezones.length,'stFz']].filter(x=>x[0]),...(LIVE.on?[[LIVE.updated,'stLive']]:[])].map(([n,k])=>`<div class="stat"><b>${esc(n)}</b><span>${T(k)}</span></div>`).join('')}</div></div>
 <div class="card"><h3>${T('selfH')}</h3><p class="tip">${KB.evalset.length?T('selfP',{n:KB.evalset.length}):T('selfNone')}</p>${KB.evalset.length?`<div class="actions"><button type="button" class="btn teal" data-selftest>${T('selfBtn')}</button></div>`:''}<div id="selfOut" aria-live="polite"></div></div>`}
@@ -3095,6 +3124,260 @@ function paintTitle(){const h=$('pageTitle');if(h)h.textContent=curTab==='ask'?t
 function showTab(tb,focusTab){if(!TABS.includes(tb))return;curTab=tb;document.body.dataset.tab=tb;paintTitle();for(const k of TABS){const b=$('tab-'+k),p=$('p-'+k),on=k===tb;b.setAttribute('aria-selected',String(on));b.tabIndex=on?0:-1;p.hidden=!on}if(focusTab)$('tab-'+tb).focus()}
 function goTab(tb){showTab(tb);focusEl($('p-'+tb))}
 
+/* == AI step (test). The owner's number one (14 Nov 2026): a tester asked one long question with several rules in it, and this page,
+   which finds one answer at a time, could not answer it. AI_URL is the address of the small Worker that holds the AI key
+   (research/answers/app/ai/worker.js and README.md). EMPTY: the AI step does not exist on this page at all; none of this block runs.
+   SET: it is offered only on the tester link (Inzain inside the site's own first page opened with ?test=1, the same mark the tester
+   recorder there goes by), never in the single-file copy (the build empties AI_URL there), and only under the page's own answer, when
+   the question is long or has several parts, or the page is not sure (closest, partly, no verified answer). Nothing leaves the phone
+   before the person's second tap: the first ("Ask the AI (test)") shows the notice and exactly the text that would be sent; only
+   "Send to AI" sends it. Then only that text (the question masked with the Worker's own rules), the language and up to 8 of the
+   page's own entries for it. The answer is shown as text only (never as HTML), labelled as an AI test, with its sources and no tick. */
+const AI_URL='https://inzain-ai.igaturback1.workers.dev/';
+const AI_MAX={q:2000,n:8,title:200,text:3000,body:39000,wait:90000};  /* wait: the Worker itself can take up to 80 seconds for one question */
+const AIX={en:{ask:'Ask the AI (test)',again:'Try again',send:'Send to AI',back:'Cancel',
+note:'Your question goes to an AI service that searches official UAE sites. Phone, ID, passport, card and account numbers and e-mail addresses are hidden first, but some can be missed, and most names and home addresses are not hidden: read the text below before you send. The answer is a test and can be wrong.',
+exact:'This is exactly what will be sent:',hid:'[hidden] stands for a number or e-mail address that will not be sent.',
+wait:'The AI is reading official UAE sites. This can take up to a minute and a half.',stop:'Cancel',stopped:'You stopped the AI.',head:'AI answer (test). No person has checked it.',
+cut:'The answer was cut short.',src:'Sources',check:'Check with the official body before you rely on it.',help:'Did this help?',yes:'Yes',no:'No',thanks:'Thank you.',
+unsourced:'The AI gave no source for this answer. Take extra care: check it with the official body before you rely on any of it.',
+partial:'Part of the answer may be missing.',search:'The search of official UAE sites did not fully work this time.',removed:'Some lines were left out because their only source was not an official site.',
+e_many:'Too many AI questions for now. Try again later.',e_busy:'The AI service is busy. Try again in a minute.',e_off:'The AI step is not available now.',
+e_offnow:'The AI test is switched off for now.',e_up:'Something went wrong at the AI service. Try again later.',
+e_declined:'The AI did not answer this one.',e_empty:'The AI gave no answer this time.',e_read:'The AI step could not read this question.',
+e_large:'This question is too long for the AI step.',e_long:'This question is too long for the AI step (2,000 characters at most).',
+e_slow:'No answer after a minute and a half. Try again later.',e_net:'Could not reach the AI service. Check your connection and try again.'},
+ar:{ask:'اسأل الذكاء الاصطناعي (تجربة)',again:'حاول مرة أخرى',send:'أرسل إلى الذكاء الاصطناعي',back:'إلغاء',
+note:'يُرسَل سؤالك إلى خدمة ذكاء اصطناعي تبحث في المواقع الرسمية في الإمارات. تُخفى أولًا أرقام الهاتف والهوية والجواز والبطاقات والحسابات وعناوين البريد الإلكتروني، لكن قد يفوت بعضها، ولا تُخفى أغلب الأسماء وعناوين السكن: اقرأ النص أدناه قبل أن ترسله. الجواب تجربة وقد يكون خطأ.',
+exact:'هذا بالضبط ما سيُرسَل:',hid:'تعني [hidden] رقمًا أو عنوان بريد إلكتروني لن يُرسَل.',
+wait:'الذكاء الاصطناعي يقرأ المواقع الرسمية في الإمارات. قد يستغرق ذلك دقيقة ونصفًا.',stop:'إلغاء',stopped:'أوقفتَ الذكاء الاصطناعي.',head:'جواب الذكاء الاصطناعي (تجربة). لم يراجعه أي شخص.',
+cut:'انقطع الجواب قبل أن يكتمل.',src:'المصادر',check:'تأكد من الجهة الرسمية قبل أن تعتمد عليه.',help:'هل أفادك هذا؟',yes:'نعم',no:'لا',thanks:'شكرًا لك.',
+unsourced:'لم يذكر الذكاء الاصطناعي أي مصدر لهذا الجواب. انتبه جيدًا: تأكد من الجهة الرسمية قبل أن تعتمد على أي شيء منه.',
+partial:'قد يكون جزء من الجواب ناقصًا.',search:'لم يكتمل البحث في المواقع الرسمية في الإمارات هذه المرة.',removed:'حُذفت بعض الأسطر لأن مصدرها الوحيد ليس موقعًا رسميًا.',
+e_many:'أسئلة كثيرة للذكاء الاصطناعي الآن. حاول لاحقًا.',e_busy:'خدمة الذكاء الاصطناعي مشغولة. حاول بعد دقيقة.',e_off:'خطوة الذكاء الاصطناعي غير متاحة الآن.',
+e_offnow:'تجربة الذكاء الاصطناعي متوقفة الآن.',e_up:'حدث خطأ في خدمة الذكاء الاصطناعي. حاول لاحقًا.',
+e_declined:'لم يُجب الذكاء الاصطناعي عن هذا السؤال.',e_empty:'لم يقدّم الذكاء الاصطناعي جوابًا هذه المرة.',e_read:'لم تستطع خطوة الذكاء الاصطناعي قراءة هذا السؤال.',
+e_large:'هذا السؤال أطول مما تقبله خطوة الذكاء الاصطناعي.',e_long:'هذا السؤال أطول مما تقبله خطوة الذكاء الاصطناعي (2000 حرف على الأكثر).',
+e_slow:'لم يصل جواب خلال دقيقة ونصف. حاول لاحقًا.',e_net:'تعذّر الوصول إلى خدمة الذكاء الاصطناعي. تحقق من الاتصال وحاول مرة أخرى.'}};
+const ax=k=>{const d=AIX[LANG==='ar'?'ar':'en'];return isStr(d[k])?d[k]:(AIX.en[k]||k)};
+/* the Worker's error codes (and the page's own: long, slow, net) to their messages; every other code: "not available now" */
+const AI_ERR={too_many:'e_many',busy:'e_busy',declined:'e_declined',empty:'e_empty',bad_request:'e_read',too_large:'e_large',off:'e_offnow',upstream:'e_up',long:'e_long',slow:'e_slow',net:'e_net'};
+const aiErrKey=c=>hasOwn(AI_ERR,c)?AI_ERR[c]:'e_off';
+/* the tester link: this page is inside the site's own first page (same address), and that page was opened with ?test=1. There the
+   first page records the questions typed and the results (its notice says so), so the run's "Nothing left this device." and
+   "How it works" say that instead (trNothing). The AI step is offered only there. */
+function onTest(){if(!EMBED)return false;try{const p=window.parent;return !!p&&p!==window&&p.location.origin===location.origin&&new URLSearchParams(p.location.search).get('test')==='1'}catch(e){return false}}
+function aiOn(){return !!AI_URL&&onTest()}
+function trNothing(k){if(!onTest())return t(k);const a=k==='tr_aisent'?'tr_test_sent':aiOn()?'tr_test_ai':'';return t('tr_test')+(a?' '+t(a):'')}
+/* offered when the question is long (over 120 characters), asks two or more questions, joins several asks with "and" / "و",
+   or was answered in parts; or when the page is not sure. Never under a short single question that got a tick. */
+const AI_ASK_EN=/\b(?:and|also|plus)\s+(?:also\s+)?(?:how|what|when|where|who|which|why|whether|can|could|do|does|did|is|are|was|will|would|should|must|until|till)\b/;
+const AI_ASK_AR=/(?:^|\s)و\s?(?:هل|كم|متي|كيف|ليش|لماذا|وش|شو|ايش|ماذا|اين|وين|لين|الي متي|ماهي|ما هي|ما هو|شنو)(?=\s|$)/;
+function aiMany(R){const q=String(R.q||''),n=norm(q);return R.stage==='parts'||q.length>120||q.split(/[?؟]+/).slice(0,-1).filter(s=>rawWords(s).length>=2).length>=2||AI_ASK_EN.test(n)||AI_ASK_AR.test(n)}
+function aiUnsure(R){if(R.stage==='gap'||R.stage==='parts')return true;if(R.stage==='table')return !(R.tbl&&R.tbl.table&&R.tbl.table.confidence==='verified');
+if(R.stage!=='done')return false;const e=BY_ID[R.order[0]];return !e||(R.close&&!R.picked)||e.confidence!=='verified'}
+const aiSlot=R=>R&&R.stage!=='work'&&aiOn()&&((R.ais&&R.ais.n>0)||aiMany(R)||aiUnsure(R))?'<div id="aiSlot"></div>':'';
+/* what leaves the phone: the question AS TYPED (kept in memory only, only where the AI step is on, never stored), masked with
+   the Worker's own rules (research/answers/app/ai/mask_shared.js, put in below by the build; never edited here by hand).
+   The page's own mask() is not run first: it hides numbers an answer needs. The person sees this exact text before it is sent. */
+const AI_RAW=typeof WeakMap==='function'?new WeakMap():null;
+function aiKeep(R,raw){if(AI_URL&&AI_RAW&&R&&aiOn())AI_RAW.set(R,String(raw||''))}
+function aiShared(){if(!aiShared.m){
+/* ai-mask-shared:start */
+/* mask_shared.js: the Worker's tidy-and-mask rules (worker.js version 3, tidy() and mask()) for the pages.
+   Same output as the Worker for every input; test_mask_shared.mjs proves it. Do not edit by hand: change
+   worker.js first, then this file, then run the test.
+   Gives two globals: aiTidyShared(text) and aiMaskShared(text).
+   Older phones read no regex look-behind, so the four look-behinds of worker.js are checked by hand in rep():
+   a match is taken only where the text just before it does not end the way the look-behind forbids. */
+var aiTidyShared, aiMaskShared;
+(function () {
+  var UNSEEN = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F­͏؜ᅟᅠ឴឵᠋-᠏​-‏‪-‮⁠-⁯⃣ㅤ︀-️﻿ﾠ￹-￻]|[\u{E0000}-\u{E0FFF}]/gu;
+
+  // A digit of any script as 0 to 9 (every script's digits are ten characters in a row, zero first).
+  function western(d) {
+    var c = d.codePointAt(0);
+    if (c < 128) return d;
+    var zero = c;
+    while (c - zero < 9 && /\p{Nd}/u.test(String.fromCodePoint(zero - 1))) zero--;
+    return String(c - zero);
+  }
+
+  function tidy(text) {
+    return String(text).normalize('NFKC')
+      .replace(UNSEEN, '')
+      .replace(/\p{Nd}/gu, western)
+      .replace(/[‐-―−]/g, '-')
+      .replace(/(\d)ـ+(?=\d)/g, '$1-');
+  }
+
+  function isDate(a, b, c) {
+    var year = function (y) { return y.length === 2 || (y.length === 4 && +y >= 1300 && +y <= 2100); };
+    var dayMonth = function (d, m) { return d.length <= 2 && m.length <= 2 && +d >= 1 && +d <= 31 && +m >= 1 && +m <= 12; };
+    return a.length === 4 ? year(a) && dayMonth(c, b) : year(c) && (dayMonth(a, b) || dayMonth(b, a));
+  }
+
+  var AMOUNT = '(?:[1-9]\\d{0,5}0|(?:19|20)\\d\\d)';
+  var AMOUNTS = new RegExp('^' + AMOUNT + ' ' + AMOUNT + '$');
+  // worker.js has a look-behind before the pair: no digit, and no digit with up to 3 separators
+  var AMOUNT_PAIR = new RegExp(AMOUNT + ' ?[-\\/] ?' + AMOUNT + '(?![ .\\/_-]{0,3}\\d)', 'g');
+
+  function keepNumber(m) {
+    var d = /^(\d{1,4})[ -](\d{1,2})[ -](\d{1,4})$/.exec(m);
+    if (d && isDate(d[1], d[2], d[3])) return true;
+    if (/^(?:19|20)\d\d(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])$/.test(m)) return true;
+    if (/^(?:0[1-9]|[12]\d|3[01])(?:0[1-9]|1[0-2])(?:19|20)\d\d$/.test(m)) return true;
+    if (AMOUNTS.test(m)) return true;
+    if (/^[1-9]\d{0,4}00(?: [1-9]\d{0,4}00){2,3}$/.test(m)) return true;
+    if (/^[1-9]\d{0,3}0{4,}$/.test(m)) return true;
+    return /^[1-9]\d{0,2}(?: \d00){0,2}(?: 000){1,3}$/.test(m);
+  }
+
+  var ID_WORDS = 'passport|permit|licen[cs]e|file|uid|unified(?: number)?|labou?r card' +
+    '|جواز(?: السفر)?|الملف المروري|ملف|رخصة|تصريح|الموحد';
+  // worker.js has a look-behind before the word: no Latin letter
+  var ID_AFTER_WORD = new RegExp('((?:' + ID_WORDS + ')(?:\\s+(?:no\\.?|number|num\\.?|رقم))?\\s*[:#]?\\s*)((?:[A-Za-z]{1,2}[ -]?)?\\d{5,7}[A-Za-z]{0,2})(?![A-Za-z0-9])', 'gi');
+
+  // String.replace with a look-behind: "bad" is the look-behind's body, tested on the 4 characters before
+  // a match (every look-behind here is at most 4 long). Where it fits, the search goes on one place later,
+  // as the engine does.
+  function rep(s, re, bad, f) {
+    var out = '', last = 0, m, p;
+    re.lastIndex = 0;
+    while ((m = re.exec(s))) {
+      p = m.index;
+      if (bad.test(s.slice(Math.max(0, p - 4), p))) { re.lastIndex = p + 1; continue; }
+      out += s.slice(last, p) + f.apply(null, m);
+      last = re.lastIndex;
+    }
+    return out + s.slice(last);
+  }
+
+  function mask(text) {
+    var kept = [];
+    var keep = function (m) { return '\u0001' + (kept.push(m) - 1) + '\u0002'; };
+    var s = tidy(text)
+      .replace(/[^\s@]{1,64}\s?@\s?[^\s@]{1,255}\.[^\s@]{1,63}/g, '[hidden]')
+      .replace(/[^\s@()\[\]]{1,64}\s?[(\[]\s?at\s?[)\]]\s?[^\s@]{1,255}\.[^\s@]{1,63}/gi, '[hidden]');
+    s = rep(s, ID_AFTER_WORD, /[A-Za-z]$/i, function (m, word, n) { return /^[1-9]\d*00$/.test(n) ? m : word + '[hidden]'; })
+      .replace(/\((\d{1,4})\)\s?/g, '$1 ');
+    s = rep(s, /(\d{1,4})([.\/-])(\d{1,2})\2(\d{1,4})(?![.\/-]?\d)/g, /[\d.\/-]$/, function (m, a, sep, b, c) { return isDate(a, b, c) ? keep(m) : m; });
+    s = rep(s, /\d{1,3}\/(?:19|20)\d\d(?!\/?\d)/g, /[\d\/]$/, keep);
+    s = rep(s, AMOUNT_PAIR, /\d[ .\/_-]{0,3}$/, keep);
+    return s
+      .replace(/(?:\+|00)?\d(?:(?:[ \/_-]{0,3}|\.)\d){7,}/g, function (m) { return keepNumber(m) ? m : '[hidden]'; })
+      .replace(/\b(?!dhs?\d|rs\d)[A-Za-z]{1,2}-?\d{6,9}[A-Za-z]{0,2}\b/gi, '[hidden]')
+      .replace(/\u0001(\d+)\u0002/g, function (m, i) { return kept[+i]; });
+  }
+
+  aiTidyShared = tidy;
+  aiMaskShared = mask;
+})();
+/* ai-mask-shared:end */
+aiShared.m=aiMaskShared}return aiShared.m}
+const aiMask=text=>maskName(aiShared()(String(text||''))).trim();  /* then the page's own name rule, so the preview and "Hidden:" agree */
+/* the parts of a question, each searched on its own: its sentences, and the asks joined by "and" / "و" */
+const AI_SPLIT=/[.?!؟\n;؛]+|\s(?=(?:and|also|plus)\s+(?:how|what|when|where|who|which|why|whether|can|could|do|does|did|is|are|will|would|should|must|until|till)\b)|\s(?=و\s?(?:هل|كم|متي|كيف|ليش|لماذا|وش|شو|ايش|ماذا|اين|وين|لين)(?:\s|$))/;
+function aiPieces(q){return norm(q).split(AI_SPLIT).map(x=>String(x||'').trim()).filter(x=>rawWords(x).length>=3).slice(0,6)}
+/* one entry as the Worker takes it: first a line with its status and the date it was checked (the Worker tells the AI to say
+   so when an entry is only partly checked or old), then whole lines only, never cut inside a line, never over the size limits */
+const aiStatus=e=>'Inzain status: '+(e.confidence==='verified'?'checked against official sources':'only partly checked')+'; date checked: '+(validISO(e.checked)||'not given')+'.';
+function aiEntry(e){if(!e||e._stub||!isStr(e.id))return null;const title=clip(String(L(e.q)||'').trim(),AI_MAX.title);
+const lines=[aiStatus(e),L(e.a)].concat(arr(e.facts).map(f=>'- '+L(f)),arr(e.depends).map(d=>'- '+L(d)),e.caveats?[L(e.caveats)]:[],e.disagree?[L(e.disagree)]:[],arr(e.steps).map((s,i)=>(i+1)+'. '+L(s)),
+e.authority?[authName(e.authority)]:[],arr(e.sources).filter(s=>s&&s.url).map(s=>[s.publisher,s.title].filter(x=>isStr(x)&&x).join(': ')+' '+s.url));
+let text='';for(const x0 of lines){const x=String(x0||'').trim();if(!x||text.length+x.length+1>AI_MAX.text)continue;text+=(text?'\n':'')+x}
+return title&&text?{id:e.id,title,text}:null}
+/* the page's own entries for the question, taken in turn from: what it showed, the search for the whole question, and the search
+   for each part on its own; no repeats */
+async function aiEntries(R){const ids=[],add=id=>{if(isStr(id)&&id&&ids.indexOf(id)<0&&hasOwn(BY_ID,id))ids.push(id)};
+const q=unmaskQ(R.q),ps=aiPieces(q),own=arr(R.parts).map(p=>p.id).concat(arr(R.order),R.kg?arr(R.kg.closest):[],arr(R.next).map(e=>e&&e.id));
+const lists=[own].concat([q].concat(ps.length>1?ps:[]).map(s=>search(s).filter(x=>!x.off).slice(0,3).map(x=>x.id)));
+for(let k=0;k<6;k++)for(const l of lists)add(l[k]);
+const want=ids.slice(0,12);if(LAZY)await hydrate(want);const out=[];
+for(const id of want){const x=aiEntry(BY_ID[id]);if(x)out.push(x);if(out.length>=AI_MAX.n)break}return out}
+const aiHasText=j=>arr(j&&j.parts).some(p=>p&&isStr(p.text)&&p.text.trim());
+let AI_R=null;  /* the run whose AI box is on the page */
+/* the first tap: the notice and EXACTLY the text that will be sent; only "Send to AI" sends it */
+function aiPreview(R){const S=R&&R.ais;if(!S||S.st==='wait'||S.st==='preview'||RUN!==R||!aiOn())return;
+const raw=AI_RAW?AI_RAW.get(R):undefined,q=isStr(raw)?aiMask(raw):'';S.err='';S.res=null;S.help='';S.ms=0;S.q='';
+if(!q){S.st='fail';S.err='bad_request'}else if(q.length>AI_MAX.q){S.st='fail';S.err='long'}else{S.st='preview';S.q=q;S.pv=Date.now()}
+aiPaint(R)}
+function aiBack(R){const S=R&&R.ais;if(!S||S.st!=='preview')return;S.st='offer';S.q='';aiPaint(R)}
+/* once a question has gone to the AI, the run's "Nothing left this device." is no longer true: it is reworded */
+function aiSent(R){let k=0;for(const x of arr(R.trace))if(x&&x[2]==='tr_nothing'){x[2]='tr_aisent';k++}if(k&&RUN===R)renderRunTrace()}
+async function aiSend(R){const S=R&&R.ais;if(!S||S.st!=='preview'||!S.q||RUN!==R||!aiOn()||Date.now()-S.pv<400)return;  /* a quick second tap on "Ask" is not a send */
+const q=S.q,n=++S.n,ctl=typeof AbortController==='function'?new AbortController():null;
+S.st='wait';S.t0=Date.now();S.ms=0;S.err='';S.res=null;S.help='';S.ctl=ctl;aiSent(R);aiPaint(R);
+const tm=setTimeout(()=>{if(ctl)try{ctl.abort()}catch(e){}aiEnd(R,n,null,'slow')},AI_MAX.wait);
+let res=null,err='';
+try{let ents=await aiEntries(R);if(S.n!==n||S.st!=='wait')return;
+const lang=LANG==='ar'?'ar':'en';let body=JSON.stringify({q,lang,entries:ents});
+while(body.length>AI_MAX.body&&ents.length){ents=ents.slice(0,-1);body=JSON.stringify({q,lang,entries:ents})}
+const r=await fetch(AI_URL,{method:'POST',headers:{'Content-Type':'application/json'},body,credentials:'omit',referrerPolicy:'no-referrer',signal:ctl?ctl.signal:undefined});
+let j=null;try{j=await r.json()}catch(e){j=null}
+if(j&&j.ok===true&&aiHasText(j))res=j;else err=j&&isStr(j.error)&&/^[a-z_]{2,20}$/.test(j.error)?j.error:'bad_upstream'}
+catch(e){err='net'}
+finally{clearTimeout(tm)}
+aiEnd(R,n,res,err)}
+function aiEnd(R,n,res,err){const S=R&&R.ais;if(!S||S.n!==n||S.st!=='wait')return;S.ctl=null;S.ms=Date.now()-S.t0;
+if(res){S.st='done';S.res=res}else{S.st='fail';S.err=err||'bad_upstream'}if(AI_R===R)aiPaint(R)}
+function aiStop(R,quiet){const S=R&&R.ais;if(!S||S.st!=='wait')return;const c=S.ctl;S.ctl=null;S.ms=Date.now()-S.t0;S.st='stop';if(c)try{c.abort()}catch(e){}if(!quiet&&AI_R===R)aiPaint(R)}
+function aiHelp(R,v){const S=R&&R.ais;if(!S||S.st!=='done'||S.help)return;S.help=v==='yes'?'yes':'no';aiPaint(R)}
+function aiClick(c){if(!AI_URL)return false;const R=RUN;let x;if(c('[data-aiask]')){aiPreview(R);return true}if(c('[data-aisend]')){aiSend(R);return true}
+if(c('[data-aiback]')){aiBack(R);return true}if(c('[data-aistop]')){aiStop(R);return true}
+if((x=c('[data-aihelp]'))){aiHelp(R,x.getAttribute('data-aihelp'));return true}return false}
+/* after each paint of the answer: the run's own AI box goes into its slot (a new question stops the old run's request) */
+function aiMount(R){if(!AI_URL||!aiOn())return;if(AI_R&&AI_R!==R){aiStop(AI_R,true);AI_R=null}const s=$('aiSlot');if(!s||!R)return;
+const S=R.ais||(R.ais={st:'offer',n:0,ms:0,err:'',res:null,help:'',q:'',pv:0,node:null,sig:''});
+if(!S.node){const d=document.createElement('div');d.className='aibox';d.id='aiBox';d.setAttribute('aria-live','polite');S.node=d}
+s.parentNode.replaceChild(S.node,s);AI_R=R;aiPaint(R)}
+/* the box, built with text nodes only. Its marks (data-ai: offer, preview, wait, done, fail, stop; the time, the error code, the
+   yes or no) are what the tester recorder reads; never the AI's text nor the text sent */
+function aiPaint(R){const S=R&&R.ais,el=S&&S.node;if(!el)return;const sig=[S.st,S.n,S.help,LANG].join('|');if(S.sig===sig)return;S.sig=sig;
+const at=(k,v)=>{if(v)el.setAttribute('data-ai'+k,String(v));else el.removeAttribute('data-ai'+k)};
+el.textContent='';at('-r',R.id);at('-n',S.n);at('-ms',S.st==='offer'||S.st==='preview'||S.st==='wait'?0:S.ms);at('-err',S.st==='fail'?S.err:'');at('-help',S.help);at('',S.st);
+const mk=(tag,cls,text)=>{const x=document.createElement(tag);if(cls)x.className=cls;if(text!=null)x.textContent=text;return x};
+const btn=(cls,attr,val,text)=>{const b=mk('button','btn sm'+(cls?' '+cls:''),text);b.type='button';b.setAttribute(attr,val);return b};
+const row=xs=>{const a=mk('div','actions');xs.forEach(x=>a.appendChild(x));return a};
+if(S.st==='preview'){el.appendChild(mk('p','tip',ax('note')));el.appendChild(mk('p','tip',ax('exact')));const pv=mk('p','aiprev',S.q);pv.setAttribute('dir','auto');el.appendChild(pv);
+if(S.q.indexOf('[hidden]')>=0)el.appendChild(mk('p','tip',ax('hid')));el.appendChild(row([btn('teal','data-aisend','1',ax('send')),btn('ghost','data-aiback','1',ax('back'))]));return}
+if(S.st==='wait'){const p=mk('p','tip'),k=btn('teal','data-aisend','1',ax('send'));k.disabled=true;p.setAttribute('role','status');p.appendChild(mk('span','aispin'));p.appendChild(document.createTextNode(ax('wait')));
+el.appendChild(row([k,btn('ghost','data-aistop','1',ax('stop'))]));el.appendChild(p);return}  /* the send button stays, held, so a second tap lands on it */
+if(S.st==='done'){aiAnswerTo(el,S.res,mk);el.appendChild(S.help?mk('p','tip',ax('thanks')):row([mk('span','tip',ax('help')),btn('','data-aihelp','yes',ax('yes')),btn('','data-aihelp','no',ax('no'))]));return}
+if(S.st==='fail')el.appendChild(mk('p','aierr',ax(aiErrKey(S.err))));
+if(S.st==='stop')el.appendChild(mk('p','tip',ax('stopped')));
+el.appendChild(row([btn('teal','data-aiask','1',ax(S.n?'again':'ask'))]))}
+/* every tick-like character (✓ ✔ ☑ ✅ 🗸 🗹 √ ⍻ 𐄂 🮱, with or without the picture form) is taken out of what the AI wrote */
+const AI_TICK=/(?:[✓✔✅☑√⍻]|\uD83D[\uDDF8\uDDF9]|𐄂|🮱)️?/g;
+const aiNoTick=s=>String(s||'').replace(AI_TICK,'');
+/* a web source: an https address that the browser itself reads, with no user or password part; its site name is the hostname */
+function aiWeb(u0){const u=safeUrl(u0);if(!u)return null;let x=null;try{x=new URL(u)}catch(e){return null}
+if(x.protocol!=='https:'||x.username||x.password||!x.hostname)return null;return {url:x.href,host:x.hostname.toLowerCase().replace(/^www\./,'')}}
+/* the answer: its marks (no source at all, part may be missing, the search did not fully work), its parts as text, each followed
+   by the numbers of the sources it rests on; then the sources (an Inzain entry opens in this page; an official
+   site is an https link to a new tab, with its name); then the line to check with the office */
+function aiAnswerTo(el,res,mk){let k=0;
+const src=arr(res.sources).map(s=>{if(!s||typeof s!=='object')return null;
+if(s.kind==='web'){const w=aiWeb(s.url);if(!w)return null;return {n:++k,url:w.url,host:w.host,title:clip(aiNoTick(s.title).trim()||w.host,160)}}
+if(s.kind==='inzain'&&isStr(s.id)){const e=entryById(s.id);return {n:++k,id:e?e.id:'',title:clip(aiNoTick((e?L(e.q):s.title)||'').trim()||s.id,160)}}
+return null});
+el.appendChild(mk('p','aihead',ax('head')));
+if(res.unsourced===true||!src.some(Boolean))el.appendChild(mk('p','aiwarn',ax('unsourced')));
+if(res.partial===true)el.appendChild(mk('p','aiwarn',ax('partial')));
+if((Array.isArray(res.search_errors)&&res.search_errors.length>0)||res.domains_cut===true)el.appendChild(mk('p','aiwarn',ax('search')));
+const p=mk('p','aitext');p.setAttribute('dir','auto');
+for(const x of arr(res.parts)){if(!x||!isStr(x.text))continue;p.appendChild(document.createTextNode(aiNoTick(x.text)));const ns=[];
+for(const i of arr(x.cites)){const s=Number.isInteger(i)?src[i]:null;if(s&&ns.indexOf(s.n)<0)ns.push(s.n)}for(const n of ns)p.appendChild(mk('sup','aicite','['+n+']'))}
+el.appendChild(p);if(res.cut===true)el.appendChild(mk('p','tip',ax('cut')));
+if(Number.isInteger(res.removed)&&res.removed>0)el.appendChild(mk('p','tip',ax('removed')));
+const shown=src.filter(Boolean);if(shown.length){el.appendChild(mk('h4','',ax('src')));const ol=mk('ol','aisrc');
+for(const s of shown){const li=mk('li');
+if(s.url){const a=mk('a','',s.title);a.href=s.url;a.target='_blank';a.rel='noopener noreferrer';li.appendChild(a);li.appendChild(mk('span','aihost',s.host))}
+else if(s.id){const b=mk('button','aiopen',s.title);b.type='button';b.setAttribute('data-open',s.id);li.appendChild(b);li.appendChild(mk('span','aihost',brandName()))}
+else li.appendChild(document.createTextNode(s.title));ol.appendChild(li)}el.appendChild(ol)}
+el.appendChild(mk('p','legal',ax('check')))}
+/* == end of the AI step */
+
 /* == events and start */
 function twoTap(btn,k,armedK,run){let armed=false,tm=null;btn.addEventListener('click',()=>{if(!armed){armed=true;btn.textContent=t(armedK);btn.classList.add('warn');tm=setTimeout(()=>{armed=false;btn.textContent=t(k);btn.classList.remove('warn')},4000);return}clearTimeout(tm);armed=false;btn.classList.remove('warn');btn.textContent=t(k);run()})}
 async function onClick(e){const tg=e.target;if(!tg||!tg.closest)return;
@@ -3103,6 +3386,7 @@ let gm;if((gm=tg.closest('[data-go]'))){closeSheets();goTab(gm.dataset.go);windo
 if(tg.closest('[data-close]')){closeSheets();return}
 if(tg.closest('#backBtn')){goTab('ask');window.scrollTo(0,0);return}
 const c=s=>tg.closest(s);let x;
+if(aiClick(c))return;
 if(c('[data-homeplaces]')){LIB={topic:'',q:'',open:'',sec:'places'};OTV.open='';OTV.plc='';renderLibrary();goTab('library');return}
 if(c('[data-retrylazy]')){loadLazy();renderHome();return}
 if((x=c('[data-chip]'))){const ch=chipList()[+x.dataset.chip];if(ch){$('q').value=L(ch);ask(L(ch))}return}

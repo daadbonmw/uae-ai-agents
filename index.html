@@ -449,8 +449,8 @@ tiles.forEach(link=>link.addEventListener('click',e=>{if(e.ctrlKey||e.metaKey||e
 // "Tries" are answered questions, so the share is honest. Answers stay in this browser until the tester sends them.
 const TEST=(function(){let on=false;try{on=new URLSearchParams(location.search).get('test')==='1';if(on)sessionStorage.setItem('uaeagents-test','1');else on=sessionStorage.getItem('uaeagents-test')==='1'}catch(e){}return on})();
 const TX={
- en:{q:'Did {n} help?',yes:'Yes',no:'No',send:'Send my result',note:'Anything confusing?',wa:'Send on WhatsApp',copy:'Copy',copied:'Copied',close:'Close',line:'UAE Agents test. Tried: {a}. Helped: {h}.',tag:'Note: ',rec:'Test mode: the owner sees the questions you type, the result you get and whether it helped. Pasted messages are never sent.'},
- ar:{q:'هل ساعدك {n}؟',yes:'نعم',no:'لا',send:'أرسل نتيجتي',note:'أي شيء غير واضح؟',wa:'أرسل عبر واتساب',copy:'نسخ',copied:'تم النسخ',close:'إغلاق',line:'تجربة وكلاء الإمارات. جرّبت: {a}. ساعد: {h}.',tag:'ملاحظة: ',rec:'وضع التجربة: صاحب المشروع يشوف الأسئلة اللي تكتبها، والنتيجة اللي تطلع لك، وهل فادتك. الرسائل اللي تلصقها ما تنرسل أبدًا.'}
+ en:{q:'Did {n} help?',yes:'Yes',no:'No',send:'Send my result',note:'Anything confusing?',wa:'Send on WhatsApp',copy:'Copy',copied:'Copied',close:'Close',line:'UAE Agents test. Tried: {a}. Helped: {h}.',tag:'Note: ',rec:'Test mode: the owner sees typed questions and results, never pasted text. “Send to AI” sends the text shown to an AI service.'},
+ ar:{q:'هل ساعدك {n}؟',yes:'نعم',no:'لا',send:'أرسل نتيجتي',note:'أي شيء غير واضح؟',wa:'أرسل عبر واتساب',copy:'نسخ',copied:'تم النسخ',close:'إغلاق',line:'تجربة وكلاء الإمارات. جرّبت: {a}. ساعد: {h}.',tag:'ملاحظة: ',rec:'وضع التجربة: صاحب المشروع يشوف أسئلتك المكتوبة ونتايجك، مو اللي تلصقه. «أرسل إلى الذكاء الاصطناعي» يرسل النص المعروض لذكاء اصطناعي.'}
 };
 const tx=()=>TX[isAr()?'ar':'en'];
 let store={c:{}},visit=null,pending=null,tBar,tPill,tSheet,tNote;
@@ -627,6 +627,14 @@ function recHook(f,key,passed,typed){
    on(doc,'submit',e=>{if(e.target&&e.target.id==='askForm')asked(q.value,'inside')});
    // a suggested question (library text) fills the box and runs: read after Inzain has put it there
    on(doc,'click',e=>{const c=e.target&&e.target.closest?e.target.closest('[data-chip]'):null;if(c)later(()=>{asked(q.value,'chip',true)},0)});
+   // the AI step (test; Inzain offers it on this tester link only): that it was asked, how it ended and how long it took, and the
+   // person's yes or no. Read from the marks on Inzain's AI box (data-ai and the rest), never from its text.
+   const aiDone={};
+   watch(body,()=>{const b=doc.getElementById('aiBox');if(!b)return;const g=k=>String(b.getAttribute('data-ai'+k)||''),st=g(''),run=g('-r')+'|'+g('-n')+'|',ms=Math.max(0,parseInt(g('-ms'),10)||0);
+    const x=st==='wait'?{step:'ask'}:st==='done'?{step:'answer',ms:ms}:st==='fail'?{step:'fail',ms:ms,err:g('-err').slice(0,20)}:st==='stop'?{step:'stop',ms:ms}:null;
+    if(x&&!aiDone[run+x.step]){aiDone[run+x.step]=1;x.a='answers';rec('ai',x)}
+    const h=g('-help');if(h&&!aiDone[run+'help']){aiDone[run+'help']=1;rec('ai',{a:'answers',step:'help',yes:h==='yes'})}
+   },{subtree:true,attributes:true,attributeFilter:['data-ai','data-ai-help']});
    if(p0&&typed){expect();if(recShown(body)){changed=true;settle()}}   // the passed-in question (typed by hand only) may be answered already
   }else{
    const box=doc.getElementById('msg'),res=doc.getElementById('result');if(!box||!res)return;

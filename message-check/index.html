@@ -241,6 +241,20 @@ a.tel{display:inline-block;margin:-10px 0;padding:10px 4px;font-weight:600}
 /* until the main script has run, the Check button says the page is still starting, in the page's language */
 #checkBtn:disabled{opacity:.75;cursor:progress}
 html[lang=ar] #checkBtn .stl[lang=en],html:not([lang=ar]) #checkBtn .stl[lang=ar]{display:none}
+/* the AI step (test): the box under a middle result, built by the script's AI block (text only) */
+.aibox{display:flex;flex-direction:column;gap:8px;padding:14px;border-radius:18px;background:var(--bg);min-width:0}
+.aibox h3{font-size:17px;line-height:22px;font-weight:600}
+.aibox h4{margin:4px 0 0;font-size:15px;font-weight:600}
+.aibox .aihead{font-size:15px;line-height:22px;color:var(--muted)}
+.aibox .aitext{white-space:pre-line;overflow-wrap:anywhere}
+.aibox sup{font-size:12px;color:var(--muted);margin-inline-start:2px}
+.aibox .aisrc{display:flex;flex-direction:column;gap:10px;padding-inline-start:24px;list-style:decimal;font-size:15px;line-height:22px;overflow-wrap:anywhere}
+.aibox .aihost{display:block;color:var(--muted)}
+.aibox .aierr{padding:10px 12px;border-radius:14px;background:var(--tint);font-size:15px;line-height:22px}
+.aibox .aipre{max-height:240px}
+.aispin{display:inline-block;width:14px;height:14px;margin-inline-end:6px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;vertical-align:-2px;animation:aisp .8s linear infinite}
+@keyframes aisp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.aispin{animation:none}}
 </style>
 <script id="guard">/* Never a silent dead page. Oldest plain JavaScript on purpose (no let, const, arrows or template strings), so it runs on any phone.
    The main script sets PAGE_STARTED as its first act (and removes the "Loading" line) and PAGE_READY when the Check button works.
@@ -2715,7 +2729,7 @@ function orgCardHTML(o,e,mode,text){
   return `<section class="orgcard" aria-label="${esc(t(mode==='say'?'card_lbl':mode==='bank'?'card_bank':'rep_to'))}"><p class="note">${esc(t(mode==='say'?'card_lbl':mode==='bank'?'card_bank':'rep_to'))}</p><h3 dir="auto">${esc(mzName(o))}</h3>${text?`<p dir="auto">${esc(text)}</p>`:''}${rows?`<dl>${rows}</dl>`:(text?'':`<p>${esc(t('card_none'))}</p>`)}${o.u?`<p class="note">${esc(t('card_partial'))}</p>`:''}${src}</section>`}
 function renderResult(e){
   const box=$('result');
-  if(!e){box.innerHTML='';return}
+  if(!e){box.innerHTML='';aiMount(null);return}
   const org=mzOrgFor(e),fv=e.final.verdict;
   const exc=(e.red||'').replace(/\s+/g,' ').trim();
   const forLine=e.exKey?t('forEx',{x:t('ex_'+e.exKey)}):t('forText',{x:exc.length>90?exc.slice(0,88)+'…':exc});
@@ -2732,11 +2746,11 @@ function renderResult(e){
   ${reasons.length?`<ul class="dots">${reasons.map(x=>`<li dir="auto">${esc(x)}</li>`).join('')}</ul>`:''}
   ${org?orgCardHTML(org,e,(e.notes||[]).some(n=>n.k==='cardbank')?'bank':'say'):''}
   <p class="action" dir="auto">${esc(lo?t('lo_line'):actionFor(fv,org))}</p>
-  ${org?'':`<p class="note chk" dir="auto">${esc(t('chk_line'))}</p>`}
+  ${org?'':`<p class="note chk" dir="auto">${esc(t('chk_line'))}</p>`}${aiSlot(e)}
   ${VERDICTS[fv].rank>=2?`<div class="acts"><button type="button" class="go" data-act="report" id="reportBtn" aria-haspopup="dialog" aria-controls="sheetReport">${esc(t('rep_btn'))}</button></div>`:''}
   <div class="acts"><button type="button" class="tbtn" data-act="wrong" id="wrongBtn" aria-haspopup="dialog" aria-controls="sheetWrong">${esc(t('wr_btn'))}</button></div>
   <div id="familyBox">${familyHTML(e)}</div>
-  </article>`}
+  </article>`;aiMount(e)}
 
 /* ---------- Report it: the channel for the person's emirate, and a text to copy. Nothing is sent. ---------- */
 const EMIRATES=[['abu-dhabi','Abu Dhabi','أبوظبي'],['dubai','Dubai','دبي'],['sharjah','Sharjah','الشارقة'],['ajman','Ajman','عجمان'],['umm-al-quwain','Umm Al Quwain','أم القيوين'],['ras-al-khaimah','Ras Al Khaimah','رأس الخيمة'],['fujairah','Fujairah','الفجيرة']];
@@ -3006,8 +3020,188 @@ twoTap($('clearHist'),'clearHist','clearConfirm',()=>{hist=[];saveHist();current
 twoTap($('reset'),'reset','resetConfirm',()=>{hist=seed();saveHist();currentId=null;helpTicks={};store.set(HELPKEY,helpTicks);$('helpMsg').textContent='';
   picClear();$('msg').value='';$('sender').value='';setMode('msg');loadedEx='';markChips();$('exNote').textContent='';$('checkErr').textContent='';renderAll();closeSheet(true);$('live').textContent=t('liveReset')});
 
+/* ---------- AI step (test). AI_URL: the Worker's address; empty: none of this runs. Set: tester link only, middle results only,
+   nothing sent before "Ask AI (test)" then "Send to AI". The AI only adds caution, shown as text. ---------- */
+const AI_URL='https://inzain-ai.igaturback1.workers.dev/';
+const AI_MAX={text:2000,sender:60,reason:200,list:6,part:700,title:160,wait:90000};
+const AI_TX={en:{ask:'Ask AI (test)',again:'Try again',send:'Send to AI',cancel:'Cancel',
+note:'Your message goes to an AI service that searches official UAE sites; it never opens the links. Long numbers, e-mail addresses, links and the name after a greeting are hidden first. Its answer is a test and can be wrong.',
+what:'This is exactly what will be sent. Some names and addresses may still be in it, so read it first. If anything personal is in it, tap Cancel:',snd:'Who sent it:',also:'Also sent: the reasons above.',alsoOrg:'Also sent: the reasons above, and the official contacts of {o} from Mazboot’s list.',
+wait:'The AI is searching official UAE sites. This can take up to a minute and a half.',stopped:'You stopped the AI check.',head:'AI check (test). No person has checked it.',
+caution:'The AI found signs that this may be a scam',nothing:'The result above stays. Check with the real sender, in its own app or on a number you already have, before you do what the message asks.',src:'Sources',list:'From Mazboot’s list of official contacts',
+help:'Did this help?',yes:'Yes',no:'No',thanks:'Thank you.',
+e_many:'Too many AI checks for now. Try again later.',e_busy:'The AI service is busy. Try again in a minute.',e_off:'Try the AI check again later.',
+e_declined:'Check this message with the organisation yourself.',e_empty:'Tap Try again for a new answer.',
+e_large:'This message is too long for the AI check.',e_long:'This message is too long for the AI check (2,000 characters at most), so it was not sent.',
+e_slow:'The AI took over 90 seconds. Try again later.',e_net:'Check your connection and try again.',
+priv_ai:'Nothing you paste leaves this device unless you choose to send a message to the AI check.'},
+ar:{ask:'اسأل الذكاء الاصطناعي (تجربة)',again:'حاول مرة أخرى',send:'أرسل إلى الذكاء الاصطناعي',cancel:'إلغاء',
+note:'تُرسَل رسالتك إلى خدمة ذكاء اصطناعي تبحث في المواقع الرسمية في الإمارات، ولا تفتح روابطها أبدًا. تُخفى أولًا الأرقام الطويلة وعناوين البريد الإلكتروني والروابط والاسم بعد التحية. جوابها تجربة وقد يكون خطأ.',
+what:'هذا بالضبط ما سيُرسَل. قد تبقى فيه بعض الأسماء والعناوين، فاقرأه أولًا. إذا كان فيه شيء شخصي فاضغط إلغاء:',snd:'المرسل:',also:'ويُرسَل أيضًا: الأسباب المذكورة أعلاه.',alsoOrg:'ويُرسَل أيضًا: الأسباب المذكورة أعلاه، وجهات الاتصال الرسمية لـ {o} من قائمة مضبوط.',
+wait:'الذكاء الاصطناعي يبحث في المواقع الرسمية في الإمارات. قد يستغرق ذلك دقيقة ونصفًا.',stopped:'أوقفتَ فحص الذكاء الاصطناعي.',head:'فحص بالذكاء الاصطناعي (تجربة). لم يراجعه أي شخص.',
+caution:'وجد الذكاء الاصطناعي علامات على أن هذه الرسالة قد تكون احتيالًا',nothing:'النتيجة أعلاه كما هي. تحقق من المرسل الحقيقي، في تطبيقه أو على رقم تعرفه مسبقًا، قبل أن تفعل ما تطلبه الرسالة.',src:'المصادر',list:'من قائمة مضبوط لجهات الاتصال الرسمية',
+help:'هل أفادك هذا؟',yes:'نعم',no:'لا',thanks:'شكرًا لك.',
+e_many:'عدد الفحوصات كبير الآن. حاول لاحقًا.',e_busy:'خدمة الذكاء الاصطناعي مشغولة. حاول بعد دقيقة.',e_off:'جرّب فحص الذكاء الاصطناعي لاحقًا.',
+e_declined:'تحقق من هذه الرسالة مع الجهة بنفسك.',e_empty:'اضغط «حاول مرة أخرى» لجواب جديد.',
+e_large:'هذه الرسالة أطول مما يقبله فحص الذكاء الاصطناعي.',e_long:'هذه الرسالة أطول مما يقبله فحص الذكاء الاصطناعي (2000 حرف على الأكثر)، فلم تُرسَل.',
+e_slow:'تأخر الذكاء الاصطناعي أكثر من 90 ثانية. حاول لاحقًا.',e_net:'تحقق من الاتصال وحاول مرة أخرى.',
+priv_ai:'لا يغادر ما تلصقه هذا الجهاز إلا إذا اخترت إرسال رسالة إلى فحص الذكاء الاصطناعي.'}};
+const ax=(k,a)=>{const d=AI_TX[UI==='ar'?'ar':'en'];return (has(d,k)?d[k]:AI_TX.en[k]||k).replace(/\{(\w+)\}/g,(m,n)=>a&&a[n]!=null?String(a[n]):m)};
+const AI_ERR={too_many:'e_many',busy:'e_busy',declined:'e_declined',empty:'e_empty',bad_request:'e_declined',too_large:'e_large',long:'e_long',slow:'e_slow',net:'e_net'};
+const aiErrKey=c=>has(AI_ERR,c)?AI_ERR[c]:'e_off';
+/* the tester link: inside the site's first page (same address) opened with ?test=1 */
+function aiOn(){if(!AI_URL||QS.get('embed')!=='1')return false;try{const p=window.parent;return !!p&&p!==window&&p.location.origin===location.origin&&new URLSearchParams(p.location.search).get('test')==='1'}catch(e){return false}}
+const aiSlot=e=>e&&e.final&&e.final.verdict==='unclear'&&aiOn()?'<div id="aiSlot"></div>':'';
+/* run on a copy with digits as 0-9 (same length), cut in the text as written */
+function aiSub(s,re,f){const n=normDigits(s);let o='',p=0,m;re.lastIndex=0;
+  while((m=re.exec(n))){const r=f(m);if(r!=null){o+=s.slice(p,m.index)+r;p=m.index+m[0].length}if(!m[0].length)re.lastIndex++}
+  return o+s.slice(p)}
+/* names after a greeting or before a sign-off, but not "Customer", "Mum", "العميل" or a name of an organisation found */
+const AI_GEN=new Set('customer customers client user member members valued sir madam all everyone team friend friends there cardholder subscriber beneficiary applicant candidate employee parent parents resident guest winner investor partner colleague mum mom dad mama papa brother sister bro sis uae the your our a an from here writing calling sorry glad happy this i we please for'.split(' '));
+const AI_GEN_AR=new Set('بك بكم والله وسهلا وغلا ورحمه جميعا مجددا اخي اختي عميلنا متعاملنا مشتركنا عميل متعامل مشترك كيف شخبارك شحالك حبيبي شباب جماعه'.split(' '));
+const AI_HI=/(^|[^\p{L}\p{N}_])((?:dear|hi|hello|hey|hii|hiya|greetings|good (?:morning|afternoon|evening)|attn|attention|(?:kind |best |warm )?regards|thanks|thank you|sincerely|cheers|my name is|this is|i am|salam|best wishes|yours(?: \p{L}+)?)(?:[ \t]*[,.!]?[ \t]*\n[ \t]*|[ \t]*[,:]?[ \t]*)(?:(?:mr|mrs|ms|miss|dr|mister|sheikh|sheikha|eng)\.?[ \t]+)?)/giu;
+const AI_HI_AR=/(^|\n)([ \t]*(?:عزيزي|عزيزتي|[أا]عزائي|ال[أا]خت?|السيد[ةه]?|الفاضلة?|مرحب\u064B?ا\u064B?|[أا]هل\u064B?ا\u064B?|(?:يا )?هلا(?: والله)?|يا(?! ?هلا)|ش(?:حال|خبار)ك|السلام عليكم|ال[أا]ستاذة?)[ \t]+(?:(?:ال[أا]خت?|السيد[ةه]?|ال[أا]ستاذة?|الدكتورة?|المهندس|[أا]خي|[أا]ختي|يا)[ \t]+)?)/g,
+  AI_ME_AR=/(^|[^\u0621-\u064A])((?:[أا]نا )?اسمي[ \t]+)/g,AU='[\u0621-\u0652]+(?:[ \t]+(?:بنت?|آل)[ \t]+[\u0621-\u0652]+)*',AI_NM_AR=RegExp('^'+AU+'(?:[ \t]+'+AU+'){0,2}(?=[ \t]*(?:[،,\n]|$))');
+const aiKey=w=>normAr(w.toLowerCase()).replace(/['’\u064B-\u0652]/g,'');
+function aiNames(s,ow){
+  const run=(s,re,pick)=>{let o='',p=0,m;re.lastIndex=0;
+    while((m=re.exec(s))){const at=m.index+m[0].length,n=pick(s.slice(at),m[2]);if(!n)continue;o+=s.slice(p,at)+'[hidden]';p=at+n;re.lastIndex=p}
+    return o+s.slice(p)};
+  s=run(s,AI_HI,(r,g)=>{const w=/^\p{Lu}[\p{L}'’-]*(?:[ \t]+(?:(?:al|el|bin|bint|ibn|abu|abdul|de|van)[ \t]+)?\p{Lu}[\p{L}'’-]*){0,5}/u.exec(r)||/^\p{Ll}[\p{L}'’-]{2,}(?:[ \t]+\p{Ll}[\p{L}'’-]*){0,2}(?=[ \t]*(?:[,!:.\n]|$|how\b))/u.exec(r);
+    if(!w||(/\n/.test(g)&&!/^[ \t]*(?:\n|$)/.test(r.slice(w[0].length))))return 0;const k=aiKey(w[0].split(/[ \t]/)[0]);return AI_GEN.has(k)||ow.has(k)?0:w[0].length});
+  /* Arabic, narrow: 1 to 3 words between a greeting at a line start and a comma or the line end; up to 3 words after اسمي */
+  s=run(s,AI_HI_AR,r=>{const w=AI_NM_AR.exec(r);if(!w)return 0;const ws=w[0].split(/[ \t]+/).map(aiKey);return /^ال/.test(ws[0])||ow.has(ws[0])||ws.some(x=>AI_GEN_AR.has(x))?0:w[0].length});
+  return run(s,AI_ME_AR,r=>{const w=/^[\u0621-\u0652]+(?:[ \t]+(?!(?:من|في)(?![\u0621-\u0652])|و)[\u0621-\u0652]+){0,2}/.exec(r);return w?w[0].length:0})}
+/* what is hidden, and why: research/scams/tools/README.md, "AI step" */
+const AI_UNSEEN=/[\u0640\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F\u00AD\u034F\u061C\u115F\u1160\u17B4\u17B5\u180B-\u180F\u200B-\u200F\u2028-\u202E\u2060-\u206F\u20E3\u3164\uFE00-\uFE0F\uFEFF\uFFA0\uFFF9-\uFFFB\uE000-\uF8FF]|[\u{E0000}-\u{E0FFF}]/gu;
+const AI_LNK=/(?:https?:\/\/)?(?:\[[0-9a-f:.]+\]|((?:[\p{L}\p{N}-]+\.)+\p{L}{2,24}))(?::\d{2,5})?[\/?#]\S*/giu;
+const AI_PH=/[+(]{0,2}\d(?:[^\p{L}\p{N}\n\uE000-\uF8FF]{0,3}\d){6,}/gu;
+const aiNum=(s,r)=>aiSub(s,AI_PH,m=>AI_KEEP.test(m[0].replace(/^[+(]+/,'').trim())?null:r);
+const AI_KEEP=/^(?:(?:0?[1-9]|[12]\d|3[01])([ .\/-])(?:0?[1-9]|1[0-2])\1(?:19|20)\d\d|(?:19|20)\d\d([ .\/-])(?:0?[1-9]|1[0-2])\2(?:0?[1-9]|[12]\d|3[01])|\d{1,2}[.:]\d\d ?- ?\d{1,2}[.:]\d\d|[1-9]\d{0,2}(?:,\d{3})+(?:\.\d\d)?)$/;
+function aiMask(text,ow){ow=ow||new Set();
+  /* tidied first, as the Worker does */
+  let s=String(text==null?'':text).normalize('NFKC').replace(AI_UNSEEN,'')
+    .replace(/\p{Nd}/gu,d=>{const c=d.codePointAt(0);let z=c;while(c-z<9&&/\p{Nd}/u.test(String.fromCodePoint(z-1)))z--;return c-z+''})
+    .replace(/\[\.\]|\(\.\)|\[dot\]|\(dot\)/gi,'.').replace(/\bh(?:tt|xx)p(s?) ?: ?\/\/ ?/gi,'http$1://').replace(/\[hidden \d+\]/g,'\uF8FF');
+  const L=[],put=h=>{L.push(h.toLowerCase().replace(/^www\./,'').replace(/\d{7,}/g,'[hidden]'));return '\uE000'+String.fromCharCode(0xE000+L.length)+'\uE000'},glue=()=>{s=s.replace(/(\uE000.\uE000)([^\s\uE000]+)/g,(m,a,b)=>a+(/[\p{L}\p{N}]/u.test(b)?'':b))};let ls;
+  while((ls=findLinks(s)).length)ls.reverse().forEach(l=>{s=s.slice(0,l.i)+put(l.host)+s.slice(l.i+l.len)});
+  glue();s=s.replace(AI_LNK,(m,x)=>put(x||'unknown'));glue();
+  s=s.replace(/[^\s@<>()[\]"'«»,;]+ ?(?:@|[(\[] ?at ?[)\]]) ?(?:\uE000.\uE000|[^\s@<>()[\]"'«»,;:]+\.[^\s@<>()[\]"'«»,;:]+)/gi,'[hidden]');
+  s=s.replace(/((?:passport|permit|licen[cs]e|file|uid|unified|labou?r card|جواز|ملف|المروري|رخصة|تصريح|الموحد)[^\d\n\uE000-\uF8FF]{0,18})(?:[a-z]{1,2}[ -]?)?\d{5,7}[a-z]{0,2}(?![a-z\d])/gi,'$1[hidden]');
+  s=aiNum(s,'[hidden]');
+  s=aiSub(s,/\b[A-Za-z]{1,2}-?\d{6,9}[A-Za-z]{0,2}\b|\bAE[ \t]?\d{2}\b/gi,()=>'[hidden]');
+  s=aiNames(s,ow).replace(/\uE000([\uE001-\uF8FE])\uE000/g,(m,c)=>'[link: '+L[c.charCodeAt(0)-0xE001]+']').replace(/\uF8FF/g,'[hidden]');
+  return s.replace(/(?:\[hidden\][ \t]*){2,}/g,'[hidden] ').replace(/[ \t]+\n/g,'\n').trim()}
+/* sender line: an SMS sender name or an organisation found stays, a person's name does not */
+const AI_SND_GEN=new Set('bank police courier delivery support info service services team admin hr office customer care alert alerts notice government ministry'.split(' '));
+function aiSender(x,ow){const m=aiMask(x,ow);if(/^[A-Z]{2}-[A-Z0-9&._-]{2,12}$/.test(m))return m;
+  return m.split(/([ \t~,\/().]+)/).map(w=>{const k=aiKey(w);return /^[\p{L}\p{N}_'’-]+$/u.test(w)&&/\p{L}/u.test(w)&&!ow.has(k)&&!AI_GEN.has(k)&&!AI_SND_GEN.has(k)?'[hidden]':w}).join('').replace(/(?:\[hidden\][ \t]*){2,}/g,'[hidden] ').trim()}
+const aiClip=(s,n)=>{s=String(s||'').trim();if(s.length<=n)return s;s=s.slice(0,n+1);s=/\s/.test(s)?s.replace(/\s+\S*$/,''):s.slice(0,n);const i=s.lastIndexOf('[');return (i>=0&&s.indexOf(']',i)<0?s.slice(0,i):s).trim()};
+/* the organisations found, from Mazboot's own list (never from the message) */
+const aiOrgList=e=>uniq((e&&e.orgs)||[]).map(id=>has(MZ_BY_ID,id)?MZ_BY_ID[id]:null).filter(Boolean).slice(0,5);
+function aiBody(e){const ow=new Set();aiOrgList(e).forEach(o=>[o.n[0],o.n[1]].concat(o.a||[],o.s||[]).join(' ').split(/\s+/).forEach(y=>{y=aiKey(y);if(y)ow.add(y)}));
+  const text=aiMask(e.red,ow);if(!text)return {err:'bad_request'};if(text.length>AI_MAX.text)return {err:'long'};
+  const b={kind:'scam',lang:UI==='ar'?'ar':'en',text},snd=e.snd?aiClip(aiSender(e.snd,ow),AI_MAX.sender):'';if(snd)b.sender=snd;
+  let rs=e.lonly&&!e.pic?[]:reasonsFor(e);if(!rs.length)rs=[vHead(e)];
+  b.reasons=rs.map(x=>aiClip(aiMask(x,ow),AI_MAX.reason)).filter(Boolean).slice(0,8);
+  b.orgs=aiOrgList(e).map(o=>({id:o.i,name:mzName(o),domains:(o.d||[]).slice(0,AI_MAX.list),phones:(o.p||[]).map(p=>String(p[2]||p[0])).filter(Boolean).slice(0,AI_MAX.list)}));
+  return {body:b}}
+/* the box belongs to one result; another result stops the old request */
+let AI_SEQ=0,AI={};
+function aiMount(e){if(!AI_URL)return;const s=e?$('aiSlot'):null,id=s?e.id:null;
+  if(AI.id!==id){const c=AI.ctl;if(c)try{c.abort()}catch(x){}AI={id,st:'offer',n:0}}
+  if(!s)return;
+  if(!AI.node){const d=AI.node=document.createElement('div');d.className='aibox';d.id='aiBox';d.setAttribute('aria-live','polite');d.addEventListener('click',aiClick)}
+  s.parentNode.replaceChild(AI.node,s);AI.sig='';aiPaint()}
+function aiClick(ev){const b=ev.target.closest('button'),S=AI,e=current();if(!b||b.disabled||!e||e.id!==S.id||!aiOn())return;const h=k=>b.hasAttribute('data-ai'+k);
+  if(h('ask')&&S.st!=='wait')S.st='preview';
+  else if(h('send')){aiSend(S);return}
+  else if(h('cancel')&&/^(?:preview|long)$/.test(S.st))S.st='offer';
+  else if(h('stop')&&S.st==='wait'){const c=S.ctl;S.ctl=null;S.n=0;S.st='stop';if(c)try{c.abort()}catch(x){}}
+  else if(h('help')&&S.st==='done'&&!S.help)S.help=b.getAttribute('data-aihelp')==='yes'?'yes':'no';
+  else return;
+  aiPaint()}
+async function aiSend(S){if(S.st!=='preview'||!S.body)return;
+  const n=S.n=++AI_SEQ,ctl=typeof AbortController==='function'?new AbortController():null,body=JSON.stringify(S.body);
+  S.st='wait';S.t0=Date.now();S.ctl=ctl;S.help='';aiPaint();
+  const end=(res,err)=>{if(AI!==S||S.n!==n||S.st!=='wait')return;S.ctl=null;S.ms=Date.now()-S.t0;S.st=res?'done':'fail';S.res=res;S.err=err||'bad_upstream';aiPaint()};
+  const tm=setTimeout(()=>{end(null,'slow');if(ctl)try{ctl.abort()}catch(x){}},AI_MAX.wait);
+  let res=null,err='';
+  try{const r=await fetch(AI_URL,{method:'POST',headers:{'Content-Type':'application/json'},body,credentials:'omit',referrerPolicy:'no-referrer',cache:'no-store',signal:ctl?ctl.signal:undefined});
+    let j=null;try{j=await r.json()}catch(x){}
+    if(j&&j.ok===true&&j.kind==='scam'&&['caution','nothing'].includes(j.verdict))res=j;
+    else if(j&&j.ok===false&&typeof j.error==='string'&&/^[a-z_]{2,20}$/.test(j.error)&&!/^(?:long|slow|net)$/.test(j.error))err=j.error}
+  catch(x){err='net'}
+  clearTimeout(tm);end(res,err)}
+/* text nodes only; the data-ai marks are for tests */
+function aiPaint(){const S=AI,el=S.node;if(!el)return;const sig=[S.st,S.n,S.help,UI].join();if(S.sig===sig)return;S.sig=sig;
+  const mk=(tag,cls,text)=>{const x=document.createElement(tag);if(cls)x.className=cls;if(text!=null)x.textContent=text;return x};
+  const btn=(cls,k,v,text)=>{const b=mk('button',cls,text);b.type='button';b.setAttribute('data-ai'+k,v);return b};
+  const row=xs=>{const a=mk('div','acts');xs.forEach(x=>a.appendChild(x));return a};
+  el.textContent='';
+  if(S.st==='preview'||S.st==='long'){const e=current(),r=e&&e.id===S.id?aiBody(e):{err:'bad_request'};S.body=r.body;
+    if(r.err){S.st=r.err==='long'?'long':'fail';S.err=r.err}
+    else{el.appendChild(mk('p','note',ax('note')));el.appendChild(mk('p','note',ax('what')));
+      const pre=mk('div','redbox aipre',r.body.text);pre.dir='auto';el.appendChild(pre);
+      if(r.body.sender){const p=mk('p','note',ax('snd')+' '),bd=mk('bdi','',r.body.sender);bd.dir='auto';p.appendChild(bd);el.appendChild(p)}
+      const os=r.body.orgs.map(o=>o.name).join(UI==='ar'?'، ':', ');el.appendChild(mk('p','note',os?ax('alsoOrg',{o:os}):ax('also')));
+      el.appendChild(row([btn('go','send','1',ax('send')),btn('tbtn','cancel','1',ax('cancel'))]))}}
+  const at=(k,v)=>{if(v)el.setAttribute('data-ai'+k,String(v));else el.removeAttribute('data-ai'+k)};
+  at('',S.st);at('-n',S.n);at('-err',S.st==='fail'?S.err:'');at('-help',S.help);at('-ms',/^(?:done|fail)$/.test(S.st)?S.ms:0);at('-verdict',S.st==='done'?S.res.verdict:'');
+  if(S.st==='preview')return;
+  if(S.st==='wait'){const k=btn('go','send','1',ax('send'));k.disabled=true;
+    const p=mk('p','note');p.setAttribute('role','status');p.appendChild(mk('span','aispin'));p.appendChild(document.createTextNode(ax('wait')));
+    el.appendChild(row([k,btn('tbtn','stop','1',ax('cancel'))]));el.appendChild(p);return}
+  if(S.st==='done'){aiAnswer(el,S.res,mk);el.appendChild(S.help?mk('p','note',ax('thanks')):row([mk('span','note',ax('help')),btn('tbtn','help','yes',ax('yes')),btn('tbtn','help','no',ax('no'))]));return}
+  if(S.st==='fail'||S.st==='long')el.appendChild(mk('p','aierr',ax(aiErrKey(S.err))));
+  if(S.st==='stop')el.appendChild(mk('p','note',ax('stopped')));
+  el.appendChild(row([S.st==='long'?btn('tbtn','cancel','1',ax('cancel')):btn('tbtn','ask','1',ax(S.st==='offer'?'ask':'again'))]))}
+/* the AI's words: unseen characters, numbers and addresses out; a reason, or all of them read together, that says safe, real... is dropped */
+const aiPlain=s=>String(s==null?'':s).replace(AI_UNSEEN,'').replace(/[✓✔✅☑]/g,'');
+const aiOut=s=>{s=aiPlain(s).slice(0,AI_MAX.part);let ls;while((ls=findLinks(s)).length)ls.reverse().forEach(l=>{s=s.slice(0,l.i)+'[…]'+s.slice(l.i+l.len)});return aiNum(s.replace(AI_LNK,'[…]'),'[…]')};
+const aiFold=s=>s.normalize('NFKC').replace(/[\u064B-\u0652\u0670\u0640]/g,'').replace(/[أإٱ]/g,'ا').replace(/(^|[^\p{L}'’])((?:\p{L} )+\p{L})(?!\p{L})/gu,(m,a,b)=>a+b.replace(/ /g,''));
+const AI_NEG=/\b(?:not|never|isn['’]t|aren['’]t|wasn['’]t)\s+(?:(?:be|a|an|the|really|always)\s+)?(?:safe|genuine|real|official|verified|confirmed|legit\w*|authentic|trusted|valid)\b|\ba real \w+(?: \w+){0,3}? (?:would|will|does|do|did)(?: not|n['’]t| never)\b|\bis an? real \w+,? but\b|(?:ليس|ليست|غير)\s+(?:ال)?(?:آمن|حقيقي|رسمي|موثوق)\S*/gi;
+const aiBad=s=>{s=aiFold(s);return /[^\P{L}A-Za-zÀ-ÿ\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFC]/u.test(s)||AI_NO.test(s.replace(AI_NEG,''))};
+const AI_NO=new RegExp(['\\bfrom\\s+(?:the\\s+|your\\s+)?real\\b|\\b(?:verified|confirmed)\\b|تم التحقق','\\b(?:safe|safely|genuine|genuinely|legit|legitimate|authentic|trustworthy|harmless|nothing to worry)\\b',
+  '\\b(?:fine|ok|okay|alright)\\s+to\\b','\\b(?:no|not|isn[\'’]t)\\s+(?:an?\\s+)?(?:scam|fraud|danger(?:ous)?|threat)\\b|\\bno\\s+risk\\b|\\b(?:can trust (?:this|it)|you may proceed|nothing suspicious|need to worry|checks out|everything is in order)\\b',
+  '\\b(?:is|are|was|were|be|being|looks?|seems?|appears?|sounds?|it[\'’]s)\\s+(?:(?:very|probably|likely|definitely|completely|totally|really)\\s+)?(?:a\\s+|an\\s+|the\\s+)?(?:real|official|fine|ok|okay|normal|valid|correct|trusted|verified)\\b',
+  '\\breal\\s+(?:message|sms|text|offer|sender|number|link|website|site|company|request|notice|alert|one)\\b',
+  '(?:^|[^\\u0621-\\u064A])[وفب]?(?:ال)?(?:آمن|بامان|حقيقي|اصلي|موثوق|سليم|امين)[ةها]?(?![\\u0621-\\u064A])',
+  'لا داعي للقلق|لا تقلق|اطمئن|لا خطر|ليست? (?:رسالة )?احتيال|(?:ال)?رسال(?:ة|ه)\\s+(?:رسمي|صحيح)'].join('|'),'i');
+function aiAnswer(el,res,mk){
+  el.appendChild(mk('p','aihead',ax('head')));
+  if(res.verdict!=='caution'){el.appendChild(mk('p','',ax('nothing')));return}  /* only the page's own sentence */
+  el.appendChild(mk('h3','',ax('caution')));
+  /* sources: Mazboot's own list, or an https page of an official site */
+  let k=0;const src=(Array.isArray(res.sources)?res.sources:[]).slice(0,8).map(s=>{let u=null;if(!s)return null;
+    if(s.kind==='mazboot'&&typeof s.id==='string'&&has(MZ_BY_ID,s.id)&&AI.body&&AI.body.orgs.some(o=>o.id===s.id))return {n:++k,o:MZ_BY_ID[s.id]};
+    try{u=s.kind==='web'&&/^https:\/\/[^\s"'<>\\]+$/i.test(s.url)?new URL(s.url):null}catch(x){}
+    if(!u||u.protocol!=='https:'||u.username||u.password||u.port||!isOfficialHost(u.hostname))return null;
+    const host=u.hostname.replace(/^www\./,''),ti=aiClip(aiPlain(s.title),AI_MAX.title);
+    return {n:++k,url:u.href,host,title:ti&&!aiBad(ti)?ti:host}});
+  const p=mk('p','aitext');p.dir='auto';let any=0,all='',cat='';
+  for(const x of (Array.isArray(res.parts)?res.parts:[]).slice(0,6)){const tx=x&&typeof x.text==='string'?aiOut(x.text):'';if(!tx.trim()||aiBad(tx))continue;const sp=any++&&!/^\s/.test(tx)?' ':'';all+=sp+tx;cat+=tx;
+    p.appendChild(document.createTextNode(sp+tx));
+    uniq((Array.isArray(x.cites)?x.cites:[]).map(i=>Number.isInteger(i)&&i>=0&&src[i]?src[i].n:0).filter(Boolean)).forEach(n=>p.appendChild(mk('sup','','['+n+']')))}
+  if(!any||aiBad(all)||aiBad(cat)){el.removeChild(el.lastChild);el.appendChild(mk('p','',ax('nothing')));return}
+  el.appendChild(p);
+  const shown=src.filter(Boolean);if(!shown.length)return;
+  el.appendChild(mk('h4','',ax('src')));const ol=mk('ol','aisrc');
+  const link=(href,text,tel)=>{const a=mk('a',tel?'tel':''),b=mk('bdi','',text);b.dir='ltr';a.appendChild(b);a.href=href;if(!tel){a.target='_blank';a.rel='noopener noreferrer'}return a};
+  const line=(li,x)=>{const r=mk('span','aihost');r.appendChild(x);li.appendChild(r)};
+  for(const s of shown){const li=mk('li'),o=s.o;
+    if(s.url){const a=mk('a','',s.title);a.href=s.url;a.target='_blank';a.rel='noopener noreferrer';a.dir='auto';li.appendChild(a);li.appendChild(mk('span','aihost',s.host))}
+    else{li.appendChild(mk('b','',mzName(o)));li.appendChild(mk('span','aihost',ax('list')));
+      (o.d||[]).slice(0,2).forEach(d=>line(li,o.u?mk('bdi','',d):link('https://'+d,d)));
+      (o.p||[]).filter(x=>x[0].length>=3&&!/whatsapp|international|outside/i.test(x[1]||'')).slice(0,2).forEach(x=>{const num=String(x[2]||x[0]);line(li,o.u?mk('bdi','',num):link(telHref(x),num,1))})}
+    ol.appendChild(li)}
+  el.appendChild(ol)}
+/* the one promise that changes on the tester link */
+function aiStart(){const p=aiOn()&&document.querySelector('[data-t="priv"]');if(p){S.en.priv_ai=AI_TX.en.priv_ai;S.ar.priv_ai=AI_TX.ar.priv_ai;p.dataset.t='priv_ai'}}
+/* ---------- end of the AI step ---------- */
+
 /* ---------- Start-up ---------- */
-setUI(UI,true);setMode('msg');
+aiStart();setUI(UI,true);setMode('msg');
 if(Q0)$('msg').value=Q0.slice(0,4000);
 applyTheme();
 /* A bad saved history can never stop the page: it is replaced by the ready-made checks. */
