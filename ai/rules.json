@@ -1,6 +1,6 @@
 {
   "on": true,
-  "model": "claude-haiku-5-5",
+  "model": "claude-sonnet-5-5",
   "effort": "high",
   "max_tokens": 8000,
   "searches": 3,
