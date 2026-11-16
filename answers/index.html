@@ -3292,12 +3292,17 @@ const lines=[aiStatus(e),L(e.a)].concat(arr(e.facts).map(f=>'- '+L(f)),arr(e.dep
 e.authority?[authName(e.authority)]:[],arr(e.sources).filter(s=>s&&s.url).map(s=>[s.publisher,s.title].filter(x=>isStr(x)&&x).join(': ')+' '+s.url));
 let text='';for(const x0 of lines){const x=String(x0||'').trim();if(!x||text.length+x.length+1>AI_MAX.text)continue;text+=(text?'\n':'')+x}
 return title&&text?{id:e.id,title,text}:null}
-/* the page's own entries for the question, taken in turn from: what it showed, the search for the whole question, and the search
-   for each part on its own; no repeats */
-async function aiEntries(R){const ids=[],add=id=>{if(isStr(id)&&id&&ids.indexOf(id)<0&&hasOwn(BY_ID,id))ids.push(id)};
-const q=unmaskQ(R.q),ps=aiPieces(q),own=arr(R.parts).map(p=>p.id).concat(arr(R.order),R.kg?arr(R.kg.closest):[],arr(R.next).map(e=>e&&e.id));
-const lists=[own].concat([q].concat(ps.length>1?ps:[]).map(s=>search(s).filter(x=>!x.off).slice(0,3).map(x=>x.id)));
-for(let k=0;k<6;k++)for(const l of lists)add(l[k]);
+/* the entries sent with the question, in one combined ranking: the page's own first answer goes first; every other entry is
+   ordered by the sum, over each list it is in, of weight/(AI_PICK.k + its place in that list). The lists: the page's own ids
+   (weight 1), search() of the whole question (weight AI_PICK.whole) and, when there are 2 or more parts, search() of each part
+   (weight 1); each list is cut to its first AI_PICK.depth places, then the entries marked off are dropped from the search
+   lists (places count from 1 after that). The first 12 ids are loaded and at most AI_MAX.n (8) entries are sent, no repeats. */
+const AI_PICK={k:2,depth:40,whole:1.5};
+async function aiEntries(R){const q=unmaskQ(R.q),ps=aiPieces(q),sc=new Map(),P=AI_PICK;
+const own=[...new Set(arr(R.parts).map(p=>p.id).concat(arr(R.order),R.kg?arr(R.kg.closest):[],arr(R.next).map(e=>e&&e.id)).filter(id=>isStr(id)&&id&&hasOwn(BY_ID,id)))];
+const put=(l,w)=>l.forEach((id,k)=>sc.set(id,(sc.get(id)||0)+w/(P.k+k+1)));
+put(own.slice(0,P.depth),1);[q].concat(ps.length>1?ps:[]).forEach((s,i)=>put(search(s).slice(0,P.depth).filter(x=>!x.off).map(x=>x.id),i?1:P.whole));
+const ids=own.slice(0,1);for(const [id] of [...sc].sort((a,b)=>b[1]-a[1]))if(ids.indexOf(id)<0&&hasOwn(BY_ID,id))ids.push(id);
 const want=ids.slice(0,12);if(LAZY)await hydrate(want);const out=[];
 for(const id of want){const x=aiEntry(BY_ID[id]);if(x)out.push(x);if(out.length>=AI_MAX.n)break}return out}
 const aiHasText=j=>arr(j&&j.parts).some(p=>p&&isStr(p.text)&&p.text.trim());
