@@ -254,18 +254,20 @@ dialog.sheet::backdrop{background:rgba(14,15,18,.5)}
    <button type="button" class="tbtn" id="langBtn" lang="ar">عربي</button>
   </div>
   <h1 id="h-s1" tabindex="-1" data-t="h1">Is your rent rise allowed?</h1>
-  <p class="route"><span class="soft" data-t="dubaiOnly">Dubai only.</span></p>
+  <p class="route"><span class="soft" data-t="dubaiOnly">Dubai only. Paste your landlord’s message to check the rise and write a reply.</span></p>
   <form class="ask" id="askForm" novalidate>
    <label for="mText" class="vh" data-t="msgLabel">Your landlord's message</label>
    <div class="field">
-    <textarea id="mText" dir="auto" maxlength="4000" rows="3" data-tp="msgPh" placeholder="Paste your landlord's message"></textarea>
+    <textarea id="mText" dir="auto" maxlength="4000" rows="3" data-tp="msgPh" placeholder="Paste it here, like: new rent AED 63,000, now AED 52,000"></textarea>
     <button class="go" id="mRead" type="submit" data-ta="check" aria-label="Check"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h13M12.5 6l6 6-6 6"/></svg></button>
    </div>
+   <p class="route" id="tryRow"><span class="soft" data-t="tryEx">Try an example</span><button type="button" class="tbtn" data-exq="late" data-t="exLate">Late notice, big rise</button><button type="button" class="tbtn" data-exq="ar" data-t="exAr">Arabic message</button><button type="button" class="tbtn" data-exq="trick" data-t="exTrick">Asks you to pay a fee</button></p>
    <p class="route">
-    <button type="button" class="tbtn" id="exBtn" data-sheet="sheetEx" aria-haspopup="dialog" data-t="examples">Examples</button>
+    <button type="button" class="tbtn" id="exBtn" data-sheet="sheetEx" aria-haspopup="dialog" data-t="examples">More examples</button>
     <span class="soft" id="exNote" role="status"></span>
    </p>
   </form>
+  <details class="more" id="howUse"><summary data-t="howUseH">How to use it</summary><div class="more-body"><ol><li data-t="howUse1">Paste your landlord’s message, or tap an example.</li><li data-t="howUse2">Tap the arrow. Check the facts and fill in what is missing.</li><li data-t="howUse3">Pick the calculator result to get an answer and a reply.</li></ol></div></details>
  </div>
 </header>
 
@@ -276,11 +278,11 @@ dialog.sheet::backdrop{background:rgba(14,15,18,.5)}
    <section class="tile" id="s1" aria-labelledby="h-s1">
     <p class="err" id="mErr" role="alert"></p>
     <details class="more">
-     <summary data-t="datesSum">Dates and how it came</summary>
+     <summary data-t="datesSum">Add dates (optional)</summary>
      <div class="more-body grid2">
       <label for="mArrived"><span data-t="fArrived">Message reached you</span><input type="date" id="mArrived"></label>
       <label for="mExpiry"><span data-t="fExpiry">Contract ends</span><input type="date" id="mExpiry"></label>
-      <label for="mHow"><span data-t="fHow">Sent by</span><select id="mHow"></select></label>
+      <label for="mHow"><span data-t="fHow">How it reached you</span><select id="mHow"></select></label>
      </div>
     </details>
     <div id="facts"></div>
@@ -289,10 +291,10 @@ dialog.sheet::backdrop{background:rgba(14,15,18,.5)}
    <section class="tile" id="s2" aria-labelledby="h-s2">
     <div class="head"><h2 id="h-s2" tabindex="-1" data-t="s2h">Rule check</h2></div>
     <p class="note" id="cGate"></p>
-    <p class="note" id="idxNote" data-t="idxNote">How much rent may rise depends on the average rent for similar homes, and only the official Rental Index has that figure. Read yours there and type what it says. If you type a guess, the result is a guess.</p>
+    <p class="note" id="idxNote" data-t="idxNote">Only the official calculator says how much rent may rise. Open it, then pick what it said.</p>
     <a class="tbtn" href="https://dubailand.gov.ae/en/eservices/rental-index/" target="_blank" rel="noopener noreferrer"><span data-t="calcOpen">Dubai Land Department calculator</span><svg class="flip" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14 4h6v6M20 4l-8.5 8.5M18 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/></svg></a>
     <fieldset>
-     <legend data-t="calcLegend">What did it say?</legend>
+     <legend data-t="calcLegend">What did the calculator say?</legend>
      <label class="opt" for="cZero"><input type="radio" name="calc" id="cZero" value="zero"><span data-t="calcZero">No rise allowed</span></label>
      <div class="opt"><input type="radio" name="calc" id="cPctR" value="pct"><label class="inl" for="cPctR" data-t="calcUpTo">Up to</label><span class="pct"><input type="text" id="cPct" inputmode="decimal" maxlength="5" autocomplete="off" data-ta="pctL" aria-label="Percent allowed"><span aria-hidden="true">%</span></span></div>
      <label class="opt" for="cUnknown"><input type="radio" name="calc" id="cUnknown" value="unknown"><span data-t="calcUnknown">Not checked yet</span></label>
@@ -360,7 +362,7 @@ dialog.sheet::backdrop{background:rgba(14,15,18,.5)}
     <label class="opt" for="oLonger"><input type="checkbox" id="oLonger"><span data-t="oLonger">A longer lease for a smaller rise</span></label>
     <label class="opt" for="oShort"><input type="checkbox" id="oShort"><span data-t="oShort">A short extension at today's rent</span></label>
    </fieldset>
-   <button type="button" class="btn" id="rDraft" data-t="rDraft">Draft my reply</button>
+   <button type="button" class="btn" id="rDraft" data-t="rDraft">Write my reply</button>
    <p class="err" id="rErr" role="alert"></p>
    <div id="rResult"></div>
   </section>
@@ -386,7 +388,7 @@ dialog.sheet::backdrop{background:rgba(14,15,18,.5)}
     <label class="opt" for="dPhotos"><input type="checkbox" id="dPhotos"><span data-t="dPhotos">I have dated move-in and move-out photos</span></label>
    </div></details>
    <button type="button" class="tbtn" id="dEx" data-t="useEx2">Use the made-up example</button>
-   <button type="button" class="btn" id="dDraft" data-t="dDraft">Draft my request</button>
+   <button type="button" class="btn" id="dDraft" data-t="dDraft">Write my request</button>
    <p class="err" id="dErr" role="alert"></p>
    <div id="dResult"></div>
   </section>
@@ -415,7 +417,7 @@ dialog.sheet::backdrop{background:rgba(14,15,18,.5)}
    <ul class="list" id="ruleList"></ul>
   </div></details></section>
   <p class="note" data-t="pvOne">A demo: the examples are made up. Your data stays in this browser.</p>
-  <div class="row"><button type="button" class="tbtn" id="reset" data-t="reset">Reset</button><span class="note" id="resetMsg" role="status"></span></div>
+  <div class="row"><button type="button" class="tbtn" id="reset" data-t="reset">Clear my data</button><span class="note" id="resetMsg" role="status"></span></div>
  </div>
 </dialog>
 
@@ -424,10 +426,10 @@ dialog.sheet::backdrop{background:rgba(14,15,18,.5)}
  <div class="sheet-body">
   <div class="exlist" role="group" aria-labelledby="exH">
    <button type="button" data-ex="late" aria-pressed="false" data-t="exLate">Late notice, big rise</button>
-   <button type="button" data-ex="ontime" aria-pressed="false" data-t="exOntime">On time, check the index</button>
+   <button type="button" data-ex="ontime" aria-pressed="false" data-t="exOntime">Notice in time, 5% rise</button>
    <button type="button" data-ex="ar" aria-pressed="false" data-t="exAr">Arabic message</button>
    <button type="button" data-ex="vacate" aria-pressed="false" data-t="exVacate">Notice to vacate</button>
-   <button type="button" data-ex="trick" aria-pressed="false" data-t="exTrick">Odd message</button>
+   <button type="button" data-ex="trick" aria-pressed="false" data-t="exTrick">Asks you to pay a fee</button>
   </div>
  </div>
 </dialog>
@@ -490,26 +492,26 @@ const p2=p=>String(Math.round(p*100)/100);
 /* ---------- words: English here, Arabic below ---------- */
 const TX={};
 TX.en={
- estLine:'An estimate worked out on your phone from the published rule and the numbers you typed. It is not an official result.',offLine:'Official answer: the Rental Index calculator of the Dubai Land Department. You get it from the department, not from this page.',howH:'How to get the official answer',howBody:'Open the Rental Index page on the Dubai Land Department website. It asks for the contract end date, the property type, how to find the property (the DEWA premise number, the Ejari contract number or the area) and your current yearly rent. Have those details ready. This page covers Dubai only: for other emirates it has no official calculator to point to.',guessNote:'This figure comes only from the official index. If you typed a guess, this result is a guess.',
- brand:'Masmooh',h1:'Is your rent rise allowed?',dubaiOnly:'Dubai only.',pvOne:'A demo: the examples are made up. Nothing you type leaves your device.',msgLabel:"Your landlord's message",msgPh:"Paste your landlord's message",
- check:'Check',examples:'Examples',datesSum:'Dates and how it came',fArrived:'Message reached you',fExpiry:'Contract ends',fHow:'Sent by',s2h:'Rule check',calcOpen:'Dubai Land Department calculator',
- idxNote:'How much rent may rise depends on the average rent for similar homes, and only the official Rental Index has that figure. Read yours there and type what it says. If you type a guess, the result is a guess.',f_mid:'It asks me to leave before the contract ends',
- calcLegend:'What did it say?',calcZero:'No rise allowed',calcUpTo:'Up to',pctL:'Percent allowed',calcUnknown:'Not checked yet',calcDemo:'Use an example result',cRun:'Check my renewal',toolsH:'Next steps',s4t:'Reply',
+ estLine:'An estimate worked out on your phone. It is not an official result.',offLine:'Official answer: the Rental Index calculator of the Dubai Land Department. You get it from the department, not from this page.',howH:'How to get the official answer',howBody:'Open the Rental Index page on the Dubai Land Department website. It asks for the contract end date, the property type, how to find the property (the DEWA premise number, the Ejari contract number or the area) and your current yearly rent. Have those details ready. This page covers Dubai only: for other emirates it has no official calculator to point to.',guessNote:'This figure comes only from the official index. If you typed a guess, this result is a guess.',
+ brand:'Masmooh',h1:'Is your rent rise allowed?',dubaiOnly:'Dubai only. Paste your landlord’s message to check the rise and write a reply.',pvOne:'A demo: the examples are made up. Nothing you type leaves your device.',msgLabel:"Your landlord's message",msgPh:"Paste it here, like: new rent AED 63,000, now AED 52,000",tryEx:'Try an example',howUseH:'How to use it',howUse1:'Paste your landlord’s message, or tap an example.',howUse2:'Tap the arrow. Check the facts and fill in what is missing.',howUse3:'Pick the calculator result to get an answer and a reply.',
+ check:'Check',examples:'More examples',datesSum:'Add dates (optional)',fArrived:'Message reached you',fExpiry:'Contract ends',fHow:'How it reached you',s2h:'Rule check',calcOpen:'Dubai Land Department calculator',
+ idxNote:'Only the official calculator says how much rent may rise. Open it, then pick what it said.',f_mid:'It asks me to leave before the contract ends',
+ calcLegend:'What did the calculator say?',calcZero:'No rise allowed',calcUpTo:'Up to',pctL:'Percent allowed',calcUnknown:'Not checked yet',calcDemo:'Use a made-up result',cRun:'Check my renewal',toolsH:'Next steps',s4t:'Reply',
  s3t:'Stay or move',s5t:'Deposit',s6t:'Key dates',notAdvice:'Not legal advice. Not a government service.',more:'More',close:'Close',vStay:'Rent if you stay, a year',vComp:'Rent for a similar home, a year',
  vCosts:'Moving costs, your own quotes',aedPh:'AED',vAgent:'Agent fee',vMovers:'Movers',vConnect:'Utility connection, not refunded',vEjari:'Ejari registration',vOther:'Anything else',vFees:'Current fees:',
  useEx:'Use made-up numbers',vRun:'Work it out',s4h:'Reply to your landlord',rLang:'Language',rOffer:'Rent you would offer, a year',optPh:'Optional',rAsk:'Ask for',oOffer:'Renew at my offer',oCheques:'More cheques',
- oLonger:'A longer lease for a smaller rise',oShort:"A short extension at today's rent",rDraft:'Draft my reply',s5h:'Get your deposit back',moH:'Move-out checklist',dPaid:'Deposit you paid',dKept:'Amount kept',
+ oLonger:'A longer lease for a smaller rise',oShort:"A short extension at today's rent",rDraft:'Write my reply',s5h:'Get your deposit back',moH:'Move-out checklist',dPaid:'Deposit you paid',dKept:'Amount kept',
  dMsg:"Landlord's message about deductions",options:'Options',dOut:'Day you moved out',dWithin:'Ask for a reply within',d7:'7 days',d14:'14 days',d21:'21 days',dPhotos:'I have dated move-in and move-out photos',
- useEx2:'Use the made-up example',dDraft:'Draft my request',remCopy:'Copy the dates',remManualL:'Dates to copy',rulesh:'Sources',vh:'News stories, not typical cases',reset:'Reset',exH:'Examples',exLate:'Late notice, big rise',
- exOntime:'On time, check the index',exAr:'Arabic message',exVacate:'Notice to vacate',exTrick:'Odd message',exLoaded:'{name}',errNoMsg:'Paste the message.',readByRules:'Read by rules',
+ useEx2:'Use the made-up example',dDraft:'Write my request',remCopy:'Copy the dates',remManualL:'Dates to copy',rulesh:'Sources',vh:'News stories, not typical cases',reset:'Clear my data',exH:'Made-up examples',exLate:'Late notice, big rise',
+ exOntime:'Notice in time, 5% rise',exAr:'Arabic message',exVacate:'Notice to vacate',exTrick:'Asks you to pay a fee',exLoaded:'Made-up example. Tap the arrow.',errNoMsg:'Paste the message.',readByRules:'Read by rules',
  payWarn:'This message has a link or a number to pay. Never pay through it. Use a contact you trust.',unclear:'Double-check: {x}.',factsQ:'Are these right?',fConfirm:'Yes, these are right',
- confirmed:'Confirmed. Now the rule check.',changed:'You changed a fact. Confirm again.',steps:'Steps',ruleK:'Rule',f_current:'Rent now, a year',f_asked:'New rent asked, a year',f_expiry:'Contract ends',
- f_arrived:'Message reached you',f_how:'Sent by',f_cheques:'Cheques',f_vacate:'This is a notice to vacate',tag_you:'You',tag_missing:'Missing',m_whatsapp:'WhatsApp or text',m_email:'Email',m_letter:'Letter by hand',
+ confirmed:'Confirmed. Now the rule check.',changed:'You changed a fact. Confirm again.',steps:'Steps taken',ruleK:'Rule',f_current:'Rent now, a year',f_asked:'New rent asked, a year',f_expiry:'Contract ends',
+ f_arrived:'Message reached you',f_how:'How it reached you',f_cheques:'Cheques',f_vacate:'This tells me to move out',tag_you:'From you',tag_missing:'Missing',m_whatsapp:'WhatsApp or text',m_email:'Email',m_letter:'Letter by hand',
  m_registered_mail:'Registered mail',m_notary:'Notary public',m_phone:'Phone call',m_unknown:'Not sure',errRent:'Type each rent as a yearly amount, like 63,000.',errFill:'Fill in: {list}.',
- u_current:'which amount is the current rent',u_date:'whether the date is the contract end',gateConfirm:'Confirm the facts first.',gateStart:'Paste your landlord\'s message first.',gateDemo:'Example result: {res}.',
+ u_current:'which amount is the current rent',u_date:'whether the date is the contract end',gateConfirm:'Confirm the facts first.',gateStart:'Paste your landlord\'s message first.',gateDemo:'Made-up result: {res}.',
  errPct:'Type the percent it showed, like 5.',goStep1:'Go to the facts',res_zero:'no rise allowed',res_pct:'up to {p}%',v_allowed:'No problem found',v_notallowed:'Problem found',v_unsure:'Not sure',
- madeUpIdx:'Sample figure, not real',resFine:'Not legal advice. Rules checked {d}.',rulesOld:'Rules last checked {d}. Check the official sources too.',unsureNote:'No reviewer is connected here.',goReply:'Draft a reply',
- pSum:'Summary for a person',sumH:'Summary for a person to check',sumNote:'Built by rules from your facts. Masmooh sends it nowhere.',pCopy:'Copy the summary',sumLabel:'Summary text',i_oddDates_h:'The dates look odd.',
+ madeUpIdx:'Sample figure, not real',resFine:'Not legal advice. Rules checked {d}.',rulesOld:'Rules last checked {d}. Check the official sources too.',unsureNote:'Nobody here reviews your case.',goReply:'Write a reply',
+ pSum:'Make a summary to share',sumH:'Summary to share',toolsNote:'Next: reply, compare moving, get your deposit back, see key dates.',sumNote:'Built by rules from your facts. Masmooh sends it nowhere.',pCopy:'Copy the summary',sumLabel:'Summary text',i_oddDates_h:'The dates look odd.',
  i_oddDates_t:'The message seems to have come after the contract ended.',i_vacEnough_h:'The notice period looks long enough.',i_vacEnough_t:'It came at least 12 months before the end.',i_vacShort_h:"Less than 12 months' notice.",
  i_vacShort_t:'It came {when}. The law asks for 12 months.',i_howUnknown_h:'How it was served is not known.',i_howUnknown_t:'The law describes a notary public or registered mail.',i_servedOk_h:'Served the formal way.',
  i_servedOk_t:'Sent by: {m}.',i_servedBad_h:'Not served the formal way.',i_servedBad_t:'Sent by: {m}. The law describes a notary public or registered mail.',i_vacMid_h:'This is not an end-of-contract notice.',
@@ -532,18 +534,18 @@ TX.en={
  tr_formDates:'Used your dates where the message differs',tr_missing:'Marked for you to fill in: {list}',tr_wait:'Waiting for you to confirm. Nothing is decided yet',tr_days:'Counted {d} from {a} to {e}',
  tr_vacMid:'It is a notice during the contract, so the 12-month rule was not applied',tr_vac12:'Compared it with the 12-month rule for notices to vacate',tr_served:'Checked how the notice was served',
  tr_noRise:'Compared the new rent with the current rent: no rise',tr_rise:'Worked out the rise: {r}, {p}%',tr_n90:'Compared the timing with the 90-day rule',tr_noCalc:'No calculator result typed yet',
- tr_calc:'Compared the rise with {src}: {res}',tr_calcDemo:'the made-up result (not a real index result)',tr_calcTyped:'the calculator result you typed',tr_decided:'Decided from the rule table: {v}',
+ tr_calc:'Compared the rise with {src}: {res}',tr_calcDemo:'the made-up result (not a real index result)',tr_calcTyped:'the calculator result you typed',tr_decided:'Result from the rules: {v}',
  tr_sum1:'Gathered your facts, the result and its sources',tr_sum2:'Left sharing to you',tr_stUsed:'Used the new rent from your facts',tr_stCosts:'Added {n}: {s}',
  tr_stCmp:'Compared a year of staying ({a}) with a year in the other home plus moving ({b})',tr_stNone:'Added no fees of its own and left out the deposit',tr_rCheck:'Used your rule check: {v}',
  tr_rCheckDemo:'Used your rule check: {v} (made-up index result)',tr_rNoCheck:'No rule check yet, so the reply cites none',tr_rTpl:'Filled the {lang} template with your facts',
- tr_send:'Left sending to you. Masmooh never contacts your landlord',tr_dRules:({n})=>`Found ${count(n,'item','en')} by pattern`,tr_dTpl:'Filled the {lang} template with your amounts',
+ tr_send:'Left sending to you. Masmooh never contacts your landlord',tr_dRules:({n})=>`Found ${count(n,'item','en')} in the message`,tr_dTpl:'Filled the {lang} template with your amounts',
  tr_dSum:'Added up the items and compared them with the amount kept',tr_remCount:'Counted back 120, 90 and 60 days from {e}',tr_rem90:'Marked the 90-day date (Law No. 33 of 2008, Article 14)',
  tr_remToday:'Compared each date with today',lang_en:'English',lang_ar:'Arabic',st_same:'In the first year, staying and moving cost about the same: {a}.',st_saves:'Moving saves about {d} in the first year, then {y} a year.',
  st_pays:({d,y,m})=>`Moving costs about ${d} more in year one, then saves ${y} a year: it pays back in about ${m} month${m===1?'':'s'}.`,st_cheaper:'Staying is cheaper: moving costs about {d} more in the first year.',
  st_cheaperHigher:'Staying is cheaper: moving costs about {d} more in the first year, and the other rent is higher.',rowStay:'A year if you stay',rowOther:'A year in the other home',rowCosts:'Moving costs',
  rowMove:'First year if you move',byRules:'Worked out by rules',byRulesEx:'Worked out by rules, with made-up numbers',notCounted:"Not counted: the new home's deposit, which comes back at the end ({src}).",
  errStay:'Type the yearly rent if you stay, like 63,000.',errComp:'Type the yearly rent of a similar home.',errCosts:'Moving costs must be numbers, or empty.',template:'Ready-made template',
- staleDraft:'Written from an earlier check. Draft it again.',yourReply:'Your reply. Edit it, then send it yourself.',rCopy:'Copy my reply',
+ staleDraft:'Written from an earlier check. Write it again.',yourReply:'Your reply. Edit it, then send it yourself.',rCopy:'Copy my reply',
  replyFine:'Masmooh never sends this. If the landlord answers with a notice or a dispute, ask a person first.',errOffer:'Type the offer as a yearly amount, like 54,600, or leave it empty.',itemsRules:'Items found by rules',
  noItems:'No itemised deductions found. The request asks for a full list.',noAmount:'no amount',sumOk:'The items add up to {s}, the amount kept.',sumBad:'The items add up to {s}, but {k} was kept. Ask about the {d} gap.',
  yourRequest:'Your request. Edit it, then send it yourself.',dCopy:'Copy my request',depFine:'No answer? The Rental Disputes Centre handles disputes ({src}). Have a person check your file first.',
@@ -554,28 +556,28 @@ TX.en={
  rem60t:'Stay or move? If moving, book movers.',daysBefore:'days before',past:'Passed',today:'Today',inDays:'In {d}',allPast:'All three dates have passed. The contract ends {when}.',
  allPastEnded:'All dates have passed, and so has the end date. Check the date above.',endToday:'today',endIn:'in {d}',typeEnd:'Type the contract end date to see the dates.',typeEndFirst:'Type the contract end date first.',
  remTitle:'Masmooh dates for a contract ending {d}',remRule:'Rule: Law No. 33 of 2008, Article 14 (90 days). Not legal advice.',passedMark:' (passed)',copied:'Copied.',
- copyBlocked:'Copying is blocked here. The text is selected: press Ctrl+C, or long-press and copy.',resetArm:'Tap again to reset',resetWarn:'This clears your demo data here.',resetDone:'Reset. The first example is ready.',
+ copyBlocked:'Copying is blocked here. The text is selected: press Ctrl+C, or long-press and copy.',resetArm:'Tap again to clear',resetWarn:'This clears what you entered here.',resetDone:'Cleared.',
  checkFacts:'Rules read the message. Check every fact.'
 };
 TX.ar={
- estLine:'تقدير محسوب على هاتفك من القاعدة المنشورة والأرقام التي كتبتها. ليس نتيجة رسمية.',offLine:'الجواب الرسمي: حاسبة مؤشر الإيجارات في دائرة الأراضي والأملاك بدبي. تحصل عليه من الدائرة نفسها، لا من هذه الصفحة.',howH:'كيف تحصل على الجواب الرسمي',howBody:'افتح صفحة مؤشر الإيجارات في موقع دائرة الأراضي والأملاك. تطلب الصفحة تاريخ انتهاء العقد ونوع العقار وطريقة تحديد العقار (رقم مشترك الكهرباء والماء DEWA أو رقم عقد إيجاري أو المنطقة) وإيجارك السنوي الحالي. جهّز هذه التفاصيل. هذه الصفحة لدبي فقط: لا توجد لها حاسبة رسمية أخرى تدلّك عليها لباقي الإمارات.',guessNote:'هذا الرقم يأتي من المؤشر الرسمي وحده. وإذا كتبت رقماً تخمّنه فهذه النتيجة تخمين.',
- brand:'مسموح',h1:'هل زيادة الإيجار مسموحة؟',dubaiOnly:'دبي فقط.',pvOne:'عرض تجريبي: الأمثلة افتراضية. لا شيء مما تكتبه يغادر جهازك.',msgLabel:'رسالة المالك',msgPh:'الصق رسالة المالك هنا',check:'افحص',examples:'أمثلة',
- datesSum:'التواريخ وطريقة الوصول',fArrived:'تاريخ وصول الرسالة',fExpiry:'تاريخ انتهاء العقد',fHow:'وصلت عبر',s2h:'فحص القواعد',calcOpen:'حاسبة دائرة الأراضي والأملاك',
- idxNote:'مقدار الزيادة المسموحة يعتمد على متوسط إيجار الوحدات المماثلة، ولا يملك هذا الرقم إلا مؤشر الإيجارات الرسمي. اقرأ رقمك هناك واكتب ما تراه. وإذا كتبت رقماً تخمّنه فالنتيجة تخمين.',f_mid:'يطلب مني المغادرة قبل انتهاء العقد',calcLegend:'ماذا كانت النتيجة؟',
- calcZero:'لا يُسمح بأي زيادة',calcUpTo:'حتى',pctL:'النسبة المسموح بها',calcUnknown:'لم أتحقق بعد',calcDemo:'استخدم نتيجة مثال',cRun:'افحص التجديد',toolsH:'الخطوات التالية',s4t:'الرد',s3t:'البقاء أم الانتقال',s5t:'التأمين',
+ estLine:'تقدير محسوب على هاتفك. ليس نتيجة رسمية.',offLine:'الجواب الرسمي: حاسبة مؤشر الإيجارات في دائرة الأراضي والأملاك بدبي. تحصل عليه من الدائرة نفسها، لا من هذه الصفحة.',howH:'كيف تحصل على الجواب الرسمي',howBody:'افتح صفحة مؤشر الإيجارات في موقع دائرة الأراضي والأملاك. تطلب الصفحة تاريخ انتهاء العقد ونوع العقار وطريقة تحديد العقار (رقم مشترك الكهرباء والماء DEWA أو رقم عقد إيجاري أو المنطقة) وإيجارك السنوي الحالي. جهّز هذه التفاصيل. هذه الصفحة لدبي فقط: لا توجد لها حاسبة رسمية أخرى تدلّك عليها لباقي الإمارات.',guessNote:'هذا الرقم يأتي من المؤشر الرسمي وحده. وإذا كتبت رقماً تخمّنه فهذه النتيجة تخمين.',
+ brand:'مسموح',h1:'هل زيادة الإيجار مسموحة؟',dubaiOnly:'دبي فقط. الصق رسالة المالك لتفحص الزيادة وتكتب رداً عليها.',pvOne:'عرض تجريبي: الأمثلة مختلقة. لا شيء مما تكتبه يغادر جهازك.',msgLabel:'رسالة المالك',msgPh:'الصقها هنا، مثل: الإيجار الجديد 63,000 درهم، والحالي 52,000',tryEx:'جرّب مثالًا',howUseH:'طريقة الاستخدام',howUse1:'الصق رسالة المالك، أو اضغط على مثال.',howUse2:'اضغط على السهم، ثم راجع المعلومات وأكمل الناقص.',howUse3:'اختر نتيجة الحاسبة لتحصل على الجواب ونص رد جاهز.',check:'افحص',examples:'أمثلة أخرى',
+ datesSum:'أضف التواريخ (اختياري)',fArrived:'تاريخ وصول الرسالة',fExpiry:'تاريخ انتهاء العقد',fHow:'كيف وصلتك',s2h:'فحص القواعد',calcOpen:'حاسبة دائرة الأراضي والأملاك',
+ idxNote:'وحدها الحاسبة الرسمية تحدد مقدار الزيادة المسموحة. افتحها، ثم اختر ما ظهر لك.',f_mid:'يطلب مني المغادرة قبل انتهاء العقد',calcLegend:'ماذا قالت الحاسبة؟',
+ calcZero:'لا يُسمح بأي زيادة',calcUpTo:'حتى',pctL:'النسبة المسموح بها',calcUnknown:'لم أتحقق بعد',calcDemo:'استخدم نتيجة مختلقة',cRun:'افحص التجديد',toolsH:'الخطوات التالية',s4t:'الرد',s3t:'البقاء أم الانتقال',s5t:'التأمين',
  s6t:'مواعيد مهمة',notAdvice:'ليست استشارة قانونية ولا خدمة حكومية.',more:'المزيد',close:'إغلاق',vStay:'الإيجار السنوي إذا بقيت',vComp:'الإيجار السنوي لمسكن مشابه',vCosts:'تكاليف الانتقال، حسب عروض الأسعار لديك',aedPh:'درهم',
- vAgent:'عمولة الوسيط',vMovers:'شركة النقل',vConnect:'توصيل الخدمات، غير المسترد',vEjari:'تسجيل إيجاري',vOther:'تكاليف أخرى',vFees:'الرسوم الحالية:',useEx:'استخدم أرقاماً افتراضية',vRun:'احسب',s4h:'الرد على المالك',rLang:'اللغة',
- rOffer:'الإيجار السنوي الذي تعرضه',optPh:'اختياري',rAsk:'اطلب',oOffer:'التجديد بالمبلغ الذي أعرضه',oCheques:'عدد شيكات أكبر',oLonger:'عقد أطول مقابل زيادة أقل',oShort:'تمديد قصير بالإيجار الحالي',rDraft:'صُغ ردي',
+ vAgent:'عمولة الوسيط',vMovers:'شركة النقل',vConnect:'توصيل الخدمات، غير المسترد',vEjari:'تسجيل إيجاري',vOther:'تكاليف أخرى',vFees:'الرسوم الحالية:',useEx:'استخدم أرقاماً مختلقة',vRun:'احسب',s4h:'الرد على المالك',rLang:'اللغة',
+ rOffer:'الإيجار السنوي الذي تعرضه',optPh:'اختياري',rAsk:'اطلب',oOffer:'التجديد بالمبلغ الذي أعرضه',oCheques:'عدد شيكات أكبر',oLonger:'عقد أطول مقابل زيادة أقل',oShort:'تمديد قصير بالإيجار الحالي',rDraft:'اكتب ردي',
  s5h:'استرداد مبلغ التأمين',moH:'قائمة الإخلاء',dPaid:'مبلغ التأمين المدفوع',dKept:'المبلغ المحتجز',dMsg:'رسالة المالك بشأن الخصومات',options:'خيارات',dOut:'تاريخ الإخلاء',dWithin:'اطلب الرد خلال',d7:'7 أيام',d14:'14 يوماً',
- d21:'21 يوماً',dPhotos:'لديّ صور مؤرخة عند الاستلام والإخلاء',useEx2:'استخدم المثال الافتراضي',dDraft:'صُغ طلبي',remCopy:'انسخ المواعيد',remManualL:'المواعيد للنسخ',rulesh:'المصادر',vh:'قصص من الأخبار، وليست حالات نموذجية',
- reset:'إعادة ضبط',exH:'أمثلة',exLate:'إشعار متأخر وزيادة كبيرة',exOntime:'إشعار في وقته، تحقق من المؤشر',exAr:'رسالة بالعربية',exVacate:'إشعار بالإخلاء',exTrick:'رسالة غريبة',exLoaded:'{name}',errNoMsg:'الصق الرسالة.',
+ d21:'21 يوماً',dPhotos:'لديّ صور مؤرخة عند الاستلام والإخلاء',useEx2:'استخدم المثال المختلق',dDraft:'اكتب طلبي',remCopy:'انسخ المواعيد',remManualL:'المواعيد للنسخ',rulesh:'المصادر',vh:'قصص من الأخبار، وليست حالات نموذجية',
+ reset:'امسح بياناتي',exH:'أمثلة مختلقة',exLate:'إشعار متأخر وزيادة كبيرة',exOntime:'إشعار في وقته وزيادة 5%',exAr:'رسالة بالعربية',exVacate:'إشعار بالإخلاء',exTrick:'رسالة تطلب دفع رسوم',exLoaded:'مثال مختلق. اضغط على السهم.',errNoMsg:'الصق الرسالة.',
  readByRules:'قرأتها القواعد',payWarn:'في هذه الرسالة رابط أو رقم للدفع. لا تدفع عبره. تواصل عبر جهة تثق بها.',unclear:'تحقق من: {x}.',factsQ:'هل هذه المعلومات صحيحة؟',fConfirm:'نعم، صحيحة',
- confirmed:'تم التأكيد. الآن فحص القواعد.',changed:'غيّرت معلومة. أكّد من جديد.',steps:'الخطوات',ruleK:'قاعدة',f_current:'الإيجار الحالي، سنوياً',f_asked:'الإيجار الجديد المطلوب، سنوياً',f_expiry:'انتهاء العقد',
- f_arrived:'وصول الرسالة',f_how:'وصلت عبر',f_cheques:'الشيكات',f_vacate:'هذا إشعار بالإخلاء',tag_you:'أنت',tag_missing:'ناقص',m_whatsapp:'واتساب أو رسالة نصية',m_email:'بريد إلكتروني',m_letter:'رسالة باليد',
+ confirmed:'تم التأكيد. الآن فحص القواعد.',changed:'غيّرت معلومة. أكّد من جديد.',steps:'الخطوات المتخذة',ruleK:'قاعدة',f_current:'الإيجار الحالي، سنوياً',f_asked:'الإيجار الجديد المطلوب، سنوياً',f_expiry:'انتهاء العقد',
+ f_arrived:'وصول الرسالة',f_how:'كيف وصلتك',f_cheques:'الشيكات',f_vacate:'هذا إشعار بالإخلاء',tag_you:'من إدخالك',tag_missing:'ناقص',m_whatsapp:'واتساب أو رسالة نصية',m_email:'بريد إلكتروني',m_letter:'رسالة باليد',
  m_registered_mail:'بريد مسجل',m_notary:'كاتب العدل',m_phone:'مكالمة هاتفية',m_unknown:'غير متأكد',errRent:'اكتب كل إيجار كمبلغ سنوي، مثل 63,000.',errFill:'أكمل: {list}.',u_current:'أي مبلغ هو الإيجار الحالي',
- u_date:'هل التاريخ هو تاريخ انتهاء العقد',gateConfirm:'أكّد المعلومات أولاً.',gateStart:'الصق رسالة المالك أولاً.',gateDemo:'نتيجة مثال: {res}.',errPct:'اكتب النسبة التي ظهرت، مثل 5.',goStep1:'اذهب إلى المعلومات',
+ u_date:'هل التاريخ هو تاريخ انتهاء العقد',gateConfirm:'أكّد المعلومات أولاً.',gateStart:'الصق رسالة المالك أولاً.',gateDemo:'نتيجة مختلقة: {res}.',errPct:'اكتب النسبة التي ظهرت، مثل 5.',goStep1:'اذهب إلى المعلومات',
  res_zero:'لا يُسمح بأي زيادة',res_pct:'حتى {p}%',v_allowed:'لم نجد مشكلة',v_notallowed:'وُجدت مشكلة',v_unsure:'غير مؤكد',madeUpIdx:'رقم تجريبي وليس حقيقياً',resFine:'ليست استشارة قانونية. رُوجعت القواعد في {d}.',
- rulesOld:'آخر مراجعة للقواعد في {d}. راجع المصادر الرسمية أيضاً.',unsureNote:'لا يوجد مراجع متصل هنا.',goReply:'صُغ رداً',pSum:'ملخص لشخص يراجعه',sumH:'ملخص لشخص يراجعه',
+ rulesOld:'آخر مراجعة للقواعد في {d}. راجع المصادر الرسمية أيضاً.',unsureNote:'لا أحد هنا يراجع حالتك.',goReply:'اكتب رداً',pSum:'أنشئ ملخصاً للمشاركة',sumH:'ملخص للمشاركة',toolsNote:'التالي: اكتب رداً، أو قارن تكلفة الانتقال، أو استرد تأمينك، أو راجع المواعيد.',
  sumNote:'أعدّته القواعد من معلوماتك. لا يرسله مسموح إلى أي جهة.',pCopy:'انسخ الملخص',sumLabel:'نص الملخص',i_oddDates_h:'التواريخ غير منطقية.',i_oddDates_t:'يبدو أن الرسالة وصلت بعد انتهاء العقد.',
  i_vacEnough_h:'مدة الإشعار تبدو كافية.',i_vacEnough_t:'وصل قبل 12 شهراً على الأقل من الانتهاء.',i_vacShort_h:'الإشعار أقل من 12 شهراً.',i_vacShort_t:'وصل {when}. يشترط القانون 12 شهراً.',
  i_howUnknown_h:'طريقة التبليغ غير معروفة.',i_howUnknown_t:'ينص القانون على كاتب العدل أو البريد المسجل.',i_servedOk_h:'بُلّغ بالطريقة الرسمية.',i_servedOk_t:'وصل عبر: {m}.',i_servedBad_h:'لم يُبلَّغ بالطريقة الرسمية.',
@@ -587,7 +589,7 @@ TX.ar={
  i_noticeLateEdge_t:'قبل {d} من الانتهاء: أقل من 90 يوماً، فهو متأخر وفق المادة 14. وإن كان الفارق يوماً أو يومين فيجب أن يتحقق شخص من طريقة احتساب الأيام.',i_idxMissing_h:'لم يُفحص مؤشر الإيجارات بعد.',
  i_idxMissing_t:'وحدها حاسبة دائرة الأراضي تحدد مقدار الزيادة المسموح.',i_idxOk_h:'ضمن مؤشر الإيجارات.',i_idxOk_t:'الزيادة {pct}%. {who} تسمح بحد أقصى {allow}%.',i_idxZero_h:'المؤشر لا يسمح بأي زيادة.',
  i_idxZero_t:'{who} لا تسمح بأي زيادة، لكن طُلب منك {rise} إضافية ({pct}%).',i_idxOver_h:'أعلى من حد المؤشر.',i_idxOver_t:'طُلبت زيادة {pct}%. {who} تسمح بحد أقصى {allow}%، أي {max} سنوياً على الأكثر.',
- whoDemo:'النتيجة الافتراضية',whoTyped:'نتيجة الحاسبة التي كتبتها',whenAfter:'بعد {d} من انتهاء العقد',whenBefore:'قبل {d} من انتهاء العقد',l_vacMid:'لهذا الإشعار قواعده الخاصة، وليست قاعدة الـ12 شهراً. استشر شخصاً قبل أن ترد.',
+ whoDemo:'النتيجة المختلقة',whoTyped:'نتيجة الحاسبة التي كتبتها',whenAfter:'بعد {d} من انتهاء العقد',whenBefore:'قبل {d} من انتهاء العقد',l_vacMid:'لهذا الإشعار قواعده الخاصة، وليست قاعدة الـ12 شهراً. استشر شخصاً قبل أن ترد.',
  l_vacOk:'قد يستوفي هذا الإشعار القواعد. استشر شخصاً قبل أن ترد.',l_vacBad:'قد لا يستوفي هذا الإشعار القواعد. استشر شخصاً قبل أن ترد.',n_vac:'لا توقّع ولا توافق الآن. شارك الملخص مع عيادة قانونية.',
  l_allowed:'لم نجد مشكلة من المعلومات التي قدمتها. هذه ليست قراراً ولا ضماناً.',n_allowed:'ما زال بإمكانك طلب شيكات أكثر أو عقد أطول.',l_notallowed:'قد تخالف قاعدة. الأسباب تحت «المزيد».',
  n_notallowed:'ردّ بلطف واعرض إيجاراً يتوافق مع القاعدة. قبل أي نزاع، استشر شخصاً.',l_idxMissing:'غير مؤكد بعد: نتيجة مؤشر الإيجارات ناقصة.',n_idxMissing:'افتح حاسبة دائرة الأراضي، واختر نتيجتها، ثم افحص مرة أخرى.',
@@ -596,18 +598,18 @@ TX.ar={
  tr_readAr:'قُرئت الرسالة بالعربية',tr_found:'وُجد: {list}',tr_foundNone:'لم يُعثر على مبالغ أو تواريخ مؤكدة',tr_vacate:'تبيّن أنها إشعار بالإخلاء',tr_pay:'رُصد رابط أو رقم للدفع، وأُضيف تحذير',
  tr_formDates:'استُخدمت تواريخك حيث تختلف عن الرسالة',tr_missing:'مطلوب منك إكماله: {list}',tr_wait:'بانتظار تأكيدك. لم يُقرَّر شيء بعد',tr_days:'حُسبت مدة {d} من {a} إلى {e}',
  tr_vacMid:'الإشعار أثناء مدة العقد، فلم تُطبَّق قاعدة الـ12 شهراً',tr_vac12:'قورن بقاعدة الاثني عشر شهراً لإشعارات الإخلاء',tr_served:'رُوجعت طريقة تبليغ الإشعار',tr_noRise:'قورن الإيجار الجديد بالحالي: لا زيادة',
- tr_rise:'حُسبت الزيادة: {r}، أي {p}%',tr_n90:'قورن التوقيت بقاعدة التسعين يوماً',tr_noCalc:'لم تُكتب نتيجة حاسبة دائرة الأراضي بعد',tr_calc:'قورنت الزيادة بـ{src}: {res}',tr_calcDemo:'النتيجة الافتراضية (ليست نتيجة حقيقية)',
- tr_calcTyped:'نتيجة الحاسبة التي كتبتها',tr_decided:'القرار من جدول القواعد: {v}',tr_sum1:'جُمعت معلوماتك والنتيجة ومصادرها',tr_sum2:'تُرك قرار المشاركة لك',tr_stUsed:'استُخدم الإيجار الجديد من معلوماتك',
+ tr_rise:'حُسبت الزيادة: {r}، أي {p}%',tr_n90:'قورن التوقيت بقاعدة التسعين يوماً',tr_noCalc:'لم تُكتب نتيجة حاسبة دائرة الأراضي بعد',tr_calc:'قورنت الزيادة بـ{src}: {res}',tr_calcDemo:'النتيجة المختلقة (ليست نتيجة حقيقية)',
+ tr_calcTyped:'نتيجة الحاسبة التي كتبتها',tr_decided:'النتيجة حسب القواعد: {v}',tr_sum1:'جُمعت معلوماتك والنتيجة ومصادرها',tr_sum2:'تُرك قرار المشاركة لك',tr_stUsed:'استُخدم الإيجار الجديد من معلوماتك',
  tr_stCosts:'أُضيفت {n}: {s}',tr_stCmp:'قورنت سنة البقاء ({a}) بسنة في المسكن الآخر مع الانتقال ({b})',tr_stNone:'لم تُضف أي رسوم من عنده، واستُبعد التأمين',tr_rCheck:'استُخدمت نتيجة فحص القواعد: {v}',
- tr_rCheckDemo:'استُخدمت نتيجة فحص القواعد: {v} (نتيجة مؤشر افتراضية)',tr_rNoCheck:'لم يُجرَ فحص القواعد بعد، فلا يستشهد الرد بنتيجة',tr_rTpl:'مُلئ القالب باللغة {lang} بمعلوماتك',
- tr_send:'تُرك الإرسال لك. مسموح لا يتواصل مع المالك أبداً',tr_dRules:({n})=>`وُجد ${count(n,'item','ar')} بمطابقة الأنماط`,tr_dTpl:'مُلئ القالب باللغة {lang} بمبالغك',tr_dSum:'جُمعت البنود وقورنت بالمبلغ المحتجز',
+ tr_rCheckDemo:'استُخدمت نتيجة فحص القواعد: {v} (نتيجة مؤشر مختلقة)',tr_rNoCheck:'لم يُجرَ فحص القواعد بعد، فلا يستشهد الرد بنتيجة',tr_rTpl:'مُلئ القالب باللغة {lang} بمعلوماتك',
+ tr_send:'تُرك الإرسال لك. مسموح لا يتواصل مع المالك أبداً',tr_dRules:({n})=>`وُجد ${count(n,'item','ar')} في الرسالة`,tr_dTpl:'مُلئ القالب باللغة {lang} بمبالغك',tr_dSum:'جُمعت البنود وقورنت بالمبلغ المحتجز',
  tr_remCount:'حُسبت 120 و90 و60 يوماً قبل {e}',tr_rem90:'حُدد تاريخ التسعين يوماً (القانون رقم 33 لسنة 2008، المادة 14)',tr_remToday:'قورن كل تاريخ بتاريخ اليوم',lang_en:'الإنجليزية',lang_ar:'العربية',
  st_same:'في السنة الأولى، تتساوى تكلفة البقاء والانتقال تقريباً: {a}.',st_saves:'الانتقال يوفر نحو {d} في السنة الأولى، ثم {y} سنوياً.',
  st_pays:({d,y,m})=>`الانتقال يكلف نحو ${d} أكثر في السنة الأولى، ثم يوفر ${y} سنوياً، فيسترد تكلفته بعد نحو ${arCount(m,['شهر','شهرين','أشهر','شهراً','شهر'])}.`,
  st_cheaper:'البقاء أوفر: الانتقال يكلف نحو {d} أكثر في السنة الأولى.',st_cheaperHigher:'البقاء أوفر: الانتقال يكلف نحو {d} أكثر في السنة الأولى، وإيجار المسكن الآخر أعلى أيضاً.',rowStay:'سنة إذا بقيت',
- rowOther:'سنة في المسكن الآخر',rowCosts:'تكاليف الانتقال',rowMove:'السنة الأولى إذا انتقلت',byRules:'حسبتها القواعد',byRulesEx:'حسبتها القواعد بأرقام افتراضية',
+ rowOther:'سنة في المسكن الآخر',rowCosts:'تكاليف الانتقال',rowMove:'السنة الأولى إذا انتقلت',byRules:'حسبتها القواعد',byRulesEx:'حسبتها القواعد بأرقام مختلقة',
  notCounted:'غير محسوب: تأمين المسكن الجديد، فهو يُسترد في النهاية ({src}).',errStay:'اكتب الإيجار السنوي إذا بقيت، مثل 63,000.',errComp:'اكتب الإيجار السنوي لمسكن مشابه.',errCosts:'تكاليف الانتقال يجب أن تكون أرقاماً أو فارغة.',
- template:'قالب جاهز',staleDraft:'كُتب من فحص سابق. صُغه من جديد.',yourReply:'ردك. عدّله ثم أرسله بنفسك.',rCopy:'انسخ ردي',replyFine:'لا يرسل مسموح هذا الرد. إذا ردّ المالك بإشعار أو نزاع، استشر شخصاً أولاً.',
+ template:'قالب جاهز',staleDraft:'كُتب من فحص سابق. اكتبه من جديد.',yourReply:'ردك. عدّله ثم أرسله بنفسك.',rCopy:'انسخ ردي',replyFine:'لا يرسل مسموح هذا الرد. إذا ردّ المالك بإشعار أو نزاع، استشر شخصاً أولاً.',
  errOffer:'اكتب عرضك كمبلغ سنوي، مثل 54,600، أو اتركه فارغاً.',itemsRules:'بنود وجدتها القواعد',noItems:'لم تُذكر خصومات مفصلة. الطلب يسأل عن قائمة كاملة.',noAmount:'بلا مبلغ',sumOk:'مجموع البنود {s}، وهو المبلغ المحتجز.',
  sumBad:'مجموع البنود {s}، لكن المحتجز {k}. اسأل عن الفرق البالغ {d}.',yourRequest:'طلبك. عدّله ثم أرسله بنفسك.',dCopy:'انسخ طلبي',depFine:'لا رد؟ يختص مركز فض المنازعات الإيجارية بالنزاعات ({src}). اعرض ملفك على شخص أولاً.',
  errPaid:'اكتب مبلغ التأمين المدفوع، مثل 5,000.',errKept:'اكتب المبلغ المحتجز، من 0 حتى مبلغ التأمين.',moCount:'{d} من {n}',moWhy:'لماذا يهم: {a} · {b}',mo0:'التقط صوراً مؤرخة ومقطع فيديو لكل غرفة يوم التسليم.',
@@ -616,7 +618,7 @@ TX.ar={
  rem90h:'حد التسعين يوماً',rem90t:'آخر يوم يمكن فيه لأي من الطرفين الإشعار بتعديل.',rem60h:'قرّر',rem60t:'البقاء أم الانتقال؟ إن كنت ستنتقل، احجز شركة النقل.',daysBefore:'يوماً قبل',past:'انقضى',today:'اليوم',inDays:'بعد {d}',
  allPast:'انقضت المواعيد الثلاثة. ينتهي العقد {when}.',allPastEnded:'انقضت كل المواعيد، وانقضى تاريخ الانتهاء أيضاً. تحقق من التاريخ أعلاه.',endToday:'اليوم',endIn:'بعد {d}',typeEnd:'اكتب تاريخ انتهاء العقد لترى المواعيد.',
  typeEndFirst:'اكتب تاريخ انتهاء العقد أولاً.',remTitle:'مواعيد مسموح لعقد ينتهي في {d}',remRule:'القاعدة: القانون رقم 33 لسنة 2008، المادة 14 (90 يوماً). ليست استشارة قانونية.',passedMark:' (انقضى)',copied:'تم النسخ.',
- copyBlocked:'النسخ محظور هنا. النص محدد: اضغط Ctrl+C، أو اضغط مطولاً واختر نسخ.',resetArm:'اضغط مرة أخرى لإعادة الضبط',resetWarn:'سيمحو هذا بيانات العرض هنا.',resetDone:'تمت إعادة الضبط. المثال الأول جاهز.',
+ copyBlocked:'النسخ محظور هنا. النص محدد: اضغط Ctrl+C، أو اضغط مطولاً واختر نسخ.',resetArm:'اضغط مجددًا للمسح',resetWarn:'سيمحو هذا ما أدخلته هنا.',resetDone:'تم المسح.',
  checkFacts:'قرأت القواعد الرسالة. تحقق من كل معلومة.'
 };
 
@@ -958,6 +960,7 @@ function renderCheck(){
      ${stepsList(c.trace)}
      <p class="note">${esc(t('resFine',{d:longDate(CHECKED)}))}</p>
     </div></details>
+    <p class="note">${esc(t('toolsNote'))}</p>
   </div>`}
 function personSummary(l){l=l||UI.lang;const ar=l==='ar';const F=S.facts,c=S.check;const L=[];const A=n=>cur(n,l);
   L.push(ar?'ملخص الحالة لمتطوع في حقوق المستأجرين (أُعدّ باستخدام مسموح، عرض تجريبي)':'Case summary for a tenant-rights volunteer (prepared with Masmooh, a demo)');L.push(ar?'الإمارة: دبي':'Emirate: Dubai');
@@ -967,7 +970,7 @@ function personSummary(l){l=l||UI.lang;const ar=l==='ar';const F=S.facts,c=S.che
   const dd=c&&c.days!=null?count(Math.abs(c.days),'day',l):'';
   L.push(ar?`وصلتني الرسالة: ${longDate(F.arrived.v,l)}، عبر ${t('m_'+(F.how.v||'unknown'),null,l)}${c?` (${c.days<0?'بعد':'قبل'} ${dd} من الانتهاء)`:''}`:`Message reached me: ${longDate(F.arrived.v,l)}, by ${t('m_'+(F.how.v||'unknown'),null,l).toLowerCase()}${c?` (${dd} ${c.days<0?'after':'before'} the end)`:''}`);
   L.push((ar?'إشعار بالإخلاء: ':'Notice to vacate: ')+(F.vacate.v?(ar?'نعم':'yes'):(ar?'لا':'no')));
-  if(c&&c.calc&&c.calc.kind&&c.calc.kind!=='unknown')L.push((ar?'نتيجة حاسبة دائرة الأراضي التي كتبتها: ':'DLD calculator result I typed: ')+(c.calc.kind==='zero'?t('res_zero',null,l):t('res_pct',{p:c.calc.pct},l))+(c.demo?(ar?' (قيمة افتراضية للعرض)':' (made-up demo value)'):''));
+  if(c&&c.calc&&c.calc.kind&&c.calc.kind!=='unknown')L.push((ar?'نتيجة حاسبة دائرة الأراضي التي كتبتها: ':'Dubai Land Department calculator result I typed: ')+(c.calc.kind==='zero'?t('res_zero',null,l):t('res_pct',{p:c.calc.pct},l))+(c.demo?(ar?' (قيمة مختلقة للعرض)':' (made-up demo value)'):''));
   if(c){L.push((ar?'نتيجة مسموح: ':'Masmooh result: ')+vLabel(c.verdict,l));for(const i of c.items)L.push('- '+itemH(i,l)+' '+itemT(i,l));
     const ids=[];for(const i of c.items)for(const x of [].concat(i.r))if(!ids.includes(x))ids.push(x);if(ids.length){L.push(ar?'القواعد المستخدمة:':'Rules used:');for(const id of ids)L.push('- '+srcText(id,l))}}
   L.push(ar?'ما أود التحقق منه: '+(F.vacate.v?'هل إشعار الإخلاء هذا صحيح، وكيف أرد.':'هل هذه الزيادة صحيحة، وكيف أرد.'):'What I would like checked: '+(F.vacate.v?'whether this notice to vacate is valid, and how to reply.':'whether this rise is valid, and how to reply.'));
@@ -1045,9 +1048,9 @@ function templateReply(lang,offer){const f=replyFacts(),R=S.reply;const allow=f.
   const L=["Dear [Landlord's name],",'',f.vac?`Thank you for your message about my lease, which ends on ${longDate(f.E,'en')}.`:`Thank you for your message about renewing my lease, which ends on ${longDate(f.E,'en')}.`];
   if(f.vac){L.push('I have received your message asking me to vacate. I am getting advice and will reply soon. Please send any formal notice in writing.')}
   else{if(f.late)L.push(`The change reached me on ${longDate(f.A,'en')}, which is ${f.days} day${f.days===1?'':'s'} before the contract ends. Dubai's rules ask for at least 90 days' notice of a change to the terms (Law No. 33 of 2008, Article 14).`);
-    if(rise&&idxKind&&f.demo)L.push('[Replace with your real DLD calculator result]');
-    else if(f.idxBad&&allow===0)L.push("I checked the DLD Rental Index calculator, and it shows that no increase is allowed for this home.");
-    else if(f.idxBad)L.push(`I checked the DLD Rental Index calculator, and it shows the rent can rise by up to ${allow}% for this home.`);
+    if(rise&&idxKind&&f.demo)L.push('[Replace with your real Dubai Land Department calculator result]');
+    else if(f.idxBad&&allow===0)L.push("I checked the Dubai Land Department Rental Index calculator, and it shows that no increase is allowed for this home.");
+    else if(f.idxBad)L.push(`I checked the Dubai Land Department Rental Index calculator, and it shows the rent can rise by up to ${allow}% for this home.`);
     else if(rise&&idxKind&&f.c&&f.c.verdict==='allowed')L.push('I understand the new rent is within the rental index, and I would like to agree a few details.');
     if(!rise)L.push(f.N<f.C?'Thank you for lowering the rent. I would be glad to renew.':'Thank you for keeping the rent the same. I would be glad to renew.');
     const o=[];if(R.oOffer&&offer)o.push(`I would be happy to renew at ${aed(offer)} a year.`);if(R.oCheques)o.push('Could we spread the rent over more cheques?');if(R.oLonger)o.push('I would sign a longer lease in exchange for a smaller rise.');if(R.oShort)o.push('If it helps, I could take a short extension at the current rent while we agree.');
@@ -1137,7 +1140,7 @@ function renderRules(){$('ruleList').innerHTML=RULE_ORDER.map(id=>{const R=RULES
 function grow(){const q=$('mText');q.style.height='auto';q.style.height=Math.min(Math.max(q.scrollHeight,96),320)+'px'}
 function renderExNote(){const ex=S.exKey&&examples()[S.exKey];$('exNote').textContent=ex?t('exLoaded',{name:t(ex.label)}):''}
 function renderIntake(){const I=S.intake;$('mText').value=I.text||'';$('mArrived').value=I.arrived||'';$('mExpiry').value=I.expiry||'';$('mHow').value=I.how||'unknown';
-  document.querySelectorAll('[data-ex]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.ex===S.exKey)));renderExNote();grow()}
+  document.querySelectorAll('[data-ex]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.ex===S.exKey)));renderExNote();$('tryRow').hidden=!!$('mText').value;grow()}
 function loadExample(k){const ex=examples()[k];if(!ex)return;
   S.exKey=k;S.intake={text:ex.text,arrived:ex.arrived,expiry:'',how:ex.how};S.read=null;S.facts=null;S.confirmed=false;S.check=null;S.calc={kind:'',pct:'',demo:false};
   S.stayRes=null;clearReply();
@@ -1175,8 +1178,9 @@ $('askForm').addEventListener('submit',e=>{e.preventDefault();readMessage()});
 $('mText').addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();readMessage()}});
 window.addEventListener('resize',grow);
 document.querySelectorAll('[data-ex]').forEach(b=>b.addEventListener('click',()=>loadExample(b.dataset.ex)));
+document.querySelectorAll('[data-exq]').forEach(b=>b.addEventListener('click',()=>loadExample(b.dataset.exq)));
 ['mText','mArrived','mExpiry','mHow'].forEach(id=>$(id).addEventListener('input',()=>{const I=S.intake;I.text=$('mText').value;I.arrived=$('mArrived').value;I.expiry=$('mExpiry').value;I.how=$('mHow').value;
-  if(id==='mText'){grow();if(S.exKey&&I.text!==(examples()[S.exKey]||{}).text){S.exKey=null;$('exNote').textContent='';document.querySelectorAll('[data-ex]').forEach(b=>b.setAttribute('aria-pressed','false'))}}save()}));
+  if(id==='mText'){grow();$('tryRow').hidden=!!I.text;if(S.exKey&&I.text!==(examples()[S.exKey]||{}).text){S.exKey=null;$('exNote').textContent='';document.querySelectorAll('[data-ex]').forEach(b=>b.setAttribute('aria-pressed','false'))}}save()}));
 $('facts').addEventListener('input',e=>{const el=e.target;if(el.dataset&&el.dataset.fact)onFactInput(el)});
 $('facts').addEventListener('change',e=>{const el=e.target;if(el.dataset&&el.dataset.fact&&(el.type==='checkbox'||el.tagName==='SELECT'))onFactInput(el)});
 $('facts').addEventListener('click',e=>{if(e.target.closest('#fConfirm'))confirmFacts()});

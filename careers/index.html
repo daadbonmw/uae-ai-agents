@@ -106,6 +106,8 @@ h1{margin:14px 0 16px;font-size:28px;line-height:1.15;color:var(--gold-ink)}
  .field:has(select:focus-visible){outline:3px solid var(--focus);outline-offset:2px}
 }
 .soft{margin:10px 4px 0;font-size:15px;line-height:22px;color:var(--muted)}
+#paneChoose h1{margin-bottom:8px}
+#paneChoose .soft{margin:0 4px 16px}
 .nums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:end}
 .nums label{display:flex;flex-direction:column;gap:6px;min-width:0;font-size:15px;line-height:20px;color:var(--muted)}
 .nums input{width:100%;min-height:52px;padding:0 14px;border:0;border-radius:18px;background:var(--field);color:var(--field-ink);font-size:17px;font-weight:600;-moz-appearance:textfield;appearance:textfield}
@@ -300,10 +302,13 @@ dialog.sheet::backdrop{background:rgba(14,15,18,.5)}
  <section id="paneChoose" aria-labelledby="chH">
   <div class="band"><div class="wrap">
    <h1 id="chH" data-i="chooseH">What brings you here?</h1>
+   <p class="soft" data-i="chooseSub">Practise job interviews, or plan how your firm hires Emiratis.</p>
    <div class="choose">
     <button type="button" class="go" id="chSeek" data-i="chSeek">I’m looking for a job</button>
     <button type="button" class="go" id="chHire" data-i="chHire">I’m hiring</button>
    </div>
+   <div class="exrow"><span data-i="tryEx">Try an example</span><button type="button" class="pill-o" data-try="sales" data-i="trySales">Interview for a sales job</button><button type="button" class="pill-o" data-try="it" data-i="tryIt">Plan for starting an IT job</button><button type="button" class="pill-o" data-try="logi" data-i="tryLogi">Logistics firm, 180 staff</button></div>
+   <details class="more"><summary data-i="howH">How to use it</summary><ol class="list more-body"><li data-i="how1">Tap “I’m looking for a job” or “I’m hiring” to start.</li><li data-i="how2">Job seekers: pick a job, tap Start, get feedback on answers.</li><li data-i="how3">Employers: type three staff numbers, then open Hiring plan.</li></ol></details>
   </div></div>
  </section>
  <!-- ===================== JOB SEEKER ===================== -->
@@ -316,13 +321,13 @@ dialog.sheet::backdrop{background:rgba(14,15,18,.5)}
     <span class="selwrap"><select id="ivRole" data-role-select></select><svg class="chev" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6"/></svg></span>
     <button type="button" class="go" id="ivStart" data-i="btnStart">Start</button>
    </div>
-   <p class="soft" data-i="seekHelp">Questions one by one, with feedback.</p>
+   <p class="soft" data-i="seekHelp">Pick a job, then Start. Practice only: it cannot predict your result.</p>
   </div></div>
   <div class="wrap content">
    <div class="tiles">
     <button type="button" class="tile link wide-m" id="ivTile" data-sheet="sheetIv"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path class="s" d="M28 22h10a5 5 0 0 1 5 5v6a5 5 0 0 1-5 5h-1v5l-6-5h-3a5 5 0 0 1-5-5v-6a5 5 0 0 1 5-5z"/><path d="M10 6h18a5 5 0 0 1 5 5v8a5 5 0 0 1-5 5H17l-7 6v-6a5 5 0 0 1-5-5v-8a5 5 0 0 1 5-5zM12 13h12M12 18h7"/></svg><span class="name" data-i="ivTile">Practice</span><span class="line" id="ivLine"></span></button>
-    <button type="button" class="tile link" id="mapTile" data-sheet="sheetMap"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path class="s" d="M31.5 16.5 27 27l-10.5 4.5L21 21z"/><circle cx="24" cy="24" r="17"/><path d="M24 3v4M24 41v4M3 24h4M41 24h4"/></svg><span class="name" data-i="mapTile">My strengths</span></button>
-    <button type="button" class="tile link" id="p90Tile" data-sheet="sheet90"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect class="s" x="26" y="27" width="10" height="8" rx="2"/><rect x="6" y="10" width="36" height="31" rx="5"/><path d="M15 6v8M33 6v8M6 19h36M13 27h6M13 33h6"/></svg><span class="name" data-i="p90Tile">First 90 days</span></button>
+    <button type="button" class="tile link" id="mapTile" data-sheet="sheetMap"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path class="s" d="M31.5 16.5 27 27l-10.5 4.5L21 21z"/><circle cx="24" cy="24" r="17"/><path d="M24 3v4M24 41v4M3 24h4M41 24h4"/></svg><span class="name" data-i="mapTile">Job ideas</span></button>
+    <button type="button" class="tile link" id="p90Tile" data-sheet="sheet90"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect class="s" x="26" y="27" width="10" height="8" rx="2"/><rect x="6" y="10" width="36" height="31" rx="5"/><path d="M15 6v8M33 6v8M6 19h36M13 27h6M13 33h6"/></svg><span class="name" data-i="p90Tile">Starting a job</span></button>
    </div>
   </div>
  </section>
@@ -331,7 +336,7 @@ dialog.sheet::backdrop{background:rgba(14,15,18,.5)}
  <section id="paneHire" aria-labelledby="hireH" hidden>
   <div class="band"><div class="wrap">
    <button type="button" class="pill-o" data-back data-i="back">Back</button>
-   <h1 id="hireH" data-i="hireH">Hire Emiratis who stay</h1>
+   <h1 id="hireH" data-i="hireH">Hiring Emiratis</h1>
    <div class="nums" id="empForm">
     <label for="eSize"><span data-i="fSize">Staff</span><input type="number" id="eSize" inputmode="numeric" min="0" step="1"></label>
     <label for="eSkilled"><span data-i="fSkilled">Skilled roles</span><input type="number" id="eSkilled" inputmode="numeric" min="0" step="1"></label>
@@ -363,9 +368,9 @@ dialog.sheet::backdrop{background:rgba(14,15,18,.5)}
 </dialog>
 
 <dialog class="sheet" id="sheetMap" aria-labelledby="s1H">
- <div class="sheet-bar"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path class="s" d="M31.5 16.5 27 27l-10.5 4.5L21 21z"/><circle cx="24" cy="24" r="17"/><path d="M24 3v4M24 41v4M3 24h4M41 24h4"/></svg><h2 class="sheet-name" id="s1H" data-i="mapTile">My strengths</h2><button type="button" class="ibtn" data-close aria-label="Close" data-ia="close"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+ <div class="sheet-bar"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path class="s" d="M31.5 16.5 27 27l-10.5 4.5L21 21z"/><circle cx="24" cy="24" r="17"/><path d="M24 3v4M24 41v4M3 24h4M41 24h4"/></svg><h2 class="sheet-name" id="s1H" data-i="mapTile">Job ideas</h2><button type="button" class="ibtn" data-close aria-label="Close" data-ia="close"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
  <div class="sheet-body">
-  <p class="note" data-i="s1Sub">Ideas to explore, not job matches or offers.</p>
+  <p class="note" data-i="s1Sub">Ideas, not job matches or offers.</p>
   <div class="exline"><span data-i="exTry">Try:</span><button type="button" class="tbtn" data-ex="mariam" data-i="exMariam" aria-pressed="false">Mariam</button><button type="button" class="tbtn" data-ex="saeed" data-i="exSaeed" aria-pressed="false">Saeed</button><button type="button" class="tbtn" id="clearBtn" data-i="exClear">Clear</button><button type="button" class="tbtn" id="undoBtn" data-i="undo" hidden>Undo</button><span id="profEx" class="vh"></span></div>
   <div id="profileForm" class="form">
    <label class="f" for="pSkills"><span data-i="fSkills">Skills and interests</span><textarea id="pSkills" class="input" dir="auto" maxlength="800" data-ip="fSkillsPh"></textarea></label>
@@ -393,14 +398,14 @@ dialog.sheet::backdrop{background:rgba(14,15,18,.5)}
    </div></details>
    <p class="note" id="savedNote" aria-live="polite"></p>
   </div>
-  <button type="button" class="btn full" id="mapBtn" data-i="btnMap">Map my strengths</button>
+  <button type="button" class="btn full" id="mapBtn" data-i="btnMap">Show job ideas</button>
   <p class="err" id="mapErr" role="alert"></p>
   <div id="mapOut"></div>
  </div>
 </dialog>
 
 <dialog class="sheet" id="sheet90" aria-labelledby="s4H">
- <div class="sheet-bar"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect class="s" x="26" y="27" width="10" height="8" rx="2"/><rect x="6" y="10" width="36" height="31" rx="5"/><path d="M15 6v8M33 6v8M6 19h36M13 27h6M13 33h6"/></svg><h2 class="sheet-name" id="s4H" data-i="p90Tile">First 90 days</h2><button type="button" class="ibtn" data-close aria-label="Close" data-ia="close"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+ <div class="sheet-bar"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect class="s" x="26" y="27" width="10" height="8" rx="2"/><rect x="6" y="10" width="36" height="31" rx="5"/><path d="M15 6v8M33 6v8M6 19h36M13 27h6M13 33h6"/></svg><h2 class="sheet-name" id="s4H" data-i="p90Tile">Starting a job</h2><button type="button" class="ibtn" data-close aria-label="Close" data-ia="close"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
  <div class="sheet-body">
   <label class="f" for="p90Role"><span data-i="fRole">Type of job</span><select id="p90Role" class="input" data-role-select></select></label>
   <button type="button" class="btn full" id="p90Btn" data-i="btnPlan90">Make my plan</button>
@@ -412,10 +417,10 @@ dialog.sheet::backdrop{background:rgba(14,15,18,.5)}
 <dialog class="sheet" id="sheetHire" aria-labelledby="e3H">
  <div class="sheet-bar"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><circle class="s" cx="36" cy="14" r="7"/><path d="M36 10.5v7M32.5 14h7"/><circle cx="18" cy="17" r="7"/><path d="M5 41v-3a10 10 0 0 1 10-10h6a10 10 0 0 1 10 10v3"/></svg><h2 class="sheet-name" id="e3H" data-i="hireTile">Hiring plan</h2><button type="button" class="ibtn" data-close aria-label="Close" data-ia="close"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
  <div class="sheet-body">
-  <p class="note" data-i="e1Sub">Never asks about gender, religion, age, family or health.</p>
+  <p class="note" data-i="e1Sub">Leaves out words on gender, religion, age, family, health.</p>
   <div id="empPlan" class="form">
    <label class="f" for="eSector"><span data-i="fSector">Sector</span><select id="eSector" class="input"><option value="logistics" data-i="es_logistics">Logistics</option><option value="retail" data-i="es_retail">Retail</option><option value="hospitality" data-i="es_hospitality">Hospitality</option><option value="finance" data-i="es_finance">Banking and finance</option><option value="construction" data-i="es_construction">Construction</option><option value="tech" data-i="es_tech">Technology</option><option value="health" data-i="es_health">Healthcare</option><option value="manufacturing" data-i="es_manufacturing">Manufacturing</option><option value="other" data-i="es_other">Another sector</option></select></label>
-   <label class="f" for="ePlans"><span data-i="fPlans">Next 12 months’ plans</span><textarea id="ePlans" class="input" dir="auto" maxlength="1500" data-ip="fPlansPh"></textarea></label>
+   <label class="f" for="ePlans"><span data-i="fPlans">Your hiring plans</span><textarea id="ePlans" class="input" dir="auto" maxlength="1500" data-ip="fPlansPh"></textarea></label>
    <div id="fairOut"></div>
   </div>
    <button type="button" class="btn full" id="hireBtn" data-i="btnHire">Plan my hiring</button>
@@ -430,7 +435,7 @@ dialog.sheet::backdrop{background:rgba(14,15,18,.5)}
   <p class="note" data-i="demoNote">Demo with made-up examples. General information, not legal advice.</p>
   <p class="note" data-i="privRules">Nothing you type leaves your device.</p>
   <p class="note"><span data-i="srcLabel">Sources:</span> <a href="https://www.mohre.gov.ae" target="_blank" rel="noopener noreferrer" data-i="mohre">MoHRE</a> · <a href="https://nafis.gov.ae" target="_blank" rel="noopener noreferrer" data-i="nafis">Nafis</a></p>
-  <div class="actions"><button type="button" class="tbtn" id="langMore"></button><button type="button" class="tbtn" id="reset" data-i="reset">Reset</button></div>
+  <div class="actions"><button type="button" class="tbtn" id="langMore"></button><button type="button" class="tbtn" id="reset" data-i="reset">Clear my data</button></div>
  </div>
 </dialog>
 
@@ -447,24 +452,26 @@ const EMBED=document.documentElement.classList.contains('embed');
 const I18N={
 en:{
 skip:'Skip to content',brand:'Zaheb',close:'Close',more:'More',moreDetails:'More details',back:'Back',chooseH:'What brings you here?',chSeek:'I’m looking for a job',
+chooseSub:'Practise job interviews, or plan how your firm hires Emiratis.',tryEx:'Try an example',trySales:'Interview for a sales job',tryIt:'Plan for starting an IT job',tryLogi:'Logistics firm, 180 staff',
+howH:'How to use it',how1:'Tap “I’m looking for a job” or “I’m hiring” to start.',how2:'Job seekers: pick a job, tap Start, get feedback on answers.',how3:'Employers: type three staff numbers, then open Hiring plan.',
 chHire:'I’m hiring',privRules:'Nothing you type leaves your device.',demoNote:'Demo with made-up examples. General information, not legal advice.',
-seekH:'Ready for the interview?',fRole:'Type of job',btnStart:'Start',seekHelp:'Questions one by one, with feedback. Practice only: it cannot predict your result.',
-ivTile:'Practice',ivLine:'Questions and feedback',ivLineQ:'Question {n} of {t}',ivLineDone:'Finished',mapTile:'My strengths',p90Tile:'First 90 days',
-hireH:'Hire Emiratis who stay',fSize:'Staff',fSkilled:'Skilled roles',fEmirati:'Emiratis in them',exTry:'Try:',exLogi:'Logistics, 180',exSmall:'Small firm, 35',
-e2H:'Emiratisation target',hireTile:'Hiring plan',ruleTag:'Rule',exampleTag:'Example',kRule:'Rule',traceH:'Agent steps',copy:'Copy',copied:'Copied',
+seekH:'Ready for the interview?',fRole:'Type of job',btnStart:'Start',seekHelp:'Pick a job, then Start. Practice only: it cannot predict your result.',
+ivTile:'Practice',ivLine:'Questions and feedback',ivLineQ:'Question {n} of {t}',ivLineDone:'Finished',mapTile:'Job ideas',p90Tile:'Starting a job',
+hireH:'Hiring Emiratis',fSize:'Staff',fSkilled:'Skilled roles',fEmirati:'Emiratis in them',exTry:'Try:',exLogi:'Logistics, 180',exSmall:'Small firm, 35',
+e2H:'Emiratisation target',hireTile:'Hiring plan',ruleTag:'Rule',exampleTag:'Example',kRule:'Rule',ruleNote:'“Rule” means a fixed step worked out on your device.',traceH:'Steps taken',copy:'Copy',copied:'Copied',
 copyFallback:'Select and copy:',copy_map:'Copy strengths',copy_p90:'Copy plan',copy_hire:'Copy plan',ivEmpty:'Pick a job, then Start.',ivQ:'{n} of {t}',ivYou:'You',
 ivAnswerLabel:'Your answer',ivAnswerPh:'Your words',ivSend:'Send',ivEnd:'End',ivRestart:'New practice',notGov:'Not legal advice. Not a government service.',
 ivSelf:'Self-check: {m} of {t}',ivPractice:'This is practice feedback worked out on your phone from simple rules. It is not an assessment by any employer or official body.',ivMissing:'Missing:',ivMet:'Met:',ivSumH:'Summary',ivSumRules:'You met {m} of {t} points.',ivSumEarly:'Ended before any answer.',
 ivNeed:'Type an answer first.',ivRulesNote:'Rule: 8 set questions, 5 checks each.',an_ivFirst:'Question 1 of {t}: {q}',an_ivNext:'Question {n} of {t}: {q}',
 an_ivDone:'Practice finished.',tr_iv_role:'Job type: {role}',tr_iv_bank:'Question bank of 8',tr_iv_rulesCoach:'Answers rule-checked: {n}',tr_local:'Nothing sent; ran here',
-s1Sub:'Ideas to explore, not job matches or offers.',exMariam:'Mariam',exSaeed:'Saeed',exClear:'Clear',undo:'Undo',an_cleared:'Cleared. Undo available.',
+s1Sub:'Ideas, not job matches or offers.',exMariam:'Mariam',exSaeed:'Saeed',exClear:'Clear',undo:'Undo',an_cleared:'Cleared. Undo available.',
 an_loaded:'Example loaded. Undo available.',an_restored:'Profile restored.',fSkills:'Skills and interests',fSkillsPh:'e.g. Excel, organising events',
 fField:'Field of study',fFieldPh:'e.g. Business',fSectors:'Sectors',sec_logistics:'Logistics',sec_finance:'Finance',sec_retail:'Retail',sec_hospitality:'Hospitality',
 sec_tech:'Technology',sec_health:'Healthcare',sec_energy:'Energy',sec_media:'Media',sec_construction:'Construction',fName:'Name (optional)',fEmirate:'Emirate',
 em_abu_dhabi:'Abu Dhabi',em_dubai:'Dubai',em_sharjah:'Sharjah',em_ajman:'Ajman',em_uaq:'Umm Al Quwain',em_rak:'Ras Al Khaimah',em_fujairah:'Fujairah',fEdu:'Education',
 edu_school:'School',edu_diploma:'Diploma',edu_bachelor:'Bachelor’s',edu_master:'Master’s or higher',edu_other:'Other',fLoc:'Where',loc_near:'Near home',
 loc_uae:'Anywhere in the UAE',loc_hybrid:'Remote or hybrid',fHours:'Hours',hrs_full:'Full time',hrs_part:'Part time',hrs_shifts:'Shifts',hrs_flex:'Flexible',
-fCV:'CV text (optional)',fCVPh:'Paste your CV',saved:'Saved here.',btnMap:'Map my strengths',needSkills:'Add a few skills first.',an_mapDone:'Ready: {n} job areas.',
+fCV:'CV text (optional)',fCVPh:'Paste your CV',saved:'Saved on this device.',btnMap:'Show job ideas',needSkills:'Add a few skills first.',an_mapDone:'Ready: {n} job areas.',
 strengthsH:'Strengths',transferH:'Skills that carry over',rolesH:'Job areas',firstTasks:'First tasks',toBuild:'Skills to build',cvTipsH:'CV edits',nextH:'Next steps',
 whyRule:'Matches: {hits}.',whyDefault:'A common first step.',rulesMapNote:'Rule: keyword match.',tip_noCV:'Paste a CV for edits.',tip_numbers:'Add a number to one line.',
 tip_volunteer:'Add your volunteering.',tip_action:'Start lines with action words.',tip_long:'Keep it to two pages.',tip_short:'One line per project or role.',
@@ -482,34 +489,36 @@ tgtSmall:'Firms with 20–49 staff in 14 listed sectors had to hire 1 Emirati in
 tgtHealth:'Healthcare facilities: the target may be split by job type. Ask MoHRE.',tgtNeedLine:'Estimate = 10% of skilled roles, rounded up. MoHRE sets the exact count.',
 tgtCalc1:'10% of {k} = {x} → {r}',tgtGapLine:'Gap = estimate − now (min 0)',tgtCalc2:'{r} − {c} = {g}',tgtSrc:'Source: MoHRE.',
 tr_t_read:'Read: {s} staff, {k} skilled, {c} Emiratis',tr_t_big:'50+ staff: yearly target applies',tr_t_small:'Under 50 staff: 50+ target not applied',
-tr_t_calc:'Estimate {r}, now {c}, gap {g}',e1Sub:'No questions on gender, religion, age, family, health.',fSector:'Sector',es_logistics:'Logistics',es_retail:'Retail',
+tr_t_calc:'Estimate {r}, now {c}, gap {g}',e1Sub:'Leaves out words on gender, religion, age, family, health.',fSector:'Sector',es_logistics:'Logistics',es_retail:'Retail',
 es_hospitality:'Hospitality',es_finance:'Banking and finance',es_construction:'Construction',es_tech:'Technology',es_health:'Healthcare',es_manufacturing:'Manufacturing',
-es_other:'Another sector',fPlans:'Next 12 months’ plans',fPlansPh:'e.g. 8 warehouse roles',fairOk:'No unfair criteria.',fairH:'Unfair words left out: {n}',
+es_other:'Another sector',fPlans:'Your hiring plans',fPlansPh:'e.g. 8 warehouse roles',fairOk:'No unfair words.',fairH:'Unfair words left out: {n}',
 fairWhy:'Describe skills instead.',fc_gender:'gender',fc_religion:'religion',fc_age:'age',fc_family:'family',fc_health:'health',an_fair:'Unfair words left out: {n}.',
 btnHire:'Plan my hiring',an_hireDone:'Hiring plan ready.',an_hireDoneFair:'Plan ready. Unfair words left out: {n}.',h_roles:'Roles to open',h_where:'Where to find talent',
 h_buddy:'Buddy plan',h_retain:'Keeping people',h_week:'First week',tgtEstimate:'Estimate, not legal advice. Confirm with MoHRE.',
-tr_e_target:'Fixed formula: needed {r}, now {c}, gap {g}',tr_e_fair:'Left out ({n}): {list}',tr_e_fairNone:'No unfair criteria',tr_e_rules:'Standard plan',
-tr_e_decide:'Every decision is yours',srcLabel:'Sources:',mohre:'MoHRE',nafis:'Nafis',reset:'Reset',resetConfirm:'Tap again to reset'
+tr_e_target:'Fixed formula: needed {r}, now {c}, gap {g}',tr_e_fair:'Left out ({n}): {list}',tr_e_fairNone:'No unfair words',tr_e_rules:'Standard plan',
+tr_e_decide:'Every decision is yours',srcLabel:'Sources:',mohre:'MoHRE',nafis:'Nafis',reset:'Clear my data',resetConfirm:'Tap again to clear',cleared:'Cleared.'
 },
 ar:{
 skip:'انتقال إلى المحتوى',brand:'زاهب',close:'إغلاق',more:'المزيد',moreDetails:'تفاصيل أخرى',back:'رجوع',chooseH:'ما الذي تبحث عنه؟',chSeek:'أبحث عن عمل',
-chHire:'أبحث عن موظفين',privRules:'لا يغادر ما تكتبه جهازك.',demoNote:'تجربة بأمثلة مختلقة. معلومات عامة، وليست استشارة قانونية.',seekH:'الاستعداد للمقابلة',
-fRole:'نوع الوظيفة',btnStart:'بدء',seekHelp:'سؤال تلو الآخر، مع ملاحظات. للتدريب فقط، ولا تتنبأ بنتيجتك.',ivTile:'التدريب',ivLine:'أسئلة وملاحظات',
-ivLineQ:'السؤال {n} من {t}',ivLineDone:'اكتمل',mapTile:'نقاط قوتي',p90Tile:'أول 90 يوماً',hireH:'توظيف مواطنين يبقون',fSize:'الموظفون',fSkilled:'الوظائف المهارية',
+chooseSub:'تدريب على مقابلات العمل، أو تخطيط توظيف المواطنين في شركتك.',tryEx:'جرّب مثالًا',trySales:'مقابلة لوظيفة مبيعات',tryIt:'خطة لبداية وظيفة تقنية',tryLogi:'شركة لوجستيات، 180 موظفاً',
+howH:'طريقة الاستخدام',how1:'الضغط على «أبحث عن عمل» أو «أبحث عن موظفين» للبدء.',how2:'للباحث عن عمل: اختيار وظيفة ثم «بدء»، وملاحظات على كل إجابة.',how3:'لصاحب العمل: إدخال ثلاثة أرقام للموظفين، ثم «خطة التوظيف».',
+chHire:'أبحث عن موظفين',privRules:'لا شيء مما تكتبه يغادر جهازك.',demoNote:'عرض تجريبي بأمثلة مختلقة. معلومات عامة، وليست استشارة قانونية.',seekH:'الاستعداد للمقابلة',
+fRole:'نوع الوظيفة',btnStart:'بدء',seekHelp:'اختيار وظيفة، ثم «بدء». للتدريب فقط، ولا تتنبأ بنتيجتك.',ivTile:'التدريب',ivLine:'أسئلة وملاحظات',
+ivLineQ:'السؤال {n} من {t}',ivLineDone:'اكتمل',mapTile:'أفكار وظيفية',p90Tile:'بداية وظيفة جديدة',hireH:'توظيف المواطنين',fSize:'الموظفون',fSkilled:'الوظائف المهارية',
 fEmirati:'المواطنون فيها',exTry:'مثال:',exLogi:'لوجستيات، 180',exSmall:'شركة صغيرة، 35',e2H:'هدف التوطين',hireTile:'خطة التوظيف',ruleTag:'قاعدة',exampleTag:'مثال',
-kRule:'قاعدة',traceH:'خطوات الوكيل',copy:'نسخ',copied:'تم النسخ',copyFallback:'تحديد النص ونسخه:',copy_map:'نسخ نقاط القوة',copy_p90:'نسخ الخطة',
+kRule:'قاعدة',ruleNote:'«قاعدة» تعني خطوة ثابتة تُحسب على جهازك.',traceH:'الخطوات المتخذة',copy:'نسخ',copied:'تم النسخ',copyFallback:'تحديد النص ونسخه:',copy_map:'نسخ نقاط القوة',copy_p90:'نسخ الخطة',
 copy_hire:'نسخ خطة التوظيف',ivEmpty:'اختيار وظيفة، ثم «بدء».',ivQ:'{n} من {t}',ivYou:'أنت',ivAnswerLabel:'إجابتك',ivAnswerPh:'الإجابة بكلماتك',ivSend:'إرسال',ivEnd:'إنهاء',
 ivRestart:'تدريب جديد',notGov:'ليست استشارة قانونية ولا خدمة حكومية.',ivSelf:'تحقق ذاتي: {m} من {t}',ivPractice:'هذه ملاحظات تدريبية تُحسب على هاتفك بقواعد بسيطة، وليست تقييماً من أي جهة عمل أو جهة رسمية.',ivMissing:'ينقص:',ivMet:'المستوفى:',ivSumH:'الملخص',ivSumRules:'المستوفى: {m} من {t}.',
 ivSumEarly:'انتهى قبل أي إجابة.',ivNeed:'الإجابة مطلوبة أولاً.',ivRulesNote:'قاعدة: 8 أسئلة ثابتة و5 فحوص.',an_ivFirst:'السؤال 1 من {t}: {q}',
 an_ivNext:'السؤال {n} من {t}: {q}',an_ivDone:'انتهى التدريب.',tr_iv_role:'نوع الوظيفة: {role}',tr_iv_bank:'بنك من 8 أسئلة',tr_iv_rulesCoach:'إجابات فحصتها القاعدة: {n}',
-tr_local:'لم يُرسَل شيء',s1Sub:'أفكار للاستكشاف، وليست وظائف مطابقة أو عروضاً.',exMariam:'مريم',exSaeed:'سعيد',exClear:'مسح',undo:'تراجع',an_cleared:'مُسح. التراجع متاح.',
+tr_local:'لم يُرسَل شيء',s1Sub:'أفكار، وليست وظائف مطابقة أو عروضاً.',exMariam:'مريم',exSaeed:'سعيد',exClear:'مسح',undo:'تراجع',an_cleared:'مُسح. التراجع متاح.',
 an_loaded:'حُمّل المثال. التراجع متاح.',an_restored:'عاد الملف.',fSkills:'المهارات والاهتمامات',fSkillsPh:'مثلاً: إكسل، تنظيم الفعاليات',fField:'مجال الدراسة',
 fFieldPh:'مثلاً: إدارة الأعمال',fSectors:'القطاعات',sec_logistics:'اللوجستيات',sec_finance:'المالية',sec_retail:'التجزئة',sec_hospitality:'الضيافة',sec_tech:'التكنولوجيا',
 sec_health:'الصحة',sec_energy:'الطاقة',sec_media:'الإعلام',sec_construction:'البناء',fName:'الاسم (اختياري)',fEmirate:'الإمارة',em_abu_dhabi:'أبوظبي',em_dubai:'دبي',
 em_sharjah:'الشارقة',em_ajman:'عجمان',em_uaq:'أم القيوين',em_rak:'رأس الخيمة',em_fujairah:'الفجيرة',fEdu:'التعليم',edu_school:'الثانوية',edu_diploma:'دبلوم',
 edu_bachelor:'بكالوريوس',edu_master:'ماجستير أو أعلى',edu_other:'غير ذلك',fLoc:'مكان العمل',loc_near:'قرب المنزل',loc_uae:'أي مكان في الإمارات',loc_hybrid:'عن بُعد أو مرن',
-fHours:'الدوام',hrs_full:'كامل',hrs_part:'جزئي',hrs_shifts:'مناوبات',hrs_flex:'مرن',fCV:'نص السيرة الذاتية (اختياري)',fCVPh:'لصق السيرة هنا',saved:'حُفظ هنا.',
-btnMap:'تحديد نقاط قوتي',needSkills:'بعض المهارات مطلوبة أولاً.',an_mapDone:'جاهز: مجالات وظيفية ({n}).',strengthsH:'نقاط القوة',transferH:'مهارات تنتقل معك',
+fHours:'الدوام',hrs_full:'كامل',hrs_part:'جزئي',hrs_shifts:'مناوبات',hrs_flex:'مرن',fCV:'نص السيرة الذاتية (اختياري)',fCVPh:'لصق السيرة هنا',saved:'حُفظ على جهازك.',
+btnMap:'عرض أفكار وظيفية',needSkills:'بعض المهارات مطلوبة أولاً.',an_mapDone:'جاهز: مجالات وظيفية ({n}).',strengthsH:'نقاط القوة',transferH:'مهارات تنتقل معك',
 rolesH:'مجالات وظيفية',firstTasks:'مهام أولى',toBuild:'مهارات للتطوير',cvTipsH:'تعديلات السيرة',nextH:'الخطوات التالية',whyRule:'تطابق: {hits}.',whyDefault:'بداية شائعة.',
 rulesMapNote:'قاعدة: مطابقة الكلمات.',tip_noCV:'لصق السيرة يتيح التعديلات.',tip_numbers:'إضافة رقم إلى سطر.',tip_volunteer:'إضافة العمل التطوعي.',
 tip_action:'بدء الأسطر بأفعال إنجاز.',tip_long:'صفحتان كحد أقصى.',tip_short:'سطر لكل مشروع أو دور.',ns_1:'قراءة خمسة إعلانات في مجال واحد.',
@@ -526,14 +535,14 @@ tgtSmall:'على المنشآت التي يعمل بها 20-49 موظفاً في
 tgtHealth:'المنشآت الصحية: قد يُقسَّم الهدف حسب نوع الوظيفة. اسأل الوزارة.',tgtNeedLine:'التقدير = 10% من الوظائف المهارية، بالتقريب للأعلى. تحدد الوزارة العدد الدقيق.',
 tgtCalc1:'10% من {k} = {x} ← {r}',tgtGapLine:'الفجوة = التقدير − الحالي (≥ 0)',tgtCalc2:'{r} − {c} = {g}',tgtSrc:'المصدر: وزارة الموارد البشرية والتوطين.',
 tr_t_read:'الأرقام: الموظفون {s}، المهارية {k}، المواطنون {c}',tr_t_big:'50 فأكثر: ينطبق الهدف السنوي',tr_t_small:'أقل من 50: لا ينطبق هدف 50 فأكثر',
-tr_t_calc:'التقدير {r}، الحالي {c}، الفجوة {g}',e1Sub:'لا أسئلة عن الجنس والدين والعمر والأسرة والصحة.',fSector:'القطاع',es_logistics:'اللوجستيات',es_retail:'التجزئة',
+tr_t_calc:'التقدير {r}، الحالي {c}، الفجوة {g}',e1Sub:'تُستبعد الكلمات المتعلقة بالجنس والدين والعمر والأسرة والصحة.',fSector:'القطاع',es_logistics:'اللوجستيات',es_retail:'التجزئة',
 es_hospitality:'الضيافة',es_finance:'البنوك والمالية',es_construction:'البناء',es_tech:'التكنولوجيا',es_health:'الرعاية الصحية',es_manufacturing:'التصنيع',
-es_other:'قطاع آخر',fPlans:'خطط الأشهر الـ12 القادمة',fPlansPh:'مثلاً: 8 وظائف مستودع',fairOk:'لا معايير غير عادلة.',fairH:'كلمات غير عادلة استُبعدت: {n}',
+es_other:'قطاع آخر',fPlans:'خطط التوظيف لديك',fPlansPh:'مثلاً: 8 وظائف مستودع',fairOk:'لا كلمات غير عادلة.',fairH:'كلمات غير عادلة استُبعدت: {n}',
 fairWhy:'الأفضل وصف المهارات.',fc_gender:'الجنس',fc_religion:'الدين',fc_age:'العمر',fc_family:'الأسرة',fc_health:'الصحة',an_fair:'استُبعدت كلمات غير عادلة: {n}.',
 btnHire:'تخطيط التوظيف',an_hireDone:'خطة التوظيف جاهزة.',an_hireDoneFair:'الخطة جاهزة. استُبعدت كلمات غير عادلة: {n}.',h_roles:'وظائف للفتح',h_where:'مصادر المواهب',
 h_buddy:'الزميل المرافق',h_retain:'الاستبقاء',h_week:'الأسبوع الأول',tgtEstimate:'تقدير، وليس استشارة قانونية. المرجع: الوزارة.',
-tr_e_target:'معادلة ثابتة: المطلوب {r}، الحالي {c}، الفجوة {g}',tr_e_fair:'مستبعد ({n}): {list}',tr_e_fairNone:'لا معايير غير عادلة',tr_e_rules:'خطة قياسية',
-tr_e_decide:'القرار لك',srcLabel:'المصادر:',mohre:'وزارة الموارد البشرية والتوطين',nafis:'نافس',reset:'إعادة الضبط',resetConfirm:'ضغطة أخرى لإعادة الضبط'
+tr_e_target:'معادلة ثابتة: المطلوب {r}، الحالي {c}، الفجوة {g}',tr_e_fair:'مستبعد ({n}): {list}',tr_e_fairNone:'لا كلمات غير عادلة',tr_e_rules:'خطة قياسية',
+tr_e_decide:'القرار لك',srcLabel:'المصادر:',mohre:'وزارة الموارد البشرية والتوطين',nafis:'نافس',reset:'امسح بياناتي',resetConfirm:'اضغط مجددًا للمسح',cleared:'تم المسح.'
 }};
 let LANG=document.documentElement.lang==='ar'?'ar':'en';
 function t(k,v){let s=I18N[LANG]&&I18N[LANG][k];if(s==null)s=I18N.en[k];if(s==null)return k;if(v)s=s.replace(/\{(\w+)\}/g,(m,x)=>v[x]!=null?String(v[x]):m);return s}
@@ -725,7 +734,7 @@ const list=(tag,a)=>`<${tag} class="list">${a.map(x=>`<li dir="auto">${esc(x)}</
 const ul=a=>list('ul',a),ol=a=>list('ol',a);
 const chips=a=>`<ul class="chips">${a.map(x=>`<li dir="auto">${esc(x)}</li>`).join('')}</ul>`;
 const listSep=()=>LANG==='ar'?'، ':', ';
-const traceHTML=steps=>`<div class="blk"><h3>${T('traceH')}</h3><ul class="trace">${steps.map(x=>`<li><span class="k">${T('kRule')}</span><span dir="auto">${esc(x)}</span></li>`).join('')}</ul></div>`;
+const traceHTML=steps=>`<div class="blk"><h3>${T('traceH')}</h3><p class="note">${T('ruleNote')}</p><ul class="trace">${steps.map(x=>`<li><span class="k">${T('kRule')}</span><span dir="auto">${esc(x)}</span></li>`).join('')}</ul></div>`;
 const moreHTML=inner=>inner?`<details class="more"><summary>${T('more')}</summary><div class="more-body">${inner}</div></details>`:'';
 const blk=(k,inner)=>`<div class="blk"><h3>${T(k)}</h3>${inner}</div>`;
 const statusHTML=(sym,text)=>`<p class="status"><span class="sym" aria-hidden="true">${sym}</span><span>${esc(text)}</span></p>`;
@@ -757,7 +766,7 @@ function load(){try{const v=JSON.parse(localStorage.getItem(KEY)||'null');
     if(v&&v.profile&&typeof v.profile==='object'&&v.emp&&typeof v.emp==='object'){const d=seed();
       return {...d,...v,profile:{...d.profile,...v.profile},emp:{...d.emp,...v.emp},pristine:v.pristine===true}}}catch(e){}return seed()}
 let S;
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));return true}catch(e){return false}}
 /* Any change by the visitor ends the pristine example. */
 function touch(){if(S.pristine)S.pristine=false}
 
@@ -769,14 +778,14 @@ let saveTimer=null;
 /* "Saved here." is written once (empty to saved), so the live region does not repeat it after every pause. */
 let savedShown=false;
 function markSaved(){if(savedShown)return;savedShown=true;$('savedNote').textContent=t('saved')}
-$('profileForm').addEventListener('input',()=>{S.profile=readProfile();touch();renderExMarks();clearTimeout(saveTimer);saveTimer=setTimeout(()=>{save();markSaved()},400)});
-$('profileForm').addEventListener('change',()=>{S.profile=readProfile();touch();save();markSaved()});
+$('profileForm').addEventListener('input',()=>{S.profile=readProfile();touch();renderExMarks();clearTimeout(saveTimer);saveTimer=setTimeout(()=>{if(save())markSaved()},400)});
+$('profileForm').addEventListener('change',()=>{S.profile=readProfile();touch();if(save())markSaved()});
 /* Loading an example or clearing the form over typed data can be undone for a few seconds. */
 let undoProfile=null,undoTimer=null;
 const isExampleProfile=p=>EX_ALL.some(x=>x.skills===p.skills&&x.cv===p.cv);
 const hasProfileData=p=>!!String((p.name||'')+(p.field||'')+(p.skills||'')+(p.cv||'')).trim();
 function replaceProfile(p,anKey){const prev=readProfile();const canUndo=hasProfileData(prev)&&!isExampleProfile(prev);
-  writeProfile(p);S.profile=p;touch();save();renderExMarks();markSaved();clearTimeout(undoTimer);
+  writeProfile(p);S.profile=p;touch();const ok=save();renderExMarks();if(ok)markSaved();clearTimeout(undoTimer);
   if(canUndo){undoProfile=prev;$('undoBtn').hidden=false;announce(t(anKey));undoTimer=setTimeout(()=>{undoProfile=null;$('undoBtn').hidden=true},8000)}
   else{undoProfile=null;$('undoBtn').hidden=true}}
 document.querySelectorAll('[data-ex]').forEach(b=>b.addEventListener('click',()=>{replaceProfile(exProfile(b.dataset.ex),'an_loaded');$('mapBtn').focus()}));
@@ -991,6 +1000,12 @@ function setTab(tab,focus){const side=tab==='hire'||tab==='seek'?tab:'';
 $('chSeek').addEventListener('click',()=>setTab('seek',true));
 $('chHire').addEventListener('click',()=>setTab('hire',true));
 document.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',()=>{setTab('');$('chSeek').focus({preventScroll:true})}));
+document.querySelectorAll('[data-try]').forEach(b=>b.addEventListener('click',()=>{const p=S.pristine,k=b.dataset.try;
+  if(k==='logi'){setTab('hire',true);const e=S.emp,X=Object.keys(EXE).map(j=>EXE[j]);
+    if((!e.size&&!e.skilled&&!e.emirati||X.some(x=>x.size===e.size&&x.skilled===e.skilled&&x.emirati===e.emirati))&&(!String(e.plans||'').trim()||X.some(x=>x.plans.en===e.plans||x.plans.ar===e.plans)))document.querySelector('[data-eex=logi]').click()}
+  else{setTab('seek',true);if(k==='it'){S.rolePick='it';renderRoleSelects();save();openSheet('sheet90',$('p90Tile'));runP90()}
+    else{if((!S.iv||S.iv.example||!S.iv.items.some(x=>x.a!=null))&&!S.ivDraft){S.rolePick='sales';renderRoleSelects();S.iv=seedInterview('sales');S.ivDraft='';save();renderInterview()}openSheet('sheetIv',$('ivTile'))}}
+  if(p&&!S.pristine){S.pristine=true;save()}}));
 function applyStatic(){
   document.querySelectorAll('[data-i]').forEach(el=>{if(el.id==='reset'&&resetArmed)return;el.textContent=t(el.dataset.i)});
   document.querySelectorAll('[data-ip]').forEach(el=>{el.placeholder=t(el.dataset.ip)});
@@ -1019,7 +1034,7 @@ $('reset').addEventListener('click',()=>{const b=$('reset');
   clearTimeout(resetTimer);resetArmed=false;
   S=seed();['mapErr','p90Err','hireErr'].forEach(id=>setErr(id,''));savedShown=false;undoProfile=null;clearTimeout(undoTimer);$('undoBtn').hidden=true;
   writeProfile(S.profile);writeEmp(S.emp);save();setTab('');renderAll();empSig=empKey();
-  closeSheet(()=>{$('main').focus({preventScroll:true});window.scrollTo({top:0,behavior:smooth()})})});
+  closeSheet(()=>{$('main').focus({preventScroll:true});window.scrollTo({top:0,behavior:smooth()});announce(t('cleared'))})});
 
 /* ---------- start ---------- */
 /* A damaged save never stops the page: fall back to the made-up demo. */

@@ -45,6 +45,7 @@ button,textarea{font:inherit;color:inherit}
 [dir=rtl] .mark{transform:scaleX(-1)}
 .lang{min-width:44px;min-height:44px;padding:0 16px;border:1.5px solid var(--muted);border-radius:22px;background:transparent;font-size:15px;font-weight:600;line-height:1;cursor:pointer}
 h1{margin:16px 0 16px;font-size:28px;line-height:1.15;font-weight:600;color:var(--gold-ink)}
+.lead{margin:-8px 0 14px;font-size:15px;line-height:22px;color:var(--muted)}
 :root[lang=en] h1{letter-spacing:-.01em}
 .field{display:flex;align-items:flex-end;gap:6px;min-height:56px;padding:6px;padding-inline-start:20px;border-radius:28px;background:var(--field);color:var(--field-ink);box-shadow:inset 0 0 0 1.5px var(--gold-line)}
 .field textarea{flex:1;min-width:0;height:44px;max-height:148px;margin:0;padding:10px 0;border:0;background:transparent;font-size:17px;line-height:24px;resize:none;overflow-y:auto}
@@ -60,6 +61,10 @@ h1{margin:16px 0 16px;font-size:28px;line-height:1.15;font-weight:600;color:var(
 .route b{font-weight:600}
 .route .soft{color:var(--muted)}
 .route [hidden]{display:none}
+/* Examples under the box: a tap opens the right helper with the example in it (shown only once the script runs) */
+.ex{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0}
+.ex .tl{flex-basis:100%;margin:0}
+.ex[hidden]{display:none}
 
 /* The six agents */
 main.wrap{padding:16px 16px 24px}
@@ -123,7 +128,7 @@ main.wrap{padding:16px 16px 24px}
  .agent:hover .s{transform:translate(2px,-2px)}
 }
 
-/* Test mode only (?test=1): the question bar, the send button and the send sheet. Nothing here shows without it. */
+/* Test mode (?test=1): the question bar, the send button and the send sheet. .tbtn and .tl also style the examples under the box. */
 .tbar{position:fixed;inset-inline:0;bottom:0;z-index:5;background:var(--tint);box-shadow:inset 0 1.5px 0 var(--gold-line);border-start-start-radius:22px;border-start-end-radius:22px}
 .tbar .wrap{display:flex;align-items:center;gap:10px;padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
 .tq-t{flex:1;min-width:0;margin:0}
@@ -184,15 +189,17 @@ body.tpad{padding-bottom:88px}
    <button class="lang" id="lang" type="button" lang="ar">عربي</button>
   </div>
   <h1 data-t="h1">What do you need?</h1>
+  <p class="lead" data-t="lead">Type a question or paste a message, and the right helper opens.</p>
   <form class="ask" id="ask" action="answers/" method="get">
    <label for="q" class="vh" data-t="label">Your question</label>
    <div class="field">
     <!-- no name="q": if the script never runs, Go opens Inzain without the text, so the text never goes into an address -->
-    <textarea id="q" rows="1" dir="auto" maxlength="800" enterkeyhint="go" placeholder="Ask anything"></textarea>
+    <textarea id="q" rows="1" dir="auto" maxlength="800" enterkeyhint="go" placeholder="My rent went up"></textarea>
     <button class="go" type="submit" data-ta="send" aria-label="Go"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h13M12.5 6l6 6-6 6"/></svg></button>
    </div>
    <p class="route"><span class="soft" id="hint" data-t="hint">Or pick one.</span><span id="route" aria-live="polite"></span></p>
   </form>
+  <div class="ex" hidden><span class="tl" data-t="exT">Try an example</span><button type="button" class="tbtn" data-ex="0" data-t="ex0">How do I renew my Emirates ID?</button><button type="button" class="tbtn" data-ex="1" data-t="ex1">A suspicious bank message</button></div>
  </div>
 </header>
 
@@ -201,27 +208,27 @@ body.tpad{padding-bottom:88px}
   <li><a class="agent" href="answers/">
    <svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path class="s" d="M30 7h8v18l-4-3-4 3z"/><path d="M24 15C19.5 12.3 13.5 11 6 11v25c7.5 0 13.5 1.3 18 4 4.5-2.7 10.5-4 18-4V11c-7.5 0-13.5 1.3-18 4zM24 15v25M11 19.5c2.6.2 5 .7 7 1.4M11 25.5c2.6.2 5 .7 7 1.4"/></svg>
    <span lang="en">Inzain</span><span lang="ar">انزين</span>
-   <span class="line" data-t="w1">Ask UAE rules</span></a></li>
+   <span class="line" data-t="w1">Answers on visas, work, rent and fines. Official sources.</span></a></li>
   <li><a class="agent" href="message-check/">
    <svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M11 8h16a6 6 0 0 1 6 6v10a6 6 0 0 1-6 6H17l-6 6v-6a6 6 0 0 1-6-6V14a6 6 0 0 1 6-6zM12 15.5h13M12 21.5h7"/><circle class="s" cx="33" cy="29" r="7.5"/><circle cx="33" cy="29" r="7.5"/><path d="M38.5 34.5 43 39"/></svg>
    <span lang="en">Mazboot</span><span lang="ar">مضبوط</span>
-   <span class="line" data-t="w2">Check a message</span></a></li>
+   <span class="line" data-t="w2">Paste a suspicious message. See if it looks like a scam.</span></a></li>
   <li><a class="agent" href="wages/">
    <svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect x="5" y="10" width="30" height="28" rx="5"/><path d="M13 6v8M27 6v8M5 18h30M11 25h4M19 25h4M11 31h4"/><path class="s" d="M27 31c0-1.9 3.6-3.5 8-3.5s8 1.6 8 3.5v6c0 1.9-3.6 3.5-8 3.5s-8-1.6-8-3.5z"/><ellipse cx="35" cy="31" rx="8" ry="3.5"/><path d="M27 31v6c0 1.9 3.6 3.5 8 3.5s8-1.6 8-3.5v-6M27 34c0 1.9 3.6 3.5 8 3.5s8-1.6 8-3.5"/></svg>
    <span lang="en">Bil Tareekh</span><span lang="ar">بالتاريخ</span>
-   <span class="line" data-t="w3">Prove late pay</span></a></li>
+   <span class="line" data-t="w3">Salary late? Log your paydays and keep dated proof.</span></a></li>
   <li><a class="agent" href="rent/">
    <svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M5 24 21 11l16 13M10 20v18h22V20M17.5 38v-9h7v9"/><circle class="s" cx="37" cy="12" r="7"/><path d="M37 15.5v-7M33.8 11.7 37 8.5l3.2 3.2"/></svg>
    <span lang="en">Masmooh</span><span lang="ar">مسموح</span>
-   <span class="line" data-t="w4">Check your rent</span></a></li>
+   <span class="line" data-t="w4">See if your Dubai rent rise is allowed.</span></a></li>
   <li><a class="agent" href="city-repairs/">
    <svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path class="s" d="M27 12h8l9 26c-3.4 1.3-8.2 2-13 2s-9.6-.7-13-2z"/><path d="M14 42V14a7 7 0 0 1 7-7h4M25 7h12l-2 5h-8zM9 42h10"/></svg>
    <span lang="en">Wareeni</span><span lang="ar">ورّيني</span>
-   <span class="line" data-t="w5">Report a problem</span></a></li>
+   <span class="line" data-t="w5">Prepare a photo report of a city problem. Nothing is sent.</span></a></li>
   <li><a class="agent" href="careers/">
    <svg class="ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path class="s" d="M27.2 17.6c1.5 4.8 2.4 9.6 2.4 14.2a2.4 2.4 0 0 1-4.8 0c0-4.6.9-9.4 2.4-14.2z"/><path d="M6 43V21.5c0-3 1.8-5.6 4.6-6.6L18 12M42 43V21.5c0-3-1.8-5.6-4.6-6.6L30 12M18 12c0 3.3 2.7 6 6 6s6-2.7 6-6c-1.7-1.3-3.8-2-6-2s-4.3.7-6 2zM24 18v12"/></svg>
    <span lang="en">Zaheb</span><span lang="ar">زاهب</span>
-   <span class="line" data-t="w6">Interview practice</span></a></li>
+   <span class="line" data-t="w6">Practise job interview questions and get feedback.</span></a></li>
  </ul>
  <p class="foot" data-t="foot">Not legal advice. Not a government service.</p>
 </main>
@@ -241,7 +248,7 @@ body.tpad{padding-bottom:88px}
 (function(){
 'use strict';
 const root=document.documentElement;
-const AR={back:'رجوع',brand:'وكلاء الإمارات',h1:'شو تحتاج؟',label:'سؤالك',send:'انطلق',hint:'أو اختر واحدًا.',w1:'اسأل عن الأنظمة',w2:'افحص رسالة مشبوهة',w3:'أثبت تأخر الراتب',w4:'افحص زيادة الإيجار',w5:'بلّغ عن عطل',w6:'استعد لمقابلة العمل',full:'صفحة كاملة',close:'إغلاق',foot:'ليست استشارة قانونية ولا خدمة حكومية.',ph:'اسأل أي شيء'};
+const AR={back:'رجوع',brand:'وكلاء الإمارات',h1:'شو تحتاج؟',lead:'اكتب سؤالك أو الصق رسالة، ونفتح لك المساعد المناسب.',exT:'جرّب مثالًا',ex0:'كيف أجدد بطاقة الهوية الإماراتية؟',ex1:'رسالة مشبوهة من البنك',label:'سؤالك',send:'انطلق',hint:'أو اختر واحدًا.',w1:'إجابات عن الإقامة والعمل والإيجار والمخالفات. مصادر رسمية.',w2:'الصق رسالة مشبوهة واعرف إن كانت تبدو احتيالًا.',w3:'تأخر راتبك؟ سجّل أيام الدفع واحتفظ بإثبات مؤرَّخ.',w4:'اعرف إن كانت زيادة إيجارك في دبي مسموحة.',w5:'جهّز بلاغًا بصورة عن مشكلة في المدينة. لا يُرسل شيء.',w6:'تدرّب على أسئلة مقابلة العمل واحصل على ملاحظات.',full:'صفحة كاملة',close:'إغلاق',foot:'ليست استشارة قانونية ولا خدمة حكومية.',ph:'زاد إيجاري'};
 const EN={};
 document.querySelectorAll('[data-t]').forEach(e=>{EN[e.dataset.t]=e.textContent});
 document.querySelectorAll('[data-ta]').forEach(e=>{EN[e.dataset.ta]=e.getAttribute('aria-label')});
@@ -368,7 +375,7 @@ function showRoute(){
  const sig=key+'|'+root.lang;if(sig===said)return;said=sig;
  route.textContent='';if(!key)return;
  const b=document.createElement('b');b.textContent=nameOf(AGENTS[key]);
- if(isAr())route.append('سيتولى ',b,' هذا السؤال.');else route.append(b,' will take this.');
+ if(isAr())route.append(b,' سيساعدك.');else route.append(b,' will help.');
 }
 function grow(){if(!Q.value){Q.style.height='';return}Q.style.height='auto';Q.style.height=Math.min(Q.scrollHeight,148)+'px'}
 Q.addEventListener('input',()=>{grow();showRoute()});
@@ -444,6 +451,12 @@ const form=document.getElementById('ask');
 form.addEventListener('submit',e=>{e.preventDefault();const t=Q.value.trim();if(!t){Q.focus();return}if(coarse())Q.blur();const k=pick(t);recAsk(t,k,'typed');show(k,t)});
 Q.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();if(form.requestSubmit)form.requestSubmit();else form.dispatchEvent(new Event('submit',{cancelable:true}))}});
 tiles.forEach(link=>link.addEventListener('click',e=>{if(e.ctrlKey||e.metaKey||e.shiftKey||e.altKey)return;const k=keyOf(link);if(!k)return;e.preventDefault();const t=Q.value.trim();if(t)recAsk(t,k,'tile');show(k,t)}));
+// An example tap opens its helper directly, not through the form: on the tester link it is not counted as the tester's own question
+// (marked as pasted, so neither it nor Inzain's answer to it is recorded). Then the box is emptied for the next question.
+const EX={en:['How do I renew my Emirates ID?','Dear customer, your bank card has been suspended. Update your details now: short.example/3xVrfy'],
+ ar:['كيف أجدد بطاقة الهوية الإماراتية؟','عزيزي العميل، تم تعليق بطاقتك البنكية. حدّث بياناتك الآن عبر الرابط short.example/3xVrfy']};
+document.querySelectorAll('[data-ex]').forEach(b=>b.addEventListener('click',()=>{const t=EX[isAr()?'ar':'en'][+b.dataset.ex];recBox.pasted=true;if(coarse())Q.blur();show(pick(t),t);Q.value='';Q.dispatchEvent(new Event('input',{bubbles:true}))}));
+document.querySelector('.ex').hidden=false;
 
 // Test mode (?test=1, kept for the browser session): one question after each agent used for 15 seconds, then "Send my result".
 // "Tries" are answered questions, so the share is honest. Answers stay in this browser until the tester sends them.
@@ -663,7 +676,7 @@ function tMessage(){
  lines.push(makeCode(store.c,root.lang,tDevice()));
  return lines;
 }
-const sumText=n=>isAr()?(n===1?'جرّبت وكيلًا واحدًا':n===2?'جرّبت وكيلين':'جرّبت '+n+(n<=10?' وكلاء':' وكيلًا')):'You tried '+n+(n===1?' agent':' agents');
+const sumText=n=>isAr()?(n===1?'جرّبت مساعدًا واحدًا':n===2?'جرّبت مساعدَين':'جرّبت '+n+(n<=10?' مساعدين':' مساعدًا')):'You tried '+n+(n===1?' helper':' helpers');
 function tPaint(){
  if(!TEST||!tBar)return;
  const D=tx(),n=tCount().a;

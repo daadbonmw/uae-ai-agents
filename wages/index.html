@@ -91,6 +91,7 @@ h1{margin:16px 0;font-size:28px;line-height:1.15;font-weight:600;color:var(--gol
 .field .go:focus-visible{outline-color:var(--field-ink)}
 .route{margin:10px 4px 0;min-height:22px;font-size:15px;line-height:22px;color:var(--muted)}
 .route:empty{margin:0;min-height:0}
+h1+.route{margin:-8px 4px 14px}
 .ibtn{flex:none;display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:transparent;color:var(--ink);cursor:pointer}
 .tlang{width:auto;min-width:44px;padding:0 10px;border-radius:22px;font:inherit;font-size:15px;font-weight:600}
 .ibtn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -263,14 +264,20 @@ dialog:not([open]){display:none}
    </span>
   </div>
   <h1 data-t="h1">Salary late? Keep proof.</h1>
+  <p class="route" data-t="hSub"></p>
   <form class="ask" id="ask" novalidate>
    <label for="hText" class="vh" data-t="hLabel">What happened?</label>
    <div class="field">
-    <textarea id="hText" rows="1" dir="auto" maxlength="1500" enterkeyhint="go" data-tp="hPh" placeholder="What happened with your pay?"></textarea>
+    <textarea id="hText" rows="1" dir="auto" maxlength="1500" enterkeyhint="go" data-tp="hPh" placeholder="My salary is late"></textarea>
     <button class="go" id="hGo" type="submit" data-ta="hGo" aria-label="What to do now"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h13M12.5 6l6 6-6 6"/></svg></button>
    </div>
    <p class="route" id="hStatus" role="status"></p>
   </form>
+  <p class="route acts" id="hEx"><span data-t="exQ">Try an example</span>
+   <button type="button" class="tbtn small" data-ex="1" data-t="ex1">Salary 2 months late</button>
+   <button type="button" class="tbtn small" data-ex="2" data-t="ex2">They took my passport</button>
+   <button type="button" class="tbtn small" data-ex="3" data-t="ex3">Money cut from my pay</button></p>
+  <details class="more" id="howTo"><summary data-t="howQ">How to use it</summary><div class="morebody"><ol class="ol"><li data-t="how1"></li><li data-t="how2"></li><li data-t="how3"></li></ol><p class="note" data-t="howRule"></p></div></details>
  </div>
 </header>
 
@@ -288,7 +295,7 @@ dialog:not([open]){display:none}
   <div id="gapLine"></div>
   <p class="note" id="payChip"></p>
   <div class="tile">
-   <p class="lead"><span data-t="leadDiary">Log each payment. We check the dates.</span></p>
+   <p class="lead"><span data-t="leadDiary">Log each payment.</span></p>
    <div class="row">
     <label for="pDate"><span class="lbl" data-t="pDate">Date it came</span><input type="date" id="pDate"></label>
     <label for="pAmt"><span class="lbl" data-t="pAmt">Amount (AED)</span><input type="number" id="pAmt" inputmode="decimal" min="0" step="0.01"></label>
@@ -305,7 +312,7 @@ dialog:not([open]){display:none}
    <p class="err" id="pErr" role="alert"></p>
    <div id="pOut" aria-live="polite"></div>
   </div>
-  <details class="tile reader" id="smsBox"><summary data-t="smsQ">Read a salary SMS</summary>
+  <details class="tile reader" id="smsBox"><summary data-t="smsQ">Paste a salary SMS</summary>
    <label for="smsText"><span class="lbl" data-t="smsLbl">Paste the SMS</span><textarea id="smsText" dir="auto" maxlength="1500"></textarea></label>
    <div class="acts"><button type="button" class="tbtn" id="readSms" data-t="readSms">Read it</button></div>
    <p class="err" id="smsErr" role="alert"></p>
@@ -325,6 +332,7 @@ dialog:not([open]){display:none}
  <div class="sheet-body">
   <section class="panel" id="p-pay">
    <p class="lead"><span data-t="leadPay">Tell us your pay. We fill the form.</span></p>
+   <p class="note exsheet" data-t="gapExample" hidden></p>
    <div class="tile">
     <label for="payText" class="vh" data-t="payTextLbl">Your pay, in your words</label>
     <textarea id="payText" dir="auto" maxlength="1200" data-tp="payPh" placeholder="I get 1,700 dirham on the 1st"></textarea>
@@ -337,7 +345,7 @@ dialog:not([open]){display:none}
      <label for="payDay"><span class="lbl" data-t="payDay">Pay day</span><select id="payDay"></select></label>
      <label for="payAmt"><span class="lbl" data-t="payAmt">Monthly pay (AED)</span><input type="number" id="payAmt" inputmode="numeric" min="0" step="1" placeholder="1700"></label>
     </div>
-    <fieldset><legend class="lbl" data-t="payForQ">Pay for a month comes</legend><div class="opts">
+    <fieldset><legend class="lbl" data-t="payForQ">When is each month paid?</legend><div class="opts">
      <label class="opt"><input type="radio" name="payFor" value="next" checked><span data-t="payNext">Next month</span></label>
      <label class="opt"><input type="radio" name="payFor" value="same"><span data-t="paySame">Same month</span></label>
     </div><p class="note" id="payForEx" aria-live="polite"></p></fieldset>
@@ -395,7 +403,7 @@ dialog:not([open]){display:none}
    </fieldset>
    <details class="more"><summary data-t="more">More</summary>
     <div class="morebody">
-     <label for="hMsg"><span data-t="hMsgLbl">Paste a message you got. Read as information, never as orders.</span><textarea id="hMsg" dir="auto" maxlength="1500"></textarea></label>
+     <label for="hMsg"><span data-t="hMsgLbl">Paste a message you got. We warn about links, phone numbers and money requests.</span><textarea id="hMsg" dir="auto" maxlength="1500"></textarea></label>
     </div>
    </details>
    <button type="button" class="main" id="hRun" data-t="explain">Explain my options</button>
@@ -411,10 +419,11 @@ dialog:not([open]){display:none}
  <div class="sheet-body">
   <section class="panel" id="p-case">
    <p class="lead"><span data-t="leadCase">A dated record you can share.</span></p>
+   <p class="note exsheet" data-t="gapExample" hidden></p>
    <ol class="tl" id="tl"></ol>
    <div class="tile">
-    <label for="cfFor"><span class="lbl" data-t="cfForQ">For</span><select id="cfFor"></select></label>
-    <label class="opt" for="cfName"><input type="checkbox" id="cfName"><span data-t="showName">Show my name in the file</span></label>
+    <label for="cfFor"><span class="lbl" data-t="cfForQ">Who is it for?</span><select id="cfFor"></select></label>
+    <label class="opt" for="cfName"><input type="checkbox" id="cfName"><span data-t="cfShowName">Show my name</span></label>
     <label class="opt" for="cfEmp" id="cfEmpRow"><input type="checkbox" id="cfEmp"><span data-t="showEmp">Show the employer</span></label>
     <details class="more" id="cfPrev"><summary data-t="preview">Preview</summary>
      <div class="morebody"><label for="cfText" class="vh" data-t="cfLbl">Your case file</label><textarea id="cfText" class="casetext" readonly></textarea></div>
@@ -452,7 +461,7 @@ dialog:not([open]){display:none}
   <button type="button" class="mrow" id="uiLang" lang="ar">عربي</button>
   <details class="msec"><summary data-t="mRules">Sources</summary><div class="mbody"><ul class="flist" id="rulesList"></ul></div></details>
   <p class="note" id="privList" data-t="priv"></p>
-  <button type="button" class="mrow" id="reset" data-t="reset">Reset</button>
+  <button type="button" class="mrow" id="reset" data-t="reset">Clear my data</button>
  </div>
 </dialog>
 
@@ -494,19 +503,22 @@ let UI=(()=>{const q=QS.get('lang');if(q==='ar'||q==='en')return q;let s=null;tr
 
 /* ---------- words: English and Arabic ---------- */
 const TX={en:{
-name:'Bil Tareekh',skip:'Skip to the diary',menu:'More',h1:'Salary late? Keep proof.',hLabel:'What happened?',hPh:'What happened with your pay?',hGo:'What to do now',
+name:'Bil Tareekh',skip:'Skip to the diary',menu:'More',h1:'Salary late? Keep proof.',hLabel:'What happened?',hPh:'My salary is late',hGo:'What to do now',
+hSub:'Log each payment to see late or unpaid months and what to do.',exQ:'Try an example',ex1:'Salary 2 months late',ex2:'They took my passport',ex3:'Money cut from my pay',exGo:'Now tap the arrow.',
+howQ:'How to use it',how1:'Save your pay in My pay, so each month is checked.',how2:'Log each payment. The page shows late or unpaid months.',how3:'Open Case file to copy a dated record you can share.',
+howRule:'“Rule” means a fixed step worked out by the page. It is not an official result.',wpsWhat:'WPS rule: the official rule that last month’s pay is due on the 1st.',
 actions:'Actions',tPay:'My pay',tHelp:'What to do now',tCase:'Case file',
 leadPay:'Tell us your pay. We fill the form.',payTextLbl:'Your pay, in your words',payPh:'I get 1,700 dirham on the 1st',readPay:'Read it',
-voiceQ:'Voice note',voiceLbl:'Kept on this phone.',payDay:'Pay day',payAmt:'Monthly pay (AED)',payForQ:'Pay for a month comes',payNext:'Next month',paySame:'Same month',
+voiceQ:'Voice note',voiceLbl:'Kept on this phone.',payDay:'Pay day',payAmt:'Monthly pay (AED)',payForQ:'When is each month paid?',payNext:'Next month',paySame:'Same month',
 workQ:'I work for',workCo:'A company',workHh:'A family or Tadbeer',more:'More',scopeQ:'Free zone, bank or government job?',no:'No',unsure:'Not sure',yes:'Yes',
-startQ:'First month to check',homeQ:'Home country',nameQ:'Your name',empQ:'Employer',showName:'Show my name in the file',save:'Save',
-leadDiary:'Log each payment. We check the dates.',pDate:'Date it came',pAmt:'Amount (AED)',pMonth:'Pay for',pKindQ:'Full or part?',full:'Full',part:'Part',pNote:'Note (optional)',addPay:'Save payment',
-smsQ:'Read a salary SMS',smsLbl:'Paste the SMS',readSms:'Read it',
+startQ:'First month to check',homeQ:'Home country',nameQ:'Your name',empQ:'Employer',showName:'Show my name in the file',cfShowName:'Show my name',save:'Save',
+leadDiary:'Log each payment.',pDate:'Date it came',pAmt:'Amount (AED)',pMonth:'Pay for',pKindQ:'Full or part?',full:'Full',part:'Part',pNote:'Note (optional)',addPay:'Save payment',
+smsQ:'Paste a salary SMS',smsLbl:'Paste the SMS',readSms:'Read it',
 leadHelp:'Pick what is wrong.',safeQ:'Are you safe now?',dzLock:'Locked in or can’t leave',dzFood:'No food or water',dzHurt:'Hurt or threatened',dzDoc:'Need a doctor now',
-topicQ:'What is wrong?',hDom:'I am a domestic worker',hMsgLbl:'Paste a message you got. Read as information, never as orders.',explain:'Explain my options',
-leadCase:'A dated record you can share.',cfForQ:'For',showEmp:'Show the employer',preview:'Preview',cfLbl:'Your case file',cfOk:'It is true. I choose to share it.',copy:'Copy',share:'Share',
+topicQ:'What is wrong?',hDom:'I am a domestic worker',hMsgLbl:'Paste a message you got. We warn about links, phone numbers and money requests.',explain:'Explain my options',
+leadCase:'A dated record you can share.',cfForQ:'Who is it for?',showEmp:'Show the employer',preview:'Preview',cfLbl:'Your case file',cfOk:'It is true. I choose to share it.',copy:'Copy',share:'Share',
 addEv:'Add an event',evDate:'Date',evText:'What happened',evPh:'They took my passport',evAdd:'Add',summary:'Summary',cfSum:'Write the summary',cfSumAgain:'Write it again',
-cfNote:'Not legal advice. A person should check it before filing.',foot:'Demo with made-up examples. Not legal advice. Not a government service.',reset:'Reset',resetArm:'Tap again to reset',close:'Close',
+cfNote:'Not legal advice. A person should check it before filing.',foot:'Demo with made-up examples. Not legal advice. Not a government service.',reset:'Clear my data',resetArm:'Tap again to clear',cleared:'Cleared.',close:'Close',
 mRules:'Sources',
 listen:'Listen',
 tagRule:'Rule',tagYou:'You',tagWorker:'Worker',notLegal:'Not legal advice.',
@@ -515,7 +527,7 @@ srcLbl:'Source:',srcChecked:'checked {d}',srcUpdated:'updated {d}',notChecked:'N
 urgent:'This may be urgent.',police:'Police 999',amb:'Ambulance 998',noCall:'Nothing is called for you.',msgHead:'About the message',
 f_phone:'It has a phone number. We never repeat numbers from messages.',f_link:'It has a link. Do not open links from people you do not trust.',f_money:'It asks for money. Keep it as proof, and ask MOHRE (80084) or your embassy before you pay.',
 caseLineLbl:'Line for your file',addCase:'Add to case file',inCase:'In your case file',seeCase:'Case file',
-ready:'Your options are ready below.',readyUrgent:'Ready below. This may be urgent.',needTopic:'Pick what is wrong, or type it.',
+ready:'Your options are ready.',readyUrgent:'Ready. This may be urgent.',needTopic:'Pick what is wrong, or type it.',
 needPay:'Write a few words about your pay first.',needAmt:'Type your monthly pay as a number.',needSms:'Paste the SMS.',
 needDate:'Pick the date the money came.',needAmount:'Type the amount, as a number.',tooBig:'That amount is too large. Type one payment, under AED 1,000,000.',
 future:'That date is in the future.',badMonth:'Pick a month from the list.',needEvDate:'Pick the date.',needEvText:'Write a few words.',notAudio:'That is not a voice note.',
@@ -527,8 +539,8 @@ foundPay:'Found {amt}, {day}. Check, then save.',noAmt:'no amount',noDay:'no pay
 savedMsg:'Saved: pay day the {d}, {amt} a month.',
 trYouSaved:'You checked and saved the details',trSetDay:'Set the pay day and pay to check against',trLocal:'Kept in this browser only',
 wpsLineDom:'Uses the 10-day rule for domestic workers',wpsLineYes:'Does not apply the WPS rule (free zone, bank or government)',wpsLineNo:'Also checks the WPS rule',wpsLineUnsure:'Checks the WPS rule, marked “may”',
-chipPay:'{amt} a month · the {d} · {rule}',change:'Change',setFirst:'Set up your pay first.',goPay:'Go to My pay',ruleDom:'10-day rule',ruleNo:'WPS rule',ruleYes:'check the official source',ruleUnsure:'WPS rule may apply',
-gapIssues:'Months to check: {n}',gapAmt:'not arrived: {amt}',gapNone:'Nothing missing so far.',gapNote:'Your own numbers, not a legal amount.',gapExample:'These are made-up examples. Save your own pay to start.',domDue:'Domestic rule: due by {d}.',shortBy:'{amt} short.',noMonths:'No months yet.',
+chipPay:'Pay: {amt} a month, on the {d}',change:'Change',setFirst:'Set up your pay first.',goPay:'Go to My pay',ruleDom:'10-day rule',ruleNo:'WPS rule',ruleYes:'check the official source',ruleUnsure:'WPS rule may apply',
+gapIssues:'Late or unpaid months: {n}',gapAmt:'not arrived: {amt}',gapNone:'Nothing missing so far.',gapNote:'Your own numbers, not a legal amount.',gapExample:'These are made-up examples. Save your own pay to start.',domDue:'Domestic rule: due by {d}.',shortBy:'{amt} short.',noMonths:'No months yet.',
 remove:'Remove',removeAria:'Remove the payment of {d}',removeEntry:'Remove this entry',fullPay:'full pay',partPay:'part pay',
 payForEx:'So pay for {m} is expected on {d}.',mPart:'{days} after pay day ({d})',mPartOk:'on time (pay day {d})',came:'Came {d}',frOwn:'pay day ({d})',frWps:'the WPS rule due date ({d})',
 mPaid:'Paid {total} of {exp}. Still owed: {owe}.',mOver:'Paid {total} of {exp}: {over} more than expected.',sFullOk:'Paid in full, on time.',sFullLate:'Paid in full, {days} after {from}.',
@@ -538,11 +550,11 @@ cfPayChange:'Pay changed from {m}: before, {old}; from {m}, {new}.',rsChange:'Th
 unset:'Pay day not set. Set it in My pay.',ownNone:'Nothing logged. Pay day: {d}, {days} ago.',ownWait:'Pay day: {d}.',ownLate:'Came {last}: {days} after pay day ({d}).',ownOk:'Came {last}: on time.',
 wpsExempt:'If you work in a free zone or for the government, a different authority may handle your pay complaint. Call MOHRE on 80084 and ask.',wpsNone:'WPS rule: due {d}. Nothing logged. {counts}',wpsDue:'WPS rule: due {d}.',wpsFull:'WPS rule: paid in full by {d}.',
 wps85:'WPS rule: {p}% by {d}. Allowed only if the rest is a lawful cut. Ask MOHRE if unsure.',wpsBy:'WPS rule: came by {d}.',wpsLate:'WPS rule: due {d}. {by} {counts}',byNone:'Nothing came by then.',byP:'Only {p}% came by then.',byAmt:'Only {amt} came by then.',
-counts:'Counts as late. Official steps grow stronger over about 3 weeks.',mayCount:'May count as late.',wpsBefore:'Before the WPS rule (1 June 2026).',domNone:'Domestic rule: due by {d}. Nothing logged.',domLate:'Domestic rule: came {days} after {d}.',domOk:'Domestic rule: came within 10 days.',
+counts:'Counts as late. Official steps against the employer grow over about 3 weeks.',mayCount:'May count as late.',wpsBefore:'Before the WPS rule (1 June 2026).',domNone:'Domestic rule: due by {d}. Nothing logged.',domLate:'Domestic rule: came {days} after {d}.',domOk:'Domestic rule: came within 10 days.',
 amtShort:'Got {total} of {exp}: {diff} short.',amtFull:'Full pay: {total}.',amtPart:'Marked part pay: {total}.',
 lMiss:'Missing',lPart:'Part paid',lPartLate:'Part paid, late',lLate:'Late',lOk:'Paid on time',lOkFull:'Paid in full, on time',lWait:'Not due yet',lLogged:'Logged, not checked',lUnset:'Pay day not set',
 trYouLogged:'You logged {amt} that came on {d}',trMatched:'Matched it to the pay for {m}',trTimeline:'Added it to your timeline',
-smsFound:'Found {amt}{on}, for {m}. Check, then save.',smsOn:', on {d}',smsNone:'Amount and date not found. Type them below.',
+smsFound:'Found {amt}{on}, for {m}. Check, then save.',smsOn:', on {d}',smsNone:'Amount and date not found. Type them above.',
 trMsgInfo:'Read the message as information only',trAmt:'Amount: {amt}',trNoAmt:'Amount not found',trDate:'Date: {d}',trNoDate:'Date not found',
 trLess:'Less than {amt}, so marked as part pay',trMatches:'Matches your expected pay',trFilledPay:'Filled the form. Tap Save payment',
 noteSms:'From the salary SMS',
@@ -552,7 +564,7 @@ trFacts:'Checked rules attached, each with a source: {n}',trNoFacts:'No checked 
 trHeatOn:'Midday break: in force today',trHeatOff:'Midday break: not in force today (it runs 15 June to 15 September)',trNothingSent:'Nothing was sent to your employer or anyone else',workerSays:'Worker says: “{x}”',
 trSumRules:'Built from your saved pay, diary checks and problems',
 trSumShare:'Nothing is shared until you copy or share it',
-sumHead:'Summary',sumCheck:'Check it. If anything is wrong, fix the diary and write it again.',sumFor:'For: {aud}',noSummary:'No summary yet. The file uses an automatic one from rules.',
+sumHead:'Summary',sumCheck:'Check it. If anything is wrong, fix the diary and write it again.',sumFor:'For: {aud}',noSummary:'No summary yet. The file adds an automatic one.',
 copied:'Copied. Paste it into a message to the person you choose.',copyFail:'Copy did not work. The text is selected: copy it by hand.',shared:'Shared.',shareCancel:'Sharing cancelled.',shareCopied:'Sharing is not available here, so it was copied.',
 shareFail:'Sharing is not available. The text is selected: copy it by hand.',needOk:'First tick “It is true. I choose to share it.”',tlEmpty:'Nothing yet. Log a payment, or add a problem.',
 sayNo:'No {lang} voice on this device.',sayNA:'Listening is not available here.',sayFail:'Listening did not work here.',
@@ -570,19 +582,22 @@ tlFlag:'{m} pay: {label}.{late}{part}',tlFlagLate:' It came {days} after {from}.
 tlsStart:'Diary starts: {m}, {amt} a month',tlsPay:'{amt} for {m}{part}',tlsPart:' (part)',tlsMiss:'{m}: nothing came by {from}',tlsLate:'{days} after {from}',tlsSoFar:'today: {days} after {from}',tlsCase:'Problem: {x}',
 priv:'Nothing you type leaves your device. Saved only in this browser. Your name stays hidden unless you show it.',
 },ar:{
-name:'بالتاريخ',skip:'انتقل إلى السجل',menu:'المزيد',h1:'راتبك متأخر؟ احفظ الإثبات.',hLabel:'ماذا حدث؟',hPh:'ماذا حدث في راتبك؟',hGo:'ماذا أفعل الآن',
+name:'بالتاريخ',skip:'انتقل إلى السجل',menu:'المزيد',h1:'راتبك متأخر؟ احفظ الإثبات.',hLabel:'ماذا حدث؟',hPh:'راتبي متأخر',hGo:'ماذا أفعل الآن',
+hSub:'سجّل كل دفعة من راتبك لتعرف أي راتب تأخّر أو لم يُدفع، وماذا تفعل.',exQ:'جرّب مثالًا',ex1:'الراتب متأخر شهرين',ex2:'أخذوا جواز سفري',ex3:'خصموا من أجري',exGo:'اضغط على السهم الآن.',
+howQ:'طريقة الاستخدام',how1:'احفظ راتبك في «راتبي» ليُفحص كل شهر.',how2:'سجّل كل دفعة، فتظهر لك الرواتب المتأخرة أو غير المدفوعة.',how3:'افتح «ملف الحالة» لتنسخ سجلًا مؤرخًا وتشاركه.',
+howRule:'«قاعدة» تعني خطوة ثابتة تحسبها الصفحة بنفسها، وليست نتيجة رسمية.',wpsWhat:'قاعدة حماية الأجور: قاعدة رسمية توجب دفع راتب الشهر السابق يوم 1 من كل شهر.',
 actions:'الإجراءات',tPay:'راتبي',tHelp:'ماذا أفعل الآن',tCase:'ملف الحالة',
 leadPay:'أخبرنا عن راتبك، ونحن نعبّئ النموذج.',payTextLbl:'راتبك بكلماتك',payPh:'راتبي 1700 درهم يوم 1',readPay:'اقرأه',
-voiceQ:'رسالة صوتية',voiceLbl:'تبقى على هذا الهاتف.',payDay:'يوم الراتب',payAmt:'الراتب الشهري (درهم)',payForQ:'راتب الشهر يصل',payNext:'في الشهر التالي',paySame:'في الشهر نفسه',
+voiceQ:'رسالة صوتية',voiceLbl:'تبقى على هذا الهاتف.',payDay:'يوم الراتب',payAmt:'الراتب الشهري (درهم)',payForQ:'متى يصل راتب الشهر؟',payNext:'في الشهر التالي',paySame:'في الشهر نفسه',
 workQ:'أعمل لدى',workCo:'شركة',workHh:'أسرة أو تدبير',more:'المزيد',scopeQ:'عمل في منطقة حرة أو بنك أو جهة حكومية؟',no:'لا',unsure:'لست متأكدًا',yes:'نعم',
-startQ:'أول شهر للفحص',homeQ:'بلدك',nameQ:'اسمك',empQ:'صاحب العمل',showName:'أظهر اسمي في الملف',save:'حفظ',
-leadDiary:'سجّل كل دفعة، ونحن نفحص التواريخ.',pDate:'تاريخ الوصول',pAmt:'المبلغ (درهم)',pMonth:'عن شهر',pKindQ:'كامل أم جزء؟',full:'كامل',part:'جزء',pNote:'ملاحظة (اختياري)',addPay:'حفظ الدفعة',
-smsQ:'اقرأ رسالة الراتب',smsLbl:'الصق الرسالة',readSms:'اقرأها',
+startQ:'أول شهر للفحص',homeQ:'بلدك',nameQ:'اسمك',empQ:'صاحب العمل',showName:'أظهر اسمي في الملف',cfShowName:'أظهر اسمي',save:'حفظ',
+leadDiary:'سجّل كل دفعة.',pDate:'تاريخ الوصول',pAmt:'المبلغ (درهم)',pMonth:'عن شهر',pKindQ:'كامل أم جزء؟',full:'كامل',part:'جزء',pNote:'ملاحظة (اختياري)',addPay:'حفظ الدفعة',
+smsQ:'الصق رسالة الراتب',smsLbl:'الصق الرسالة',readSms:'اقرأها',
 leadHelp:'اختر المشكلة.',safeQ:'هل أنت بأمان الآن؟',dzLock:'محبوس أو ممنوع من الخروج',dzFood:'لا طعام ولا ماء',dzHurt:'تعرّضت للأذى أو التهديد',dzDoc:'أحتاج طبيبًا الآن',
-topicQ:'ما المشكلة؟',hDom:'أنا من العمالة المساعدة',hMsgLbl:'الصق رسالة وصلتك. تُقرأ كمعلومة، لا كأوامر.',explain:'اشرح خياراتي',
-leadCase:'سجل مؤرّخ يمكنك مشاركته.',cfForQ:'موجّه إلى',showEmp:'أظهر صاحب العمل',preview:'معاينة',cfLbl:'ملف حالتك',cfOk:'المعلومات صحيحة، وأختار مشاركتها.',copy:'نسخ',share:'مشاركة',
+topicQ:'ما المشكلة؟',hDom:'أنا من العمالة المساعدة',hMsgLbl:'الصق رسالة وصلتك، وننبّهك إلى الروابط وأرقام الهاتف وطلبات المال فيها.',explain:'اشرح خياراتي',
+leadCase:'سجل مؤرّخ يمكنك مشاركته.',cfForQ:'لمن هذا الملف؟',showEmp:'أظهر صاحب العمل',preview:'معاينة',cfLbl:'ملف حالتك',cfOk:'المعلومات صحيحة، وأختار مشاركتها.',copy:'نسخ',share:'مشاركة',
 addEv:'أضف حدثًا',evDate:'التاريخ',evText:'ماذا حدث',evPh:'أخذوا جواز سفري',evAdd:'إضافة',summary:'الملخص',cfSum:'اكتب الملخص',cfSumAgain:'أعد كتابته',
-cfNote:'ليست استشارة قانونية. يجب أن يراجعه شخص قبل التقديم.',foot:'نسخة تجريبية بأمثلة مختلَقة. ليست استشارة قانونية ولا خدمة حكومية.',reset:'إعادة ضبط',resetArm:'اضغط مجددًا للتأكيد',close:'إغلاق',
+cfNote:'ليست استشارة قانونية. يجب أن يراجعه شخص قبل التقديم.',foot:'عرض تجريبي بأمثلة مختلَقة. ليست استشارة قانونية ولا خدمة حكومية.',reset:'امسح بياناتي',resetArm:'اضغط مجددًا للمسح',cleared:'تم المسح.',close:'إغلاق',
 mRules:'المصادر',
 listen:'استمع',
 tagRule:'قاعدة',tagYou:'أنت',tagWorker:'العامل',notLegal:'ليست استشارة قانونية.',
@@ -591,7 +606,7 @@ srcLbl:'المصدر:',srcChecked:'تحققنا في {d}',srcUpdated:'حُدّث
 urgent:'قد يكون الأمر عاجلًا.',police:'الشرطة 999',amb:'الإسعاف 998',noCall:'لا نتصل بأحد نيابةً عنك.',msgHead:'عن الرسالة',
 f_phone:'فيها رقم هاتف. لا نكرر أبدًا أرقامًا من الرسائل.',f_link:'فيها رابط. لا تفتح روابط من أشخاص لا تثق بهم.',f_money:'تطلب مالًا. احتفظ بها كإثبات، واسأل الوزارة (80084) أو سفارتك قبل أن تدفع.',
 caseLineLbl:'سطر لملفك',addCase:'أضف إلى الملف',inCase:'في ملفك',seeCase:'ملف الحالة',
-ready:'خياراتك جاهزة في الأسفل.',readyUrgent:'جاهزة في الأسفل. قد يكون الأمر عاجلًا.',needTopic:'اختر المشكلة، أو اكتبها.',
+ready:'خياراتك جاهزة.',readyUrgent:'جاهزة. قد يكون الأمر عاجلًا.',needTopic:'اختر المشكلة، أو اكتبها.',
 needPay:'اكتب بضع كلمات عن راتبك أولًا.',needAmt:'اكتب راتبك الشهري رقمًا.',needSms:'الصق الرسالة.',
 needDate:'اختر تاريخ وصول المال.',needAmount:'اكتب المبلغ رقمًا.',tooBig:'المبلغ كبير جدًا. اكتب مبلغ دفعة واحدة، أقل من 1,000,000 درهم.',
 future:'هذا التاريخ في المستقبل.',badMonth:'اختر شهرًا من القائمة.',needEvDate:'اختر التاريخ.',needEvText:'اكتب بضع كلمات.',notAudio:'هذا الملف ليس رسالة صوتية.',
@@ -603,8 +618,8 @@ foundPay:'وجدنا {amt}، {day}. راجع ثم احفظ.',noAmt:'لا مبل�
 savedMsg:'تم الحفظ: يوم الراتب {d}، {amt} شهريًا.',
 trYouSaved:'راجعت التفاصيل وحفظتها',trSetDay:'حدّدنا يوم الراتب والمبلغ للفحص',trLocal:'محفوظ في هذا المتصفح فقط',
 wpsLineDom:'يستخدم قاعدة الأيام العشرة للعمالة المساعدة',wpsLineYes:'لا يطبّق قاعدة حماية الأجور (منطقة حرة أو بنك أو جهة حكومية)',wpsLineNo:'يفحص أيضًا قاعدة حماية الأجور',wpsLineUnsure:'يفحص قاعدة حماية الأجور مع كلمة «قد»',
-chipPay:'{amt} شهريًا · يوم {d} · {rule}',change:'تغيير',setFirst:'أدخل راتبك أولًا.',goPay:'اذهب إلى «راتبي»',ruleDom:'قاعدة الأيام العشرة',ruleNo:'قاعدة حماية الأجور',ruleYes:'تحقق من المصدر الرسمي',ruleUnsure:'قد تنطبق قاعدة حماية الأجور',
-gapIssues:'أشهر للمراجعة: {n}',gapAmt:'لم يصل: {amt}',gapNone:'لا شيء ناقص حتى الآن.',gapNote:'أرقامك أنت، وليست مبلغًا قانونيًا.',gapExample:'هذه أمثلة مختلَقة للتوضيح. احفظ راتبك أنت لتبدأ.',noMonths:'لا أشهر بعد.',domDue:'قاعدة العمالة المساعدة: الموعد حتى {d}.',shortBy:'ناقص {amt}.',
+chipPay:'الراتب: {amt} شهريًا، يوم {d}',change:'تغيير',setFirst:'أدخل راتبك أولًا.',goPay:'اذهب إلى «راتبي»',ruleDom:'قاعدة الأيام العشرة',ruleNo:'قاعدة حماية الأجور',ruleYes:'تحقق من المصدر الرسمي',ruleUnsure:'قد تنطبق قاعدة حماية الأجور',
+gapIssues:'رواتب متأخرة أو غير مدفوعة: {n}',gapAmt:'لم يصل: {amt}',gapNone:'لا شيء ناقص حتى الآن.',gapNote:'أرقامك أنت، وليست مبلغًا قانونيًا.',gapExample:'هذه أمثلة مختلَقة للتوضيح. احفظ راتبك أنت لتبدأ.',noMonths:'لا أشهر بعد.',domDue:'قاعدة العمالة المساعدة: الموعد حتى {d}.',shortBy:'ناقص {amt}.',
 remove:'حذف',removeAria:'حذف دفعة {d}',removeEntry:'حذف هذا الإدخال',fullPay:'راتب كامل',partPay:'جزء من الراتب',
 payForEx:'أي أن راتب {m} متوقع يوم {d}.',mPart:'بعد يوم الراتب ({d}) بـ{days}',mPartOk:'في موعده (يوم الراتب {d})',came:'وصل {d}',frOwn:'يوم الراتب ({d})',frWps:'موعد قاعدة حماية الأجور ({d})',
 mPaid:'المدفوع {total} من {exp}. المتبقي: {owe}.',mOver:'المدفوع {total} من {exp}: أكثر من المتوقع بـ{over}.',sFullOk:'وصل كاملًا في موعده.',sFullLate:'وصل كاملًا بعد {from} بـ{days}.',
@@ -614,11 +629,11 @@ cfPayChange:'تغيّر الراتب ابتداءً من {m}: قبله {old}، �
 unset:'يوم الراتب غير محدد. حدّده في «راتبي».',ownNone:'لم يُسجَّل شيء. يوم الراتب: {d}، قبل {days}.',ownWait:'يوم الراتب: {d}.',ownLate:'وصل {last}: بعد يوم الراتب ({d}) بـ{days}.',ownOk:'وصل {last}: في موعده.',
 wpsExempt:'إن كنت تعمل في منطقة حرة أو جهة حكومية فقد تتولى جهة أخرى شكوى الأجور. اتصل بالوزارة على 80084 واسأل.',wpsNone:'قاعدة حماية الأجور: الموعد {d}. لم يُسجَّل شيء. {counts}',wpsDue:'قاعدة حماية الأجور: الموعد {d}.',wpsFull:'قاعدة حماية الأجور: وصل كاملًا بحلول {d}.',
 wps85:'قاعدة حماية الأجور: وصل {p}% بحلول {d}. يجوز فقط إن كان الباقي خصمًا قانونيًا. اسأل الوزارة إن لم تكن متأكدًا.',wpsBy:'قاعدة حماية الأجور: وصل بحلول {d}.',wpsLate:'قاعدة حماية الأجور: الموعد {d}. {by} {counts}',byNone:'لم يصل شيء بحلوله.',byP:'وصل {p}% فقط بحلوله.',byAmt:'وصل {amt} فقط بحلوله.',
-counts:'يُعدّ تأخيرًا. وتشتد الإجراءات الرسمية خلال نحو 3 أسابيع.',mayCount:'قد يُعدّ تأخيرًا.',wpsBefore:'قبل قاعدة حماية الأجور (1 يونيو 2026).',domNone:'قاعدة العمالة المساعدة: الموعد حتى {d}. لم يُسجَّل شيء.',domLate:'قاعدة العمالة المساعدة: وصل بعد {d} بـ{days}.',domOk:'قاعدة العمالة المساعدة: وصل خلال 10 أيام.',
+counts:'يُعدّ تأخيرًا. وتشتد الإجراءات الرسمية ضد صاحب العمل خلال نحو 3 أسابيع.',mayCount:'قد يُعدّ تأخيرًا.',wpsBefore:'قبل قاعدة حماية الأجور (1 يونيو 2026).',domNone:'قاعدة العمالة المساعدة: الموعد حتى {d}. لم يُسجَّل شيء.',domLate:'قاعدة العمالة المساعدة: وصل بعد {d} بـ{days}.',domOk:'قاعدة العمالة المساعدة: وصل خلال 10 أيام.',
 amtShort:'وصل {total} من {exp}: ناقص {diff}.',amtFull:'الراتب كاملًا: {total}.',amtPart:'مُسجَّل كجزء من الراتب: {total}.',
 lMiss:'لم يصل',lPart:'جزء فقط',lPartLate:'جزء، ومتأخر',lLate:'متأخر',lOk:'وصل في موعده',lOkFull:'وصل كاملًا في موعده',lWait:'لم يحن موعده',lLogged:'مُسجَّل، دون فحص',lUnset:'يوم الراتب غير محدد',
 trYouLogged:'سجّلت {amt} وصلت في {d}',trMatched:'ربطناها براتب {m}',trTimeline:'أضفناها إلى سجلك الزمني',
-smsFound:'وجدنا {amt}{on} عن {m}. راجع ثم احفظ.',smsOn:' بتاريخ {d}',smsNone:'لم نجد المبلغ ولا التاريخ. اكتبهما في الأسفل.',
+smsFound:'وجدنا {amt}{on} عن {m}. راجع ثم احفظ.',smsOn:' بتاريخ {d}',smsNone:'لم نجد المبلغ ولا التاريخ. اكتبهما في الأعلى.',
 trMsgInfo:'قرأنا الرسالة كمعلومة فقط',trAmt:'المبلغ: {amt}',trNoAmt:'لم نجد المبلغ',trDate:'التاريخ: {d}',trNoDate:'لم نجد التاريخ',
 trLess:'أقل من {amt}، فسُجّل جزءًا من الراتب',trMatches:'يطابق راتبك المتوقع',trFilledPay:'عبّأنا النموذج. اضغط حفظ الدفعة',
 noteSms:'من رسالة الراتب',
@@ -628,7 +643,7 @@ trFacts:'قواعد موثّقة مرفقة، لكل منها مصدر: {n}',trN
 trHeatOn:'استراحة منتصف النهار: سارية اليوم',trHeatOff:'استراحة منتصف النهار: غير سارية اليوم (من 15 يونيو إلى 15 سبتمبر)',trNothingSent:'لم يُرسل شيء إلى صاحب العمل أو أي أحد',workerSays:'يقول العامل: «{x}»',
 trSumRules:'بُني من راتبك المحفوظ وفحوصات السجل والمشكلات',
 trSumShare:'لا يُشارك شيء حتى تنسخ أو تشارك',
-sumHead:'الملخص',sumCheck:'راجعه. إن كان فيه خطأ، صحّح السجل ثم اكتبه مجددًا.',sumFor:'موجّه إلى: {aud}',noSummary:'لا ملخص بعد. يستخدم الملف ملخصًا آليًا من القواعد.',
+sumHead:'الملخص',sumCheck:'راجعه. إن كان فيه خطأ، صحّح السجل ثم اكتبه مجددًا.',sumFor:'موجّه إلى: {aud}',noSummary:'لا ملخص بعد. يضيف الملف ملخصًا آليًا.',
 copied:'تم النسخ. الصقه في رسالة إلى من تختار.',copyFail:'تعذّر النسخ. النص محدد: انسخه يدويًا.',shared:'تمت المشاركة.',shareCancel:'أُلغيت المشاركة.',shareCopied:'المشاركة غير متاحة هنا، فنسخناه بدلًا منها.',
 shareFail:'المشاركة غير متاحة. النص محدد: انسخه يدويًا.',needOk:'أولًا ضع علامة على «المعلومات صحيحة، وأختار مشاركتها.»',tlEmpty:'لا شيء بعد. سجّل دفعة، أو أضف مشكلة.',
 sayNo:'لا يوجد صوت بـ{lang} على هذا الجهاز.',sayNA:'الاستماع غير متاح هنا.',sayFail:'لم ينجح الاستماع هنا.',
@@ -644,7 +659,7 @@ rsGap:'حسب سجل العامل، لم يصل {amt}.',rsProbs:'مشكلات م
 tlStart:'أول شهر في سجل الراتب: {m}. الراتب المتفق عليه: {amt} شهريًا، يوم الراتب {d}.',tlPay:'راتب {m}: {amt} ({kind}){note}.',tlNote:'. ملاحظة: {x}',tlMiss:'لا راتب مُسجَّل عن {m}. كان مستحقًا في {from}.',
 tlFlag:'راتب {m}: {label}.{late}{part}',tlFlagLate:' وصل بعد {from} بـ{days}.',tlFlagSoFar:' مضى حتى اليوم {ndays} على {from}.',tlFlagPart:' وصل {total} من {exp}.',tlCase:'مشكلة مُبلَّغ عنها: {x}. {y}',kindFull:'كامل',kindPart:'جزء',
 tlsStart:'بداية السجل: {m}، {amt} شهريًا',tlsPay:'{amt} عن {m}{part}',tlsPart:' (جزء)',tlsMiss:'{m}: لم يصل شيء حتى {from}',tlsLate:'بعد {from} بـ{days}',tlsSoFar:'مضى حتى اليوم {ndays} على {from}',tlsCase:'مشكلة: {x}',
-priv:'لا شيء تكتبه يغادر جهازك. يُحفظ في هذا المتصفح فقط. اسمك مخفي إلا إذا أظهرته.',
+priv:'لا شيء مما تكتبه يغادر جهازك. يُحفظ في هذا المتصفح فقط. اسمك مخفي إلا إذا أظهرته.',
 }};
 function t(k,v,l){const D=TX[l||UI]||TX.en;let s=D[k];if(s==null)s=TX.en[k];if(s==null)return k;if(v)s=s.replace(/\{(\w+)\}/g,(m,n)=>v[n]!=null?String(v[n]):'');
   /* Arabic "by N days": the stretch mark stays only before a digit ("بـ4 أيام"), not before a word ("بيومين", "بيوم واحد"). */
@@ -1175,14 +1190,15 @@ function suggestedMonth(date){return S.setup.payFor==='same'?ymOf(date):addMonth
 function defaultPayForm(){const d=todayISO();$('pDate').value=d;ensureOption($('pMonth'),suggestedMonth(d))}
 function renderDiary(){const s=S.setup;
   const sc=wpsScope();const rule=s.work==='household'?t('ruleDom'):sc==='no'?t('ruleNo'):sc==='yes'?t('ruleYes'):t('ruleUnsure');
-  $('payChip').innerHTML=s.confirmed?`${esc(t('chipPay',{amt:fmtAED(s.expected),d:ordL(s.payDay),rule}))} <button type="button" class="tbtn small" data-go="pay">${esc(t('change'))}</button>`:`${esc(t('setFirst'))} <button type="button" class="tbtn small" data-go="pay">${esc(t('goPay'))}</button>`;
+  $('payChip').innerHTML=s.confirmed?`${esc(t('chipPay',{amt:fmtAED(s.expected),d:ordL(s.payDay)})+(s.work!=='household'&&(sc==='unsure'||sc==='yes')?' · '+rule:''))} <button type="button" class="tbtn small" data-go="pay">${esc(t('change'))}</button>`:`${esc(t('setFirst'))} <button type="button" class="tbtn small" data-go="pay">${esc(t('goPay'))}</button>`;
   const ms=monthChecks().slice().reverse();
-  $('months').innerHTML=ms.map(m=>{const sym={miss:'✕',part:'!',late:'!',ok:'✓'}[m.status]||'';const ex=m.pays.some(p=>p.example);const srcs=[];for(const n of m.notes)for(const x of [].concat(n.src||[]))if(!srcs.includes(x))srcs.push(x);const main=mainNote(m);
+  $('months').innerHTML=ms.map(m=>{const sym={miss:'✕',part:'!',late:'!',ok:'✓'}[m.status]||'';const ex=m.pays.some(p=>p.example);const srcs=[];for(const n of m.notes)for(const x of [].concat(n.src||[]))if(!srcs.includes(x))srcs.push(x);const main=mainNote(m);const hasWps=m.notes.some(n=>/^wps/.test(n.k)&&n.k!=='wpsExempt');
     return `<article class="tile month"><div class="mhead"><b>${esc(fmtMonth(m.ym))}</b><span class="mstat">${sym?`<span class="mk" aria-hidden="true">${sym}</span>`:''}${esc(labelOf(m))}</span></div>${main?`<p class="mline">${esc(main)}</p>`:''}${m.pays.length?`<ul class="plist parts">${m.pays.map(p=>{const dd=partDays(m,p);return `<li><span>${esc(t('came',{d:fmtDate(p.date)}))}</span><b>${esc(fmtAED(p.amount))}</b><span>${esc(p.kind==='partial'?t('partPay'):t('fullPay'))}</span>${dd?`<span>${esc(dd)}</span>`:''}</li>`}).join('')}</ul>`:''}${(st=>st?`<p class="mstate">${esc(st)}</p>`:'')(monthState(m))}
-    <details class="more"><summary>${esc(t('more'))}</summary><div class="morebody"><ul class="trace">${m.notes.map(n=>`<li>${esc(noteText(n))}</li>`).join('')}</ul>${srcs.length?srcHTML(srcs):''}
+    <details class="more"><summary>${esc(t('more'))}</summary><div class="morebody"><ul class="trace">${hasWps?`<li>${esc(t('wpsWhat'))}</li>`:''}${m.notes.map(n=>`<li>${esc(noteText(n))}</li>`).join('')}</ul>${srcs.length?srcHTML(srcs):''}
     ${m.pays.length?`<ul class="plist">${m.pays.map(p=>`<li><span>${esc(t('came',{d:fmtDate(p.date)}))}</span><b>${esc(fmtAED(p.amount))}</b><span>${esc(p.kind==='partial'?t('partPay'):t('fullPay'))}</span>${p.note?`<span dir="auto">${esc(p.note)}</span>`:''}<button type="button" class="tbtn small" data-delpay="${esc(p.id)}" aria-label="${esc(t('removeAria',{d:fmtDate(p.date)}))}">${esc(t('remove'))}</button></li>`).join('')}</ul>`:''}</div></details></article>`}).join('')||`<p class="note">${esc(t('noMonths'))}</p>`;
   const g=gapTotal();const fl=monthChecks().filter(m=>m.flag).length;
-  $('gapLine').innerHTML=s.confirmed?(fl||g>0?`<p class="stat"><span aria-hidden="true">!</span>${esc(t('gapIssues',{n:fl}))}${g>0?' · '+esc(t('gapAmt',{amt:fmtAED(g)})):''}</p>${g>0&&!hasExamples()?`<p class="note">${esc(t('gapNote'))}</p>`:''}`:`<p class="stat"><span aria-hidden="true">✓</span>${esc(t('gapNone'))}</p>`)+(hasExamples()?`<p class="note exnote">${esc(t('gapExample'))}</p>`:''):''}
+  $('gapLine').innerHTML=s.confirmed?(hasExamples()?`<p class="note exnote">${esc(t('gapExample'))}</p>`:'')+(fl||g>0?`<p class="stat"><span aria-hidden="true">!</span>${esc(t('gapIssues',{n:fl}))}${g>0?' · '+esc(t('gapAmt',{amt:fmtAED(g)})):''}</p>${g>0&&!hasExamples()?`<p class="note">${esc(t('gapNote'))}</p>`:''}`:`<p class="stat"><span aria-hidden="true">✓</span>${esc(t('gapNone'))}</p>`):'';
+  document.querySelectorAll('.exsheet').forEach(x=>{x.hidden=!hasExamples()})}
 function renderHelp(){const R=S.lastTriage;$('hOut').innerHTML=R?triageHTML(R):'';updateSay()}
 function triageHTML(R){const T=topicOf(R.topic);let h='';
   if(R.danger)h+=dangerHTML(false);
@@ -1265,6 +1281,8 @@ HT.addEventListener('input',grow);
 $('ask').addEventListener('submit',e=>{e.preventDefault();if(coarse())HT.blur();triage()});
 HT.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();const f=$('ask');if(f.requestSubmit)f.requestSubmit();else f.dispatchEvent(new Event('submit',{cancelable:true}))}});
 function setStatus(x){$('hStatus').textContent=x||''}
+/* An example only fills the box, as ?q= does; unticking the topics lets the box text decide. */
+$('hEx').addEventListener('click',e=>{const b=e.target.closest('[data-ex]');if(!b)return;document.querySelectorAll('input[name="topic"]').forEach(x=>{x.checked=false});HT.value=b.textContent;grow();setStatus(t('exGo'));if(!coarse())try{HT.focus({preventScroll:true})}catch(x){}});
 
 /* ---------- step 1: my pay ---------- */
 $('home').addEventListener('change',()=>{S.home=$('home').value;S.summary=null;save();renderCase()});
@@ -1424,7 +1442,7 @@ function clearOutputs(){['payReply','saveMsg','pOut','smsOut','hOut','dangerOut'
   $('pAmt').value='';$('pNote').value='';$('evText').value='';$('cfFor').value='embassy';$('moreDetails').open=false;
   document.querySelectorAll('.dz,input[name="topic"]').forEach(x=>{x.checked=false});if(voiceURL){URL.revokeObjectURL(voiceURL);voiceURL=null}}
 /* One reset: it brings back the made-up examples and forgets what this phone saved. */
-twoTap($('reset'),'reset','resetArm',()=>{S=seed();save();clearOutputs();fillSelects();renderSetup();renderAll();document.querySelectorAll('dialog.sheet').forEach(closeSheet)});
+twoTap($('reset'),'reset','resetArm',()=>{S=seed();save();clearOutputs();fillSelects();renderSetup();renderAll();document.querySelectorAll('dialog.sheet').forEach(closeSheet);setStatus(t('cleared'))});
 
 /* ---------- start ---------- */
 /* If a saved state still breaks a render, start again from the examples. */

@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#1B1D21" media="(prefers-color-scheme: dark)">
 <title>Wareeni · ورّيني</title>
-<meta name="description" content="Wareeni: report a city problem with a photo. A case closes only when an after photo proves the fix.">
+<meta name="description" content="Wareeni: a demo that helps you prepare a report of a city problem. Nothing is sent.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath fill='%2392722A' d='M27 12h8l9 26c-3.4 1.3-8.2 2-13 2s-9.6-.7-13-2z'/%3E%3Cpath fill='none' stroke='%23131417' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round' d='M14 42V14a7 7 0 0 1 7-7h4M25 7h12l-2 5h-8zM9 42h10'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="../fonts/rubik.css">
 <style>
@@ -62,7 +62,9 @@ img{max-width:100%}
 .brand .mark{width:30px;height:30px;flex:none;margin-inline-start:-4px}
 .bar-end{display:flex;align-items:center;gap:4px;flex:none}
 .lang{min-width:44px;min-height:44px;padding:0 14px;border:1.5px solid var(--muted);border-radius:22px;background:transparent;color:var(--ink);font-size:15px;font-weight:600;line-height:1;cursor:pointer}
-#rWarn{margin-top:8px}
+#rWarn,#exH{margin-top:8px}
+#lead{margin-bottom:8px}
+.ex{margin-inline-start:-10px}
 .ibtn{flex:none;display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:transparent;color:inherit;cursor:pointer}
 .ibtn svg{width:24px;height:24px}
 h1{margin:8px 0 14px;font-size:28px;line-height:1.15;font-weight:600;color:var(--gold-ink)}
@@ -136,7 +138,7 @@ h2,h3,h4{font-size:17px;line-height:24px;font-weight:600}
 .case-body .steps span:not(.done):not(.now){background:var(--tile)}
 .mini{display:flex;flex-wrap:wrap;gap:6px}
 .mini img{display:block;width:64px;height:48px;border-radius:10px;object-fit:cover}
-.about{display:flex;flex-direction:column;gap:8px}
+.hint{padding-inline:4px}
 .off textarea{min-height:170px;font-size:15px;line-height:22px}
 .off a.tlink{display:inline-flex;align-items:center;text-decoration:none}
 .thumbs{display:flex;flex-wrap:wrap;gap:10px}
@@ -203,8 +205,8 @@ dialog.sheet::backdrop{background:rgba(8,10,20,.5)}
 .spin{display:inline-block;width:16px;height:16px;border:2px solid currentColor;border-inline-end-color:transparent;border-radius:50%;animation:sp .8s linear infinite;vertical-align:-3px}
 @keyframes sp{to{transform:rotate(360deg)}}
 
-/* Embedded in the landing page's sheet: the landing shows the name, so drop our own top bar and footer */
-html.embed .bar,html.embed .foot{display:none}
+/* Embedded in the landing page's sheet: the landing shows the name, so drop our own top bar; the footer's honesty line stays */
+html.embed .bar{display:none}
 html.embed .top .wrap{padding-top:14px}
 html.embed h1{margin-top:0}
 
@@ -275,13 +277,14 @@ else{setTimeout(fail,8000)}})();</script>
    </span>
   </div>
   <h1 id="h1" data-t="h1">What needs fixing?</h1>
+  <p class="note" id="lead" data-t="lead">Prepare your report here, then send it to your municipality yourself.</p>
   <form class="ask" id="reportForm" novalidate>
    <label for="rText" class="vh" data-t="lText">What’s wrong?</label>
    <div class="composer">
-    <textarea id="rText" rows="1" dir="auto" maxlength="1500" enterkeyhint="send" data-tp="phText" placeholder="Describe the problem"></textarea>
+    <textarea id="rText" rows="1" dir="auto" maxlength="1500" enterkeyhint="go" data-tp="phText" placeholder="Broken bench"></textarea>
     <div class="tools">
      <label class="tbtn" id="photoBtn"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle class="s" cx="12" cy="12.5" r="3.4"/><path d="M4 9a2.5 2.5 0 0 1 2.5-2.5h1.8l1.6-2h4.2l1.6 2h1.8A2.5 2.5 0 0 1 20 9v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17z"/><circle cx="12" cy="12.5" r="3.4"/></svg><span class="vh" data-t="photo">Add a photo</span><input type="file" id="rPhoto" accept="image/jpeg,image/png,image/webp"></label>
-     <label class="tbtn" id="qrBtn"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z"/><path class="s" d="M14 14h3v3h-3zM17 17h3v3h-3z"/></svg><span class="vh" data-t="lSticker">QR sticker (demo)</span><select id="rSticker"><option value="">No sticker</option></select></label>
+     <label class="tbtn" id="qrBtn"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z"/><path class="s" d="M14 14h3v3h-3zM17 17h3v3h-3z"/></svg><span class="vh" data-t="lSticker">Demo QR sticker: fills in the place</span><select id="rSticker"><option value="">No sticker</option></select></label>
      <label class="place"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s-6.5-5.7-6.5-11a6.5 6.5 0 0 1 13 0c0 5.3-6.5 11-6.5 11z"/><circle class="s" cx="12" cy="10" r="2.7"/></svg><span class="vh" data-t="lLoc">Place</span><input type="text" id="rLoc" dir="auto" maxlength="160" autocomplete="off" data-tp="phLoc" placeholder="Where?"></label>
      <button class="go" type="submit" id="rSend" data-ta="send" aria-label="Prepare report"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h13M12.5 6l6 6-6 6"/></svg></button>
     </div>
@@ -290,20 +293,24 @@ else{setTimeout(fail,8000)}})();</script>
    <p class="err" id="rErr" role="alert"></p>
   </form>
   <p class="note" id="rWarn" data-t="demoWarn">Demo: nothing you type leaves your device. Don’t type real names or numbers, or add photos of people.</p>
+  <p class="note" id="exH" data-t="exH">Try an example</p>
+  <div class="actions ex"><button type="button" class="tlink" data-ex="1" data-t="ex1">Broken bench in a park</button><button type="button" class="tlink" data-ex="2" data-t="ex2">Light not working on a path</button><button type="button" class="tlink" data-ex="3" data-t="ex3">Water pipe leaking</button></div>
  </div>
 </header>
 
 <main class="wrap" id="main">
  <p class="bootnote" id="bootNote" role="status"><span lang="en" dir="ltr">Loading…</span><span lang="ar" dir="rtl">جارٍ التحميل…</span></p>
  <div id="rReply"></div>
- <section class="tile about" aria-labelledby="ah"><h2 id="ah" data-t="aboutH">What this page does</h2><p class="note" data-t="aboutP1"></p><p class="note" data-t="aboutP2"></p></section>
+ <details class="tile about more"><summary><span data-t="aboutH">How to use it</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 10l5 5 5-5"/></svg></summary><div class="more-body"><p class="note" data-t="how1"></p><p class="note" data-t="how2"></p><p class="note" data-t="how3"></p><p class="note" data-t="aboutP2"></p></div></details>
  <p class="err" id="storeNote" role="status"></p>
  <section class="sec" id="mineSec" aria-labelledby="mh2" hidden>
   <div class="sec-head"><h2 id="mh2" data-t="mine">Your reports</h2><button class="tlink" type="button" id="delAll" data-t="delAll">Delete all my reports</button></div>
+  <p class="note hint" data-t="mineHint">Not sent to anyone. The status shown here is only a demo.</p>
   <div class="cases" id="mine"></div>
  </section>
  <section class="sec" aria-labelledby="ch">
-  <div class="sec-head"><h2 id="ch" data-t="cases">Cases</h2><div class="counts" id="tiles"></div></div>
+  <div class="sec-head"><h2 id="ch" data-t="cases">Sample cases</h2><div class="counts" id="tiles"></div></div>
+  <p class="note hint" data-t="casesHint">Made up. Open one to try each step, from report to repair.</p>
   <div class="cases" id="cases"></div>
  </section>
  <section class="tile memory" id="memory" aria-labelledby="mh"></section>
@@ -320,11 +327,11 @@ else{setTimeout(fail,8000)}})();</script>
  <div class="sheet-bar"><h2 class="sheet-name" id="menuTitle" data-t="menu">More</h2><button class="ibtn" type="button" data-close data-ta="close" aria-label="Close"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
  <div class="sheet-body">
   <div class="menu-list">
-   <a class="row" id="allAgents" href="../"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect class="s" x="13" y="13" width="7" height="7" rx="2"/></svg><span data-t="all">All agents</span></a>
+   <a class="row" id="allAgents" href="../"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect class="s" x="13" y="13" width="7" height="7" rx="2"/></svg><span data-t="all">All helpers</span></a>
   </div>
   <p class="note" data-t="aboutDemo">Demo. Examples are made up. General information, not legal advice.</p>
   <p class="note" data-t="aboutData">Cases are saved in this browser only.</p>
-  <div class="actions"><button class="tlink" type="button" id="reset" data-t="reset">Reset</button></div>
+  <div class="actions"><button class="tlink" type="button" id="reset" data-t="reset">Clear my data</button></div>
  </div>
 </dialog>
 
@@ -339,14 +346,15 @@ const LKEY='uaeagents-lang';
 
 /* ---------- words (English and Arabic) ---------- */
 const STR={en:{
-brand:'Wareeni',h1:'What needs fixing?',lText:'What’s wrong?',phText:'Describe the problem',photo:'Add a photo',lSticker:'QR sticker',noSticker:'No sticker',lLoc:'Place',phLoc:'Where? (required)',send:'Prepare report',sending:'Reading the report',yourPhoto:'Your photo',
-cases:'Examples',menu:'More',close:'Close',all:'All agents',aboutDemo:'Demo. Examples are made up. Not a real service.',aboutData:'Your reports and photos are saved on this phone only. You can delete them any time.',notLegal:'Not legal advice. Not a government service.',demoWarn:'Demo: nothing you type leaves your device. Don’t type real names or numbers, or add photos of people.',more:'More',reset:'Reset',resetAgain:'Tap again to reset',resetDone:'Demo reset.',
+brand:'Wareeni',h1:'What needs fixing?',lead:'Prepare your report here, then send it to your municipality yourself.',lText:'What’s wrong?',phText:'Broken bench',photo:'Add a photo',lSticker:'Demo QR sticker: fills in the place',noSticker:'No sticker',lLoc:'Place',phLoc:'Where?',
+exH:'Try an example',ex1:'Broken bench in a park',ex2:'Light not working on a path',ex3:'Water pipe leaking',ex1t:'Bench slats are broken near the playground. A child could get hurt.',ex2t:'The light on the lake walkway is not working. It is dark at night.',ex3t:'Irrigation pipe is leaking by the track, water everywhere.',send:'Prepare report',sending:'Reading the report',yourPhoto:'Your photo',
+cases:'Sample cases',casesHint:'Made up. Open one to try each step, from report to repair.',menu:'More',close:'Close',all:'All helpers',aboutDemo:'Demo. Examples are made up. Not a real service.',aboutData:'Your reports and photos are saved on this phone only. You can delete them any time.',notLegal:'Not legal advice. Not a government service.',demoWarn:'Demo: nothing you type leaves your device. Don’t type real names or numbers, or add photos of people.',more:'More',reset:'Clear my data',resetAgain:'Tap again to clear',resetDone:'Cleared.',
 tagRule:'Rule',tagEx:'Example',
-aboutH:'What this page does',aboutP1:'It helps you prepare a report of a city problem on your phone: the words, the place and the photos. Nothing is sent and nobody receives it.',aboutP2:'A report only exists when you send it yourself through your municipality’s official channel. The status and replies shown here are examples, and the category and urgency are this page’s own guess from your words, not an official result.',
-mine:'Your reports',delAll:'Delete all my reports',delAllAgain:'Tap again to delete all',delOne:'Delete this report and its photos',delOneAgain:'Tap again to delete this report and its photos.',
+aboutH:'How to use it',how1:'1. Write what is broken and where. Add a photo if you can.',how2:'2. Tap the arrow. You get a report ready to copy.',how3:'3. Copy it and send it yourself to your municipality.',aboutP2:'Your report is real only when you send it through your municipality’s official channel. The status and replies here are examples. The type, the urgency and anything marked “Rule” are the page’s guess, not an official result.',
+mine:'Your reports',mineHint:'Not sent to anyone. The status shown here is only a demo.',delAll:'Delete all my reports',delAllAgain:'Tap again to delete all',delOne:'Delete this report and its photos',delOneAgain:'Tap again to delete this report and its photos.',
 storeBlocked:'This browser is not letting the page save anything, so your reports stay only while this page is open. You can still prepare and copy a report.',storeFull:'This phone has no room left to save for this page, so the latest report was not saved. Delete old reports, or copy this one now.',
-offH:'The official step',offP:'The report is only made when you send it through the official channel. Copy it below, then send it there. In Dubai, for example, Dubai Municipality lists its helpline 800900 and the Dubai Municipality app on its contact page. In other emirates, use your own municipality’s channel (not checked here).',offLink:'Dubai Municipality contact page',offDemo:'The step shown below (crew, resident, closing) is a demo. The official status comes from the body you send the report to.',
-copy:'Copy report',copied:'Copied. Paste it into the official channel.',copyFail:'Could not copy. Select the text above and copy it.',savePhoto:'Save photo: {w}',photoNote:'Photos are not copied. Attach them yourself.',
+offH:'The official step',offP:'Nothing is sent from here. Copy the report below and send it yourself. In Dubai, Dubai Municipality lists helpline 800900 and its app on its contact page. In other emirates, use your municipality’s channel (not checked here).',offLink:'Dubai Municipality contact page',offDemo:'The steps below (crew, resident, closing) are only a demo. The real status comes from where you send the report.',
+copy:'Copy report',copied:'Copied. Paste it into the official channel.',copyFail:'Could not copy. Select the text above and copy it.',copyFailReply:'Could not copy. Open my report and copy the text there.',savePhoto:'Save photo: {w}',photoNote:'Photos are not copied. Attach them yourself.',
 rtTitle:'Report of a city problem',rtPlace:'Place',rtText:'Details',rtPhotos:'Photos',rtPhotosN:'{n} on this phone (attach them yourself)',rtPhotosNone:'none',rtDate:'Prepared on',rtNoPlace:'not given yet',
 whoResident:'Resident',whoRule:'Rule',whoCrew:'Crew',whoOperator:'Operator',
 st_needs_info:'Needs place',st_crew:'With crew',st_checking:'Checking',st_resident:'Asked resident',st_decision:'Your decision',st_closed:'Closed',
@@ -354,62 +362,63 @@ cntYou:'need you',
 s0:'Reported',s1:'Sorted',s2:'With crew',s3:'Fix checked',s4:'Resident',s5:'Closed',stepAria:'Step {i} of 6: {name}',
 now:'just now',example:'Example',noPlace:'No place yet',before:'Before',after:'After',noPhoto:'No photo',crewNote:'Crew: {note}',cycle:'Repair cycle {n}',sticker:'Sticker {code}',pastCycles:'Earlier fixes not accepted: {list}',pastItem:'cycle {n} (“{note}”)',timeline:'Timeline',
 roleRes:'Resident',roleCrew:'Crew',roleOp:'Operator',
-askedWhere:'Where is it?',lAnswer:'Your answer',phAnswer:'Park and landmark',bSendPlace:'Send place',
-crewTitle:'Fix it, then add proof',lNote:'What was done?',phNote:'e.g. Replaced two slats',lAfter:'After photo',afterPending:'Not sent yet',bFixed:'Mark fixed',bFake:'Try a fake repair',fakeTip:'Sends the before photo again as the after photo.',
+askedWhere:'Where is it?',lAnswer:'Your answer',phAnswer:'Park and landmark',bSendPlace:'Add place',
+crewTitle:'Fix it, then add proof',lNote:'What was done?',phNote:'e.g. Replaced two slats',lAfter:'After photo',afterPending:'Not added yet',bFixed:'Mark fixed',bFake:'Try a fake fix (same photo)',fakeTip:'Uses the before photo again as the after photo.',
 checkFailed:'The check didn’t finish',bRetry:'Run again',
-isFixed:'Is it fixed?',bYes:'Yes, fixed',bNo:'No, still broken',bNoReply:'No reply (48 h, demo rule)',
+isFixed:'Is it fixed?',bYes:'Yes, fixed',bNo:'No, still broken',bNoReply:'No reply for 2 days (demo)',
 decTitle:'Close or send back',fRes:'Resident: {r}',rYes:'confirmed',rNo:'no reply',fCheck:'Check (not proof): {v}',fPhoto:'Photo: flagged',fNoPhoto:'No after photo',vNone:'not run',concern:'Not proven. Closing needs a reason.',ack:'I checked the evidence.',lWhy:'Reason',lWhyOpt:'Note for the crew',bClose:'Close case',bBack:'Send back',
 reopen:'Reopen',lReopen:'What still needs work?',bReopen:'Reopen with a new cycle',
-errShort:'Describe it in a few words.',errPhoto:'That file isn’t a photo. Try JPEG or PNG.',errLoc:'Type the place, like the park and a landmark.',errNote:'Say what the crew did.',errNoBefore:'No before photo to reuse.',errAck:'Tick the box first.',errWhy:'Not proven. Add a reason.',errBack:'Say what the crew must do.',errReopen:'Say why it needs reopening.',
+errShort:'Describe it in a few words.',errPhoto:'That file isn’t a photo. Try another.',errLoc:'Type the place, like the park and a landmark.',errNote:'Say what the crew did.',errNoBefore:'No before photo to reuse.',errAck:'Tick the box first.',errWhy:'Not proven. Add a reason.',errBack:'Say what the crew must do.',errReopen:'Say why it needs reopening.',
 check:'Check (not proof)',vLooks:'looks fixed',vNot:'does not look fixed',vUnclear:'unclear',checking:'Checking the fix…',
-raised:'The photo rule set this. The rules check said “{own}”.',
+raised:'The photo check set this. Without it: “{own}”.',
 toCheck:'To check: {w}',wCompare:'compare the before and after photos',wAskPhoto:'ask the crew for an after photo',wFresh:'ask for a fresh photo taken on site',wWhen:'check when the photo was taken',wComparePhotos:'compare the matching photos yourself',rLook:'Look at the photos and the note.',noAfterCheck:'No after photo, so no photo check.',noCopy:'Photo check: no copy found.',
 exR1:'The crew note names a repair and a 10-minute test',exR2:'No after photo, so the check relies on the note',exWhat:'ask for an after photo next time',
-fSameExact:'The after photo is a copy of the before photo.',fSameNear:'The after photo looks almost the same as the before photo ({d} of 64 points differ).',fReusedExact:'The after photo is a copy of {where}.',fReusedNear:'The after photo looks almost the same as {where} ({d} of 64 points differ).',fSameVar:'The after photo looks like a flipped, cropped or shifted copy of the before photo.',fReusedVar:'The after photo looks like a flipped, cropped or shifted copy of {where}.',fOldExif:'The camera says this photo was taken {age} before upload.',fOldFile:'The photo file is {age} older than the upload (file date only).',
+fSameExact:'The after photo is a copy of the before photo.',fSameNear:'The after photo looks almost the same as the before photo.',fReusedExact:'The after photo is a copy of {where}.',fReusedNear:'The after photo looks almost the same as {where}.',fSameVar:'The after photo looks like a flipped, cropped or shifted copy of the before photo.',fReusedVar:'The after photo looks like a flipped, cropped or shifted copy of {where}.',fOldExif:'The camera says this photo was {age} old when added.',fOldFile:'The photo file was {age} old when added (file date only).',
 wCycle:'this case’s cycle {n} photo',wBefore:'the before photo in {id}',wAfter:'the after photo in {id}',wPast:'a cycle {n} photo in {id}',
 nCant:'The after photo couldn’t be checked; look at it.',nPlain:'The after photo is too plain to compare; look at it.',nBeforePlain:'The before photo is too plain to compare.',nNotCopy:'Not a copy of the {n} other photos checked.',nNothing:'No other photos to compare yet.',
-replyTo:'Sample reply. Nothing was sent.',seeCase:'See {id}',
+replyTo:'Sample reply. Nothing was sent.',seeCase:'Open my report',
 trRead:'Read the report ({lang})',lang_en:'English',lang_ar:'Arabic',lang_ur:'Urdu',lang_hi:'Hindi',lang_ml:'Malayalam',lang_bn:'Bengali',
 trPhotoKept:'Kept the photo for the operator',trSort:'Sorted: {cat}, {urg}',trDup:'May repeat {ids}',trNoDup:'No repeat open here',trSent:'Demo: for {crew}, target {target} (made up)',trAsk:'Asked where it is first',
-mh:'Repeat spots',noSpots:'No repeat spots yet.',bPlan:'Draft a fix-once plan',planTag:'example only; a person must approve',planRule:'1. Send the {crew} to check the whole spot, not only the last fault.\n2. Fix the cause in one visit and replace worn parts.\n3. Check it again in two weeks.\nAim: no new report here for 60 days.',
+mh:'Repeat spots',noSpots:'No repeat spots yet.',bPlan:'Suggest a lasting fix',planTag:'example only; a person must approve',planRule:'1. Send the {crew} to check the whole spot, not only the last fault.\n2. Fix the cause in one visit and replace worn parts.\n3. Check it again in two weeks.\nAim: no new report here for 60 days.',
 
-evQR:'Reported with QR sticker {code}.',evTyped:'Reported with a typed place.',evNoLoc:'Reported without a place.',evReported:'Reported.',evTriage:'Sorted as {cat}, {urg}.',evDup:'May repeat {ids}. Kept separate.',evAskLoc:'No place yet, so asked where it is.',evAssign:'Demo: for {crew}. Target: {target} (made up).',evPhotoFlag:'Photo check flagged the after photo.',evPhotoOk:'Photo check: no copy found.',evCheck:'Checked the fix: {v}.',evCheckEx:'Checked the fix: {v} (example).',evRaised:'The photo rule set the result to “{v}”. The rules check said “{own}”.',evAskRes:'Asked the resident: “Is it fixed?”',evGaveLoc:'Gave the place: “{loc}”.',evFixedPhoto:'Marked fixed, with an after photo.',evFixedNoPhoto:'Marked fixed, no photo.',evFixedNote:'Marked fixed: {note}.',evFake:'Demo test: sent the before photo as the after photo.',evResYes:'Confirmed it is fixed.',evResNo:'Said it is still broken.',evBack:'Back to the crew. Cycle {n} needs new proof.',evNoReply:'No reply in 48 h (demo). Moved to the decision.',evClosed:'Closed after review.',evClosedWhy:'Closed despite a concern: “{why}”.',evSentBack:'Sent back: “{why}”.',evCycle:'Cycle {n} needs new proof.',evReopen:'Reopened: “{why}”.',evCycleOld:'Cycle {n} needs new proof; old photos can’t close it.'
+evQR:'Reported with QR sticker {code}.',evTyped:'Reported with a typed place.',evNoLoc:'Reported without a place.',evReported:'Reported.',evTriage:'Sorted as {cat}, {urg}.',evDup:'May repeat {ids}. Kept separate.',evAskLoc:'No place yet, so asked where it is.',evAssign:'Demo: for {crew}. Target: {target} (made up).',evPhotoFlag:'Photo check flagged the after photo.',evPhotoOk:'Photo check: no copy found.',evCheck:'Checked the fix: {v}.',evCheckEx:'Checked the fix: {v} (example).',evRaised:'The photo check set the result to “{v}”. Without it: “{own}”.',evAskRes:'Asked the resident: “Is it fixed?”',evGaveLoc:'Gave the place: “{loc}”.',evFixedPhoto:'Marked fixed, with an after photo.',evFixedNoPhoto:'Marked fixed, no photo.',evFixedNote:'Marked fixed: {note}.',evFake:'Demo test: used the before photo as the after photo.',evResYes:'Confirmed it is fixed.',evResNo:'Said it is still broken.',evBack:'Back to the crew. Cycle {n} needs new proof.',evNoReply:'No reply in 48 h (demo). Moved to the decision.',evClosed:'Closed after review.',evClosedWhy:'Closed despite a concern: “{why}”.',evSentBack:'Sent back: “{why}”.',evCycle:'Cycle {n} needs new proof.',evReopen:'Reopened: “{why}”.',evCycleOld:'Cycle {n} needs new proof; old photos can’t close it.'
 },ar:{
-brand:'ورّيني',h1:'شو يحتاج إصلاح؟',lText:'ما المشكلة؟',phText:'صف المشكلة',photo:'أضف صورة',lSticker:'ملصق QR',noSticker:'بدون ملصق',lLoc:'المكان',phLoc:'وين؟ (مطلوب)',send:'جهّز البلاغ',sending:'جارٍ قراءة البلاغ',yourPhoto:'صورتك',
-cases:'أمثلة',menu:'المزيد',close:'إغلاق',all:'كل الوكلاء',aboutDemo:'تجربة. الأمثلة من صنع الخيال. ليست خدمة حقيقية.',notLegal:'ليست استشارة قانونية ولا خدمة حكومية.',demoWarn:'تجربة: لا شيء مما تكتبه يغادر جهازك. لا تكتب أسماءً أو أرقاماً حقيقية ولا تضف صور أشخاص.',aboutData:'تُحفظ بلاغاتك وصورها على هالجوال فقط. تقدر تحذفها في أي وقت.',more:'المزيد',reset:'إعادة ضبط',resetAgain:'اضغط مرة أخرى للتأكيد',resetDone:'أُعيد ضبط التجربة.',
+brand:'ورّيني',h1:'شو يحتاج إصلاح؟',lead:'جهّز بلاغك هنا، ثم أرسله إلى بلديتك بنفسك.',lText:'ما المشكلة؟',phText:'مقعد مكسور',photo:'أضف صورة',lSticker:'ملصق QR تجريبي: يعبّئ المكان',noSticker:'بدون ملصق',lLoc:'المكان',phLoc:'وين؟',
+exH:'جرّب مثالًا',ex1:'مقعد مكسور في حديقة',ex2:'إنارة لا تعمل في ممشى',ex3:'تسرب مياه من أنبوب',ex1t:'المقعد مكسور قرب الملعب والأطفال قد يتأذون',ex2t:'الإنارة في الممر لا تعمل والمكان مظلم',ex3t:'تسرب مياه من الأنبوب قرب البوابة',send:'جهّز البلاغ',sending:'جارٍ قراءة البلاغ',yourPhoto:'صورتك',
+cases:'بلاغات تجريبية',casesHint:'كلها مختلقة. افتح واحداً وجرّب كل خطوة، من البلاغ حتى الإصلاح.',menu:'المزيد',close:'إغلاق',all:'كل المساعدين',aboutDemo:'عرض تجريبي. الأمثلة مختلقة. ليست خدمة حقيقية.',notLegal:'ليست استشارة قانونية ولا خدمة حكومية.',demoWarn:'عرض تجريبي: لا شيء مما تكتبه يغادر جهازك. لا تكتب أسماءً أو أرقاماً حقيقية ولا تضف صور أشخاص.',aboutData:'تُحفظ بلاغاتك وصورها على هذا الهاتف فقط. يمكنك حذفها في أي وقت.',more:'المزيد',reset:'امسح بياناتي',resetAgain:'اضغط مجددًا للمسح',resetDone:'تم المسح.',
 tagRule:'قاعدة',tagEx:'مثال',
-aboutH:'شو تسوّي هالصفحة',aboutP1:'تساعدك تجهّز بلاغ عن مشكلة في المدينة على جوالك: الوصف والمكان والصور. ما يُرسل شي ولا أحد يستلمه.',aboutP2:'البلاغ ما يصير بلاغ فعلي إلا لما ترسله بنفسك عبر القناة الرسمية لبلديتك. الحالة والردود اللي تشوفها هنا أمثلة، والتصنيف والأولوية تخمين من الصفحة حسب كلامك، مو نتيجة رسمية.',
-mine:'بلاغاتك',delAll:'احذف كل بلاغاتي',delAllAgain:'اضغط مرة ثانية لحذف الكل',delOne:'احذف هذا البلاغ وصوره',delOneAgain:'اضغط مرة ثانية لحذف هذا البلاغ وصوره.',
-storeBlocked:'المتصفح ما يسمح للصفحة تحفظ شي، فبلاغاتك تبقى فقط وهالصفحة مفتوحة. تقدر مع ذلك تجهّز البلاغ وتنسخه.',storeFull:'ما بقي مكان في جوالك لحفظ هالصفحة، فآخر بلاغ ما انحفظ. احذف بلاغات قديمة أو انسخ هذا الحين.',
-offH:'الخطوة الرسمية',offP:'البلاغ ما يتم إلا لما ترسله عبر القناة الرسمية. انسخه من تحت وأرسله هناك. مثلاً في دبي، بلدية دبي تذكر في صفحة التواصل الخط الساخن 800900 وتطبيق بلدية دبي. في الإمارات الثانية استخدم قناة بلديتك (ما تحققنا منها هنا).',offLink:'صفحة التواصل في بلدية دبي',offDemo:'الخطوات اللي تحت (الفريق، المُبلّغ، الإغلاق) تجربة. الحالة الرسمية تجيك من الجهة اللي ترسل لها البلاغ.',
-copy:'انسخ البلاغ',copied:'تم النسخ. الصقه في القناة الرسمية.',copyFail:'ما قدرنا ننسخ. حدّد النص فوق وانسخه.',savePhoto:'احفظ الصورة: {w}',photoNote:'الصور ما تنتسخ. أرفقها بنفسك.',
-rtTitle:'بلاغ عن مشكلة في المدينة',rtPlace:'المكان',rtText:'التفاصيل',rtPhotos:'الصور',rtPhotosN:'{n} على هالجوال (أرفقها بنفسك)',rtPhotosNone:'لا يوجد',rtDate:'أُعدّ بتاريخ',rtNoPlace:'لم يُذكر بعد',
+aboutH:'طريقة الاستخدام',how1:'1. اكتب المشكلة ومكانها، وأضف صورة إن أمكن.',how2:'2. اضغط على السهم، فتحصل على بلاغ جاهز للنسخ.',how3:'3. انسخه وأرسله بنفسك إلى بلديتك.',aboutP2:'لا يصبح البلاغ بلاغاً فعلياً إلا حين ترسله عبر القناة الرسمية لبلديتك. الحالة والردود هنا أمثلة. والتصنيف والأولوية وكل ما عليه كلمة «قاعدة» تخمين من الصفحة، وليست نتيجة رسمية.',
+mine:'بلاغاتك',mineHint:'لم تُرسل إلى أحد. الحالة هنا عرض تجريبي فقط.',delAll:'احذف كل بلاغاتي',delAllAgain:'اضغط مرة ثانية لحذف الكل',delOne:'احذف هذا البلاغ وصوره',delOneAgain:'اضغط مرة ثانية لحذف هذا البلاغ وصوره.',
+storeBlocked:'المتصفح لا يسمح للصفحة بحفظ أي شيء، فتبقى بلاغاتك ما دامت هذه الصفحة مفتوحة فقط. يمكنك مع ذلك تجهيز البلاغ ونسخه.',storeFull:'لم يبقَ في هاتفك مكان لحفظ بيانات هذه الصفحة، فلم يُحفظ آخر بلاغ. احذف بلاغات قديمة أو انسخ هذا البلاغ الآن.',
+offH:'الخطوة الرسمية',offP:'لا يُرسل شيء من هنا. انسخ البلاغ في الأسفل وأرسله بنفسك. في دبي، تذكر بلدية دبي في صفحة التواصل الخط الساخن 800900 وتطبيقها. في الإمارات الأخرى استخدم قناة بلديتك (لم نتحقق منها هنا).',offLink:'صفحة التواصل في بلدية دبي',offDemo:'الخطوات في الأسفل (الفريق، المُبلّغ، الإغلاق) عرض تجريبي فقط. الحالة الحقيقية تأتيك من الجهة التي ترسل إليها البلاغ.',
+copy:'انسخ البلاغ',copied:'تم النسخ. الصقه في القناة الرسمية.',copyFail:'تعذّر النسخ. حدّد النص في الأعلى وانسخه.',copyFailReply:'تعذّر النسخ. افتح بلاغي وانسخ النص من هناك.',savePhoto:'احفظ الصورة: {w}',photoNote:'الصور لا تُنسخ. أرفقها بنفسك.',
+rtTitle:'بلاغ عن مشكلة في المدينة',rtPlace:'المكان',rtText:'التفاصيل',rtPhotos:'الصور',rtPhotosN:'{n} على هذا الهاتف (أرفقها بنفسك)',rtPhotosNone:'لا يوجد',rtDate:'أُعدّ بتاريخ',rtNoPlace:'لم يُذكر بعد',
 whoResident:'المُبلّغ',whoRule:'قاعدة',whoCrew:'الفريق',whoOperator:'المشغّل',
 st_needs_info:'يحتاج المكان',st_crew:'عند الفريق',st_checking:'قيد الفحص',st_resident:'سُئل المُبلّغ',st_decision:'قرارك',st_closed:'مغلق',
 cntYou:'تحتاجك',
 s0:'أُبلغ',s1:'صُنّف',s2:'عند الفريق',s3:'فُحص الإصلاح',s4:'المُبلّغ',s5:'أُغلق',stepAria:'الخطوة {i} من 6: {name}',
 now:'الآن',example:'مثال',noPlace:'لا مكان بعد',before:'قبل',after:'بعد',noPhoto:'لا صورة',crewNote:'الفريق: {note}',cycle:'دورة الإصلاح {n}',sticker:'الملصق {code}',pastCycles:'إصلاحات سابقة لم تُقبل: {list}',pastItem:'الدورة {n} («{note}»)',timeline:'السجل',
 roleRes:'المُبلّغ',roleCrew:'الفريق',roleOp:'المشغّل',
-askedWhere:'وين المكان؟',lAnswer:'إجابتك',phAnswer:'الحديقة وأقرب معلم',bSendPlace:'أرسل المكان',
-crewTitle:'أصلحها، ثم أضف الإثبات',lNote:'ما الذي تم؟',phNote:'مثلاً: استبدلنا لوحين',lAfter:'صورة بعد الإصلاح',afterPending:'لم تُرسل بعد',bFixed:'تم الإصلاح',bFake:'جرّب إصلاحاً مزيفاً',fakeTip:'يرسل صورة «قبل» مرة أخرى على أنها صورة «بعد».',
+askedWhere:'وين المكان؟',lAnswer:'إجابتك',phAnswer:'الحديقة وأقرب معلم',bSendPlace:'أضف المكان',
+crewTitle:'أصلحها، ثم أضف الإثبات',lNote:'ما الذي تم؟',phNote:'مثلاً: استبدلنا لوحين',lAfter:'صورة بعد الإصلاح',afterPending:'لم تُضف بعد',bFixed:'تم الإصلاح',bFake:'جرّب إصلاحاً مزيفاً (الصورة نفسها)',fakeTip:'يستخدم صورة «قبل» مرة أخرى على أنها صورة «بعد».',
 checkFailed:'لم يكتمل الفحص',bRetry:'أعد الفحص',
-isFixed:'هل تم الإصلاح؟',bYes:'نعم، تم',bNo:'لا، ما زال معطلاً',bNoReply:'لا رد (48 ساعة، قاعدة تجريبية)',
+isFixed:'هل تم الإصلاح؟',bYes:'نعم، تم',bNo:'لا، ما زال معطلاً',bNoReply:'لا رد منذ يومين (عرض تجريبي)',
 decTitle:'أغلق أو أعِد إلى الفريق',fRes:'المُبلّغ: {r}',rYes:'أكّد',rNo:'لم يرد',fCheck:'الفحص (ليس إثباتاً): {v}',fPhoto:'الصورة: عليها ملاحظة',fNoPhoto:'لا صورة بعد الإصلاح',vNone:'لم يُجرَ',concern:'غير مثبت. الإغلاق يحتاج سبباً.',ack:'راجعت الإثبات.',lWhy:'السبب',lWhyOpt:'ملاحظة للفريق',bClose:'أغلق البلاغ',bBack:'أعِد إلى الفريق',
 reopen:'إعادة فتح',lReopen:'ما الذي يحتاج عملاً بعد؟',bReopen:'أعد الفتح بدورة جديدة',
-errShort:'صف المشكلة بكلمات قليلة.',errPhoto:'هذا الملف ليس صورة. جرّب JPEG أو PNG.',errLoc:'اكتب المكان، مثل الحديقة وأقرب معلم.',errNote:'اكتب ما قام به الفريق.',errNoBefore:'لا توجد صورة «قبل» لإعادة استخدامها.',errAck:'ضع علامة في المربع أولاً.',errWhy:'غير مثبت. أضف سبباً.',errBack:'اكتب ما يجب على الفريق فعله.',errReopen:'اكتب سبب إعادة الفتح.',
+errShort:'صف المشكلة بكلمات قليلة.',errPhoto:'هذا الملف ليس صورة. جرّب صورة أخرى.',errLoc:'اكتب المكان، مثل الحديقة وأقرب معلم.',errNote:'اكتب ما قام به الفريق.',errNoBefore:'لا توجد صورة «قبل» لإعادة استخدامها.',errAck:'ضع علامة في المربع أولاً.',errWhy:'غير مثبت. أضف سبباً.',errBack:'اكتب ما يجب على الفريق فعله.',errReopen:'اكتب سبب إعادة الفتح.',
 check:'الفحص (ليس إثباتاً)',vLooks:'يبدو مُصلحاً',vNot:'لا يبدو مُصلحاً',vUnclear:'غير واضح',checking:'جارٍ فحص الإصلاح…',
-raised:'قاعدة الصور حدّدت هذه النتيجة. وكانت نتيجة فحص القواعد: «{own}».',
+raised:'فحص الصور حدّد هذه النتيجة. وبدونه: «{own}».',
 toCheck:'للتحقق: {w}',wCompare:'قارن صورتي «قبل» و«بعد»',wAskPhoto:'اطلب من الفريق صورة بعد الإصلاح',wFresh:'اطلب صورة جديدة من الموقع',wWhen:'تحقق من وقت التقاط الصورة',wComparePhotos:'قارن الصور المتشابهة بنفسك',rLook:'راجع الصور والملاحظة.',noAfterCheck:'لا صورة بعد الإصلاح، فلا فحص للصور.',noCopy:'فحص الصور: لا نسخ.',
 exR1:'ملاحظة الفريق تذكر إصلاحاً محدداً واختباراً لعشر دقائق',exR2:'لا صورة بعد الإصلاح، فالفحص يعتمد على الملاحظة',exWhat:'اطلب صورة بعد الإصلاح في المرة القادمة',
-fSameExact:'صورة «بعد» نسخة من صورة «قبل».',fSameNear:'صورة «بعد» تكاد تطابق صورة «قبل» (تختلف {d} من 64 نقطة).',fReusedExact:'صورة «بعد» نسخة من {where}.',fReusedNear:'صورة «بعد» تكاد تطابق {where} (تختلف {d} من 64 نقطة).',fSameVar:'صورة «بعد» تبدو نسخة مقلوبة أو مقصوصة أو مُزاحة من صورة «قبل».',fReusedVar:'صورة «بعد» تبدو نسخة مقلوبة أو مقصوصة أو مُزاحة من {where}.',fOldExif:'تقول الكاميرا إن الصورة التُقطت قبل الرفع بـ{age}.',fOldFile:'ملف الصورة أقدم من الرفع بـ{age} (حسب تاريخ الملف فقط).',
+fSameExact:'صورة «بعد» نسخة من صورة «قبل».',fSameNear:'صورة «بعد» تكاد تطابق صورة «قبل».',fReusedExact:'صورة «بعد» نسخة من {where}.',fReusedNear:'صورة «بعد» تكاد تطابق {where}.',fSameVar:'صورة «بعد» تبدو نسخة مقلوبة أو مقصوصة أو مُزاحة من صورة «قبل».',fReusedVar:'صورة «بعد» تبدو نسخة مقلوبة أو مقصوصة أو مُزاحة من {where}.',fOldExif:'تقول الكاميرا إن عمر الصورة كان {age} عند إضافتها.',fOldFile:'عمر ملف الصورة كان {age} عند إضافتها (حسب تاريخ الملف فقط).',
 wCycle:'صورة الدورة {n} لهذا البلاغ',wBefore:'صورة «قبل» في {id}',wAfter:'صورة «بعد» في {id}',wPast:'صورة من الدورة {n} في {id}',
 nCant:'تعذّر فحص صورة «بعد»؛ راجعها بنفسك.',nPlain:'صورة «بعد» بسيطة جداً للمقارنة؛ راجعها بنفسك.',nBeforePlain:'صورة «قبل» بسيطة جداً للمقارنة.',nNotCopy:'ليست نسخة من الصور الأخرى المفحوصة ({n}).',nNothing:'لا صور أخرى للمقارنة بعد.',
-replyTo:'رد تجريبي. لم يُرسل شيء.',seeCase:'عرض {id}',
+replyTo:'رد تجريبي. لم يُرسل شيء.',seeCase:'افتح بلاغي',
 trRead:'قرأ البلاغ ({lang})',lang_en:'بالإنجليزية',lang_ar:'بالعربية',lang_ur:'بالأردية',lang_hi:'بالهندية',lang_ml:'بالمالايالامية',lang_bn:'بالبنغالية',
-trPhotoKept:'حفظ الصورة للمشغّل',trSort:'صنّف: {cat}، {urg}',trDup:'قد يكرر {ids}',trNoDup:'لا بلاغ مكرر مفتوح هنا',trSent:'تجربة: إلى {crew}، المهلة {target} (من صنع الخيال)',trAsk:'سأل عن المكان أولاً',
-mh:'أماكن متكررة',noSpots:'لا أماكن متكررة بعد.',bPlan:'اقترح خطة إصلاح نهائي',planTag:'مثال فقط؛ تحتاج موافقة شخص',planRule:'1. أرسل {crew} لفحص المكان كله، لا العطل الأخير فقط.\n2. أصلح السبب في زيارة واحدة واستبدل القطع البالية.\n3. أعد الفحص بعد أسبوعين.\nالهدف: لا بلاغ جديد هنا خلال 60 يوماً.',
+trPhotoKept:'حفظ الصورة للمشغّل',trSort:'صنّف: {cat}، {urg}',trDup:'قد يكرر {ids}',trNoDup:'لا بلاغ مكرر مفتوح هنا',trSent:'عرض تجريبي: إلى {crew}، المهلة {target} (مختلقة)',trAsk:'سأل عن المكان أولاً',
+mh:'أماكن متكررة',noSpots:'لا أماكن متكررة بعد.',bPlan:'اقترح إصلاحاً دائماً',planTag:'مثال فقط؛ تحتاج موافقة شخص',planRule:'1. أرسل {crew} لفحص المكان كله، لا العطل الأخير فقط.\n2. أصلح السبب في زيارة واحدة واستبدل القطع البالية.\n3. أعد الفحص بعد أسبوعين.\nالهدف: لا بلاغ جديد هنا خلال 60 يوماً.',
 
-evQR:'أُبلغ عبر ملصق QR {code}.',evTyped:'أُبلغ مع كتابة المكان.',evNoLoc:'أُبلغ بدون مكان.',evReported:'أُبلغ.',evTriage:'صُنّف: {cat}، {urg}.',evDup:'قد يكرر {ids}. أُبقي منفصلاً.',evAskLoc:'لا مكان بعد، فسُئل المُبلّغ عنه.',evAssign:'تجربة: إلى {crew}. المهلة: {target} (من صنع الخيال).',evPhotoFlag:'فحص الصور وضع ملاحظة على صورة «بعد».',evPhotoOk:'فحص الصور: لا نسخ.',evCheck:'فُحص الإصلاح: {v}.',evCheckEx:'فُحص الإصلاح: {v} (مثال).',evRaised:'قاعدة الصور جعلت النتيجة «{v}». وكانت نتيجة فحص القواعد: «{own}».',evAskRes:'سُئل المُبلّغ: «هل تم الإصلاح؟»',evGaveLoc:'أرسل المكان: «{loc}».',evFixedPhoto:'أُشير إلى الإصلاح، مع صورة بعده.',evFixedNoPhoto:'أُشير إلى الإصلاح، بلا صورة.',evFixedNote:'أُشير إلى الإصلاح: {note}.',evFake:'اختبار: أُرسلت صورة «قبل» على أنها صورة «بعد».',evResYes:'أكّد أنه أُصلح.',evResNo:'قال إنه ما زال معطلاً.',evBack:'أُعيد إلى الفريق. الدورة {n} تحتاج إثباتاً جديداً.',evNoReply:'لا رد خلال 48 ساعة (تجريبي). انتقل إلى القرار.',evClosed:'أُغلق بعد المراجعة.',evClosedWhy:'أُغلق رغم ملاحظة: «{why}».',evSentBack:'أُعيد إلى الفريق: «{why}».',evCycle:'الدورة {n} تحتاج إثباتاً جديداً.',evReopen:'أُعيد الفتح: «{why}».',evCycleOld:'الدورة {n} تحتاج إثباتاً جديداً؛ الصور القديمة لا تكفي.'
+evQR:'أُبلغ عبر ملصق QR {code}.',evTyped:'أُبلغ مع كتابة المكان.',evNoLoc:'أُبلغ بدون مكان.',evReported:'أُبلغ.',evTriage:'صُنّف: {cat}، {urg}.',evDup:'قد يكرر {ids}. أُبقي منفصلاً.',evAskLoc:'لا مكان بعد، فسُئل المُبلّغ عنه.',evAssign:'عرض تجريبي: إلى {crew}. المهلة: {target} (مختلقة).',evPhotoFlag:'فحص الصور وضع ملاحظة على صورة «بعد».',evPhotoOk:'فحص الصور: لا نسخ.',evCheck:'فُحص الإصلاح: {v}.',evCheckEx:'فُحص الإصلاح: {v} (مثال).',evRaised:'فحص الصور جعل النتيجة «{v}». وبدونه: «{own}».',evAskRes:'سُئل المُبلّغ: «هل تم الإصلاح؟»',evGaveLoc:'أضاف المكان: «{loc}».',evFixedPhoto:'أُشير إلى الإصلاح، مع صورة بعده.',evFixedNoPhoto:'أُشير إلى الإصلاح، بلا صورة.',evFixedNote:'أُشير إلى الإصلاح: {note}.',evFake:'اختبار: استُخدمت صورة «قبل» على أنها صورة «بعد».',evResYes:'أكّد أنه أُصلح.',evResNo:'قال إنه ما زال معطلاً.',evBack:'أُعيد إلى الفريق. الدورة {n} تحتاج إثباتاً جديداً.',evNoReply:'لا رد خلال 48 ساعة (تجريبي). انتقل إلى القرار.',evClosed:'أُغلق بعد المراجعة.',evClosedWhy:'أُغلق رغم ملاحظة: «{why}».',evSentBack:'أُعيد إلى الفريق: «{why}».',evCycle:'الدورة {n} تحتاج إثباتاً جديداً.',evReopen:'أُعيد الفتح: «{why}».',evCycleOld:'الدورة {n} تحتاج إثباتاً جديداً؛ الصور القديمة لا تكفي.'
 }};
 let LANG='en';
 function txl(l,k,p){let s=STR[l]&&STR[l][k];if(s==null)s=STR.en[k];if(s==null)return k;return p?s.replace(/\{(\w+)\}/g,(m,n)=>p[n]!=null?String(p[n]):m):s}
@@ -692,7 +701,7 @@ function thumb(src,label){return `<figure class="thumb">${src?`<img src="${esc(s
 
 /* ---------- report ---------- */
 function fillStickers(){const sel=$('rSticker');const v=sel.value;
-  sel.innerHTML=`<option value="">${esc(tx('noSticker'))}</option>`+STICKERS.map(s=>`<option value="${s[0]}">${esc(s[0]+' · '+(LANG==='ar'?ASSET_AR[s[1]]||s[1]:s[1])+', '+placeName(s[2]))}</option>`).join('');
+  sel.innerHTML=`<option value="">${esc(tx('noSticker'))}</option><optgroup label="${esc(tx('lSticker'))}">`+STICKERS.map(s=>`<option value="${s[0]}">${esc(s[0]+' · '+(LANG==='ar'?ASSET_AR[s[1]]||s[1]:s[1])+', '+placeName(s[2]))}</option>`).join('')+'</optgroup>';
   sel.value=v}
 function markTools(){const q=$('qrBtn'),p=$('photoBtn');if(q)q.classList.toggle('on',!!$('rSticker').value);if(p)p.classList.toggle('on',!!reportPhoto)}
 $('rSticker').addEventListener('change',()=>{const s=stickerOf($('rSticker').value);$('rLoc').value=s?placeName(s[2]):'';$('rLoc').readOnly=!!s;markTools()});
@@ -700,7 +709,11 @@ $('rPhoto').addEventListener('change',async e=>{const f=e.target.files&&e.target
 $('reportForm').addEventListener('submit',e=>{e.preventDefault();sendReport()});
 $('rText').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();const f=$('reportForm');if(f.requestSubmit)f.requestSubmit();else sendReport()}});
 $('rText').addEventListener('input',grow);
-$('rReply').addEventListener('click',e=>{const b=e.target.closest('[data-goto]');if(b){openCase(b.dataset.goto,b);return}const k=e.target.closest('[data-copy]');if(k){const c=byId(k.dataset.copy);if(c)copyText(reportText(c)).then(ok=>{const el=$('cpr');if(el)el.textContent=tx(ok?'copied':'copyFail')})}});
+$('rReply').addEventListener('click',e=>{const b=e.target.closest('[data-goto]');if(b){openCase(b.dataset.goto,b);return}const k=e.target.closest('[data-copy]');if(k){const c=byId(k.dataset.copy);if(c)copyText(reportText(c)).then(ok=>{const el=$('cpr');if(el)el.textContent=tx(ok?'copied':'copyFailReply')})}});
+/* Example taps only fill the boxes (text and a made-up sticker place); the visitor taps the arrow. */
+document.querySelectorAll('[data-ex]').forEach(b=>b.addEventListener('click',()=>{const i=+b.dataset.ex,q=$('rText');
+  q.value=tx('ex'+i+'t');$('rSticker').value='';$('rLoc').readOnly=false;$('rLoc').value=placeName(STICKERS[[0,2,1][i-1]][2]);
+  showErr('');markTools();grow();if(!coarse())try{q.focus({preventScroll:true})}catch(e){}}));
 let sending=false,lastReply=null;
 async function sendReport(){
   if(sending)return;
