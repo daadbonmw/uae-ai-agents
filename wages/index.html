@@ -12,10 +12,8 @@
 <meta name="description" content="Log paydays, spot late or unpaid salary, and keep a dated case file for a MOHRE complaint.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%2392722A' d='M12 2a10 10 0 1 1 0 20H2V12A10 10 0 0 1 12 2z'/%3E%3C/svg%3E">
 <script id="boot">(function(){var r=document.documentElement;try{var p=new URLSearchParams(location.search);if(p.get('embed')==='1')r.classList.add('embed');var l=p.get('lang');if(l!=='ar'&&l!=='en'){try{l=localStorage.getItem('uaeagents-lang')}catch(e){}}if(l!=='ar'&&l!=='en')l=String(navigator.language||'').toLowerCase().indexOf('ar')===0?'ar':'en';r.lang=l;r.dir=l==='ar'?'rtl':'ltr';}catch(e){}})();</script>
-<script id="guard">/* Never a silent dead page. Oldest plain JavaScript on purpose (no let, const, arrows or template strings), so it runs on any phone.
-   The main script sets PAGE_STARTED as its first act (and removes the "Loading" line) and PAGE_READY when the diary is drawn.
-   If it never starts (a browser that cannot read it) or stops before that, this shows in English and Arabic that the page could not
-   start here and what to do. The main script is inline, so by DOMContentLoaded it has run or failed. */
+<script id="guard">
+
 (function(){var shown=false;
 function fail(){if(shown||window.PAGE_READY)return;shown=true;var el=document.getElementById('bootNote');
 if(!el){el=document.createElement('p');el.id='bootNote';var m=document.getElementById('main')||document.body;if(!m)return;m.insertBefore(el,m.firstChild)}
@@ -467,11 +465,8 @@ dialog:not([open]){display:none}
 
 <script id="app">
 'use strict';
-/* first act: tell the guard script the page started and take the "Loading" line away */
 try{window.PAGE_STARTED=true;const bn=document.getElementById('bootNote');if(bn&&bn.parentNode)bn.parentNode.removeChild(bn)}catch(e){}
-/* iPhones before iOS 15.4 have no <dialog>: give the sheets open, showModal and close so they open and close there too (browsers with <dialog> skip this) */
 try{if(typeof HTMLDialogElement!=='function'&&typeof document!=='undefined'&&document.querySelectorAll)document.querySelectorAll('dialog').forEach(d=>{Object.defineProperty(d,'open',{configurable:true,get(){return this.hasAttribute('open')},set(v){if(v)this.setAttribute('open','');else this.removeAttribute('open')}});d.show=d.showModal=function(){this.setAttribute('open','')};d.close=function(){if(!this.hasAttribute('open'))return;this.removeAttribute('open');try{this.dispatchEvent(new Event('close'))}catch(e){}}})}catch(e){}
-/* ---------- basics ---------- */
 const KEY='biltareekh-demo-v1', ULKEY='uaeagents-lang';
 const DAY=864e5;
 const $=id=>document.getElementById(id);
@@ -496,12 +491,10 @@ const radio=name=>(document.querySelector(`input[name="${name}"]:checked`)||{}).
 const reduceMotion=()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}};
 const coarse=()=>{try{return matchMedia('(pointer:coarse)').matches}catch(e){return false}};
 
-/* ---------- the address: ?q= and ?lang= (?embed=1 is handled in the head) ---------- */
 const QS=new URLSearchParams(location.search);
 const QTEXT=QS.get('q')||'';
 let UI=(()=>{const q=QS.get('lang');if(q==='ar'||q==='en')return q;let s=null;try{s=localStorage.getItem(ULKEY)}catch(e){}if(s==='ar'||s==='en')return s;return String(navigator.language||'').toLowerCase().startsWith('ar')?'ar':'en'})();
 
-/* ---------- words: English and Arabic ---------- */
 const TX={en:{
 name:'Bil Tareekh',skip:'Skip to the diary',menu:'More',h1:'Salary late? Keep proof.',hLabel:'What happened?',hPh:'My salary is late',hGo:'What to do now',
 hSub:'Log each payment to see late or unpaid months and what to do.',exQ:'Try an example',ex1:'Salary 2 months late',ex2:'They took my passport',ex3:'Money cut from my pay',exGo:'Now tap the arrow.',
@@ -662,26 +655,20 @@ tlsStart:'بداية السجل: {m}، {amt} شهريًا',tlsPay:'{amt} عن {m
 priv:'لا شيء مما تكتبه يغادر جهازك. يُحفظ في هذا المتصفح فقط. اسمك مخفي إلا إذا أظهرته.',
 }};
 function t(k,v,l){const D=TX[l||UI]||TX.en;let s=D[k];if(s==null)s=TX.en[k];if(s==null)return k;if(v)s=s.replace(/\{(\w+)\}/g,(m,n)=>v[n]!=null?String(v[n]):'');
-  /* Arabic "by N days": the stretch mark stays only before a digit ("بـ4 أيام"), not before a word ("بيومين", "بيوم واحد"). */
   if((l||UI)==='ar')s=s.replace(/بـ(?=يوم)/g,'ب');return s}
 const isAr=l=>(l||UI)==='ar';
 function fmtDate(iso,l){if(!iso)return '';const [y,m,d]=iso.split('-').map(Number);return isAr(l)?`${d} ${MN_AR[m-1]} ${y}`:`${d} ${MN[m-1]} ${y}`}
 function fmtMonth(ym,l){if(!ym)return '';const [y,m]=ym.split('-').map(Number);return isAr(l)?`${MN_AR[m-1]} ${y}`:`${MNF[m-1]} ${y}`}
 const num2=n=>(Math.round((+n||0)*100)/100).toLocaleString('en-US',{maximumFractionDigits:2});
-/* A no-break space keeps the currency and the amount on one line. */
 const fmtAED=(n,l)=>isAr(l)?num2(n)+' درهم':'AED '+num2(n);
 const ordL=(n,l)=>isAr(l)?String(n):ord(n);
-/* Arabic counted nouns: 1 and 2 have their own forms, 3 to 10 take the plural, 11 to 99 the singular. */
 function arCount(n,one,two,few,many,sing){if(n===1)return one;if(n===2)return two;const r=n%100;if(r>=3&&r<=10)return n+' '+few;if(r>=11)return n+' '+many;return n+' '+sing}
 const daysTxt=(n,l)=>isAr(l)?arCount(n,'يوم واحد','يومين','أيام','يومًا','يوم'):plural(n,'day');
-/* The same count as the subject of a sentence ("مضى يومان"): only the Arabic dual changes. */
 const daysNom=(n,l)=>isAr(l)&&n===2?'يومان':daysTxt(n,l);
 
-/* ---------- places ---------- */
 const HOMES=[['','Not set','غير محدد'],['IN','India','الهند'],['NP','Nepal','نيبال'],['PK','Pakistan','باكستان'],['BD','Bangladesh','بنغلاديش'],['PH','Philippines','الفلبين'],['LK','Sri Lanka','سريلانكا'],['OT','Another country','بلد آخر']];
 function homeName(l){const h=HOMES.find(x=>x[0]===S.home);return h&&h[0]?(isAr(l)?h[2]:h[1]):''}
 
-/* ---------- checked sources (verified 7 Nov 2026) ---------- */
 const SRC={
   mohre_contact:{pub:'MOHRE, official contact page',url:'https://www.mohre.gov.ae/en/contact-us',d:'2026-11-07',k:'c'},
   mohre_rights:{pub:'MOHRE, "Dear Worker, know your rights"',url:'https://mohre.gov.ae/en/guidance-and-awareness-portal-new/employee-companies/dear-worker-know-your-rights',d:'2026-11-07',k:'c'},
@@ -695,8 +682,6 @@ const SRC={
   nepal_emb:{pub:'Embassy of Nepal, Abu Dhabi',url:'https://ae.nepalembassy.gov.np/',d:'2026-11-07',k:'c'},
 };
 const srcDate=(s,l)=>s.k==='c'?t('srcChecked',{d:fmtDate(s.d,l)},l):s.k==='u'?t('srcUpdated',{d:fmtDate(s.d,l)},l):fmtDate(s.d,l);
-/* who: co = company workers (Federal Decree-Law 33 of 2021 and WPS), dom = domestic workers (u.ae domestic workers page).
-   t is the English text, ar the Arabic. */
 const FACTS={
   ontime:{t:'You have the right to your wages on time, in the way your contract says.',ar:'لك الحق في أجرك في موعده، وبالطريقة التي يحددها عقدك.',src:['mohre_rights'],who:'co'},
   wps:{t:'From 1 June 2026, private-sector employers registered with MOHRE must pay the previous month’s wages on the 1st of each month, through the Wage Protection System. Pay after that day counts as delayed (Ministerial Resolution No. 340 of 2026). The official steps grow with the days after the due date: alerts from day 2, new work permits paused from day 5, an administrative fine from day 11, a labour dispute opened for the workers from day 16, a payment order from day 21. Some jobs are outside this rule, such as banks and financial institutions.',ar:'منذ 1 يونيو 2026، على أصحاب العمل في القطاع الخاص المسجلين لدى الوزارة دفع أجر الشهر السابق في اليوم الأول من كل شهر عبر نظام حماية الأجور، وما بعده يُعدّ تأخيرًا (القرار الوزاري رقم 340 لسنة 2026). وتتدرّج الإجراءات الرسمية بحسب الأيام بعد الموعد: تنبيهات من اليوم الثاني، وإيقاف تصاريح العمل الجديدة من اليوم الخامس، وغرامة إدارية من اليوم الحادي عشر، وتسجيل نزاع عمالي للعمال من اليوم السادس عشر، وأمر دفع من اليوم الحادي والعشرين. بعض الوظائف خارج هذه القاعدة، مثل البنوك والمؤسسات المالية.',src:['uae_wages'],who:'co'},
@@ -766,10 +751,8 @@ const tLabel=(T,l)=>isAr(l)?T.labelAr:T.label;
 const tShort=(T,l)=>isAr(l)?T.shortAr:T.short;
 const tSteps=(T,dom,l)=>{const s=(dom&&T.stepsDom)||T.steps;return s[l||UI]||s.en};
 
-/* ---------- made-up example ---------- */
 const SEED_PAY='मुझे हर महीने 1700 दिरहम मिलने चाहिए। तनख्वाह हर महीने की 1 तारीख को आती है। मैं एक कंस्ट्रक्शन कंपनी में काम करता हूँ।';
 
-/* ---------- state ---------- */
 function seed(){
   const cur=ymOf(todayISO());const m=k=>addMonths(cur,k);const d=(mon,day)=>`${mon}-${pad(day)}`;
   return {v:1,home:'IN',cfFor:'embassy',
@@ -784,7 +767,6 @@ function seed(){
 function emptyState(){return {v:1,home:'',cfFor:'embassy',
   setup:{payDay:1,expected:0,payFor:'next',history:[{from:null,expected:0,payDay:1,payFor:'next'}],work:'company',scope:'unsure',startMonth:addMonths(ymOf(todayISO()),-3),name:'',hideName:true,employer:'',showEmployer:false,confirmed:false,example:false,text:''},
   pays:[],events:[],cases:[],summary:null,lastTriage:null}}
-/* Saved data is merged onto safe defaults, and every item is checked, so a damaged save cannot break the page. */
 const YM_RX=/^\d{4}-(0[1-9]|1[0-2])$/;
 const CF_FOR=['mohre','embassy','lawyer','caseworker','me'];
 const isStr=v=>typeof v==='string';
@@ -808,9 +790,6 @@ function normState(v){if(!v||typeof v!=='object'||v.v!==1)return null;
   o.lastTriage=R&&typeof R==='object'&&isStr(R.id)&&validISO(R.date)&&hasOwn(TOPICS,R.topic)&&strArr(R.flags)&&strArr(R.facts)&&R.facts.every(id=>hasOwn(FACTS,id))&&strArr(R.channels)&&R.channels.every(id=>hasOwn(CH,id))&&Array.isArray(R.trace)&&R.trace.every(isTrace)
     ?{id:R.id,date:R.date,topic:R.topic,flags:R.flags,facts:R.facts,channels:R.channels,trace:R.trace,summary:isStr(R.summary)?R.summary:'',added:R.added===true,danger:R.danger===true,domestic:R.domestic===true}:null;
   return o}
-/* Pay history: each entry {from, expected, payDay, payFor} applies from its month until the next entry; the first applies to every
-   month before that (from: null). A save from the live page has one pay and no history: it becomes a history of one entry.
-   setup.expected, payDay and payFor always hold the latest entry, so the pay line and the form show the pay as it is now. */
 function normHistory(hist,s){const ok=(Array.isArray(hist)?hist:[]).filter(h=>h&&typeof h==='object'&&(h.from==null||YM_RX.test(h.from))).map(h=>{const pd=+h.payDay,ex=+h.expected;
     return {from:h.from==null?null:h.from,expected:Number.isFinite(ex)&&ex>=0&&ex<1e6?ex:0,payDay:Number.isInteger(pd)&&pd>=1&&pd<=31?pd:1,payFor:h.payFor==='same'?'same':'next'}});
   ok.sort((a,b)=>(a.from||'')<(b.from||'')?-1:(a.from||'')>(b.from||'')?1:0);
@@ -818,7 +797,6 @@ function normHistory(hist,s){const ok=(Array.isArray(hist)?hist:[]).filter(h=>h&
   if(!out.length)return [{from:null,expected:s.expected,payDay:s.payDay,payFor:s.payFor}];
   out[0].from=null;return out}
 function syncPay(s){const h=s.history[s.history.length-1];s.expected=h.expected;s.payDay=h.payDay;s.payFor=h.payFor}
-/* the entry in force for a month */
 function payAt(ym){const H=S.setup.history;let e=H[0];for(const h of H)if(h.from&&ym&&h.from<=ym)e=h;return e}
 const samePay=(a,b)=>a.expected===b.expected&&a.payDay===b.payDay&&a.payFor===b.payFor;
 function load(){try{const v=normState(JSON.parse(localStorage.getItem(KEY)||'null'));if(v)return v}catch(e){}return seed()}
@@ -827,26 +805,20 @@ let S=load();
 const hasExamples=()=>!!(S.setup.example||S.pays.some(p=>p.example)||S.events.some(e=>e.example));
 
 
-/* ---------- rules: reading text, and safety filters ---------- */
 function normDigits(s){return String(s||'').replace(/[０-９]/g,c=>String(c.charCodeAt(0)-0xFF10)).replace(/[०-९]/g,c=>String(c.charCodeAt(0)-0x966)).replace(/[০-৯]/g,c=>String(c.charCodeAt(0)-0x9E6)).replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-0x660)).replace(/[۰-۹]/g,c=>String(c.charCodeAt(0)-0x6F0)).replace(/[൦-൯]/g,c=>String(c.charCodeAt(0)-0xD66))}
-/* Arabic thousands and decimal marks become , and . for the number readers. */
 const normNum=s=>normDigits(s).replace(/٬/g,',').replace(/٫/g,'.');
 const DANGER=/\blocked\b|\block (?:us|me) in|can'?t leave|cannot leave|not allowed to (?:go|leave)|no food|no water|water (?:is |was )?cut|without (?:food|water)|\bhit me\b|\bbeat(?:en|ing)?\b|\bthreat|\bhurt me\b|\battack|\bbleed|\bhospital|\bfaint|unconscious|collaps|suicide|\bkill|\brape\b|बंद कर|खाना नहीं|पानी नहीं|पानी काट|मारपीट|धमकी|بند کر|کھانا نہیں|پانی نہیں|دھمکی|بیہوش|walang pagkain|walang tubig|ikinulong|sinaktan|binugbog|খাবার নেই|পানি নেই|মারধর|আটকে|ഭക്ഷണമില്ല|വെള്ളമില്ല|खाना छैन|पानी छैन|पानी पनि काट|थुनेर|محبوس|حبسوني|ممنوع من الخروج|لا طعام|لا ماء|بدون أكل|بدون ماء|ضرب|تهديد|هددني|يهددني|إغماء|أغمي/i;
-/* Between the digits of a phone number: up to eight spaces, one comma, a bracket, or one dash (any dash look-alike), dot, underscore, middle dot, bullet, bar or slash, with or without spaces round it. */
 const DASHES='\\u2010-\\u2015\\u2212\\uFE58\\uFE63\\uFF0D';
 const SEP=`(?:\\s*[-${DASHES}._·•|\\/\\\\]\\s*|[()]\\s?|[\\s\\u200B]{1,8}|,)?`;
 const PHONE_RX=new RegExp(`\\+?\\d(?:${SEP}\\d){6,}`);
-/* Dates and comma amounts are taken out first, so they are not mistaken for phone numbers. */
 function hasPhone(s){return PHONE_RX.test(normDigits(s).replace(/\d{4}-\d{2}-\d{2}|\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4}|\d{1,3}(?:,\d{3})+(?:\.\d+)?/g,' '))}
 const CURRENCY=/AED|Dhs?\b|dirham|درهم|درہم|दिरहम|दिरहाम|দিরহাম|ദിർഹം|Rs\.?|rupee|रुपये|روپے|NPR|₹|৳|peso|₱/i;
 const DG='0-9\\uFF10-\\uFF19\\u0966-\\u096F\\u09E6-\\u09EF\\u0660-\\u0669\\u06F0-\\u06F9\\u0D66-\\u0D6F';
 const AMOUNT_RX=new RegExp(`[${DG}]{1,3}(?:[,\\u066C][${DG}]{3})+(?:[.\\u066B][${DG}]+)?|[${DG}]+[.\\u066B][${DG}]{1,2}(?![${DG}])|[${DG}]{4}-[${DG}]{2}-[${DG}]{2}|[${DG}]{1,2}[\\/.][${DG}]{1,2}[\\/.][${DG}]{2,4}`,'g');
 const PH_RX=new RegExp(`\\+?[${DG}](?:${SEP}[${DG}]){4,}`,'g');
-/* A short number right after "call", "dial", "WhatsApp" and the like is also a phone number, unless it is a checked one (999, 998). */
 const CALL_RX=new RegExp(`(call|dial|phone|ring|whatsapp|hotline|contact|कॉल|फोन|फ़ोन|کال|فون|اتصل|tumawag|tawagan|ফোন|কল|ഫോൺ|വിളിക്കുക)([^${DG}\\n]{0,12}?)(\\+?[${DG}]{3,4})(?!${SEP}[${DG}])`,'gi');
 const OFFICIAL_HOST=/(?:^|\.)(?:mohre\.gov\.ae|u\.ae|cgidubai\.gov\.in|dofe\.gov\.np|nepalembassy\.gov\.np|owwa\.gov\.ph)$/i;
 const hostOf=m=>m.replace(/\s+/g,'').replace(/^h\s*t\s*t\s*p\s*s?:\/\//i,'').replace(/^https?:\/\//i,'').replace(/^www\./i,'').split(/[\/?#]/)[0].replace(/[.,;:!)]+$/,'');
-/* Numbers spelled out in words ("zero five zero ...") in English, Arabic, Hindi, Nepali, Urdu and Tagalog. Seven digits or more in a row is a phone number. */
 const NUM_WORDS=new Set(['zero','oh','one','two','three','four','five','six','seven','eight','nine','صفر','واحد','اثنين','اثنان','ثلاثة','ثلاث','أربعة','اربعة','أربع','اربع','خمسة','خمس','ستة','ست','سبعة','سبع','ثمانية','ثمان','تسعة','تسع','शून्य','एक','दो','तीन','चार','पांच','पाँच','छह','छः','सात','आठ','नौ','दुई','छ','ایک','دو','تین','چار','پانچ','چھ','سات','آٹھ','نو','sero','isa','dalawa','tatlo','apat','lima','anim','pito','walo','siyam']);
 const NUM_MULT={double:2,triple:3};
 function spelledNumbers(s){const toks=[];const re=/[\p{L}\p{M}]+|[0-9]+/gu;let m;while((m=re.exec(s)))toks.push({w:m[0].toLowerCase(),i:m.index,j:m.index+m[0].length});
@@ -862,27 +834,22 @@ function spelledNumbers(s){const toks=[];const re=/[\p{L}\p{M}]+|[0-9]+/gu;let m
     if(end>=k&&digits>=7&&words>0){spans.push([toks[k].i,toks[end].j]);k=end+1}else k=Math.max(k+1,end+1)}
   let out=s;for(let i=spans.length-1;i>=0;i--)out=out.slice(0,spans[i][0])+'[number removed]'+out.slice(spans[i][1]);
   return out}
-/* An amount or a date is protected from the number filter only when it is plausible: amounts up to 6 digits, real calendar dates. Anything longer is treated as a possible phone number. */
 function plausibleKeep(m){const t=normDigits(m).replace(/٬/g,',').replace(/٫/g,'.');let x;
   if((x=t.match(/^(\d{4})-(\d{2})-(\d{2})$/)))return +x[1]>=1990&&+x[1]<=2099&&+x[2]>=1&&+x[2]<=12&&+x[3]>=1&&+x[3]<=31;
   if((x=t.match(/^(\d{1,2})[\/.](\d{1,2})[\/.](\d{2,4})$/)))return +x[1]>=1&&+x[1]<=31&&+x[2]>=1&&+x[2]<=12&&(x[3].length===2||(x[3].length===4&&+x[3]>=1990&&+x[3]<=2099));
   return t.split('.')[0].replace(/\D/g,'').length<=6}
 const TLDS='com|net|org|ae|gov|in|pk|np|ph|bd|lk|io|co|me|info|biz|xyz|ly|app|link|gl|top|shop|site|online|club|vip|live|store|click|ai';
-/* Takes links, emails and phone numbers out of a text, written normally, spaced out or in words. Checked numbers, amounts and dates stay. */
 function stripContacts(s){
   s=String(s||'');
   const link=m=>OFFICIAL_HOST.test(hostOf(m))?m:'[link removed]';
-  /* A spaced-out "h t t p s : / /" link is taken whole, before the normal link rules see its parts. */
   s=s.replace(/\bh\s*t\s*t\s*p\s*s?\s*:\s*\/\s*\/\s*[^\s<>"']+/gi,link);
   s=s.replace(/\b(?:https?:\/\/|www\.)[^\s<>"']+/gi,link);
   s=s.replace(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g,'[email removed]');
   s=s.replace(/\b[\w-]+(?:\.[\w-]+)*\.[a-z]{2,24}\/[^\s<>"']*/gi,link);
   s=s.replace(new RegExp(`\\b[\\w-]+(?:\\.[\\w-]+)*\\.(?:${TLDS})\\b`,'gi'),link);
   s=s.replace(/\b[\w-]+(?:\.[\w-]+)*\.[a-z]{2,24}\b/g,link);
-  /* Spaced-out links: "pay . example / now", "pay dot com". */
   s=s.replace(/[\w-]+\s+\.\s*[a-z]{2,24}\b(?:\s*\/\s*[^\s<>"']+)?/gi,link);
   s=s.replace(new RegExp(`\\b[\\w-]+\\s*[(\\[]?\\s*dot\\s*[)\\]]?\\s*(?:${TLDS})\\b`,'gi'),link);
-  /* A dot in brackets: "rent-pay[.]example/now", "pay-now(.)com". */
   s=s.replace(/[\w-]+\s*[\[(]\s*\.\s*[\])]\s*[a-z]{2,24}\b(?:\s*\/\s*[^\s<>"']+)?/gi,link);
   const keep=[];s=s.replace(AMOUNT_RX,m=>{if(!plausibleKeep(m))return m;keep.push(m);return '\u0001'+(keep.length-1)+'\u0002'});
   s=s.replace(PH_RX,(m,off,str)=>{const d=normDigits(m).replace(/\D/g,'');if(d.length<5||VERIFIED.has(d))return m;
@@ -891,10 +858,7 @@ function stripContacts(s){
   s=s.replace(/\u0001(\d+)\u0002/g,(_,i)=>keep[+i]);
   s=s.replace(CALL_RX,(m,w,gap,n)=>VERIFIED.has(normDigits(n).replace(/\D/g,''))?m:w+gap+'[number removed]');
   return spelledNumbers(s)}
-/* The worker's name and the employer's name are taken out of the case file when they are hidden. Whole words only. */
 const escRe=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-/* No regex look-behind (iPhones before iOS 16.4 cannot read one). Was new RegExp('(?LB![\\p{L}\\p{M}\\p{N}])'+name+'(?![\\p{L}\\p{M}\\p{N}])','giu'):
-   now the name is found without it and a match right after a letter, mark or digit (one code point back) is skipped, as the look-behind did. */
 function nameRx(n){try{return {rx:new RegExp(escRe(n)+'(?![\\p{L}\\p{M}\\p{N}])','giu'),lb:new RegExp('^[\\p{L}\\p{M}\\p{N}]$','iu')}}catch(e){return {rx:new RegExp('\\b'+escRe(n)+'\\b','gi'),lb:null}}}
 function replaceName(s,n,tag){const r=nameRx(n),rx=r.rx;if(!r.lb)return s.replace(rx,tag);let out='',last=0,m;rx.lastIndex=0;
   while((m=rx.exec(s))){const i=m.index;let j=i-1;if(j>0&&/[\uDC00-\uDFFF]/.test(s[j])&&/[\uD800-\uDBFF]/.test(s[j-1]))j--;
@@ -905,7 +869,6 @@ function redact(s,o){const L=[];const add=(v,tag)=>{const n=String(v||'').trim()
   if(o.name)add(S.setup.name,'[my name]');if(o.employer)add(S.setup.employer,'[employer]');
   let out=String(s||'');for(const [n,tag] of L.sort((a,b)=>b[0].length-a[0].length))out=replaceName(out,n,tag);
   return out}
-/* Amounts written with a "thousand" word ("70 ألف", "2 हज़ार") and Arabic amounts in words ("ألف وسبعمائة درهم"). */
 const AR_UNITS={'واحد':1,'اثنين':2,'اثنان':2,'ثلاث':3,'ثلاثة':3,'اربع':4,'أربع':4,'اربعة':4,'أربعة':4,'خمس':5,'خمسة':5,'ست':6,'ستة':6,'سبع':7,'سبعة':7,'ثمان':8,'ثماني':8,'ثمانية':8,'تسع':9,'تسعة':9,'عشر':10,'عشرة':10,'عشرين':20,'عشرون':20,'ثلاثين':30,'ثلاثون':30,'اربعين':40,'أربعين':40,'أربعون':40,'خمسين':50,'خمسون':50,'ستين':60,'ستون':60,'سبعين':70,'سبعون':70,'ثمانين':80,'ثمانون':80,'تسعين':90,'تسعون':90};
 const AR_HUND={'مية':100,'ميه':100,'مائة':100,'مئة':100,'ميتين':200,'مائتين':200,'مئتين':200,'مائتان':200,'مئتان':200,'ثلاثمية':300,'ثلاثمائة':300,'ثلاثمئة':300,'ثلثمية':300,'اربعمية':400,'أربعمية':400,'أربعمائة':400,'اربعمائة':400,'أربعمئة':400,'خمسمية':500,'خمسمائة':500,'خمسمئة':500,'ستمية':600,'ستمائة':600,'ستمئة':600,'سبعمية':700,'سبعمائة':700,'سبعمئة':700,'ثمانمية':800,'ثمانمائة':800,'ثمانمئة':800,'ثمنمية':800,'تسعمية':900,'تسعمائة':900,'تسعمئة':900};
 const AR_THOU={'ألف':1,'الف':1,'آلاف':1,'الاف':1,'ألفين':2,'الفين':2,'ألفان':2,'الفان':2};
@@ -929,7 +892,6 @@ function rulesSetup(text){
   if(m)day=+m[1];else if(/أول الشهر|اول الشهر|أول كل شهر|اول كل شهر|بداية الشهر|بداية كل شهر|مطلع الشهر|पहली तारीख|महीने की पहली|پہلی تاریخ|unang araw/i.test(text))day=1;else if(small.length===1)day=small[0];
   if(!(day>=1&&day<=31))day=null;
   const company=/company|firm|contractor|kumpanya|कंपनी|कम्पनी|کمپنی|شركة|কোম্পানি|കമ്പനി/i.test(text);
-  /* A domestic-worker agency (Tadbeer) counts as household, but only when no company is named. */
   const household=/kasambahay|katulong|housemaid|\bmaid\b|domestic|nanny|household|for a family|घरेलू|घर में काम|گھریلو|خادمة|عاملة منزلية|عامل منزلي|عند عائلة|لدى أسرة|গৃহকর্মী|বাসায় কাজ|വീട്ടുജോലി|घरेलु/i.test(text)||(!company&&/tadbeer|تدبير|recruitment office|\bagency\b|ahensya|एजेंसी|ایجنسی/i.test(text));
   const same=/end of (?:the )?month|same month|katapusan ng buwan|महीने के आखिर|महिनाको अन्त|نهاية الشهر|آخر الشهر|اخر الشهر|نفس الشهر|الشهر نفسه|مہینے کے آخر|মাসের শেষে|മാസാവസാനം/i.test(text);
   return {monthly_pay:amount,pay_day:day,pay_for:same?'same':null,employer_type:household?'household':company?'company':null}}
@@ -955,19 +917,15 @@ function guessTopic(t){
   return 'pay'}
 function middayNow(){const md=todayISO().slice(5);return md>='06-15'&&md<='09-15'}
 
-/* ---------- pay rules ---------- */
 const WPS_START='2026-06-01';
 const LEAVE_RX=/\bleave\b|unpaid|छुट्टी|چھٹی|إجازة|bakasyon|ছুটি|ലീവ്|बिदा/i;
 function dueOwn(ym){const s=payAt(ym);const t=s.payFor==='same'?ym:addMonths(ym,1);const [y,m]=t.split('-').map(Number);return `${t}-${pad(Math.min(s.payDay||1,lastDay(y,m)))}`}
 function dueWPS(ym){const d=addMonths(ym,1)+'-01';return d>=WPS_START?d:null}
-/* scope: is the employer outside the WPS rule (free zone, bank, government)? no = covered, unsure = may apply, yes = may be exempt. */
 const wpsScope=()=>S.setup.work==='household'?'':(['no','unsure','yes'].includes(S.setup.scope)?S.setup.scope:'unsure');
-/* checkMonth returns facts and short notes (codes); the words are made in the screen's language when shown. */
 function checkMonth(ym){
   const s=S.setup,set=!!s.confirmed,exp=set?(+payAt(ym).expected||0):0,today=todayISO(),company=s.work!=='household',scope=wpsScope();
   const pays=S.pays.filter(p=>p.month===ym).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0);
   const total=pays.reduce((n,p)=>n+(+p.amount||0),0);
-  /* Without a saved pay day there is no own due date: only the salary-rule date (if it applies) is checked. */
   const own=set?dueOwn(ym):null,wps=company&&scope!=='yes'?dueWPS(ym):null,dom=!company&&own?addDays(own,10):null;
   const dueRef=own&&wps?(wps<own?wps:own):(own||wps);
   const last=pays.length?pays[pays.length-1].date:null;
@@ -988,21 +946,17 @@ function checkMonth(ym){
   }else if(dom){const D=['uae_domestic'];
     if(!pays.length){if(today>dom){overdue=true;notes.push({k:'domNone',d:dom,src:D})}}
     else{const d=diffDays(dom,last);if(d>0){overdue=true;notes.push({k:'domLate',d:dom,n:d,src:D})}else notes.push({k:'domOk',src:D})}}
-  /* Part pay: compared with the expected pay when it is known, otherwise taken from what the worker marked. */
   let partial=false;
   if(pays.length){if(exp){if(total<exp){partial=true;notes.push({k:'amtShort',total,exp,diff:exp-total})}else notes.push({k:'amtFull',total})}
     else if(pays.some(p=>p.kind==='partial')){partial=true;notes.push({k:'amtPart',total})}}
-  /* The day the month was paid in full: the payment that brought the total up to the expected pay (one payment: its own date). */
   let fullOn=null;if(pays.length&&(!exp||total>=exp)){fullOn=last;if(exp){let c=0;for(const p of pays){c+=(+p.amount||0);if(c>=exp){fullOn=p.date;break}}}}
   const late=fullOn&&dueRef?Math.max(0,diffDays(dueRef,fullOn)):last&&dueRef?Math.max(0,diffDays(dueRef,last)):0;
   const pastDue=!!(own&&today>own)||overdue;
   const missing=!pays.length&&pastDue;
   const status=missing?'miss':partial?'part':(late>0||overdue)?'late':pays.length?(dueRef?'ok':'unset'):(dueRef?'wait':'unset');
   const m={ym,pays,total,exp,own,wps,dom,dueRef,status,notes,flag:['miss','part','late'].includes(status),checked:pays.length>0||pastDue,gap:exp&&pastDue?Math.max(0,exp-total):0,late,last,fullOn};
-  /* Days counted for the month, from the date its label counts from (dueRef): to the day it was paid in full, or, while money is still owed, to today. */
   m.lt=!dueRef?null:fullOn?{n:late,soFar:false}:today>dueRef?{n:diffDays(dueRef,today),soFar:true}:{n:0,soFar:false};
   m.label=labelOf(m,'en');return m}
-/* Which date the count is from, in the words the page uses for it: the pay day, or the WPS rule date. */
 function fromTxt(m,l){return t(m.dueRef===m.own?'frOwn':'frWps',{d:fmtDate(m.dueRef,l)},l)}
 function labelOf(m,l){const k={miss:'lMiss',part:m.late>0||(m.lt&&m.lt.soFar&&m.lt.n>0)?'lPartLate':'lPart',late:'lLate',ok:m.exp?'lOkFull':'lOk',wait:'lWait',unset:m.pays.length?'lLogged':'lUnset'}[m.status];return t(k,null,l)}
 function noteText(n,l){const D=d=>fmtDate(d,l),A=x=>fmtAED(x,l),days=x=>daysTxt(x,l);const c=n.may?t('mayCount',null,l):t('counts',null,l);
@@ -1028,23 +982,18 @@ function noteText(n,l){const D=d=>fmtDate(d,l),A=x=>fmtAED(x,l),days=x=>daysTxt(
     case 'amtFull':return t('amtFull',{total:A(n.total)},l);
     case 'amtPart':return t('amtPart',{total:A(n.total)},l);
   }return ''}
-/* The one line a month tile shows: the rule that flagged it (or the pay-day check), plus a short amount. */
 function mainNote(m){const flagNote=m.notes.find(n=>['wpsNone','wpsLate','domNone','domLate','wps85'].includes(n.k));const own=m.notes.find(n=>/^own|^unset$/.test(n.k));
   const amt=m.notes.find(n=>n.k==='amtShort');const first=(m.flag&&flagNote)||own||m.notes[0];const out=[];
   if(first&&first.d&&m.status!=='ok')out.push(t(/^wps/.test(first.k)?'wpsDue':/^dom/.test(first.k)?'domDue':'ownWait',{d:fmtDate(first.d)}));if(amt)out.push(t('shortBy',{amt:fmtAED(amt.diff)}));return out.join(' ')}
-/* Each part against the worker's own pay day, and the month in plain words: what came, what is still owed, how many days. */
 function partDays(m,p,l){if(!m.own)return '';const n=diffDays(m.own,p.date);return n>0?t('mPart',{days:daysTxt(n,l),d:fmtDate(m.own,l)},l):t('mPartOk',{d:fmtDate(m.own,l)},l)}
-/* The month's days late count from the same due date as its label (the earlier of the pay day and the WPS date), so the two never disagree. */
 function monthState(m,l){if(!m.own||!m.exp||!m.dueRef||!m.lt)return '';const F=fromTxt(m,l),n=m.lt.n,dd={days:daysTxt(n,l),ndays:daysNom(n,l),from:F};
   if(!m.pays.length)return m.lt.soFar?t('sNone',dd,l):'';
   const owe=Math.max(0,m.exp-m.total);
   const paid=m.total>m.exp?t('mOver',{total:fmtAED(m.total,l),exp:fmtAED(m.exp,l),over:fmtAED(m.total-m.exp,l)},l):t('mPaid',{total:fmtAED(m.total,l),exp:fmtAED(m.exp,l),owe:fmtAED(owe,l)},l);
   if(m.total>=m.exp)return paid+' '+(n>0?t('sFullLate',dd,l):t('sFullOk',null,l));
   return paid+' '+(m.lt.soFar?t('sPartLate',{...dd,owe:fmtAED(owe,l)},l):t('sPartWait',{owe:fmtAED(owe,l),from:F},l))}
-/* A pay in words, for the lines that say the pay changed: the pay day too when it changed. */
 function payDesc(h,other,l){const day=h.payDay!==other.payDay||h.payFor!==other.payFor;
   return t(day?'payDescDay':'payDescAmt',{amt:fmtAED(h.expected,l),d:ordL(h.payDay,l),when:t(h.payFor==='same'?'ofSame':'ofNext',null,l)},l)}
-/* Each change of pay: the month it applies from, the pay before and the pay from then. */
 function payChanges(){const H=S.setup.confirmed?S.setup.history:[];const out=[];for(let i=1;i<H.length;i++)out.push({from:H[i].from,old:H[i-1],nw:H[i]});return out}
 function monthRange(){const cur=ymOf(todayISO());const ms=S.pays.map(p=>p.month).filter(Boolean);
   if(!S.setup.confirmed&&!ms.length)return [];
@@ -1053,8 +1002,6 @@ function monthRange(){const cur=ymOf(todayISO());const ms=S.pays.map(p=>p.month)
 function monthChecks(){return monthRange().map(checkMonth)}
 function gapTotal(){return monthChecks().reduce((n,m)=>n+m.gap,0)}
 
-/* ---------- case file ---------- */
-/* Each entry has the full text (for the case file) and a short one (for the screen). */
 function timeline(l){const s=S.setup;const ev=[];
   const p0=payAt(s.startMonth);
   if(s.confirmed&&s.startMonth)ev.push({date:s.startMonth+'-01',kind:'you',text:t('tlStart',{m:fmtMonth(s.startMonth,l),amt:fmtAED(p0.expected,l),d:ordL(p0.payDay,l)},l),short:t('tlsStart',{m:fmtMonth(s.startMonth,l),amt:fmtAED(p0.expected,l)},l)});
@@ -1062,7 +1009,7 @@ function timeline(l){const s=S.setup;const ev=[];
   for(const m of monthChecks()){
     for(const p of m.pays)ev.push({date:p.date,kind:'you',text:t('tlPay',{m:fmtMonth(m.ym,l),amt:fmtAED(p.amount,l),kind:p.kind==='partial'?t('kindPart',null,l):t('kindFull',null,l),note:p.note?t('tlNote',{x:p.note},l):''},l),short:t('tlsPay',{m:fmtMonth(m.ym,l),amt:fmtAED(p.amount,l),part:p.kind==='partial'?t('tlsPart',null,l):''},l)});
     if(m.status==='miss')ev.push({date:m.dueRef,kind:'rule',text:t('tlMiss',{m:fmtMonth(m.ym,l),from:fromTxt(m,l)},l),short:t('tlsMiss',{m:fmtMonth(m.ym,l),from:fromTxt(m,l)},l)});
-    else if(m.flag){/* the same day count as the month's own lines: to the day it was paid in full, or to today while money is owed */
+    else if(m.flag){
       const lt=m.lt&&m.lt.n>0?m.lt:null,dd=lt?{days:daysTxt(lt.n,l),ndays:daysNom(lt.n,l),from:fromTxt(m,l)}:null;
       ev.push({date:m.last,kind:'rule',text:t('tlFlag',{m:fmtMonth(m.ym,l),label:isAr(l)?labelOf(m,l):labelOf(m,l).toLowerCase(),late:lt?t(lt.soFar?'tlFlagSoFar':'tlFlagLate',dd,l):'',part:m.status==='part'?t('tlFlagPart',{total:fmtAED(m.total,l),exp:fmtAED(m.exp,l)},l):''},l),short:`${fmtMonth(m.ym,l)}: ${labelOf(m,l)}${lt?(isAr(l)?'، ':', ')+t(lt.soFar?'tlsSoFar':'tlsLate',dd,l):''}`})}
   }
@@ -1083,10 +1030,8 @@ const AUD={mohre:{en:'MOHRE complaint',ar:'شكوى إلى الوزارة'},emba
 const audOf=(k,l)=>L2(AUD[k]||AUD.embassy,l);
 function caseChannels(){const ids=['claims','call','wa','app'];if(S.setup.work==='household')ids.push('dw');for(const i of embassyIds())ids.push(i);return ids}
 function embassyIds(){return ({IN:['in_pbsk'],NP:['np_emb'],PH:['ph_owwa']})[S.home]||['other_emb']}
-/* The case file is written in the screen's language. */
 function caseText(l){l=l||UI;const s=S.setup;const L=[];const name=!s.hideName&&s.name.trim()?s.name.trim():t('cfNameHidden',null,l);
   const audKey=$('cfFor')&&$('cfFor').value?$('cfFor').value:(S.cfFor||'embassy');const aud=audOf(audKey,l);
-  /* Hidden names are also taken out of everything the worker typed, not only the "Worker:" line. */
   const hideN=!!s.hideName,hideE=!s.showEmployer;const clean=x=>(hideN||hideE)?redact(x,{name:hideN,employer:hideE}):String(x||'');
   const emp=s.employer.trim();const when=s.payFor==='same'?t('ofSame',null,l):t('ofNext',null,l);
   L.push(t('cfHead',null,l));
@@ -1110,8 +1055,6 @@ const sm=S.summary;
   L.push('',t('cfTIMELINE',null,l));for(const e of timeline(l))L.push(`${fmtDate(e.date,l)}  [${e.kind==='you'?t('tagWorker',null,l):kindLabel(e.kind,l)}]  ${clean(e.text)}`);
   L.push('',t('cfCHECKS',null,l));
   for(const m of monthChecks())if(m.checked||m.pays.length){
-    /* The first line counts the days the same way as the lines under it: to the day the month was paid in full, or, while part is
-       still owed, to today. A month with nothing paid gives its count in the line under it only, as before. */
     const lt=m.status!=='miss'&&m.lt&&m.lt.n>0?m.lt:null;
     L.push(`${fmtMonth(m.ym,l)}: ${labelOf(m,l)}. ${m.pays.length?t('cfReceived',{amt:fmtAED(m.total,l)},l):t('cfNothing',null,l)}${m.exp?t('cfOf',{amt:fmtAED(m.exp,l)},l):''}.${lt?t(lt.soFar?'cfSoFar':'cfLate',{days:daysTxt(lt.n,l),ndays:daysNom(lt.n,l),from:fromTxt(m,l)},l):''}`);
     for(const p of m.pays){const dd=partDays(m,p,l);L.push(`  - ${t('came',{d:fmtDate(p.date,l)},l)}: ${fmtAED(p.amount,l)} (${p.kind==='partial'?t('kindPart',null,l):t('kindFull',null,l)})${dd?(isAr(l)?'، ':', ')+dd:''}.`)}
@@ -1122,12 +1065,9 @@ const sm=S.summary;
   L.push('',t('cfEnd',null,l));
   return L.join('\n')}
 
-/* ---------- date checks ---------- */
 function payMonthRange(){const cur=ymOf(todayISO());return [addMonths(cur,-23),addMonths(cur,1)]}
 function inPayRange(ym){const [a,b]=payMonthRange();return typeof ym==='string'&&YM_RX.test(ym)&&ym>=a&&ym<=b}
-/* ---------- small renderers ---------- */
 const ICON_PHONE='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 3.5h3l1.5 4.5-2.2 1.4a11 11 0 0 0 5.8 5.8l1.4-2.2 4.5 1.5v3a2 2 0 0 1-2 2A16.5 16.5 0 0 1 4.5 5.5a2 2 0 0 1 2-2z"/></svg>';
-/* The step-by-step record is kept, inside "More", so the worker reads the advice first. */
 function traceHTML(tr){tr=tr||[];if(!tr.length)return '';return `<p class="lbl">${esc(t('stepsHead'))}</p><ul class="trace">${tr.map(([k,x])=>`<li><span class="tag">${esc(kindLabel(k))}:</span> <span dir="auto">${esc(x)}</span></li>`).join('')}</ul>`}
 function srcHTML(ids){if(!ids||!ids.length)return `<span class="src">${esc(t('notChecked'))}</span>`;return `<span class="src">${esc(t('srcLbl'))} ${ids.map(i=>{const s=SRC[i];return `<a href="${s.url}" target="_blank" rel="noopener noreferrer" lang="en">${esc(s.pub)}</a>, ${esc(srcDate(s))}`}).join(' · ')}</span>`}
 function factHTML(id){const f=FACTS[id];return `<li><span>${esc(factText(f))}</span>${srcHTML(f.src)}</li>`}
@@ -1136,18 +1076,14 @@ function chanRow(id){const c=CH[id];if(!c)return '';return `<li class="chan"><sp
 function chanHTML(id){const c=CH[id];if(!c)return '';const how=c.tel?`<a class="tbtn" href="tel:${c.tel}">${ICON_PHONE}${esc(howText(c))}</a>`:c.url?`<a class="tbtn" href="${c.url}" target="_blank" rel="noopener noreferrer">${esc(howText(c))}</a>`:`<span>${esc(howText(c))}</span>`;
   return `<li class="chan full"><b>${esc(L2(c.name))}</b>${how}${c.also?`<span>${esc(L2(c.also))}</span>`:''}${srcHTML(c.src)}</li>`}
 function dangerHTML(alert){return `<div class="urgent"${alert?' role="alert"':''}><p class="lbl"><span aria-hidden="true">! </span>${esc(t('urgent'))}</p><div class="nums"><a class="main" href="tel:999">${esc(t('police'))}</a><a class="main" href="tel:998">${esc(t('amb'))}</a></div><details class="more"><summary>${esc(t('more'))}</summary><div class="morebody"><p>${esc(t('noCall'))}</p>${srcHTML(['uae_domestic'])}</div></details></div>`}
-/* Read aloud only with a voice on this device (no text goes to an online voice). The Listen button shows only when such a voice exists. */
 const SAY={};
 function voicesFor(lang){if(!('speechSynthesis' in window))return [];let vs=[];try{vs=speechSynthesis.getVoices()||[]}catch(e){}
   return vs.filter(v=>v.localService&&v.lang&&v.lang.toLowerCase().startsWith(lang))}
-/* No voice for that language: the button stays hidden, with no extra note. */
 function sayBtn(id){return `<span class="say" data-saylang="${UI}"><button type="button" class="tbtn" data-say="${esc(id)}" hidden>${esc(t('listen'))}</button></span>`}
 function updateSay(){document.querySelectorAll('.say').forEach(w=>{const b=w.querySelector('button');if(b)b.hidden=!voicesFor(w.dataset.saylang).length})}
 
 
-/* ---------- render: steps, setup, diary, help, case, menu ---------- */
 function ensureOption(sel,ym){if(!ym)return;if(![...sel.options].some(o=>o.value===ym)){const o=document.createElement('option');o.value=ym;o.textContent=fmtMonth(ym);sel.appendChild(o)}sel.value=ym}
-/* Lists are rebuilt in the screen's language; what was picked stays picked. */
 function fillSelects(){
   const keep=id=>{const e=$(id);return e?e.value:''};
   const v={payDay:keep('payDay')||String(S.setup.payDay||1),startMonth:keep('startMonth'),pMonth:keep('pMonth'),cfFor:keep('cfFor')||S.cfFor||'embassy'};const topic=radio('topic');
@@ -1170,15 +1106,12 @@ function renderSetup(){const s=S.setup;$('home').value=S.home||'';$('payDay').va
   $('wName').value=s.name||'';$('wEmployer').value=s.employer||'';$('showName').checked=!s.hideName;$('payText').value=s.text||'';
   $('hDom').checked=s.work==='household';$('evDate').value=todayISO();
   showPayForEx();showPayFrom();defaultPayForm()}
-/* Under "Pay for a month comes": the date the choice means, for last month, from the form as it is now. */
 function showPayForEx(){const ym=addMonths(ymOf(todayISO()),-1);const tg=radio('payFor')==='same'?ym:addMonths(ym,1);const [y,m]=tg.split('-').map(Number);
   $('payForEx').textContent=t('payForEx',{m:fmtMonth(ym),d:fmtDate(`${tg}-${pad(Math.min(+$('payDay').value||1,lastDay(y,m)))}`)})}
 $('payDay').addEventListener('change',showPayForEx);
 document.querySelectorAll('input[name="payFor"]').forEach(x=>x.addEventListener('change',showPayForEx));
-/* The pay in the form, and whether it differs from the saved pay (the pay as it is now). */
 function formPay(){const a=Math.round(Number($('payAmt').value));return {expected:a,payDay:+$('payDay').value||1,payFor:radio('payFor')==='same'?'same':'next',ok:$('payAmt').value!==''&&a>0&&a<1e6}}
 function payAsks(){const s=S.setup,f=formPay();return !!(s.confirmed&&!s.example&&f.ok&&!samePay(f,s))}
-/* "From which month does this apply?": this month is chosen, earlier months are offered. The months before it keep the pay they had. */
 function showPayFrom(){const box=$('payFromSet'),sel=$('payFrom');const ask=payAsks();
   if(!ask){box.hidden=true;return}
   const cur=ymOf(todayISO());const was=box.hidden?'':sel.value;const ms=[];for(let k=0;k<24;k++)ms.push(addMonths(cur,-k));
@@ -1208,7 +1141,6 @@ function triageHTML(R){const T=topicOf(R.topic);let h='';
   if(R.flags.length)h+=`<div><p class="lbl">${esc(t('msgHead'))}</p><ul class="ol">${R.flags.map(f=>`<li>${esc(t(f))}</li>`).join('')}</ul></div>`;
   const vis=R.danger?R.channels.filter(id=>id!=='police'&&id!=='amb'):R.channels;
   h+=`<p class="lbl">${esc(t('helpHead'))} <span class="tag">· ${esc(t('tagRule'))}</span></p><ul class="chans">${vis.map(chanRow).join('')}</ul>`;
-  /* The line that goes into the case file is shown, and can be changed before it is added. */
   if(R.added)h+=`<p class="stat"><span aria-hidden="true">✓</span>${esc(t('inCase'))}</p>`;
   else h+=`<label for="caseLine-${esc(R.id)}"><span class="lbl">${esc(t('caseLineLbl'))}</span><textarea id="caseLine-${esc(R.id)}" dir="auto" rows="2" maxlength="300">${esc(R.summary||tLabel(T)+'.')}</textarea></label>`;
   h+=`<div class="acts">${R.added?'':`<button type="button" class="main" data-add="${esc(R.id)}">${esc(t('addCase'))}</button>`}<button type="button" class="tbtn" data-go="case">${esc(t('seeCase'))}</button></div>`;
@@ -1226,7 +1158,6 @@ function renderCase(){const tl=timeline();
 function renderSummary(){const sm=S.summary;$('cfSum').textContent=sm?t('cfSumAgain'):t('cfSum');
   if(!sm){$('cfSumOut').innerHTML=`<p>${esc(t('noSummary'))}</p>`;return}
   $('cfSumOut').innerHTML=`<div class="tile"><div class="rhead"><span class="lbl">${esc(t('sumHead'))}</span><span class="tag">${esc(t('tagRule'))} · ${esc(fmtDate(sm.date))}</span></div><p lang="${UI}">${esc(sm.text)}</p><p>${esc(t('sumCheck'))}</p>${sm.aud?`<p>${esc(t('sumFor',{aud:sm.aud}))}</p>`:''}${traceHTML(sm.trace)}</div>`}
-/* The case file box grows with its text, so it is read with the page, not inside a small scroll box. */
 function fitCase(){const ta=$('cfText');if(!ta)return;if(!$('sheet-case').open||!$('cfPrev').open){ta.style.height='';return}const y=scrollY;ta.style.height='auto';ta.style.height=(ta.scrollHeight+4)+'px';if(scrollY!==y)scrollTo(0,y)}
 function renderCaseText(){if($('cfText')){$('cfText').value=caseText();fitCase()}}
 function renderAll(){renderDiary();renderHelp();renderCase();updateSay()}
@@ -1235,7 +1166,6 @@ function renderAll(){renderDiary();renderHelp();renderCase();updateSay()}
 function renderRules(){const who={co:{en:'Company workers',ar:'موظفو الشركات'},dom:{en:'Domestic workers',ar:'العمالة المساعدة'},all:{en:'All outdoor workers',ar:'كل العاملين في الخارج'}};
   $('rulesList').innerHTML=Object.values(FACTS).map(f=>`<li><b>${esc(L2(who[f.who||'all']))}</b><span>${esc(factText(f))}</span>${srcHTML(f.src)}</li>`).join('')}
 
-/* ---------- screen language ---------- */
 function setLeads(){document.querySelectorAll('.panel .lead').forEach((p,i)=>{const id='lead'+i;const sp=p.querySelector('[data-t]');SAY[id]={text:(sp?sp.textContent:p.textContent).trim(),lang:UI};const old=p.querySelector('.say');if(old)old.remove();p.insertAdjacentHTML('beforeend',sayBtn(id))});updateSay()}
 function applyLang(l,init){UI=l==='ar'?'ar':'en';const r=document.documentElement;r.lang=UI;r.dir=UI==='ar'?'rtl':'ltr';
   document.querySelectorAll('[data-t]').forEach(e=>{e.textContent=t(e.dataset.t)});
@@ -1247,13 +1177,11 @@ function applyLang(l,init){UI=l==='ar'?'ar':'en';const r=document.documentElemen
   fillSelects();renderRules();setLeads();resetTwoTaps();
   if(!init){$('saveMsg').innerHTML='';renderSetup();renderAll();setStatus('')}}
 
-/* ---------- the row of actions: each opens a sheet; the diary is the page ---------- */
 function showTab(tb){document.querySelectorAll('dialog.sheet[id^="sheet-"]').forEach(d=>{if(d.id!=='sheet-'+tb)closeSheet(d)});
   openSheet($('sheet-'+tb));if(tb==='case')fitCase()}
 let fitTimer=null;addEventListener('resize',()=>{clearTimeout(fitTimer);fitTimer=setTimeout(()=>{fitCase();grow()},150)});
 $('cfPrev').addEventListener('toggle',fitCase);
 
-/* ---------- global clicks: next buttons, listen, sheets ---------- */
 document.addEventListener('click',e=>{
   const g=e.target.closest('[data-go]');if(g){showTab(g.dataset.go);return}
   const sb=e.target.closest('[data-say]');if(sb){say(sb.dataset.say,sb);return}
@@ -1274,17 +1202,14 @@ document.querySelectorAll('dialog.sheet').forEach(d=>{
 $('menuBtn').addEventListener('click',()=>openSheet($('menuSheet')));
 for(const id of ['uiLang','uiLangTop'])$(id).addEventListener('click',()=>applyLang(UI==='ar'?'en':'ar'));
 
-/* ---------- the main box (top) ---------- */
 const HT=$('hText');
 function grow(){if(!HT.value){HT.style.height='';return}HT.style.height='auto';HT.style.height=Math.min(HT.scrollHeight,148)+'px'}
 HT.addEventListener('input',grow);
 $('ask').addEventListener('submit',e=>{e.preventDefault();if(coarse())HT.blur();triage()});
 HT.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();const f=$('ask');if(f.requestSubmit)f.requestSubmit();else f.dispatchEvent(new Event('submit',{cancelable:true}))}});
 function setStatus(x){$('hStatus').textContent=x||''}
-/* An example only fills the box, as ?q= does; unticking the topics lets the box text decide. */
 $('hEx').addEventListener('click',e=>{const b=e.target.closest('[data-ex]');if(!b)return;document.querySelectorAll('input[name="topic"]').forEach(x=>{x.checked=false});HT.value=b.textContent;grow();setStatus(t('exGo'));if(!coarse())try{HT.focus({preventScroll:true})}catch(x){}});
 
-/* ---------- step 1: my pay ---------- */
 $('home').addEventListener('change',()=>{S.home=$('home').value;S.summary=null;save();renderCase()});
 document.querySelectorAll('input[name="work"]').forEach(r=>r.addEventListener('change',()=>{$('scopeSet').hidden=radio('work')==='household'}));
 let voiceURL=null;
@@ -1314,9 +1239,6 @@ function readPay(){
 $('savePay').addEventListener('click',()=>{const amt=Math.round(Number($('payAmt').value));const day=+$('payDay').value;$('saveErr').textContent='';
   if(!($('payAmt').value!==''&&amt>0&&amt<1e6)){$('saveErr').textContent=t('needAmt');$('payAmt').focus();return}
   const sc=radio('scope');
-  /* The pay history. The first pay saved (or one saved over the made-up example) applies to every month. A changed pay applies from
-     the month chosen: entries from that month on are replaced, the months before keep theirs. Chosen at or before the first month
-     in the diary, it simply becomes the pay of every month. */
   const f=formPay(),nw={expected:amt,payDay:day,payFor:f.payFor},old=S.setup;let hist;
   if(!old.confirmed||old.example)hist=[{from:null,...nw}];
   else if(!payAsks())hist=old.history.map(h=>({...h}));
@@ -1324,7 +1246,6 @@ $('savePay').addEventListener('click',()=>{const amt=Math.round(Number($('payAmt
     const first=[$('startMonth').value,...S.pays.filter(p=>!p.example).map(p=>p.month)].filter(x=>YM_RX.test(x)).reduce((a,b)=>a<b?a:b,from);
     if(from<=first)hist=[{from:null,...nw}];
     else{hist=old.history.filter(h=>h.from==null||h.from<from).map(h=>({...h}));if(!samePay(hist[hist.length-1],nw))hist.push({from,...nw})}}
-  /* The made-up example payments and event were built on the example pay: the worker's own pay replaces them. */
   S.pays=S.pays.filter(p=>!p.example);S.events=S.events.filter(e=>!e.example);
   S.setup={...S.setup,history:hist,expected:amt,payDay:day,payFor:radio('payFor')==='same'?'same':'next',work:radio('work')==='household'?'household':'company',scope:['no','unsure','yes'].includes(sc)?sc:'unsure',startMonth:$('startMonth').value,
     name:$('wName').value.trim().slice(0,80),hideName:!$('showName').checked,employer:$('wEmployer').value.trim().slice(0,120),confirmed:true,example:false,text:$('payText').value.trim().slice(0,1200)};
@@ -1334,7 +1255,6 @@ $('savePay').addEventListener('click',()=>{const amt=Math.round(Number($('payAmt
   $('saveMsg').innerHTML=`<p class="stat"><span aria-hidden="true">✓</span>${esc(t('savedMsg',{d:ordL(day),amt:fmtAED(amt)}))}</p><details class="more"><summary>${esc(t('more'))}</summary><div class="morebody">${traceHTML([['you',t('trYouSaved')],['rule',t('trSetDay')],['rule',wpsLine],['rule',t('trLocal')]])}</div></details>`;});
 $('showName').addEventListener('change',()=>{S.setup.hideName=!$('showName').checked;save();renderCase()});
 
-/* ---------- step 2: pay diary ---------- */
 $('readSms').addEventListener('click',readSms);
 function readSms(){
   const text=$('smsText').value.trim();$('smsErr').textContent='';
@@ -1367,9 +1287,7 @@ $('addPay').addEventListener('click',()=>{const date=validISO($('pDate').value),
   $('pAmt').value='';$('pNote').value='';renderAll()});
 $('months').addEventListener('click',e=>{const b=e.target.closest('[data-delpay]');if(!b)return;S.pays=S.pays.filter(p=>p.id!==b.dataset.delpay);S.summary=null;save();renderAll()});
 
-/* ---------- step 3: get help ---------- */
 function dangerTicks(){return [...document.querySelectorAll('.dz:checked')].map(x=>x.value)}
-/* The urgent box is added once, when the first box is ticked, so a screen reader announces it once. */
 document.querySelectorAll('.dz').forEach(c=>c.addEventListener('change',()=>{const out=$('dangerOut'),n=dangerTicks().length;if(!n)out.innerHTML='';else if(!out.firstChild)out.innerHTML=dangerHTML(true)}));
 $('hRun').addEventListener('click',triage);
 function triage(){
@@ -1408,7 +1326,6 @@ $('hOut').addEventListener('click',e=>{const b=e.target.closest('[data-add]');if
   const edited=line!==(R.summary||tLabel(topicOf(R.topic))+'.');
   R.added=true;R.caseLine=line;S.cases.push({id:R.id,date:R.date,topic:R.topic,source:edited?'you':'rules',summary:line});S.summary=null;save();renderAll()});
 
-/* ---------- step 4: case file ---------- */
 $('cfFor').addEventListener('change',()=>{S.cfFor=$('cfFor').value;save();renderCaseText()});
 $('cfOk').addEventListener('change',renderCaseText);
 $('cfName').addEventListener('change',()=>{S.setup.hideName=!$('cfName').checked;save();renderCase()});
@@ -1433,7 +1350,6 @@ $('cfShare').addEventListener('click',async()=>{if(!needOk())return;renderCaseTe
   if(navigator.share){try{await navigator.share({title:t('cfLbl'),text});$('cfMsg').textContent=t('shared');return}catch(e){if(e&&e.name==='AbortError'){$('cfMsg').textContent=t('shareCancel');return}}}
   const ok=await copyOut(text);if(ok){$('cfMsg').textContent=t('shareCopied')}else{selectCase();$('cfMsg').textContent=t('shareFail')}});
 
-/* ---------- reset ---------- */
 const TWO=[];
 function twoTap(btn,key,armedKey,run){const o={btn,key,armed:false,timer:null};TWO.push(o);btn.addEventListener('click',()=>{if(!o.armed){o.armed=true;btn.textContent=t(armedKey);o.timer=setTimeout(()=>{o.armed=false;btn.textContent=t(key)},4000);return}clearTimeout(o.timer);o.armed=false;btn.textContent=t(key);run()})}
 function resetTwoTaps(){for(const o of TWO){clearTimeout(o.timer);o.armed=false;o.btn.textContent=t(o.key)}}
@@ -1441,15 +1357,11 @@ function clearOutputs(){['payReply','saveMsg','pOut','smsOut','hOut','dangerOut'
   setStatus('');$('smsText').value='';$('voice').value='';HT.value='';grow();$('hMsg').value='';$('cfOk').checked=false;
   $('pAmt').value='';$('pNote').value='';$('evText').value='';$('cfFor').value='embassy';$('moreDetails').open=false;
   document.querySelectorAll('.dz,input[name="topic"]').forEach(x=>{x.checked=false});if(voiceURL){URL.revokeObjectURL(voiceURL);voiceURL=null}}
-/* One reset: it brings back the made-up examples and forgets what this phone saved. */
 twoTap($('reset'),'reset','resetArm',()=>{S=seed();save();clearOutputs();fillSelects();renderSetup();renderAll();document.querySelectorAll('dialog.sheet').forEach(closeSheet);setStatus(t('cleared'))});
 
-/* ---------- start ---------- */
-/* If a saved state still breaks a render, start again from the examples. */
 try{applyLang(UI,true);renderSetup();renderAll()}
 catch(e){S=seed();save();fillSelects();renderSetup();renderAll()}
 try{window.PAGE_READY=true}catch(e){}
-/* ?q= fills the main box (the landing page opens agents this way). */
 if(QTEXT){HT.value=QTEXT.slice(0,1500);grow();if(!coarse())try{HT.focus({preventScroll:true})}catch(e){}}
 </script>
 </body>

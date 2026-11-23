@@ -255,8 +255,6 @@ document.querySelectorAll('[data-ta]').forEach(e=>{EN[e.dataset.ta]=e.getAttribu
 const Q=document.getElementById('q');EN.ph=Q.placeholder;
 const AGENTS={answers:{path:'answers/',en:'Inzain',ar:'انزين'},message:{path:'message-check/',en:'Mazboot',ar:'مضبوط'},wages:{path:'wages/',en:'Bil Tareekh',ar:'بالتاريخ'},rent:{path:'rent/',en:'Masmooh',ar:'مسموح'},repairs:{path:'city-repairs/',en:'Wareeni',ar:'ورّيني'},careers:{path:'careers/',en:'Zaheb',ar:'زاهب'}};
 /*ROUTER-START*/
-// Router: whole words and phrases only (Arabic prefixes allowed). Mazboot needs scam context, Masmooh covers rent and eviction.
-// A message that looks like a scam goes to Mazboot; one other clear match goes to that agent; anything unsure or mixed goes to Inzain.
 const norm=s=>String(s||'').toLowerCase()
  .replace(/[ً-ٰٟـ]/g,'')
  .replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه')
@@ -306,9 +304,6 @@ const RULES={
   any:L('interview|cv|my resume|a resume|your resume|the resume|update resume|cover letter|job offer|offer letter|new job|first day at work|first day of work|my first job|career|job hunting|job search|job application|مقابله|مقابله عمل|مقابله وظيفيه|سيره ذاتيه|سي في|وظيفه جديده|عرض وظيفي|عرض عمل|ابحث عن وظيفه|ابحث عن عمل|التقديم على وظيفه|moqabala|muqabala|moqabalah|muqabalah|siera zatiya|seera zatiya|wazifa jdeeda')}
 };
 const hit=(t,r)=>r.any.some(x=>x.test(t))||(r.pairs||[]).some(p=>p.every(g=>g.some(x=>x.test(t))));
-// A message the person received and pasted in also goes to Mazboot.
-// Strong signs: a link or a UAE mobile number (a map link does not count: people add one to a street report).
-// Soft signs: it opens the way a sender does ("Your parcel", "Dear customer", "حسابك"). A typed question is left to the rules above.
 const MAPS=/https?:\/\/(?:maps\.app\.goo\.gl|goo\.gl\/maps|(?:www\.|maps\.)?google\.[a-z.]+\/maps|maps\.apple\.com)\S*/gi;
 const LINKISH=/(?:https?:\/\/|www\.)\S|(?:^|[\s(:،])[a-z0-9-]+(?:\.[a-z0-9-]+)*(?:\.(?:com|net|org|ae|cc|top|xyz|info|app|link|site|online|shop|live|vip|club|biz)(?![a-z0-9])|\.(?:me|ly|co|io)\/)/i;
 const MOBILE=/(?:\+|00)971[\s-]?5\d|(?:^|\D)05\d[\s-]?\d{3}[\s-]?\d{4}(?!\d)/;
@@ -317,12 +312,11 @@ const ASKED=/^\s*(?:how|what|when|where|why|who|which|is|are|can|could|do|does|d
 const YOURS=/(?:^|[.,:!\n]\s*)your /i;
 const DEAR=/^\s*dear (?:customer|client|user|valued|parents?|member|subscriber|resident|applicant|guest|tenant|winner|card ?holder|account holder)\b/i;
 const AR_YOU=/(?:^|\s)(?:عزيزي|عزيزتي|عزيزنا)\s|(?:^|\s)[وفبل]?(?:حسابك|بطاقتك|شحنتك|طردك|طلبك|فاتورتك|رصيدك|موعدك|بياناتك|هويتك|مركبتك|رقمك|اشتراكك|مخالفتك|جائزتك|جايزتك|مكافآتك|نقاطك)(?=$|[\s.,،:!؟])/;
-function pasted(raw){   // 2 = strong sign, 1 = soft sign, 0 = none
+function pasted(raw){   
  const s=String(raw||'').replace(MAPS,' ');
  if(!HOWTO.test(s)&&(LINKISH.test(s)||MOBILE.test(s)))return 2;
  return !ASKED.test(s)&&(YOURS.test(s)||DEAR.test(s)||AR_YOU.test(s))?1:0;
 }
-// A soft sign never beats a clear match for another agent: a landlord's notice ("Your rent will rise ...") is for Masmooh.
 function pick(raw){
  const t=' '+norm(raw)+' ',sign=pasted(raw);
  if(sign===2||hit(t,RULES.message))return 'message';
@@ -331,9 +325,6 @@ function pick(raw){
 }
 /*ROUTER-END*/
 /*CODE-START*/
-// Result code. This SAME block is in tools/site-index.html and tools/site-results.html (tools/test_results_code.js checks they match).
-// UA1-<tries>.<helped> for the six agents in the order of AG, then E or A (page language), P or C (phone or computer), then a 4-character check.
-// Only capital letters, digits, "-" and "." are used, so it survives WhatsApp. A code with a wrong check is rejected.
 const AG=['answers','message','wages','rent','repairs','careers'];
 const chk=s=>{let h=0x811c9dc5;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0}return (h%1679616).toString(36).toUpperCase().padStart(4,'0')};
 const clamp=(n,a,b)=>Math.min(b,Math.max(a,n|0));
@@ -344,7 +335,6 @@ function makeCode(counts,lang,device){
 }
 const CODE_RE=/(^|[^A-Z0-9])(UA1(?:-\d{1,2}\.\d{1,2}){6}-[EA][PC]-[0-9A-Z]{4})(?![A-Z0-9])/gi;
 const NOTE_RE=/^\s*(?:Note|ملاحظة)\s*[:：]\s*(.+?)\s*$/i;
-// Finds every valid code in any pasted text. Gives [{counts:{agent:[tries,helped]},lang:'en'|'ar',device:'phone'|'computer',note:''}].
 function readCodes(text){
  const s=String(text||'').replace(/[‐-―−]/g,'-'),out=[];let m;
  CODE_RE.lastIndex=0;
@@ -365,7 +355,6 @@ const keyOf=link=>Object.keys(AGENTS).find(k=>link.getAttribute('href')===AGENTS
 const tileOf=key=>tiles.find(l=>keyOf(l)===key);
 const coarse=()=>window.matchMedia&&matchMedia('(pointer:coarse)').matches;
 
-// Live routing: the agent that will answer lights up while you type.
 const route=document.getElementById('route'),hint=document.getElementById('hint');
 let said='';
 function showRoute(){
@@ -381,10 +370,8 @@ function grow(){if(!Q.value){Q.style.height='';return}Q.style.height='auto';Q.st
 Q.addEventListener('input',()=>{grow();showRoute()});
 window.addEventListener('resize',grow);
 
-// The chosen agent opens in place, in a sheet. A fresh iframe each time, so it never adds history entries of its own.
 const dlg=document.getElementById('view'),vbody=document.getElementById('viewBody'),full=document.getElementById('viewFull'),vback=document.getElementById('viewBack');
 let cur=null,opens=0,backKey=null,fullText='';
-// The text for "Full page" waits in this browser's storage for a few seconds; the helper's own start-up takes it and removes it.
 try{localStorage.removeItem('uaeagents-pass')}catch(e){}
 full.addEventListener('click',()=>{if(!fullText||!cur)return;try{localStorage.setItem('uaeagents-pass',JSON.stringify({p:AGENTS[cur].path,q:fullText,at:Date.now()}))}catch(e){}});
 const slugOf=a=>a.path.replace(/\/$/,'');
@@ -404,26 +391,22 @@ function show(key,t,fromHistory,from){
  paintName();
  recDetach();const old=document.getElementById('frame');if(old)old.remove();
  const f=document.createElement('iframe');f.id='frame';f.title=nameOf(a);
- // The typed text goes after "#": a browser never sends that part to the web host, so the words stay on the phone (never ?q=).
  const hq=t?'#q='+encodeURIComponent(t):'';
- f.src=a.path+'?embed=1&lang='+root.lang+hq;   // the agent opens in the language of this page
+ f.src=a.path+'?embed=1&lang='+root.lang+hq;   
  const n=opens,ready=()=>{if(opens===n)vbody.classList.remove('loading')};
  vbody.classList.add('loading');f.addEventListener('load',ready,{once:true});setTimeout(ready,8000);
- if(REC)try{   // tester link only: watch the agent from here once it has loaded (the passed-in text only on its first load)
+ if(REC)try{   
   const typed=!!t&&recText(t,key).kind==='question';let first=true;
   f.addEventListener('load',()=>{if(document.getElementById('frame')===f){recHook(f,key,first?t:'',first&&typed);first=false}});
  }catch(e){}
  vbody.append(f);
- // "Full page" opens a new tab, and a tab's first address goes into the browser's own history list (and its sync), even
- // after the page has cleaned it: so the link carries no text. A click hands the text over in this browser's storage instead.
  full.href=a.path+'?lang='+root.lang;fullText=t||'';
- full.hidden=!!REC;  // tester link: no "Full page", the full page carries no recording and the tester's steps would stop unseen
+ full.hidden=!!REC;  
  if(!dlg.open){dlg.showModal();root.classList.add('locked')}
  if(!fromHistory){const h='#'+slugOf(a);if(location.hash!==h)history.pushState({sheet:key},'',h)}
 }
 function cleanup(){recDetach();root.classList.remove('locked');backKey=null;vback.hidden=true;const f=document.getElementById('frame');if(f)f.remove();cur=null;tEnd()}
 function closeSheet(){if(dlg.open)dlg.close();cleanup()}
-// Close through history, so the phone's Back button closes the sheet instead of leaving the site.
 function requestClose(){
  if(history.state&&history.state.sheet){
   const n=opens;history.back();
@@ -435,10 +418,8 @@ function requestClose(){
 }
 dlg.addEventListener('cancel',e=>{e.preventDefault();requestClose()});
 dlg.addEventListener('click',e=>{if(e.target===dlg)requestClose()});
-// A close the browser did by itself: tidy up and drop the sheet's history entry.
 dlg.addEventListener('close',()=>{if(dlg.open||cur===null)return;cleanup();if(history.state&&history.state.sheet)history.back()});
 document.getElementById('viewClose').addEventListener('click',requestClose);
-// A helper opened from another agent's sheet (Inzain's "More: Bil Tareekh") has a way back: the sheet goes back to that agent, in the same language.
 vback.addEventListener('click',()=>{const k=backKey;if(!k)return;if(history.state&&history.state.sheet){const n=opens;history.back();setTimeout(()=>{if(opens===n&&dlg.open&&cur!==k)show(k,'',true)},400)}else show(k,'',true)});
 window.addEventListener('message',ev=>{
  const f=document.getElementById('frame');if(!f||ev.source!==f.contentWindow||ev.origin!==location.origin)return;
@@ -451,15 +432,11 @@ const form=document.getElementById('ask');
 form.addEventListener('submit',e=>{e.preventDefault();const t=Q.value.trim();if(!t){Q.focus();return}if(coarse())Q.blur();const k=pick(t);recAsk(t,k,'typed');show(k,t)});
 Q.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();if(form.requestSubmit)form.requestSubmit();else form.dispatchEvent(new Event('submit',{cancelable:true}))}});
 tiles.forEach(link=>link.addEventListener('click',e=>{if(e.ctrlKey||e.metaKey||e.shiftKey||e.altKey)return;const k=keyOf(link);if(!k)return;e.preventDefault();const t=Q.value.trim();if(t)recAsk(t,k,'tile');show(k,t)}));
-// An example tap opens its helper directly, not through the form: on the tester link it is not counted as the tester's own question
-// (marked as pasted, so neither it nor Inzain's answer to it is recorded). Then the box is emptied for the next question.
 const EX={en:['How do I renew my Emirates ID?','Dear customer, your bank card has been suspended. Update your details now: short.example/3xVrfy'],
  ar:['كيف أجدد بطاقة الهوية الإماراتية؟','عزيزي العميل، تم تعليق بطاقتك البنكية. حدّث بياناتك الآن عبر الرابط short.example/3xVrfy']};
 document.querySelectorAll('[data-ex]').forEach(b=>b.addEventListener('click',()=>{const t=EX[isAr()?'ar':'en'][+b.dataset.ex];recBox.pasted=true;if(coarse())Q.blur();show(pick(t),t);Q.value='';Q.dispatchEvent(new Event('input',{bubbles:true}))}));
 document.querySelector('.ex').hidden=false;
 
-// Test mode (?test=1, kept for the browser session): one question after each agent used for 15 seconds, then "Send my result".
-// "Tries" are answered questions, so the share is honest. Answers stay in this browser until the tester sends them.
 const TEST=(function(){let on=false;try{on=new URLSearchParams(location.search).get('test')==='1';if(on)sessionStorage.setItem('uaeagents-test','1');else on=sessionStorage.getItem('uaeagents-test')==='1'}catch(e){}return on})();
 const TX={
  en:{q:'Did {n} help?',yes:'Yes',no:'No',send:'Send my result',note:'Anything confusing?',wa:'Send on WhatsApp',copy:'Copy',copied:'Copied',close:'Close',line:'UAE Agents test. Tried: {a}. Helped: {h}.',tag:'Note: ',rec:'Test mode: the owner sees typed questions and results, never pasted text. “Send to AI” sends the text shown to an AI service.'},
@@ -472,23 +449,9 @@ const tSave=()=>{try{localStorage.setItem('uaeagents-test',JSON.stringify(store)
 const tCount=()=>{let a=0,h=0;AG.forEach(k=>{const c=store.c[k]||[0,0];if(c[0]>0)a++;if(c[1]>0)h++});return {a,h}};
 const tDevice=()=>coarse()?'phone':'computer';
 /*REC-START*/
-// Tester records: ONLY on the tester route (?test=1). Without it REC stays null and this page sends nothing anywhere.
-// Each step is sealed for the owner's PC alone: a fresh AES-GCM key encrypts the record, the RSA-OAEP public key below
-// wraps that key, and the body posted to the public relay is base64(wrapped key + iv + ciphertext). The private key never
-// leaves the owner's PC (tools/tester_log.cjs reads the relay and writes docs/entry/tester-log/REPORT.md).
-// What the person typed is sent only when it was typed by hand, went to an agent other than Mazboot and does not look
-// like a pasted message; text that was pasted, dropped or arrived in one jump, and any checked message, is sent as its
-// length only (recWatch below sets the mark, for the landing box and for Inzain's box alike). Written for old phones
-// (iOS 15): no look-behind, no newer built-ins; with no crypto.subtle nothing is recorded, and any failure here is
-// swallowed so the page carries on.
 const REC_URL='https://ntfy.sh/pxz3zpxfgp6uud5ocs5oliuvheimva3cbh2aihth';
 const REC_KEY='MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAl+GOXexMo/P/tLOWZgZOVgo1SkaKqFe0pdSRYKP6/KjJs2FQNU1B8+uol7SVghFJodABhJBIuxpo7ErZNYBTIjo26JH/LjNmpJSpcaEAShXGbo76nKXUs7J7tOe9mOnuJm4Skk38CeCyM7bbcfOi0lGNusI0gQQDd3ZDCP8JiiaNpgNS7t410ki783JUgekyl7JPylh40Uh/RfNUs6tRCqo9TZvXHP/w0AXqnkfUFT/dmJ6QxRKTPGYBuWd5D/3eDEA+v5NUUiurQSZkmhVZrjXFoZVZZNEae52snK45SO5kma0ezunr/Ea1+3MahwM5vgXSSzXEhs18El/L1PRLMwIDAQAB';
 const recScrub=s=>String(s||'').replace(/[^\s@]+@[^\s@]+/g,'[email]').replace(/\d[\d\s-]{5,}\d/g,'#').replace(/\s+/g,' ').trim();
-// The one rule for every box a tester types in (the landing box, and Inzain's box inside the sheet): st.pasted is true
-// while the text in the box was pasted, dropped or arrived in one jump (a keyboard's clipboard chip, dictation, autofill,
-// an undo or redo, which can bring back a paste after the box was emptied);
-// such text is never sent. Text already in the box when the watch starts counts too. Emptying the box clears the mark,
-// so a question typed by hand afterwards is a question again. Gives back a function that removes the listeners.
 function recWatch(box,st){
  let before=box.value.length;st.pasted=before>0;
  const mark=()=>{st.pasted=true};
@@ -501,14 +464,12 @@ function recWatch(box,st){
  box.addEventListener('paste',mark);box.addEventListener('drop',mark);box.addEventListener('input',input);
  return ()=>{box.removeEventListener('paste',mark);box.removeEventListener('drop',mark);box.removeEventListener('input',input)};
 }
-const recBox={pasted:false};   // the mark for the landing box
+const recBox={pasted:false};   
 function recText(raw,agent,st){
  const s=String(raw||'').trim();
  if(agent==='message'||(st||recBox).pasted||pasted(s))return {kind:'message',len:s.length};
  return {kind:'question',text:recScrub(s).slice(0,300)};
 }
-// What Inzain shows first in its result area, read from the screen; null while it is still working. Titles, ids and
-// marks are library text, never the tester's: a part with no entry (its title is the tester's own sentence) is only counted.
 const REC_CLOSEST=['Closest answer we have','أقرب جواب لدينا'];
 const recTxt=el=>el?String(el.textContent||'').replace(/\s+/g,' ').trim():'';
 function recShown(body){
@@ -533,8 +494,6 @@ function recShown(body){
  o.title=String(o.title||'').slice(0,200);if(o.shown!==undefined)o.shown=o.shown.slice(0,160);if(o.id!==undefined)o.id=o.id.slice(0,80);
  return o;
 }
-// Mazboot's result level, read from the result area only (never the message, its links, numbers or reasons):
-// "strong" when it offers to report (very likely a scam), "calm" for the tick (no warning signs found), else "middle".
 function recLevel(res){
  const h=res&&res.querySelector('h2.status');if(!h)return '';
  if(res.querySelector('#reportBtn'))return 'strong';
@@ -558,7 +517,6 @@ function recSeal(obj,keyB64){
 const REC=(function(){
  if(!TEST)return null;
  try{
-  // Only the tester link itself records: a tab that once had ?test=1 and now shows the plain link sends nothing.
   if(new URLSearchParams(location.search).get('test')!=='1')return null;
   if(!window.crypto||!crypto.subtle||!crypto.getRandomValues||!window.fetch||!window.TextEncoder||!window.Promise||!window.btoa)return null;
   const rnd=()=>{const a='abcdefghijklmnopqrstuvwxyz0123456789',b=crypto.getRandomValues(new Uint8Array(12));let s='';for(let i=0;i<b.length;i++)s+=a[b[i]%36];return s};
@@ -568,9 +526,7 @@ const REC=(function(){
   return {sid:sid,seq:seq,chain:Promise.resolve(),last:''};
  }catch(e){return null}
 })();
-// Pasted text is never sent, whichever agent it goes to: the landing box is watched with the rule above (recWatch).
 if(REC)try{recWatch(Q,recBox)}catch(e){recBox.pasted=true}
-// Records go out one after another, so they reach the relay in the order they happened. A failed send is dropped quietly.
 function rec(ev,data){
  if(!REC)return;
  try{
@@ -588,7 +544,6 @@ function rec(ev,data){
  }catch(e){}
 }
 function recAsk(t,k,via){if(REC)try{const x=recText(t,k);x.a=k;x.via=via;rec('ask',x)}catch(e){}}
-// The result is recorded when it is shared, copied, or the sheet is closed; the same note and code are never sent twice.
 function recResult(how){
  if(!REC)return;
  try{
@@ -597,14 +552,6 @@ function recResult(how){
   rec('result',{note:note,code:code,tried:c.a,helped:c.h,how:how});
  }catch(e){}
 }
-// Inside the agent (tester link only; without REC nothing is attached to any agent). The agent's iframe is on this same
-// origin, so this page watches it from outside and the agent page itself is never changed.
-//  - Inzain: each question run inside it is an "ask" (its text only when typed by hand, by the rule above), then what it
-//    showed first is an "answer" (entry id, title and mark, as on the screen). The question this page passed in was
-//    already recorded here, so it is not recorded again; its answer is.
-//  - Mazboot: a message checked inside it is a "check": its length and the result level, nothing more.
-//  - The four helpers: nothing.
-// Everything is wrapped, so a failure here does nothing visible; all listeners and observers go when the sheet closes.
 let recOff=null;
 function recDetach(){const f=recOff;recOff=null;if(f)try{f()}catch(e){}}
 function recHook(f,key,passed,typed){
@@ -624,7 +571,7 @@ function recHook(f,key,passed,typed){
    const q=doc.getElementById('q'),body=doc.getElementById('runBody');if(!q||!body)return;
    const st={pasted:true},p0=String(passed||'').trim();
    offs.push(recWatch(q,st));
-   if(p0)st.pasted=!(typed&&q.value.trim()===p0);   // the passed-in text keeps the landing box's verdict while it is unchanged
+   if(p0)st.pasted=!(typed&&q.value.trim()===p0);   
    let last=p0,waiting=false,changed=false,quiet=0,giveUp=0;
    const settle=()=>{if(!waiting||!changed)return;const o=recShown(body);if(!o)return;waiting=false;rec('answer',o)};
    const expect=()=>{waiting=true;changed=false;clearTimeout(giveUp);giveUp=later(()=>{waiting=false},60000)};
@@ -633,33 +580,29 @@ function recHook(f,key,passed,typed){
     const s=String(raw||'').trim();if(!s||s===last)return;last=s;
     const x=lib?{kind:'question',text:recScrub(s).slice(0,300)}:recText(s,'answers',st);x.a='answers';x.via=via;
     rec('ask',x);
-    // what Inzain shows for pasted or message-like text is not sent: its title can tell what the message was about
     if(x.kind==='question')expect();else{waiting=false;clearTimeout(giveUp)}
    };
    on(doc,'keydown',e=>{if(e.target===q&&e.key==='Enter'&&!e.shiftKey&&!e.isComposing)asked(q.value,'inside')});
    on(doc,'submit',e=>{if(e.target&&e.target.id==='askForm')asked(q.value,'inside')});
-   // a suggested question (library text) fills the box and runs: read after Inzain has put it there
    on(doc,'click',e=>{const c=e.target&&e.target.closest?e.target.closest('[data-chip]'):null;if(c)later(()=>{asked(q.value,'chip',true)},0)});
-   // the AI step (test; Inzain offers it on this tester link only): that it was asked, how it ended and how long it took, and the
-   // person's yes or no. Read from the marks on Inzain's AI box (data-ai and the rest), never from its text.
    const aiDone={};
    watch(body,()=>{const b=doc.getElementById('aiBox');if(!b)return;const g=k=>String(b.getAttribute('data-ai'+k)||''),st=g(''),run=g('-r')+'|'+g('-n')+'|',ms=Math.max(0,parseInt(g('-ms'),10)||0);
     const x=st==='wait'?{step:'ask'}:st==='done'?{step:'answer',ms:ms}:st==='fail'?{step:'fail',ms:ms,err:g('-err').slice(0,20)}:st==='stop'?{step:'stop',ms:ms}:null;
     if(x&&!aiDone[run+x.step]){aiDone[run+x.step]=1;x.a='answers';rec('ai',x)}
     const h=g('-help');if(h&&!aiDone[run+'help']){aiDone[run+'help']=1;rec('ai',{a:'answers',step:'help',yes:h==='yes'})}
    },{subtree:true,attributes:true,attributeFilter:['data-ai','data-ai-help']});
-   if(p0&&typed){expect();if(recShown(body)){changed=true;settle()}}   // the passed-in question (typed by hand only) may be answered already
+   if(p0&&typed){expect();if(recShown(body)){changed=true;settle()}}   
   }else{
    const box=doc.getElementById('msg'),res=doc.getElementById('result');if(!box||!res)return;
    let want=-1,until=0;
-   const trig=()=>{want=box.value.trim().length;until=Date.now()+3000};   // the box is read for its length only
+   const trig=()=>{want=box.value.trim().length;until=Date.now()+3000};   
    on(doc,'click',e=>{if(e.target&&e.target.closest&&e.target.closest('#checkBtn'))trig()});
    on(doc,'keydown',e=>{const id=e.target&&e.target.id;if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing&&(id==='msg'||id==='sender'))trig()});
    watch(res,()=>{if(want<0)return;if(Date.now()>until){want=-1;return}const lv=recLevel(res);if(!lv)return;const n=want;want=-1;rec('check',{a:'message',len:n,level:lv})},{childList:true});
   }
   recOff=off;
  }catch(e){}
- finally{if(recOff!==off)off()}   // set up in full, or not at all
+ finally{if(recOff!==off)off()}   
 }
 function tVisit(key){if(TEST){visit={key,at:Date.now()};pending=null;tPaint()}}
 function tEnd(){const v=visit;visit=null;if(TEST&&v&&Date.now()-v.at>=15000){pending=v.key;tPaint()}}
@@ -706,7 +649,7 @@ if(TEST){
   +'<div class="tbody"><p class="tsum" id="tsSum"></p><label class="tl" id="tsNoteL" for="tsNote"></label><textarea id="tsNote" maxlength="200" rows="2" dir="auto"></textarea>'
   +'<div class="tmsg" id="tsMsg"></div><div class="tact"><button class="tbtn main" type="button" id="tsWa"></button><button class="tbtn link" type="button" id="tsCopy" aria-live="polite"></button></div></div>';
  document.body.append(tBar,tPill,tSheet);
- if(REC){const p=document.createElement('p');p.className='tnote';p.id='tNotice';p.setAttribute('role','note');form.append(p)}   // said openly, before anything is sent
+ if(REC){const p=document.createElement('p');p.className='tnote';p.id='tNotice';p.setAttribute('role','note');form.append(p)}   
  tNote=tel('tsNote');
  tel('tqYes').addEventListener('click',()=>tAnswer(true));
  tel('tqNo').addEventListener('click',()=>tAnswer(false));
@@ -731,7 +674,6 @@ if(TEST){
  tPaint();
 }
 
-// English / Arabic with full RTL.
 function set(l){
  const ar=l==='ar',D=ar?AR:EN;
  root.lang=ar?'ar':'en';root.dir=ar?'rtl':'ltr';
@@ -744,7 +686,7 @@ function set(l){
 }
 let saved=null;try{saved=localStorage.getItem('uaeagents-lang')}catch(e){}
 set(saved||((navigator.language||'').toLowerCase().startsWith('ar')?'ar':'en'));
-rec('open',{});   // the tester page was opened (the notice above is already on screen)
+rec('open',{});   
 document.getElementById('lang').addEventListener('click',()=>set(isAr()?'en':'ar'));
 window.addEventListener('pageshow',()=>{grow();said='';showRoute()});
 const k0=keyFromHash();if(k0)show(k0,'',true);

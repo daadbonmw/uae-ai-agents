@@ -11,10 +11,8 @@
 <title>Masmooh · مسموح</title>
 <meta name="description" content="Is your Dubai rent rise allowed? Check it against the rules, then draft a calm reply you send yourself.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%2392722A' d='M12 2a10 10 0 1 1 0 20H2V12A10 10 0 0 1 12 2z'/%3E%3C/svg%3E">
-<script id="guard">/* Never a silent dead page. Oldest plain JavaScript on purpose (no let, const, arrows or template strings), so it runs on any phone.
-   The main script sets PAGE_STARTED as its first act (and removes the "Loading" line) and PAGE_READY when the page is drawn.
-   If it never starts (a browser that cannot read it) or stops before that, this shows in English and Arabic that the page could not
-   start here and what to do. The main script is inline, so by DOMContentLoaded it has run or failed. (The same guard as Bil Tareekh.) */
+<script id="guard">
+
 (function(){var shown=false;
 function fail(){if(shown||window.PAGE_READY)return;shown=true;var el=document.getElementById('bootNote');
 if(!el){el=document.createElement('p');el.id='bootNote';var m=document.getElementById('main')||document.body;if(!m)return;m.insertBefore(el,m.firstChild)}
@@ -436,14 +434,11 @@ dialog.sheet::backdrop{background:rgba(14,15,18,.5)}
 
 <script id="app">
 'use strict';
-/* first act: tell the guard script the page started and take the "Loading" line away */
 try{window.PAGE_STARTED=true;const bn=document.getElementById('bootNote');if(bn&&bn.parentNode)bn.parentNode.removeChild(bn)}catch(e){}
 const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const asciiDigits=s=>String(s==null?'':s).replace(/[٠-٩]/g,d=>String(d.charCodeAt(0)-0x660)).replace(/[۰-۹]/g,d=>String(d.charCodeAt(0)-0x6F0)).replace(/[０-９]/g,d=>String(d.charCodeAt(0)-0xFF10));
-/* Arabic thousands and decimal marks, and invisible characters that split numbers */
 const normNums=s=>asciiDigits(s).replace(/٬/g,',').replace(/٫/g,'.').replace(/[​-‏⁠﻿؜]/g,'');
-/* Arabic, not Urdu or Persian: more Arabic letters than Latin ones, and almost none of the letters only Urdu or Persian use */
 function isArText(s){s=String(s||'');const ar=(s.match(/[ء-ي]/g)||[]).length,la=(s.match(/[A-Za-z]/g)||[]).length,ur=(s.match(/[ٹپچڈڑژکگںھہیے]/g)||[]).length;return ar>0&&ar>la&&ur<=ar*0.03}
 const reduceMotion=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
 const DAY=864e5;
@@ -451,11 +446,8 @@ const CHECKED='2026-11-12';
 const PARAMS=(()=>{try{return new URLSearchParams(location.search)}catch(e){return new URLSearchParams('')}})();
 const EMBED=PARAMS.get('embed')==='1';
 
-/* ---------- language ---------- */
 const UI={lang:'en'};
 const PR=(()=>{try{return new Intl.PluralRules('ar')}catch(e){return null}})();
-/* Arabic counted nouns: [one, two, 3-10 plural, 11-99 singular, 100+ singular].
-   Day counts always follow قبل/بعد/مدة, so the dual is the genitive يومين. The other nouns follow passive verbs, so theirs is nominative. */
 function arCount(n,f){const c=PR?PR.select(n):n===1?'one':n===2?'two':n%100>=3&&n%100<=10?'few':n%100>=11?'many':'other';
   return c==='one'?f[0]:c==='two'?f[1]:c==='few'?n+' '+f[2]:c==='many'?n+' '+f[3]:n+' '+f[4]}
 const NOUN={day:{en:['day','days'],ar:['يوم واحد','يومين','أيام','يوماً','يوم']},item:{en:['item','items'],ar:['بند واحد','بندان','بنود','بنداً','بند']},
@@ -464,7 +456,6 @@ const NOUN={day:{en:['day','days'],ar:['يوم واحد','يومين','أيام'
 function count(n,w,l){l=l||UI.lang;const N=NOUN[w];if(l==='ar')return arCount(n,N.ar);return n+' '+(n===1?N.en[0]:N.en[1])}
 function t(k,p,l){const D=TX[l||UI.lang]||TX.en;let s=D[k];if(s==null)s=TX.en[k];if(s==null)return String(k);if(typeof s==='function')return s(p||{},l||UI.lang);
   return p?String(s).replace(/\{(\w+)\}/g,(m,x)=>p[x]!=null?p[x]:m):s}
-/* ---------- dates and numbers ---------- */
 const pad=n=>String(n).padStart(2,'0');
 function iso(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
 function todayISO(){return iso(new Date())}
@@ -483,13 +474,11 @@ function num(v){if(typeof v==='number')return Number.isFinite(v)?v:null;
 function vNum(x){const n=num(x);return n!=null&&n>=1000&&n<=50000000?Math.round(n):null}
 function vAmt(x){const n=num(x);return n!=null&&n>0&&n<=50000000?Math.round(n):null}
 function vInt(x){const n=num(x);return n!=null&&n>=1&&n<=12?Math.round(n):null}
-/* aed(): English letters. cur(): the current screen language. */
 const aed=n=>'AED '+Math.round(n).toLocaleString('en-US');
 const cur=(n,l)=>(l||UI.lang)==='ar'?Math.round(n).toLocaleString('en-US')+' درهم':aed(n);
 const money=n=>n==null||n===''?'':Math.round(n).toLocaleString('en-US');
 const p2=p=>String(Math.round(p*100)/100);
 
-/* ---------- words: English here, Arabic below ---------- */
 const TX={};
 TX.en={
  estLine:'An estimate worked out on your phone. It is not an official result.',offLine:'Official answer: the Rental Index calculator of the Dubai Land Department. You get it from the department, not from this page.',howH:'How to get the official answer',howBody:'Open the Rental Index page on the Dubai Land Department website. It asks for the contract end date, the property type, how to find the property (the DEWA premise number, the Ejari contract number or the area) and your current yearly rent. Have those details ready. This page covers Dubai only: for other emirates it has no official calculator to point to.',guessNote:'This figure comes only from the official index. If you typed a guess, this result is a guess.',
@@ -623,11 +612,9 @@ TX.ar={
 };
 
 
-/* ---------- text helpers ---------- */
 const METHODS=['whatsapp','email','letter','registered_mail','notary','phone','unknown'];
 function luhn(d){let s=0,alt=false;for(let i=d.length-1;i>=0;i--){let n=+d[i];if(alt){n*=2;if(n>9)n-=9}s+=n;alt=!alt}return s%10===0}
 
-/* ---------- rule table: each rule checked against its linked source on 7 Nov 2026 ---------- */
 const LAW26='https://dlp.dubai.gov.ae/Legislation%20Reference/2007/Law%20No.%20(26)%20of%202007.html';
 const LAW33='https://dlp.dubai.gov.ae/Legislation%20Reference/2009/Law%20No.%20%2833%29%20of%202008%20Amending%20Law%20No.%20%2826%29%20of%202007.html';
 const RULES={
@@ -656,17 +643,14 @@ const ruleTitle=(id,l)=>{const R=RULES[id];l=l||UI.lang;return l==='ar'&&R.ar?R.
 const srcLink=id=>{const R=RULES[id];return R?`<a class="src" href="${R.url}" target="_blank" rel="noopener noreferrer">${esc(ruleSrc(id))} · ${esc(shortDate(R.d))}</a>`:''};
 const srcText=(id,l)=>{const R=RULES[id];return R?`${ruleSrc(id,l)} (${shortDate(R.d,l)}): ${R.url}`:''};
 
-/* ---------- status symbols as inline SVG (tick, !, cross), no emoji ---------- */
 const SV=p=>`<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">${p}</svg>`;
 const ICON={ok:SV('<path d="M3.4 8.4l3 3 6.2-6.6"/>'),bad:SV('<path d="M4.4 4.4l7.2 7.2M11.6 4.4l-7.2 7.2"/>'),unsure:SV('<path d="M8 3.2v6.3"/><path d="M8 12.6v.2"/>')};
 const VERDICT={allowed:['v_allowed','allowed','ok'],notallowed:['v_notallowed','notallowed','bad'],unsure:['v_unsure','unsure','unsure']};
 const vLabel=(v,l)=>t(VERDICT[v][0],null,l);
 const SR_STATUS={ok:{en:'Meets the rule:',ar:'يستوفي القاعدة:'},bad:{en:'Problem:',ar:'مشكلة:'},unsure:{en:'Needs a person:',ar:'يحتاج إلى شخص:'}};
-/* Private numbers are hidden before the message is read: Emirates ID, IBAN, card numbers and CVV, passport and bank account numbers. */
 function maskIds(t){let n=0;t=normNums(t);
   t=t.replace(/\b784[-\s.]?\d{4}[-\s.]?\d{7}[-\s.]?\d\b/g,()=>{n++;return '784-XXXX-XXXXXXX-X'});
   t=t.replace(/\b[A-Z]{2}\d{2}(?:[ -]?[A-Z0-9]{4}){2,7}(?:[ -]?[A-Z0-9]{1,4})?\b/gi,m=>{const c=m.replace(/[ -]/g,'');if(c.length<15||c.length>34||(c.slice(4).match(/\d/g)||[]).length<10)return m;n++;return c.slice(0,2).toUpperCase()+'XX XXXX XXXX XXXX'});
-  /* card numbers: digit groups from a 2-6 start; the longest 13-19 digit run that passes the Luhn check is hidden, so a 19-digit card loses its last group too */
   t=t.replace(/(^|[^\d+])([2-6]\d{3}(?:[ .-]?\d{1,7}){1,5})(?!\d)/g,(m,pre,c)=>{const toks=c.match(/\d+|[ .-]/g)||[];let pos=0,d='';const ends=[];
     for(const k of toks){pos+=k.length;if(/\d/.test(k)){d+=k;ends.push([pos,d])}}
     for(let i=ends.length-1;i>=0;i--){const [p,dd]=ends[i];if(dd.length>=13&&dd.length<=19&&luhn(dd)){n++;return pre+'XXXX XXXX XXXX XXXX'+c.slice(p)}}
@@ -679,7 +663,6 @@ function maskIds(t){let n=0;t=normNums(t);
   return {text:t,n}}
 const LINKISH=/\b(?:https?:\/\/|www\.)\S+|\b[a-z0-9][a-z0-9-]*\.(?:com|ae|net|org|example|io|co|info|biz|me|ly|link|app|site|online|xyz|pay|top|shop|ru|pk|uk|cc|do)\b|\[\.\]|\sdot\s+com\b/i;
 function payRisk(tx){tx=normNums(tx);const phone=/(?:\+|\b0)\d[\d\s\-().]{6,}\d/.test(tx);return LINKISH.test(tx)||(phone&&/\b(?:pay|payment|fees?|transfer|wire|holding)\b|ادفع|دفع|رسوم|تحويل/i.test(tx))}
-/* ---------- examples (all made up) ---------- */
 function examples(){const td=todayISO();const e=n=>addDays(td,n);
   return {
     late:{label:'exLate',arrived:e(-18),expiry:e(54),how:'whatsapp',demo:{kind:'pct',pct:'5'},
@@ -698,10 +681,8 @@ const DEP_MSG={en:'Hi, deposit refund for Flat 1204 after inspection: repainting
   ar:'مرحباً، بخصوص رد التأمين للشقة 1204 بعد المعاينة: إعادة دهان كل الغرف 900 درهم، تنظيف عميق 500 درهم، استبدال الستائر 350 درهم. سيتم تحويل الرصيد 3,250 درهم.'};
 function depExample(){const l=UI.lang==='ar'?'ar':'en';return {paid:'5,000',kept:'1,750',msg:DEP_MSG[l],out:addDays(todayISO(),-10),photos:true,within:'14',lang:l}}
 
-/* ---------- state ---------- */
 const SKEY='masmooh-state-v1',MKEY='masmooh-moveout-v1',LKEY='uaeagents-lang';
 const store={get(k,d){try{const v=JSON.parse(localStorage.getItem(k)||'null');return v==null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
-/* A fresh start shows the Arabic example to Arabic readers and the late-notice example to everyone else */
 function freshState(){const k=UI.lang==='ar'?'ar':'late';
   return {exKey:null,intake:{text:'',arrived:'',expiry:'',how:'unknown'},read:null,facts:null,confirmed:false,
     calc:{kind:'',pct:'',demo:false},check:null,
@@ -724,10 +705,8 @@ let S=null;
 function save(){store.set(SKEY,S)}
 
 
-/* ---------- small UI helpers ---------- */
 const LIST_SEP=l=>(l||UI.lang)==='ar'?'، ':'; ';
 const CHEQ={en:['cheque','cheques'],ar:['شيك واحد','شيكان','شيكات','شيكاً','شيك']};
-/* Facts kept as values, worded in whichever language the screen is in */
 function factWords(arr,l){l=l||UI.lang;const ar=l==='ar';return arr.map(([k,v])=>{
   if(k==='current')return (ar?'الإيجار الحالي ':'current rent ')+cur(v,l);
   if(k==='asked')return (ar?'الإيجار الجديد ':'new rent ')+cur(v,l);
@@ -741,13 +720,11 @@ function fmtV(v,l){if(v&&typeof v==='object'){
     if('list' in v)return v.list.map(x=>fmtV(x,l)).join(LIST_SEP(l))}
   return v}
 function fmtParams(p,l){if(!p)return p;const o={};for(const k in p)o[k]=fmtV(p[k],l);return o}
-/* A step is [who, key, params] */
 const stepText=e=>t(e[1],fmtParams(e[2]));
 function stepsList(tr){return `<ul class="steps">${tr.map(e=>`<li><span class="k">${esc(t('ruleK'))}</span><span dir="auto">${esc(stepText(e))}</span></li>`).join('')}</ul>`}
 function stepsHTML(tr){if(!tr||!tr.length)return '';return `<details class="more"><summary>${esc(t('steps'))}</summary><div class="more-body">${stepsList(tr)}</div></details>`}
 const symHTML=s=>`<span class="sym" aria-hidden="true">${ICON[s]||ICON.unsure}</span>`;
 const warnHTML=txt=>`<p class="warn">${symHTML('unsure')}<span>${esc(txt)}</span></p>`;
-/* Focus an element. One outside a sheet closes the open sheets first; one inside a closed sheet opens it. */
 function focusEl(id){const el=$(id);if(!el)return;const d=el.closest('dialog');
   if(!d){for(const it of sheetStack.slice().reverse())closeSheet(it.d,true)}else if(!d.open)openSheet(d.id);
   el.scrollIntoView({behavior:reduceMotion()?'auto':'smooth',block:'start'});try{el.focus({preventScroll:true})}catch(e){el.focus()}el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash')}
@@ -761,7 +738,6 @@ async function copyText(text,msgEl,manualEl){let ok=false;
   else{msgEl.textContent=t('copyBlocked');if(manualEl){if(manualEl.tagName==='TEXTAREA'&&manualEl.readOnly){manualEl.value=text;manualEl.hidden=false}manualEl.focus();manualEl.select()}}
   return ok}
 
-/* ---------- step 1: read the message ---------- */
 function fillHow(){const sel=$('mHow');const v=sel.value||S.intake.how||'unknown';sel.innerHTML=METHODS.map(k=>`<option value="${k}">${esc(t('m_'+k))}</option>`).join('');sel.value=v}
 const CUR_W=/(current(?:ly)?|now|present(?:ly)?|existing|instead of|was|الحالي|الحالية|بدلاً من|بدلا من|حالياً|حاليا)/gi;
 const NEW_W=/(new|will be|revised|renewal rent|increase(?:d)? to|renewal period|ستصبح|سيصبح|الجديد|الجديدة|سيكون|ستكون)/gi;
@@ -770,14 +746,12 @@ const END_W=/(expir|ends?\b|end date|contract end|until|valid till|ينتهي|ا
 const MON={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
 const MON_AR={'يناير':1,'فبراير':2,'مارس':3,'أبريل':4,'ابريل':4,'مايو':5,'يونيو':6,'يوليو':7,'أغسطس':8,'اغسطس':8,'سبتمبر':9,'أكتوبر':10,'اكتوبر':10,'نوفمبر':11,'ديسمبر':12};
 function lastPos(re,s){let p=-1,m;re.lastIndex=0;while((m=re.exec(s)))p=m.index+m[0].length;return p}
-/* Simple patterns. English and Arabic forms: AED and درهم or د.إ, 60k and 60 ألف, Arabic digits and ٬ separators, Arabic month names. */
 function rulesRead(text){text=normNums(text);
   const out={lang:isArText(text)?'ar':'en',current:null,asked:null,expiry:null,notice_date:null,method:'unknown',cheques:null,deposit:null,vacate:false,unclear:[]};
   const amts=[];const re=/(?:\b(?:AED|Dhs?|dirhams?)|د\.?\s?إ)\.?\s*(\d[\d,]*(?:\.\d+)?)\s*(k\b|ألف|الف|آلاف)?|(\d[\d,]*(?:\.\d+)?)\s*(k\b|ألف|الف|آلاف)?\s*(?:AED\b|Dhs?\b|dirhams?\b|درهم|دراهم|د\.?\s?إ)|\b(\d{2,3})\s*k\b/gi;
   const near=i=>{const before=text.slice(Math.max(0,i-48),i);return {c:lastPos(CUR_W,before),w:lastPos(NEW_W,before),d:lastPos(DEP_W,before)}};
   let m;while((m=re.exec(text))){const raw=m[1]||m[3]||m[5]||'';const k=m[2]||m[4]||(m[5]?'k':'');let n=num(raw);if(n==null)continue;if(k)n*=1000;
     amts.push({n,...near(m.index)})}
-  /* Amounts written without a currency ("from 60,000 to 70,000", "من 60 ألف إلى 70 ألف"): read only when fewer than two marked amounts were found. */
   if(amts.filter(a=>a.n>=10000).length<2){const bare=/(?:^|[^\d\/.,\-])(?:([1-9]\d{0,2}(?:,\d{3})+|[1-9]\d{4,6})(?![\d\/\-]|[.,]\d)|(\d{2,3})\s*(?:ألف|الف|آلاف))/g;
     while((m=bare.exec(text))){const n=m[1]?num(m[1]):num(m[2])*1000;if(n!=null&&n>=10000&&!amts.some(a=>a.n===n))amts.push({n,...near(m.index+1)})}}
   for(const a of amts){const best=Math.max(a.c,a.w,a.d);if(best<0)continue;
@@ -862,18 +836,15 @@ function confirmFacts(){const F=S.facts;const err=$('fErr');err.textContent='';
   S.confirmed=true;$('fState').textContent=t('confirmed');
   ['cErr','rErr'].forEach(id=>{$(id).textContent=''});
   if(!S.stay.stayTouched&&F.asked.v){S.stay.stay=money(F.asked.v)}
-  /* results built from other facts are cleared, so nothing quotes an old rent or date */
   if(S.reply.draft&&S.reply.sig!==factSig())clearReply();
   if(S.stayRes&&S.stayRes.y1Stay!==vNum(S.stay.stay))S.stayRes=null
   if(!S.rem.touched){S.rem.expiry=F.expiry.v;planReminders()}
   save();renderCheck();renderStay();renderReply();renderRem();
   setTimeout(()=>focusEl('h-s2'),60)}
-/* Check items hold keys, shown in the screen language */
 const itemH=(i,l)=>t(i.h,fmtParams(i.p,l),l);
 const itemT=(i,l)=>t(i.t,fmtParams(i.p,l),l);
 
 
-/* ---------- step 2: rule check ---------- */
 function maxRentFor(C,allow){return Math.floor(C*(10000+Math.round(allow*100))/10000)}
 function ruleCheck(F,calc){
   const items=[],trace=[];const C=F.current.v,N=F.asked.v,E=F.expiry.v,A=F.arrived.v,vac=!!F.vacate.v,mid=vac&&!!(F.mid&&F.mid.v),how=F.how.v||'unknown';
@@ -983,7 +954,6 @@ function showSummary(){const box=$('pOut');const text=personSummary();
     ${stepsHTML([['rule','tr_sum1'],['rule','tr_sum2']])}</div>`;
   $('pText').focus()}
 
-/* ---------- step 3: stay or move ---------- */
 const STAY_F=['stay','comp','agent','movers','connect','ejari','other'];
 const STAY_ID={stay:'vStay',comp:'vComp',agent:'vAgent',movers:'vMovers',connect:'vConnect',ejari:'vEjari',other:'vOther'};
 const staySentence=r=>t(r.sk,fmtParams(r.sp));
@@ -1017,7 +987,6 @@ function runStay(){const err=$('vErr');err.textContent='';readStay();
   save();renderStay();setTimeout(()=>focusEl('vRes'),40)}
 
 
-/* ---------- step 4: reply ---------- */
 const arDays=n=>arCount(n,['يوم واحد','يومين','أيام','يوماً','يوم']);
 function readReply(){const R=S.reply;R.lang=$('rLang').value;R.offer=$('rOffer').value.trim();R.oOffer=$('oOffer').checked;R.oCheques=$('oCheques').checked;R.oLonger=$('oLonger').checked;R.oShort=$('oShort').checked}
 function renderReply(onlyFields){const R=S.reply;$('rLang').value=R.lang==='ar'?'ar':'en';$('rOffer').value=R.offer||'';$('oOffer').checked=!!R.oOffer;$('oCheques').checked=!!R.oCheques;$('oLonger').checked=!!R.oLonger;$('oShort').checked=!!R.oShort;
@@ -1067,7 +1036,6 @@ function draftReply(){const err=$('rErr');err.textContent='';readReply();
   save();renderReply();setTimeout(()=>focusEl('rRes'),40)}
 
 
-/* ---------- step 5: deposit ---------- */
 const MOVEOUT_N=[0,1,2,3,4,5,6];
 let moveout=store.get(MKEY,{})||{};
 function moCount(){const done=MOVEOUT_N.filter(i=>moveout[i]).length;$('moCount').textContent=' · '+t('moCount',{d:done,n:MOVEOUT_N.length})}
@@ -1115,7 +1083,6 @@ function draftDep(){const err=$('dErr');err.textContent='';readDep();const D=S.d
   save();renderDep();setTimeout(()=>focusEl('dRes'),40)}
 
 
-/* ---------- step 6: key dates ---------- */
 const REM=[[120,'rem120h','rem120t'],[90,'rem90h','rem90t'],[60,'rem60h','rem60t']];
 function remExpiry(){if(S.rem.touched)return S.rem.expiry||'';const ex=S.exKey&&examples()[S.exKey];return S.rem.expiry||(S.facts&&S.facts.expiry.v)||S.intake.expiry||(ex&&ex.expiry)||''}
 function remText(E){const td=todayISO();const L=[t('remTitle',{d:dayDate(E)})];
@@ -1131,12 +1098,10 @@ function renderRem(){const E=remExpiry();$('remExpiry').value=E;const list=$('re
   if(!S.rem.trace)S.rem.trace=[['rule','tr_remCount',{e:{date:E}}],['rule','tr_remToday']];
   $('remTrace').innerHTML=stepsHTML(S.rem.trace)}
 
-/* ---------- More: sources ---------- */
 const RULE_ORDER=['notice90','index','calc','noRise','vacate','vacateMid','deposit','condition','rdc'];
 function renderRules(){$('ruleList').innerHTML=RULE_ORDER.map(id=>{const R=RULES[id];return `<li class="plain"><b>${esc(ruleTitle(id))}</b><a class="src" href="${R.url}" target="_blank" rel="noopener noreferrer">${esc(ruleSrc(id))} · ${esc(shortDate(R.d))}</a></li>`}).join('')}
 
 
-/* ---------- intake ---------- */
 function grow(){const q=$('mText');q.style.height='auto';q.style.height=Math.min(Math.max(q.scrollHeight,96),320)+'px'}
 function renderExNote(){const ex=S.exKey&&examples()[S.exKey];$('exNote').textContent=ex?t('exLoaded',{name:t(ex.label)}):''}
 function renderIntake(){const I=S.intake;$('mText').value=I.text||'';$('mArrived').value=I.arrived||'';$('mExpiry').value=I.expiry||'';$('mHow').value=I.how||'unknown';
@@ -1149,7 +1114,6 @@ function loadExample(k){const ex=examples()[k];if(!ex)return;
   save();renderIntake();renderFacts();renderCalc();renderCheck();renderStay();renderReply();renderRem();
   closeSheet($('sheetEx'),true);try{$('mText').focus({preventScroll:true})}catch(e){$('mText').focus()}}
 
-/* ---------- sheets: slide up on phones, from the side on desktop ---------- */
 const sheetStack=[];
 function openSheet(id){const d=typeof id==='string'?$(id):id;if(!d||d.open)return;const opener=document.activeElement;
   try{d.showModal()}catch(e){d.setAttribute('open','')}sheetStack.push({d,opener,quiet:false});document.documentElement.classList.add('locked')}
@@ -1163,7 +1127,6 @@ document.addEventListener('click',e=>{const o=e.target.closest('[data-sheet]');
   const c=e.target.closest('[data-close]');if(c){closeSheet(c.closest('dialog'));return}
   const g=e.target.closest('[data-go]');if(g)focusEl(g.dataset.go)});
 
-/* ---------- English / Arabic with full RTL ---------- */
 function applyLang(l){const ar=l==='ar';UI.lang=ar?'ar':'en';const root=document.documentElement;root.lang=UI.lang;root.dir=ar?'rtl':'ltr';
   document.querySelectorAll('[data-t]').forEach(e=>{e.textContent=t(e.dataset.t)});
   document.querySelectorAll('[data-ta]').forEach(e=>{e.setAttribute('aria-label',t(e.dataset.ta))});
@@ -1173,7 +1136,6 @@ function applyLang(l){const ar=l==='ar';UI.lang=ar?'ar':'en';const root=document
   try{localStorage.setItem(LKEY,UI.lang)}catch(e){}
   if(S){fillHow();renderAll()}}
 
-/* ---------- events ---------- */
 $('askForm').addEventListener('submit',e=>{e.preventDefault();readMessage()});
 $('mText').addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();readMessage()}});
 window.addEventListener('resize',grow);
@@ -1208,7 +1170,6 @@ $('remCopy').addEventListener('click',async()=>{const E=remExpiry();if(!parseISO
   planReminders();save();const m=$('remManual');m.value=remText(E);await copyText(m.value,$('remMsg'),m);renderRem()});
 $('langBtn').addEventListener('click',()=>applyLang(UI.lang==='ar'?'en':'ar'));
 
-/* two-tap reset: clears the demo data kept on this device */
 let resetArmed=false,resetT=0;
 $('reset').addEventListener('click',()=>{const b=$('reset');
   if(!resetArmed){resetArmed=true;b.textContent=t('resetArm');$('resetMsg').textContent=t('resetWarn');resetT=setTimeout(()=>{resetArmed=false;b.textContent=t('reset');$('resetMsg').textContent=''},4000);return}
@@ -1219,18 +1180,13 @@ $('reset').addEventListener('click',()=>{const b=$('reset');
 
 function renderAll(){renderIntake();renderFacts();renderCalc();renderCheck();renderStay();renderReply();renderMoveout();renderDep();renderRem();renderRules()}
 
-/* ---------- start ---------- */
 if(EMBED)document.documentElement.classList.add('embed');
 {let l0=PARAMS.get('lang');if(l0!=='ar'&&l0!=='en'){try{l0=localStorage.getItem(LKEY)}catch(e){l0=null}}if(l0!=='ar'&&l0!=='en')l0=(navigator.language||'').toLowerCase().startsWith('ar')?'ar':'en';UI.lang=l0}
 S=loadState();
-/* ?q= fills the main input (the landing page passes the question it was asked) */
 const Q0=PARAMS.get('q');
-/* A question from the landing page is a new case: nothing from the last example or check carries over (the deposit and key dates the user typed stay). */
 if(Q0&&Q0.trim()){S.exKey=null;S.intake={text:Q0.slice(0,4000),arrived:'',expiry:'',how:'unknown'};S.read=null;S.facts=null;S.confirmed=false;S.check=null;
   S.calc={kind:'',pct:'',demo:false};S.stayRes=null;clearReply();if(!S.rem.touched)S.rem.expiry=''}
-/* A saved state that cannot be used must never stop the page from starting. */
 try{applyLang(UI.lang)}catch(e){S=freshState();save();try{applyLang(UI.lang)}catch(e2){}}
-/* drawn: the guard script stays quiet */
 try{window.PAGE_READY=true}catch(e){}
 </script>
 </body>

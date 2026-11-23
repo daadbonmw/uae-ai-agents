@@ -12,7 +12,6 @@
 <meta name="description" content="Zaheb: interview practice, a first-90-days plan and Emiratisation hiring help, in English and Arabic.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%2392722A' d='M12 2a10 10 0 1 1 0 20H2V12A10 10 0 0 1 12 2z'/%3E%3C/svg%3E">
 <script>
-/* Before first paint: embed mode and language, so nothing flashes. */
 (function(){try{var q=new URLSearchParams(location.search),r=document.documentElement,l=(q.get('lang')||'').toLowerCase(),e=q.get('embed')==='1';
 function g(k){try{return localStorage.getItem(k)}catch(x){return null}}
 var ok=function(v){return v==='ar'||v==='en'},land=g('uaeagents-lang'),own=null;try{own=JSON.parse(g('zaheb-lang-v1'))}catch(x){}
@@ -20,11 +19,8 @@ if(e)r.classList.add('embed');
 if(!ok(l))l=e&&ok(land)?land:ok(own)?own:ok(land)?land:(/^ar\b/i.test(navigator.language||'')?'ar':'en');
 r.lang=l;r.dir=l==='ar'?'rtl':'ltr'}catch(x){}})();
 </script>
-<script id="guard">/* Never a silent dead page. Oldest plain JavaScript on purpose (no let, const, arrows or template strings), so it runs on any phone.
-   The main script sets PAGE_STARTED as its first act (and removes the "Loading" line) and PAGE_READY when the page is drawn.
-   If it never starts (a browser that cannot read it) or stops before that, this shows in English and Arabic that the page could not
-   start here and what to do. The main script is inline, so by DOMContentLoaded it has run or failed.
-   Only script errors count: a file that fails to load (the font on a slow line) is not a reason for the message. */
+<script id="guard">
+
 (function(){var shown=false;
 function fail(){if(shown||window.PAGE_READY)return;shown=true;var el=document.getElementById('bootNote');
 if(!el){el=document.createElement('p');el.id='bootNote';var m=document.getElementById('main')||document.body;if(!m)return;m.insertBefore(el,m.firstChild)}
@@ -441,14 +437,12 @@ dialog.sheet::backdrop{background:rgba(14,15,18,.5)}
 
 <script>
 'use strict';
-/* first act: tell the guard script the page started and take the "Loading" line away */
 try{window.PAGE_STARTED=true;const bn=document.getElementById('bootNote');if(bn&&bn.parentNode)bn.parentNode.removeChild(bn)}catch(e){}
 const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const QS=new URLSearchParams(location.search);
 const EMBED=document.documentElement.classList.contains('embed');
 
-/* ---------- interface text: English and Arabic ---------- */
 const I18N={
 en:{
 skip:'Skip to content',brand:'Zaheb',close:'Close',more:'More',moreDetails:'More details',back:'Back',chooseH:'What brings you here?',chSeek:'I’m looking for a job',
@@ -550,12 +544,10 @@ const T=(k,v)=>esc(t(k,v));
 const L=o=>o==null?'':typeof o==='string'?o:(o[LANG]!=null?o[LANG]:o.en);
 const qm=w=>LANG==='ar'?'«'+w+'»':'“'+w+'”';
 const smooth=()=>matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth';
-/* Counts with the right Arabic noun form (one, two, 3 to 10, 11 to 99, hundreds). */
 const AR_PR=(()=>{try{return new Intl.PluralRules('ar')}catch(e){return null}})();
 const DAYS={en:{one:'{n} day',other:'{n} days'},ar:{zero:'{n} يوم',one:'يوم واحد',two:'يومان',few:'{n} أيام',many:'{n} يوماً',other:'{n} يوم'}};
 function countOf(forms,n){const f=forms[LANG]||forms.en;const c=LANG==='ar'&&AR_PR?AR_PR.select(n):(n===1?'one':'other');return (f[c]||f.other).replace('{n}',n)}
 
-/* ---------- career data (bilingual, generic role families, no real companies, no salaries) ---------- */
 const FAM={
  ops:{en:'Operations and logistics',ar:'العمليات واللوجستيات',
   kw:['logistic','supply','operation','warehouse','shipping','delivery','planning','schedul','inventory','stock','لوجست','عمليات','مستودع','شحن','توصيل','مخزون','إمداد'],
@@ -604,7 +596,6 @@ const TRANSFER={
  problem:{en:'Solving problems',ar:'حل المشكلات',kw:['problem','troubleshoot','fix','المشكلات','مشكلة','أصلح','إصلاح']},
  service:{en:'Looking after people',ar:'الاهتمام بالناس',kw:['customer','guest','helping','people','عملاء','ضيوف','مساعدة','الناس']}
 };
-/* Arabic questions avoid masculine-only verbs, so they read right for every candidate. */
 const BANK=[
  {en:'Tell me about yourself.',ar:'نبذة قصيرة عنك، من فضلك.'},
  {en:'Why do you want to work in this field?',ar:'ما سبب اهتمامك بهذا المجال؟'},
@@ -645,7 +636,6 @@ const HIRE={
  retain:{en:['A written career path per role','Training time in year one','A “stay” talk at 3 and 6 months'],ar:['مسار مهني مكتوب لكل وظيفة','وقت للتدريب في السنة الأولى','حديث عن البقاء بعد 3 و6 أشهر']},
  week:{en:['Laptop and accounts ready','A welcome from the manager','A real task by day three'],ar:['الحاسوب والحسابات جاهزة','ترحيب من المدير','مهمة حقيقية بحلول اليوم الثالث']}
 };
-/* Mariam's made-up profile exists in both languages, so an Arabic visit opens with Arabic data. */
 const EX={
  mariam:{
   en:{name:'Mariam',emirate:'sharjah',edu:'bachelor',field:'Business administration',skills:'Excel, social media, volunteering. I organised charity events at university and ran the social media page for our student club. I like planning and working with people.',sectors:['logistics','retail','media'],loc:'uae',hours:'full',
@@ -660,7 +650,6 @@ const EXE={
  logi:{size:'180',skilled:'60',emirati:'3',sector:'logistics',plans:{en:'We plan to hire about 12 people next year: two warehouse supervisors, a planning analyst and customer service staff. Ideally young men under 30, because the roles include site visits. We want people who stay and grow with us.',ar:'نخطط لتوظيف نحو 12 شخصاً في العام المقبل: مشرفَين للمستودع ومحلل تخطيط وموظفين لخدمة العملاء. ويُفضَّل أن يكونوا شباباً من الذكور دون 30 عاماً، لأن الوظائف تتضمن زيارات ميدانية. نريد أشخاصاً يبقون معنا وينمون.'}},
  small:{size:'35',skilled:'12',emirati:'1',sector:'other',plans:{en:'We are a design studio. We may hire two junior designers and one office coordinator next year.',ar:'نحن استوديو تصميم. قد نوظّف مصممَين مبتدئَين ومنسق مكتب واحداً في العام المقبل.'}}
 };
-/* ---------- rules: untrusted text and fairness ---------- */
 const FAIR_EN={
  gender:/\b(?:male|female|males|females|men|women|man|woman|lady|ladies|gentleman|gentlemen|boy|boys|girl|girls|guys|lads|gender|sex)\b/gi,
  religion:/\b(?:religion|religious|muslims?|christians?|hindus?|jews?|jewish|buddhists?|sikhs?|faith|hijab|hijabs|abaya|niqab|headscarf|headscarves|prayers?|praying|pray|fasting)\b/gi,
@@ -677,13 +666,8 @@ const FAIR_AR={
  health:['صحة','صحي','صحية','إعاقة','معاق','معاقين','مرض','أمراض']
 };
 for(const k in FAIR_AR)FAIR_AR[k]=new Set(FAIR_AR[k].map(nAr));
-/* "ذكر" alone also means "mentioned" (كما ذكر المدير), so for "male" only the whole word "ذكراً" (as in "أن يكون ذكراً") is matched, with or without its marks. */
 const FAIR_AR_RE={gender:/(^|[^\p{L}\p{M}])((?:[وف]\p{M}*)?ذ\p{M}*ك\p{M}*ر\p{M}*ا\p{M}*)(?![\p{L}\p{M}])/gu,age:/(?:أقل|اقل|أكبر|اكبر|دون|فوق|تحت)\s+(?:من\s+)?(?:سن\s+)?(?:[0-9٠-٩]{2}\s*(?:عاماً|عاما|عام|سنة|سنوات)?|(?:ال)?(?:عشرين|ثلاثين|أربعين|اربعين|خمسين))/g,family:/الحالة\s+الاجتماعية/g};
-/* Ordinary work phrases that contain a flagged word but are not about a person's traits. */
 const FAIR_SAFE=/health\s*(?:and|&)\s*safety|health\s*insurance|health\s+(?:workers?|sector|services?|centres?|centers?|clinics?|care|professionals?|and well-?being|awareness)|healthcare|mental health (?:support|services?|days?|awareness|programmes?|programs?|resources|first aid)|prayer\s+(?:rooms?|spaces?|areas?)|الصحة\s*و\s*السلامة|الرعاية\s+الصحية|القطاع\s+الصحي|الخدمات\s+الصحية|التأمين\s+الصحي|(?:ال)?مركز\s+(?:ال)?صحي|(?:ال)?مراكز\s+(?:ال)?صحية|(?:ال)?مصلى|غرفة\s+(?:ال)?صلاة|حامل(?:اً|ًا|ا|ة|ه|ات|ي|ين|و|ون)?\s+(?:لل|ل|ال)?(?:شهاد|مؤهل|درج|رخص|بكالوريوس|دبلوم|ماجستير|دكتوراه|جنسي|جواز|إقام|اقام|تأشير|تاشير)[؀-ۿ]*|(?:بيئ|ثقاف)(?:ة|ه)\s+(?:(?:ال)?عمل\s+)?(?:ال)?صحي(?:ة|ه)|(?:وجبات|عادات)\s+(?:ال)?صحي(?:ة|ه)/gi;
-/* Arabic word forms: strips the common prefixes (و ف ب ل ك ال لل), the accusative alif (ذكوراً → ذكور), the ة / ات endings
-   and the pronoun endings ه ها هم هن ك كم كن (عمره، عمرها، عمرك → عمر). Stems shorter than 3 letters are not kept (سنه is often "year"),
-   and حامل is not reached this way (حاملها is "its holder", never "pregnant"). */
 function arVariants(tok){const v=new Set([tok]);const add=(f,min)=>{for(const x of [...v]){const y=f(x);if(y&&y!==x&&y.length>=(min||2))v.add(y)}};
   add(x=>x.replace(/^[وف]/,''));add(x=>x.replace(/^لل/,''));add(x=>x.replace(/^[بلك]/,''));add(x=>x.replace(/^ال/,''));
   add(x=>x.length>=4?x.replace(/ا$/,''):'');add(x=>x.replace(/ة$/,''),3);add(x=>x.replace(/ات$/,''),3);add(x=>{const y=x.replace(/(?:ها|هم|هن|كم|كن|ه|ك)$/,'');return y==='حامل'?'':y},3);return [...v]}
@@ -699,7 +683,6 @@ function fairScan(text){
   return {sents,hits:uniq,flagged:new Set(hits.map(h=>h.i))};
 }
 
-/* ---------- sheets: slide up on phones, side sheet on desktop; Back closes them (not when embedded) ---------- */
 const SHEETS=['sheetIv','sheetMap','sheet90','sheetHire','sheetMore'];
 const useHist=!EMBED&&window.self===window.top;
 let curSheet=null,sheetFrom=null,afterClose=null,closeSeq=0;
@@ -721,11 +704,9 @@ window.addEventListener('popstate',()=>{if(curSheet&&!(history.state&&history.st
 SHEETS.forEach(id=>{const d=$(id);
   d.addEventListener('cancel',e=>{e.preventDefault();closeSheet()});
   d.addEventListener('click',e=>{if(e.target===d||e.target.closest('[data-close]'))closeSheet()});
-  /* A close the browser did by itself: tidy up and drop the sheet's history entry. */
   d.addEventListener('close',()=>{if(curSheet!==id)return;curSheet=null;document.documentElement.classList.remove('locked');if(useHist&&history.state&&history.state.zs)history.back()})});
 document.addEventListener('click',e=>{const b=e.target.closest('[data-sheet]');if(!b)return;e.preventDefault();openSheet(b.dataset.sheet,b.closest('dialog')?sheetFrom:b)});
 
-/* ---------- helpers ---------- */
 const famName=id=>FAM[id]?L(FAM[id]):'';
 const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
 const words=s=>(String(s||'').trim().match(/\S+/g)||[]).length;
@@ -739,21 +720,16 @@ const moreHTML=inner=>inner?`<details class="more"><summary>${T('more')}</summar
 const blk=(k,inner)=>`<div class="blk"><h3>${T(k)}</h3>${inner}</div>`;
 const statusHTML=(sym,text)=>`<p class="status"><span class="sym" aria-hidden="true">${sym}</span><span>${esc(text)}</span></p>`;
 const resultHead=(r,key)=>`<div class="rhead"><span class="chip">${T('ruleTag')}</span>${r.example?`<span class="chip">${T('exampleTag')}</span>`:''}<span class="grow"></span><button type="button" class="tbtn" data-copy="${key}" aria-label="${T('copy_'+key)}">${T('copy')}</button></div><div id="copy-${key}"></div>`;
-/* One shared, visually hidden status region tells screen-reader users when results arrive. */
 let anTimer=null;
 function announce(msg){const el=$('announce');if(!el||!msg)return;clearTimeout(anTimer);el.textContent='';anTimer=setTimeout(()=>{el.textContent=msg},60)}
-/* Error lines keep their key, so a language switch re-translates them and Reset clears them. */
 function setErr(id,k){const el=$(id);if(!el)return;el.dataset.k=k||'';el.textContent=k?t(k):''}
 
-/* ---------- state ---------- */
 const KEY='zaheb-demo-v1', LKEY='zaheb-lang-v1';
 const PF={name:'pName',emirate:'pEmirate',edu:'pEdu',field:'pField',skills:'pSkills',loc:'pLoc',hours:'pHours',cv:'pCV'};
 const EF={size:'eSize',skilled:'eSkilled',emirati:'eEmirati',sector:'eSector',plans:'ePlans'};
 const SEED_ANSWER={en:'I’m Mariam, a Business graduate from Sharjah. At university I volunteered at charity events and helped sell tickets. I’m good with Excel, and I ran our student club’s social media page. Now I want my first job.',
  ar:'أنا مريم، خريجة إدارة أعمال من الشارقة. في الجامعة تطوعت في فعاليات خيرية وساعدت في تنظيم بيع التذاكر لإحداها. أجيد إكسل، وأدرت صفحة التواصل الاجتماعي لنادي الطلبة. أبحث الآن عن أول وظيفة أخطط فيها للعمل وأنظّمه.'};
 function seedInterview(role){const a=SEED_ANSWER[LANG];return {role,example:true,done:false,items:[{bank:0,a,checks:selfCheck(a)},{bank:1}]}}
-/* The made-up demo, in the current language. "pristine" stays true until the visitor changes anything,
-   so a language switch can swap the example into the other language. */
 function seed(){
   const profile=exProfile('mariam');
   const map=rulesMap(profile);map.example=true;
@@ -761,26 +737,21 @@ function seed(){
   const emp={...EXE.logi,plans:L(EXE.logi.plans)};
   const hire={example:true,snap:target(emp),removed:fairScan(emp.plans).hits.map(h=>({w:h.w,cat:h.cat}))};
   return {pristine:true,profile,map,rolePick,iv:seedInterview(rolePick),p90:{role:rolePick,example:true},emp,hire,ivDraft:''}}
-/* Saved state is merged over fresh defaults. */
 function load(){try{const v=JSON.parse(localStorage.getItem(KEY)||'null');
     if(v&&v.profile&&typeof v.profile==='object'&&v.emp&&typeof v.emp==='object'){const d=seed();
       return {...d,...v,profile:{...d.profile,...v.profile},emp:{...d.emp,...v.emp},pristine:v.pristine===true}}}catch(e){}return seed()}
 let S;
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));return true}catch(e){return false}}
-/* Any change by the visitor ends the pristine example. */
 function touch(){if(S.pristine)S.pristine=false}
 
-/* ---------- jobseeker: profile ---------- */
 function readProfile(){const p={};for(const k in PF)p[k]=$(PF[k]).value;p.sectors=[...document.querySelectorAll('input[name=pSector]:checked')].map(x=>x.value);return p}
 function writeProfile(p){for(const k in PF){const el=$(PF[k]);if(el.tagName==='SELECT'){el.value=p[k]||'';if(!el.value)el.selectedIndex=0}else el.value=p[k]||''}
   document.querySelectorAll('input[name=pSector]').forEach(x=>{x.checked=(p.sectors||[]).includes(x.value)})}
 let saveTimer=null;
-/* "Saved here." is written once (empty to saved), so the live region does not repeat it after every pause. */
 let savedShown=false;
 function markSaved(){if(savedShown)return;savedShown=true;$('savedNote').textContent=t('saved')}
 $('profileForm').addEventListener('input',()=>{S.profile=readProfile();touch();renderExMarks();clearTimeout(saveTimer);saveTimer=setTimeout(()=>{if(save())markSaved()},400)});
 $('profileForm').addEventListener('change',()=>{S.profile=readProfile();touch();if(save())markSaved()});
-/* Loading an example or clearing the form over typed data can be undone for a few seconds. */
 let undoProfile=null,undoTimer=null;
 const isExampleProfile=p=>EX_ALL.some(x=>x.skills===p.skills&&x.cv===p.cv);
 const hasProfileData=p=>!!String((p.name||'')+(p.field||'')+(p.skills||'')+(p.cv||'')).trim();
@@ -792,7 +763,6 @@ document.querySelectorAll('[data-ex]').forEach(b=>b.addEventListener('click',()=
 $('clearBtn').addEventListener('click',()=>{replaceProfile({name:'',emirate:'dubai',edu:'bachelor',field:'',skills:'',sectors:[],loc:'uae',hours:'full',cv:''},'an_cleared');$($('undoBtn').hidden?'pSkills':'undoBtn').focus()});
 $('undoBtn').addEventListener('click',()=>{if(!undoProfile)return;const p=undoProfile;undoProfile=null;clearTimeout(undoTimer);writeProfile(p);S.profile=p;save();renderExMarks();$('undoBtn').hidden=true;announce(t('an_restored'));$('pSkills').focus()});
 
-/* ---------- jobseeker: map my strengths ---------- */
 function rulesMap(p){
   const text=[p.field,p.skills,p.cv].join(' \n ');
   const scored=Object.keys(FAM).map((id,order)=>{const hits=[];for(const kw of FAM[id].kw){const w=findWord(text,kw);if(w&&!hits.some(h=>h.w&&h.w.toLowerCase()===w.toLowerCase()))hits.push({w})}
@@ -831,29 +801,22 @@ function renderMap(){const box=$('mapOut');const r=S.map;
 function mapText(){const r=S.map;if(!r)return '';const v=mapVM(r);
   return [t('strengthsH')+': '+v.strengths.join(', '),t('transferH')+': '+v.transfer.join(', '),'',t('rolesH')+':',...v.roles.map((m,i)=>`${i+1}. ${m.family}\n   ${m.why}\n   ${t('firstTasks')}: ${m.tasks.join('; ')}\n   ${t('toBuild')}: ${m.build.join('; ')}`),'',t('cvTipsH')+':',...v.tips.map(x=>'- '+x),'',t('nextH')+':',...v.steps.map(x=>'- '+x)].join('\n')}
 
-/* ---------- role family selects (shared by interview and 90 days) ---------- */
-/* Long names are shortened in the closed select (full name in the tooltip), so they are not clipped on phones. */
 const capLabel=s=>{const a=[...String(s)];return a.length>34?a.slice(0,33).join('').replace(/\s+$/,'')+'…':String(s)};
 const syncSelTitle=sel=>{const o=sel.options[sel.selectedIndex];sel.title=o?o.title:''};
 function renderRoleSelects(){const opts=Object.keys(FAM).map(id=>[id,famName(id)]);document.querySelectorAll('[data-role-select]').forEach(sel=>{sel.innerHTML=opts.map(([v,l])=>`<option value="${esc(v)}" title="${esc(l)}" ${v===S.rolePick?'selected':''}>${esc(capLabel(l))}</option>`).join('');if(!opts.some(([v])=>v===S.rolePick))sel.selectedIndex=0;syncSelTitle(sel)})}
 document.querySelectorAll('[data-role-select]').forEach(sel=>sel.addEventListener('change',()=>{S.rolePick=sel.value;touch();document.querySelectorAll('[data-role-select]').forEach(x=>{x.value=sel.value;syncSelTitle(x)});save()}));
-/* ?q= from the landing page picks the job type (the main input here), or the employer mode for hiring words. */
 const HIRE_WORDS=/\b(?:hire|hiring|recruit\w*|employer|emirati[sz]ation|headcount)\b|توظيف|توطين|موظفين|صاحب عمل|أصحاب العمل/i;
 function famFromText(q){const text=String(q||'');let best=null,bestN=0;
   for(const id of Object.keys(FAM)){let n=0;for(const kw of FAM[id].kw)if(findWord(text,kw))n++;if(n>bestN){best=id;bestN=n}}
   if(!best){const SECW={logistics:/logistic|warehouse|لوجست|مستودع/i,finance:/bank|financ|account|بنك|مالي|محاسب/i,retail:/retail|shop|store|تجزئة|متجر/i,hospitality:/hotel|hospitality|airline|cabin crew|tourism|فندق|ضيافة|سياحة|طيران/i,tech:/\bit\b|tech|software|تقنية|برمجة/i,health:/health|hospital|clinic|nurse|صحة|مستشفى|عيادة/i,energy:/energy|oil|gas|طاقة|نفط/i,media:/media|marketing|إعلام|تسويق/i,construction:/construction|engineer|بناء|هندسة/i};
     for(const [s,re] of Object.entries(SECW))if(re.test(text)){best=SECTOR_FAM[s];break}}
   return best}
-/* Job seekers' phrases that contain a hiring word are taken out first, so they stay on Job seeker: "مقابلة توظيف" is
-   "job interview" (also taken out before the job type is picked, so it does not read as HR), and "recruitment officer"
-   or "hiring manager" is a job title or a person. */
 function applyQ(){const q=String(QS.get('q')||'').trim().slice(0,400);if(!q)return;
   const qa=q.replace(/مقابل(?:ة|ات)\s+(?:ال)?توظيف|مقابلة\s+للتوظيف/g,' ');
   const qh=qa.replace(/\b(?:recruit\w*|hiring)\s+(?:officer|coordinator|specialist|assistant|manager|role|job|position)s?\b/gi,' ');
   if(HIRE_WORDS.test(qh)){setTab('hire');return}
   setTab('seek');const f=famFromText(qa);if(f){S.rolePick=f;renderRoleSelects();save()}}
 
-/* ---------- jobseeker: interview practice ---------- */
 function selfCheck(a){const n=words(a);return SELF.filter(s=>s.re?s.re.test(a):(n>=30&&n<=250)).map(s=>s.id)}
 const IV_TOTAL=BANK.length;
 const qText=it=>L(BANK[it.bank]);
@@ -897,7 +860,6 @@ let ivSaveTimer=null;
 $('ivBox').addEventListener('input',e=>{if(e.target.id==='ivAnswer'){S.ivDraft=e.target.value;clearTimeout(ivSaveTimer);ivSaveTimer=setTimeout(save,500);const er=$('ivErr');if(er)er.textContent=''}});
 $('ivBox').addEventListener('keydown',e=>{if(e.target.id==='ivAnswer'&&e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();sendAnswer()}});
 
-/* ---------- jobseeker: first 90 days ---------- */
 function p90VM(r){const role=famName(r.role);const rl=LANG==='en'&&!/^[A-Z]{2}/.test(role)?role.charAt(0).toLowerCase()+role.slice(1):role;
   return {weeks:P90.weeks.map(w=>({when:L(w.when),focus:L(w.focus),ms:w.ms[LANG].map(x=>x.replace('{role}',rl))})),people:P90.people.map(x=>({who:L(x.who),why:L(x.why)})),fb:P90.fb[LANG]}}
 function runP90(){S.rolePick=$('p90Role').value||S.rolePick;touch();setErr('p90Err','');
@@ -914,21 +876,17 @@ function p90Text(){const r=S.p90;if(!r)return '';const v=p90VM(r);return [t('p90
 $('mapBtn').addEventListener('click',runMap);
 $('p90Btn').addEventListener('click',runP90);
 
-/* ---------- employer: target check ---------- */
 function readEmp(){const e={};for(const k in EF)e[k]=$(EF[k]).value;return e}
 function writeEmp(e){for(const k in EF)$(EF[k]).value=e[k]||'';if(!$('eSector').value)$('eSector').selectedIndex=0}
-/* Empty fields ask for input; anything filled in that is not a whole number of 0 or more is "invalid". */
 function target(e){const raw=[e.size,e.skilled,e.emirati].map(x=>String(x==null?'':x).trim());
   if(raw.some(x=>x===''))return {state:'need'};
   if(raw.some(x=>!/^\d+$/.test(x)))return {state:'invalid'};
   const [size,sk,cur]=raw.map(x=>parseInt(x,10));
   if(sk>size||cur>sk)return {state:'invalid'};
   if(size<50)return {state:'small',size,sk,cur};
-  const req=Math.ceil(sk/10);/* ceil(10% x skilled roles), in whole-number maths so 60 gives exactly 6 */
+  const req=Math.ceil(sk/10);
   const gap=Math.max(0,req-cur);const pct=req?Math.min(100,Math.round(cur/req*100)):100;
   return {state:'ok',size,sk,cur,req,gap,pct}}
-/* The latest published target: 10% of skilled jobs by the end of 2026. After that date the page says it is the 2026
-   target and points to MoHRE for the current one, instead of counting down to a date that has passed. */
 const TGT={year:2026,end:new Date(2026,11,31,23,59,59)};
 const daysLeft=()=>{const d=Math.ceil((TGT.end.getTime()-Date.now())/864e5);return d>0?d:0};
 const OFFICIAL=()=>`<p class="note">${T('srcLabel')} <a href="https://www.mohre.gov.ae" target="_blank" rel="noopener noreferrer">${T('mohre')}</a> · <a href="https://nafis.gov.ae" target="_blank" rel="noopener noreferrer">${T('nafis')}</a></p>`;
@@ -949,12 +907,10 @@ function renderTarget(){const r=target(S.emp);const box=$('tgtOut');let h='';con
   if(r.state!=='need'&&r.state!=='invalid'){more.push(`<p class="note">${T('tgtSrc')}</p>`+OFFICIAL());if(tr.length)more.push(traceHTML(tr))}
   box.innerHTML=h+moreHTML(more.join(''))}
 
-/* ---------- employer: fairness rails ---------- */
 function renderFair(){const sc=fairScan(S.emp.plans);const box=$('fairOut');
   if(!String(S.emp.plans||'').trim())box.innerHTML='';
   else if(!sc.hits.length)box.innerHTML=statusHTML('✓',t('fairOk'));
   else box.innerHTML=statusHTML('!',t('fairH',{n:sc.hits.length}))+`<p class="note" dir="auto">${sc.hits.map(h=>`${esc(qm(h.w))} (${T('fc_'+h.cat)})`).join(listSep())}</p><p class="note">${T('fairWhy')}</p>`}
-/* The employer form is announced once, after a pause, and only when the result really changes. */
 let empSig='',empAnTimer=null;
 function empKey(){const r=target(S.emp);return JSON.stringify([r.state,r.req,r.cur,r.gap,fairScan(S.emp.plans).hits.length])}
 function empStatus(){const r=target(S.emp);const n=fairScan(S.emp.plans).hits.length;const parts=[];
@@ -966,7 +922,6 @@ const empInput=e=>{S.emp=readEmp();if(e&&e.isTrusted)touch();renderExMarks();con
 ['empForm','empPlan'].forEach(id=>{$(id).addEventListener('input',empInput);$(id).addEventListener('change',empInput)});
 document.querySelectorAll('[data-eex]').forEach(b=>b.addEventListener('click',()=>{const x=EXE[b.dataset.eex];const e={...x,plans:L(x.plans)};writeEmp(e);S.emp=e;touch();save();renderExMarks();renderTarget();renderFair();announceEmp()}));
 
-/* ---------- employer: hiring and retention plan ---------- */
 function hireVM(r){const s=r.snap||{};
   return {roles:s.state==='ok'?(s.gap?HIRE.rolesGap[LANG].map(x=>x.replace('{g}',s.gap)):HIRE.rolesMet[LANG]):HIRE.rolesSmall[LANG],where:HIRE.where[LANG],buddy:HIRE.buddy[LANG],retain:HIRE.retain[LANG],week:HIRE.week[LANG]}}
 function runHire(){const e=readEmp();S.emp=e;touch();const tg=target(e);setErr('hireErr','');
@@ -984,14 +939,12 @@ function renderHire(){const box=$('hireOut');const r=S.hire;if(!r){box.innerHTML
 function hireText(){const r=S.hire;if(!r)return '';const v=hireVM(r);return [['h_roles',v.roles],['h_where',v.where],['h_buddy',v.buddy],['h_retain',v.retain],['h_week',v.week]].map(([k,a])=>t(k)+':\n'+a.map(x=>'- '+x).join('\n')).join('\n\n')+'\n\n'+t('tgtEstimate')}
 $('hireBtn').addEventListener('click',runHire);
 
-/* ---------- copy (on click only, with a manual fallback) ---------- */
 document.addEventListener('click',async e=>{const b=e.target.closest('[data-copy]');if(!b)return;const k=b.dataset.copy;
   const txt=k==='map'?mapText():k==='p90'?p90Text():k==='hire'?hireText():'';let ok=false;
   try{if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(txt);ok=true}}catch(x){ok=false}
   if(ok){b.textContent=t('copied');announce(t('copied'));setTimeout(()=>{b.textContent=t('copy')},1600);return}
   const slot=$('copy-'+k);if(!slot)return;slot.innerHTML=`<label class="f" for="copybox-${k}"><span>${T('copyFallback')}</span><textarea id="copybox-${k}" class="input" readonly dir="auto">${esc(txt)}</textarea></label>`;const ta=$('copybox-'+k);ta.focus();ta.select()});
 
-/* ---------- tabs, language, reset ---------- */
 function renderTiles(){const iv=S.iv;$('ivLine').textContent=!iv||iv.example?t('ivLine'):iv.done?t('ivLineDone'):t('ivLineQ',{n:iv.items.length,t:IV_TOTAL})}
 function setTab(tab,focus){const side=tab==='hire'||tab==='seek'?tab:'';
   $('paneChoose').hidden=!!side;$('paneSeek').hidden=side!=='seek';$('paneHire').hidden=side!=='hire';
@@ -1015,7 +968,6 @@ function applyStatic(){
   const m=$('langMore');m.textContent=ar?'English':'العربية';m.lang=ar?'en':'ar';
   ['mapErr','p90Err','hireErr'].forEach(id=>{const el=$(id);el.textContent=el.dataset.k?t(el.dataset.k):''});
   $('savedNote').textContent=savedShown?t('saved'):''}
-/* The loaded example shows as a pressed button (Mariam, Saeed, Logistics or Small firm); #profEx and #empEx say "Example" to screen readers. */
 const exKeyOf=p=>Object.keys(EX).find(k=>{const x=EX[k];return (x.en&&x.ar?[x.en,x.ar]:[x]).some(v=>v.skills===p.skills&&v.cv===p.cv)})||'';
 function renderExMarks(){const p=S.profile||{},e=S.emp||{};
   const pk=exKeyOf(p);document.querySelectorAll('[data-ex]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.ex===pk)));$('profEx').textContent=pk?t('exampleTag'):'';
@@ -1036,8 +988,6 @@ $('reset').addEventListener('click',()=>{const b=$('reset');
   writeProfile(S.profile);writeEmp(S.emp);save();setTab('');renderAll();empSig=empKey();
   closeSheet(()=>{$('main').focus({preventScroll:true});window.scrollTo({top:0,behavior:smooth()});announce(t('cleared'))})});
 
-/* ---------- start ---------- */
-/* A damaged save never stops the page: fall back to the made-up demo. */
 function boot(st){S=st;writeProfile(S.profile);writeEmp(S.emp);renderAll();setTab('');empSig=empKey()}
 try{boot(load())}catch(e){boot(seed())}
 try{applyQ()}catch(e){}

@@ -251,11 +251,8 @@ html.embed h1{margin-top:0}
 .bootnote span+span{margin-top:6px}
 .bootfail{color:var(--ink,inherit)}
 </style>
-<script id="guard">/* Never a silent dead page. Oldest plain JavaScript on purpose (no let, const, arrows or template strings), so it runs on any phone.
-   The main script sets PAGE_STARTED as its first act (and removes the "Loading" line) and PAGE_READY when the page is drawn.
-   If it never starts (a browser that cannot read it) or stops before that, this shows in English and Arabic that the page could not
-   start here and what to do. The main script is inline, so by DOMContentLoaded it has run or failed.
-   Only script errors count: a file that fails to load (the font on a slow line) is not a reason for the message. */
+<script id="guard">
+
 (function(){var shown=false;
 function fail(){if(shown||window.PAGE_READY)return;shown=true;var el=document.getElementById('bootNote');
 if(!el){el=document.createElement('p');el.id='bootNote';var m=document.getElementById('main')||document.body;if(!m)return;m.insertBefore(el,m.firstChild)}
@@ -337,14 +334,12 @@ else{setTimeout(fail,8000)}})();</script>
 
 <script id="app">
 'use strict';
-/* first act: tell the guard script the page started and take the "Loading" line away */
 try{window.PAGE_STARTED=true;const bn=document.getElementById('bootNote');if(bn&&bn.parentNode)bn.parentNode.removeChild(bn)}catch(e){}
 const root=document.documentElement;
 const PARAMS=new URLSearchParams(location.search);
 const EMBED=PARAMS.get('embed')==='1';
 const LKEY='uaeagents-lang';
 
-/* ---------- words (English and Arabic) ---------- */
 const STR={en:{
 brand:'Wareeni',h1:'What needs fixing?',lead:'Prepare your report here, then send it to your municipality yourself.',lText:'What’s wrong?',phText:'Broken bench',photo:'Add a photo',lSticker:'Demo QR sticker: fills in the place',noSticker:'No sticker',lLoc:'Place',phLoc:'Where?',
 exH:'Try an example',ex1:'Broken bench in a park',ex2:'Light not working on a path',ex3:'Water pipe leaking',ex1t:'Bench slats are broken near the playground. A child could get hurt.',ex2t:'The light on the lake walkway is not working. It is dark at night.',ex3t:'Irrigation pipe is leaking by the track, water everywhere.',send:'Prepare report',sending:'Reading the report',yourPhoto:'Your photo',
@@ -424,7 +419,6 @@ let LANG='en';
 function txl(l,k,p){let s=STR[l]&&STR[l][k];if(s==null)s=STR.en[k];if(s==null)return k;return p?s.replace(/\{(\w+)\}/g,(m,n)=>p[n]!=null?String(p[n]):m):s}
 const tx=(k,p)=>txl(LANG,k,p);
 
-/* ---------- data ---------- */
 const CATS={water_leak:['Water leak','Irrigation team'],lighting:['Lighting','Electrical team'],park_furniture:['Park furniture','Furniture team'],waste:['Waste','Waste team'],road_path:['Path or road','Paving team'],trees_landscaping:['Trees & planting','Landscaping team'],safety_hazard:['Safety hazard','Rapid response team'],other:['Other','Duty supervisor']};
 const CATS_AR={water_leak:['تسرب مياه','فريق الري'],lighting:['إنارة','فريق الكهرباء'],park_furniture:['أثاث الحدائق','فريق الأثاث'],waste:['نفايات','فريق النفايات'],road_path:['ممر أو طريق','فريق الرصف'],trees_landscaping:['أشجار وزراعة','فريق التشجير'],safety_hazard:['خطر على السلامة','فريق الاستجابة السريعة'],other:['أخرى','المشرف المناوب']};
 const catRow=(k,l)=>((l||LANG)==='ar'?CATS_AR:CATS)[k]||((l||LANG)==='ar'?CATS_AR:CATS).other;
@@ -449,9 +443,7 @@ const H=3600e3, D=24*H;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const toAsciiDigits=s=>String(s==null?'':s).replace(/[٠-٩۰-۹]/g,d=>String(d.charCodeAt(0)&15));
-/* Place names are compared after folding case, Arabic letter variants, diacritics and Arabic-Indic digits. */
 const norm=s=>(toAsciiDigits(s).toLowerCase().replace(/[ً-ٰٟـ]/g,'').replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').match(/[\p{L}\p{N}]+/gu)||[]).join(' ');
-/* The report's language comes from the script most of its letters use. Urdu has letters Arabic never uses. */
 function detectLang(s){s=String(s||'');const n=re=>(s.match(re)||[]).length;
   const arab=n(/[؀-ۿݐ-ݿࢠ-ࣿﭐ-﷿ﹰ-﻿]/g),latin=n(/[A-Za-z]/g),deva=n(/[ऀ-ॿ]/g),mal=n(/[ഀ-ൿ]/g),beng=n(/[ঀ-৿]/g);
   const top=Math.max(arab,latin,deva,mal,beng);if(!top)return 'en';
@@ -467,7 +459,6 @@ function ago(t){const m=Math.round((Date.now()-t)/60000),ar=LANG==='ar';
 function fmtTarget(hrs,l){const ar=(l||LANG)==='ar';if(hrs<48)return ar?arCount(hrs,AR_H):hrs+' h';const d=Math.round(hrs/24);return ar?arCount(d,AR_D):d+(d===1?' day':' days')}
 function fmtAge(hrs,l){const ar=(l||LANG)==='ar';if(hrs<48)return ar?arCount(hrs,AR_H):hrs+' hours';const d=Math.round(hrs/24);return ar?arCount(d,AR_D):d+' days'}
 
-/* ---------- timeline entries: stored with a key, shown in the reader's language ---------- */
 function evParams(p,l){const P=Object.assign({},p||{}),ar=l==='ar';
   if(P.cat){const row=(ar?CATS_AR:CATS)[P.cat];if(row){P.crew=row[1];P.cat=row[0]}}
   if(P.urg)P.urg=urgName(P.urg,l);
@@ -479,7 +470,6 @@ function evParams(p,l){const P=Object.assign({},p||{}),ar=l==='ar';
 function evText(e,l){l=l||LANG;if(e&&e.k&&STR.en[e.k])return txl(l,e.k,evParams(e.p,l));return (e&&e.text)||''}
 function log(c,who,k,p){const e={at:Date.now(),who,k,p:p||{}};e.text=evText(e,'en');c.events.push(e)}
 
-/* ---------- state ---------- */
 function seed(){
   const n=Date.now();
   const ev=(t,who,k,p)=>{const e={at:n-t,who,k,p:p||{}};e.text=evText(e,'en');return e};
@@ -500,10 +490,6 @@ function seed(){
      events:[ev(34*D,'Resident','evReported'),ev(33*D,'Crew','evFixedNote',{note:'replaced sprinkler head'}),ev(33*D-H,'Operator','evClosed')]}
   ];
 }
-/* ---------- saving on this phone (IndexedDB; nothing leaves the device) ----------
-   Case text and status go in the "cases" store; every photo goes once in the "photos" store under a key made from its content,
-   so a photo used twice is kept once. Photos that no case uses any more are removed on the next save.
-   When the browser blocks the database or has no room, the page keeps working in memory and says so. */
 const DB_NAME='wareeni-reports',IDB_STORES=['cases','photos'];
 let db=null,ready=false,storeState='ok';
 const savedPhotos=new Set();
@@ -534,14 +520,12 @@ function writeAll(recs,photos){return new Promise(res=>{
     const bad=()=>{const e=tx.error;setStore(e&&e.name==='QuotaExceededError'?'full':'blocked');res()};
     tx.onerror=bad;tx.onabort=bad}
   catch(e){setStore(e&&e.name==='QuotaExceededError'?'full':'blocked');res()}})}
-/* Takes a copy of the cases now and writes it in order after any earlier save. */
 function save(){if(!db)return;let recs,photos={};try{recs=cases.map(c=>pack(c,photos))}catch(e){return}
   saveChain=saveChain.then(()=>writeAll(recs,photos)).catch(()=>{})}
 function readAll(){return new Promise((res,rej)=>{try{const tx=db.transaction(IDB_STORES,'readonly');let recs=[];const photos={};
     const rq=tx.objectStore('cases').getAll();rq.onsuccess=()=>{recs=rq.result||[]};
     const cur=tx.objectStore('photos').openCursor();cur.onsuccess=()=>{const c=cur.result;if(c){photos[c.key]=c.value;c.continue()}};
     tx.oncomplete=()=>res({recs,photos});tx.onerror=tx.onabort=()=>rej(tx.error||new Error('read failed'))}catch(e){rej(e)}})}
-/* Reports saved by the earlier version of this page (browser storage, photos inside) are read once and moved. */
 function legacy(){try{const v=JSON.parse(localStorage.getItem(KEY)||'null');if(Array.isArray(v)&&v.length)return v}catch(e){}return null}
 let cases=[];
 async function initStore(){
@@ -554,7 +538,6 @@ async function initStore(){
 const drafts={}, busy=new Set(), openLogs=new Set();
 let reportPhoto=null;
 
-/* ---------- icons: ink lines with one gold spot ---------- */
 const ICONS={
   check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
   alert:'<path d="M12 6.5v7.5M12 17.6v.1"/>',
@@ -568,7 +551,6 @@ const ICONS={
 const icon=(n,cls)=>`<svg class="ico${cls?' '+cls:''}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${ICONS[n]||''}</svg>`;
 
 function shrink(file){return new Promise((res,rej)=>{const url=URL.createObjectURL(file);const img=new Image();img.onload=()=>{const s=Math.min(1,720/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);let u=c.toDataURL('image/jpeg',0.72);if(u.length>110000)u=c.toDataURL('image/jpeg',0.55);res(u)};img.onerror=()=>{URL.revokeObjectURL(url);rej(new Error('not a photo'))};img.src=url})}
-/* Reads the camera's "taken at" time (EXIF DateTimeOriginal) from a JPEG before it is re-encoded. Returns null when absent. */
 async function exifDate(file){try{if(!file||!/jpe?g/i.test((file.type||'')+(file.name||'')))return null;
   const v=new DataView(await file.slice(0,262144).arrayBuffer());if(v.byteLength<4||v.getUint16(0)!==0xFFD8)return null;
   let o=2;while(o+10<v.byteLength){const m=v.getUint16(o);if((m&0xFF00)!==0xFF00)return null;const len=v.getUint16(o+2);
@@ -580,16 +562,6 @@ async function exifDate(file){try{if(!file||!/jpe?g/i.test((file.type||'')+(file
       return null}
     o+=2+len}}catch(e){}return null}
 
-/* ---------- photo checks (Rule, deterministic) ----------
-   dHash: shrink the photo to 9x8 grey pixels and note, for each row, whether each pixel is brighter than the one to its right.
-   That gives a 64-bit fingerprint. Two photos whose fingerprints differ in SAME_PHOTO bits or fewer are nearly the same picture.
-   Flat, very dark or washed-out photos (and browsers that blank canvas reads) all give nearly the same fingerprint,
-   so those are marked PLAIN and never compared by fingerprint. An exact copy of the same photo is still caught.
-   Extra fingerprints of each photo (mirrored, centre and corner crops) catch copies that were flipped or cropped.
-   Shifted copies: each photo is also fingerprinted in 96% windows at 8 edge offsets; a copy moved by a few percent matches
-   when the after photo's window at one edge is compared with the other photo's window at the opposite edge.
-   Rotated copies are still missed. Only an exact copy forces "does not look fixed"; a near match from the same angle
-   may be an honest repair, so it is "unclear". */
 const SAME_PHOTO=6, PLAIN='plain', PLAIN_RANGE=8;
 function bits(h){let n=0;for(let i=0;i<h.length;i+=2){let v=parseInt(h.slice(i,i+2),16);while(v){n+=v&1;v>>=1}}return n}
 function usable(h){if(typeof h!=='string'||!/^[0-9a-f]{16}$/.test(h))return false;const b=bits(h);return b>SAME_PHOTO&&b<64-SAME_PHOTO}
@@ -605,7 +577,6 @@ function hashRegion(img,sx,sy,sw,sh,flip){const mid=document.createElement('canv
 async function dhash(src){const img=await loadImg(src);if(!img)return null;try{return hashRegion(img,0,0,img.width,img.height,false)}catch(e){return null}}
 const VAR_CACHE=new Map();
 const WIN=0.96, WIN_AT=[[0,0],[1,0],[0,1],[1,1],[.5,0],[.5,1],[0,.5],[1,.5]];
-/* Returns {all:[mirror and crop fingerprints], win:{"x,y": fingerprint of the 96% window at that edge offset}}. */
 async function dhashVariants(src){if(!src)return {all:[],win:{}};const key=src.length+':'+src.slice(-64);if(VAR_CACHE.has(key))return VAR_CACHE.get(key);
   const img=await loadImg(src);const out=[],win={};
   if(img){try{const W=img.width,Ht=img.height;out.push(hashRegion(img,0,0,W,Ht,true));
@@ -615,13 +586,10 @@ async function dhashVariants(src){if(!src)return {all:[],win:{}};const key=src.l
   const v={all:out.filter(usable),win};VAR_CACHE.set(key,v);return v}
 function hamming(a,b){if(!a||!b||a.length!==b.length)return 64;let n=0;for(let i=0;i<a.length;i+=2){let v=parseInt(a.slice(i,i+2),16)^parseInt(b.slice(i,i+2),16);while(v){n+=v&1;v>>=1}}return n}
 function photoList(o){const out=[];if(o.before||o.beforeHash)out.push({h:o.beforeHash,k:'wBefore',src:o.before,p:{id:o.id}});if(o.evidence&&(o.evidence.after||o.evidence.afterHash))out.push({h:o.evidence.afterHash,k:'wAfter',src:o.evidence.after,p:{id:o.id}});for(const p of o.past||[])if(p.after||p.afterHash)out.push({h:p.afterHash,k:'wPast',src:p.after,p:{id:o.id,n:p.cycle}});return out}
-/* Compares the after photo with one other photo. Returns null when they could not be compared.
-   av and ov are the two photos' extra fingerprints from dhashVariants(). */
 function compare(after,afterHash,src,h,av,ov){if(after&&src&&after===src)return {d:0,exact:true};
   let best=null;const k=(a,b,variant)=>{if(usable(a)&&usable(b)){const d=hamming(a,b);if(!best||d<best.d)best={d,exact:false,variant}}};
   const A=av||{},O=ov||{};
   k(afterHash,h,false);for(const v of A.all||[])k(v,h,true);for(const v of O.all||[])k(afterHash,v,true);
-  /* A copy moved right shows, in its right-hand window, what the original shows in its left-hand one. */
   if(A.win&&O.win)for(const [ax,ay] of WIN_AT)k(A.win[ax+','+ay],O.win[(1-ax)+','+(1-ay)],true);
   return best}
 function whereText(w,l){return w&&w.k?txl(l||LANG,w.k,w.p):String(w||'')}
@@ -631,8 +599,6 @@ function flagText(f,l){l=l||LANG;
   if(f.kind==='old_file'&&f.hrs!=null)return txl(l,f.exif?'fOldExif':'fOldFile',{age:fmtAge(f.hrs,l)});
   return f.text||''}
 const noteText=n=>typeof n==='string'?n:tx(n.k,n.p);
-/* Runs once per piece of crew evidence. Returns null when there is no after photo, otherwise the list of flags (empty = passed).
-   ev.photoNotes says what was and was not compared, so the log never claims a check that did not run. */
 async function photoCheck(c){
   const ev=c.evidence;if(!ev||(!ev.after&&!ev.afterHash))return null;
   if(Array.isArray(ev.photoFlags))return ev.photoFlags;
@@ -648,7 +614,6 @@ async function photoCheck(c){
   for(const p of c.past||[])if(p.after||p.afterHash){const r=compare(ev.after,ev.afterHash,p.after,p.afterHash,av,p.after?await dhashVariants(p.after):null);if(r)nPast++;keep(r,{k:'wCycle',p:{n:p.cycle}},c.id)}
   for(const o of cases){if(o.id===c.id)continue;for(const ph of photoList(o)){const r=compare(ev.after,ev.afterHash,ph.src,ph.h,av,ph.src?await dhashVariants(ph.src):null);if(r)nOther++;keep(r,{k:ph.k,p:ph.p},o.id)}}
   if(best)flags.push(flag('reused',best,best.where,best.id));
-  /* The camera's own "taken at" time when the photo has one, otherwise the file date, which is weaker. */
   const t0=ev.takenAt||ev.fileDate;
   if(t0&&ev.uploadedAt&&ev.uploadedAt-t0>D){const f={kind:'old_file',exif:!!ev.takenAt,hrs:Math.round((ev.uploadedAt-t0)/H)};f.text=flagText(f,'en');flags.push(f)}
   if(!flags.some(f=>f.kind!=='old_file')){
@@ -659,8 +624,6 @@ async function photoCheck(c){
   log(c,'Rule',flags.length?'evPhotoFlag':'evPhotoOk');
   return flags}
 
-/* ---------- triage (rules) ---------- */
-/* Keyword rules in English, Arabic, Urdu, Hindi, Tagalog, Malayalam and Bengali. Checked in this order. */
 const KW={
   safety_hazard:['wire','exposed','electric shock','sparking','danger','أسلاك','سلك مكشوف','خطر','کرنٹ','ننگی تار','خطرہ','करंट','नंगा तार','खुला तार','खतरा','nakuryente','live wire','delikado','mapanganib','ഷോക്ക്','അപകടം','শক','খোলা তার','বিপদ'],
   water_leak:['leak','water','pipe','sprinkler','irrigation','puddle','flood','تسرب','مياه','ماء','رشاش','أنبوب','ماسورة','پانی','لیک','رساؤ','پائپ','पानी','लीक','रिसाव','पाइप','tubig','tagas','tumutulo','tubo','baha','വെള്ളം','ചോർച്ച','പൈപ്പ്','পানি','জল','লিক','পাইপ'],
@@ -675,7 +638,6 @@ function rulesTriage(text){
   const t=text.replace(RX_INVIS,'').normalize('NFKC').toLowerCase();const has=w=>w.some(x=>t.includes(x));
   let category='other';for(const k of Object.keys(KW))if(has(KW[k])){category=k;break}
   return {category,urgency:has(KW_HIGH)?'high':'normal'}}
-/* Replies in the resident's language when there is a template for it, otherwise in English. */
 const TPL={
   en:{ask:'Thanks for reporting this. Where exactly is it? Please name the park, street or nearest landmark.',sent:c=>`Thanks. A real service would send this to the ${CATS[c][1].toLowerCase()}.`},
   ar:{ask:'شكراً لبلاغك. أين يقع المكان بالضبط؟ اذكر اسم الحديقة أو الشارع أو أقرب معلم.',sent:c=>`شكراً لبلاغك. الخدمة الحقيقية سترسله إلى ${CATS_AR[c][1]}.`},
@@ -684,7 +646,6 @@ const TPL={
 const tplLang=l=>TPL[l]?l:'en';
 function templateReply(lang,needsLoc,cat){const T=TPL[tplLang(lang)];return needsLoc?T.ask:T.sent(CATS[cat]?cat:'other')}
 
-/* ---------- helpers ---------- */
 const byId=id=>cases.find(c=>c.id===id);
 function nextId(){const n=Math.max(1000,...cases.map(c=>parseInt(c.id.slice(3),10)||0))+1;return 'PF-'+n}
 function stickerOf(code){return STICKERS.find(s=>s[0]===code)}
@@ -699,7 +660,6 @@ function showErr(k){$('rErr').textContent=k?tx(k):''}
 function grow(){const q=$('rText');if(!q.value){q.style.height='';return}q.style.height='auto';q.style.height=Math.min(q.scrollHeight,160)+'px'}
 function thumb(src,label){return `<figure class="thumb">${src?`<img src="${esc(src)}" alt="${esc(label)}">`:`<span class="none">${esc(tx('noPhoto'))}</span>`}<figcaption>${esc(label)}</figcaption></figure>`}
 
-/* ---------- report ---------- */
 function fillStickers(){const sel=$('rSticker');const v=sel.value;
   sel.innerHTML=`<option value="">${esc(tx('noSticker'))}</option><optgroup label="${esc(tx('lSticker'))}">`+STICKERS.map(s=>`<option value="${s[0]}">${esc(s[0]+' · '+(LANG==='ar'?ASSET_AR[s[1]]||s[1]:s[1])+', '+placeName(s[2]))}</option>`).join('')+'</optgroup>';
   sel.value=v}
@@ -710,7 +670,6 @@ $('reportForm').addEventListener('submit',e=>{e.preventDefault();sendReport()});
 $('rText').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();const f=$('reportForm');if(f.requestSubmit)f.requestSubmit();else sendReport()}});
 $('rText').addEventListener('input',grow);
 $('rReply').addEventListener('click',e=>{const b=e.target.closest('[data-goto]');if(b){openCase(b.dataset.goto,b);return}const k=e.target.closest('[data-copy]');if(k){const c=byId(k.dataset.copy);if(c)copyText(reportText(c)).then(ok=>{const el=$('cpr');if(el)el.textContent=tx(ok?'copied':'copyFailReply')})}});
-/* Example taps only fill the boxes (text and a made-up sticker place); the visitor taps the arrow. */
 document.querySelectorAll('[data-ex]').forEach(b=>b.addEventListener('click',()=>{const i=+b.dataset.ex,q=$('rText');
   q.value=tx('ex'+i+'t');$('rSticker').value='';$('rLoc').readOnly=false;$('rLoc').value=placeName(STICKERS[[0,2,1][i-1]][2]);
   showErr('');markTools();grow();if(!coarse())try{q.focus({preventScroll:true})}catch(e){}}));
@@ -720,7 +679,6 @@ async function sendReport(){
   if(!ready){try{await initPromise}catch(e){}}
   const text=$('rText').value.trim();const code=$('rSticker').value;const s=stickerOf(code);const place=(s?s[2]:$('rLoc').value.trim());
   showErr('');
-  /* No words, but a place, while the last report waits for its place: the place completes that same report. */
   const waiting=!text&&place&&lastReply?byId(lastReply.id):null;
   if(waiting&&waiting.state==='needs_info'){placeLater(waiting,place,s);return}
   if(text.length<5){showErr('errShort');return}
@@ -762,14 +720,12 @@ function renderReply(){const box=$('rReply');if(!lastReply){box.innerHTML='';ret
   const trace=r.trace.map(([key,p])=>`<li><span class="tag">${esc(tx('tagRule'))}</span><span dir="auto">${esc(tx(key,evParams(p,LANG)))}</span></li>`).join('');
   box.innerHTML=`<div class="tile reply" id="replyTile" tabindex="-1"><p class="who"><span>${esc(tx('replyTo'))}</span><span class="tag">· ${esc(tx('tagRule'))}</span></p><p dir="auto" lang="${esc(r.lang)}">${esc(r.reply)}</p><div class="actions"><button type="button" class="tlink" data-goto="${esc(r.id)}">${esc(tx('seeCase',{id:r.id}))}</button><button type="button" class="tlink" data-copy="${esc(r.id)}">${esc(tx('copy'))}</button></div><p class="note" id="cpr" role="status"></p><details class="more"><summary>${esc(tx('more'))}${icon('chev')}</summary><ul class="trace more-body">${trace}</ul></details></div>`}
 
-/* ---------- case actions ---------- */
 async function runCheck(c){
   busy.add(c.id);render();
   try{
   const flags=await photoCheck(c);
   const res={verdict:'unclear',rk:[{k:'rLook'}],wk:c.evidence.after?'wCompare':'wAskPhoto',photoChecked:flags!==null,flags:flags||[]};
   res.photoNotes=flags!==null&&Array.isArray(c.evidence.photoNotes)?c.evidence.photoNotes:null;
-  /* An exact copy of an earlier photo means "does not look fixed"; a near match or an old file only adds advice. */
   if(res.flags.length){
     const copy=res.flags.some(f=>f.kind!=='old_file'&&f.exact!==false), near=res.flags.some(f=>f.kind!=='old_file');
     const adv=copy?'wFresh':near?'wComparePhotos':'wWhen';
@@ -792,7 +748,6 @@ const ACTIONS={
   'res-yes':c=>{c.resident='yes';log(c,'Resident','evResYes');c.state='decision'},
   'res-no':c=>{log(c,'Resident','evResNo');archive(c,'Resident said it was not fixed');log(c,'Rule','evBack',{n:c.cycle});c.state='crew'},
   'no-reply':c=>{c.resident='no_reply';log(c,'Operator','evNoReply');c.state='decision'},
-  /* Without an after photo, a confirmed check and the resident's yes, closing needs a written reason. */
   'close':c=>{if(!drafts[c.id+':ack'])return 'errAck';const concern=needsReason(c);const why=(drafts[c.id+':why']||'').trim();if(concern&&why.length<5)return 'errWhy';if(concern)log(c,'Operator','evClosedWhy',{why});else log(c,'Operator','evClosed');c.state='closed'},
   'send-back':c=>{const why=(drafts[c.id+':why']||'').trim();if(why.length<5)return 'errBack';log(c,'Operator','evSentBack',{why});archive(c,why);log(c,'Rule','evCycle',{n:c.cycle});c.state='crew'},
   'reopen':c=>{const why=(drafts[c.id+':why']||'').trim();if(why.length<5)return 'errReopen';log(c,'Operator','evReopen',{why});archive(c,why);log(c,'Rule','evCycleOld',{n:c.cycle});c.state='crew'}
@@ -807,7 +762,6 @@ $('caseBody').addEventListener('click',e=>{
 });
 $('caseBody').addEventListener('input',e=>{const t=e.target;if(t.dataset&&t.dataset.draft){drafts[t.dataset.draft]=t.type==='checkbox'?t.checked:t.value}});
 $('caseBody').addEventListener('change',async e=>{const t=e.target;if(!t.dataset||!t.dataset.photo)return;const id=t.dataset.photo;const f=t.files&&t.files[0];const err=document.getElementById('err-'+id);if(!f){['after','afterHash','afterMeta'].forEach(k=>delete drafts[id+':'+k]);return}
-  /* Dates are read before re-encoding, because the re-encoded copy has no date or location data. */
   const meta={fileDate:f.lastModified||null,takenAt:await exifDate(f),uploadedAt:Date.now()};
   try{const u=await shrink(f);const h=await dhash(u);drafts[id+':afterMeta']=meta;drafts[id+':afterHash']=h;drafts[id+':after']=u;if(err)err.textContent='';const th=document.getElementById('after-'+id);if(th)th.innerHTML=thumb(u,tx('afterPending'))}catch(x){if(err)err.textContent=tx('errPhoto')}});
 $('caseBody').addEventListener('toggle',e=>{const d=e.target;if(d.tagName==='DETAILS'&&d.dataset.log){d.open?openLogs.add(d.dataset.log):openLogs.delete(d.dataset.log)}},true);
@@ -815,7 +769,6 @@ $('cases').addEventListener('click',e=>{const b=e.target.closest('[data-case]');
 $('mine').addEventListener('click',e=>{const b=e.target.closest('[data-case]');if(b)openCase(b.dataset.case,b)});
 
 
-/* ---------- render ---------- */
 const ATTN={needs_info:1,decision:1};
 function stateLabel(c){const k=c.state;const sym=k==='closed'?'check':ATTN[k]?'alert':'';return `<span class="state${ATTN[k]?' attn':''}">${sym?icon(sym):''}${esc(tx('st_'+k))}</span>`}
 function stepsBar(c){const si={needs_info:1,crew:2,checking:3,resident:4,decision:5,closed:6}[c.state]||0;const cur=Math.min(si,5);
@@ -848,14 +801,11 @@ function nextBox(c){
     case 'resident':return `<div class="next">${roleHead('resident',tx('isFixed'))}<div class="actions"><button type="button" class="btn" data-act="res-yes" data-id="${id}">${esc(tx('bYes'))}</button><button type="button" class="tlink" data-act="res-no" data-id="${id}">${esc(tx('bNo'))}</button><button type="button" class="tlink" data-act="no-reply" data-id="${id}">${esc(tx('bNoReply'))}</button></div>${err}</div>`;
     case 'decision':{const concern=needsReason(c);const facts=[tx('fRes',{r:tx(c.resident==='yes'?'rYes':'rNo')})];if(!c.check)facts.push(tx('fCheck',{v:tx('vNone')}));
       if(c.check&&c.check.flags&&c.check.flags.length)facts.push(tx('fPhoto'));if(!(c.evidence&&c.evidence.after))facts.push(tx('fNoPhoto'));
-      /* "Not proven" is the hint under the Reason field, not a second status next to the title's. */
       return `<div class="next">${roleHead('operator',tx('decTitle'))}<p class="note">${esc(facts.join(' · '))}</p><label class="check" for="ack-${id}"><input type="checkbox" id="ack-${id}" data-draft="${id}:ack" ${drafts[c.id+':ack']?'checked':''}><span>${esc(tx('ack'))}</span></label><div class="fl"><label for="why-${id}">${esc(tx(concern?'lWhy':'lWhyOpt'))}</label>${concern?`<span id="whyh-${id}">${esc(tx('concern'))}</span>`:''}<input class="in" type="text" id="why-${id}" maxlength="200" dir="auto" data-draft="${id}:why" value="${d('why')}"${concern?` aria-describedby="whyh-${id}"`:''}></div><div class="actions"><button type="button" class="btn" data-act="close" data-id="${id}">${esc(tx('bClose'))}</button><button type="button" class="tlink" data-act="send-back" data-id="${id}">${esc(tx('bBack'))}</button></div>${err}</div>`}
     case 'closed':return `<details class="more"><summary>${esc(tx('reopen'))}${icon('chev')}</summary><div class="next"><label class="fl" for="why-${id}">${esc(tx('lReopen'))}<input class="in" type="text" id="why-${id}" maxlength="200" dir="auto" data-draft="${id}:why" value="${d('why')}"></label><div class="actions"><button type="button" class="tlink" data-act="reopen" data-id="${id}">${esc(tx('bReopen'))}</button></div>${err}</div></details>`;
   }
   return '';
 }
-/* One compact tile per case in the list; everything else opens in the case sheet.
-   The state is plain text here: the only status chip is the one in the open case's title. */
 function caseCard(c){const id=esc(c.id);const place=c.location?esc(placeName(c.location)):esc(tx('noPlace'));
   return `<article class="tile case s-${c.state}" id="case-${id}">
     <div class="case-head"><h3 class="case-title"><button type="button" class="case-open" data-case="${id}" aria-label="${esc(c.id+', '+catRow(c.category)[0]+', '+tx('st_'+c.state))}">${esc(catRow(c.category)[0])}</button></h3></div>
@@ -864,7 +814,6 @@ function caseCard(c){const id=esc(c.id);const place=c.location?esc(placeName(c.l
     ${miniPhotos(c)}${stepsBar(c)}
   </article>`}
 function miniPhotos(c){if(c.example)return '';const l=[[c.before,'before'],[c.evidence&&c.evidence.after,'after']].filter(x=>x[0]);return l.length?`<div class="mini">${l.map(x=>`<img src="${esc(x[0])}" alt="${esc(tx(x[1]))}">`).join('')}</div>`:''}
-/* The report as plain text, ready to paste into the official channel. Photos cannot travel in text. */
 function reportText(c){let d='';try{d=new Date(c.created).toLocaleDateString(LANG==='ar'?'ar-AE-u-nu-latn':'en-GB',{day:'numeric',month:'long',year:'numeric'})}catch(e){d=new Date(c.created).toISOString().slice(0,10)}
   const n=(c.before?1:0)+(c.evidence&&c.evidence.after?1:0);
   return [tx('rtTitle'),'',tx('rtPlace')+': '+(c.location?placeName(c.location):tx('rtNoPlace')),tx('rtText')+': '+c.text,tx('rtPhotos')+': '+(n?tx('rtPhotosN',{n}):tx('rtPhotosNone')),tx('rtDate')+': '+d].join(String.fromCharCode(10))}
@@ -875,9 +824,7 @@ function officialBox(c){if(c.example)return '';const id=esc(c.id);
   const saves=[[c.before,'before'],[c.evidence&&c.evidence.after,'after']].filter(x=>x[0]).map(x=>`<a class="tlink" download="wareeni-${id}-${x[1]}.jpg" href="${esc(x[0])}">${esc(tx('savePhoto',{w:tx(x[1])}))}</a>`).join('');
   return `<div class="next off"><h3>${esc(tx('offH'))}</h3><p class="note">${esc(tx('offP'))}</p><textarea class="in" id="rt-${id}" readonly dir="auto" aria-label="${esc(tx('copy'))}">${esc(reportText(c))}</textarea><div class="actions"><button type="button" class="btn" data-act="copy" data-id="${id}">${esc(tx('copy'))}</button><a class="tlink" href="${OFFICIAL_URL}" target="_blank" rel="noopener noreferrer">${esc(tx('offLink'))}</a></div><p class="note" id="cp-${id}" role="status"></p><p class="note">${esc(tx('photoNote'))}</p>${saves?`<div class="actions">${saves}</div>`:''}<p class="note">${esc(tx('offDemo'))}</p><div class="actions"><button type="button" class="tlink" data-act="delete-one" data-id="${id}">${esc(tx('delOne'))}</button></div><p class="err" id="oerr-${id}" role="alert"></p></div>`}
 function caseDetail(c){const id=esc(c.id);
-  /* Photos only when there is at least one; an empty pair adds nothing. */
   const photos=(c.before||(c.evidence&&c.evidence.after))?`<div class="thumbs">${thumb(c.before,tx('before'))}${c.evidence?thumb(c.evidence.after,tx('after')):''}</div>`:'';
-  /* The crew's own words keep their own direction inside the label (an English note in the Arabic interface, or the reverse). */
   const crew=c.evidence?`<p class="note">${tx('crewNote').split('{note}').map(esc).join(`<bdi>${esc(c.evidence.note)}</bdi>`)}</p>`:'';
   const facts=[];if(c.asset)facts.push(tx('sticker',{code:c.asset}));if(c.cycle>1)facts.push(tx('cycle',{n:c.cycle}));
   const past=c.past.length?`<p>${esc(tx('pastCycles',{list:c.past.map(p=>tx('pastItem',{n:p.cycle,note:p.note})).join('; ')}))}</p>`:'';
@@ -889,7 +836,6 @@ function caseDetail(c){const id=esc(c.id);
     <details class="more" data-log="${id}" ${openLogs.has(c.id)?'open':''}><summary>${esc(tx('more'))}${icon('chev')}</summary><div class="more-body">${facts.length?`<p class="note">${esc(facts.join(' · '))}</p>`:''}${checkDetails(c)}${past}<h4 class="vh">${esc(tx('timeline'))}</h4><ul class="log">${logItems}</ul></div></details>`}
 let openCaseId=null;
 function openCase(id,from){if(!byId(id))return;openCaseId=id;renderCaseSheet();openSheet('caseSheet',from);const b=$('caseBody');if(b)b.scrollTop=0}
-/* Re-renders the open case. Keeps the reader's place: same control focused, same scroll, unless the case moved on to a new step. */
 function renderCaseSheet(o){o=o||{};if(!openCaseId)return;const c=byId(openCaseId);const body=$('caseBody');if(!c){closeSheetEl('caseSheet');return}
   const ae=document.activeElement;let keep=null;if(ae&&ae!==body&&body.contains(ae))keep={id:ae.id||'',act:(ae.dataset&&ae.dataset.act)||''};
   const top=body.scrollTop;
@@ -898,7 +844,6 @@ function renderCaseSheet(o){o=o||{};if(!openCaseId)return;const c=byId(openCaseI
   body.scrollTop=o.caseTop?0:top;
   if(o.caseTop||keep){let el=null;if(!o.caseTop&&keep){if(keep.id)el=document.getElementById(keep.id);if(!el&&keep.act)el=body.querySelector('[data-act="'+keep.act+'"]')}
     if(!el)el=$('caseTitle');try{el.focus({preventScroll:true})}catch(e){}}}
-/* One count next to the list: the cases waiting for a person. Each case shows its own step. */
 let reportedOnce=false;
 function renderTiles(){const v=!reportedOnce?0:cases.filter(c=>c.state==='needs_info'||c.state==='decision').length;
   $('tiles').innerHTML=v?`<span class="count"><b>${v}</b> ${esc(tx('cntYou'))}</span>`:''}
@@ -917,7 +862,6 @@ function renderMemory(){
 }
 $('memory').addEventListener('click',e=>{const b=e.target.closest('[data-plan]');if(b){planned.add(b.dataset.plan);renderMemory()}});
 
-/* Re-draws the list. Focus stays on the same case when the list moves; the open case sheet is redrawn too. */
 function render(o){o=o||{};
   if(!ready)return;
   const box=$('cases'),mine=$('mine');const ae=document.activeElement;
@@ -933,7 +877,6 @@ function render(o){o=o||{};
   if(o.say)announce(o.say);
 }
 
-/* ---------- sheets ---------- */
 const openers={};
 function anyOpen(){return !!document.querySelector('dialog.sheet[open]')}
 function openSheet(id,from){const d=$(id);if(!d||d.open)return;
@@ -955,7 +898,6 @@ document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest
   if(t.id==='menuBtn'){openSheet('menuSheet',t);return}
   const d=t.closest('dialog');if(d)d.close()});
 
-/* ---------- language ---------- */
 function applyStatic(){
   document.querySelectorAll('[data-t]').forEach(e=>{e.textContent=tx(e.dataset.t)});
   document.querySelectorAll('[data-ta]').forEach(e=>{e.setAttribute('aria-label',tx(e.dataset.ta))});
@@ -966,9 +908,7 @@ function setLang(l,persist){LANG=l==='ar'?'ar':'en';root.lang=LANG;root.dir=LANG
   fillStickers();const s=stickerOf($('rSticker').value);if(s)$('rLoc').value=placeName(s[2]);
   if(reportPhoto)$('rThumb').innerHTML=thumb(reportPhoto,tx('yourPhoto'));
   showStoreNote();render();renderReply()}
-/* ?lang= (sent by the landing page in embed mode) wins, then the language chosen on this site, then the browser's. */
 function initialLang(){const p=PARAMS.get('lang');if(p==='ar'||p==='en')return p;let s=null;try{s=localStorage.getItem(LKEY)}catch(e){}if(s==='ar'||s==='en')return s;return (navigator.language||'').toLowerCase().startsWith('ar')?'ar':'en'}
-/* ?q= fills the report box, for when the landing page opens this agent with the visitor's words. */
 function prefill(){const q=PARAMS.get('q');if(!q)return;const b=$('rText');b.value=q.slice(0,1500);grow();if(!coarse())try{b.focus({preventScroll:true})}catch(e){}}
 
 let delAllArmed=false,delAllTimer=0;

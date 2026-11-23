@@ -96,9 +96,6 @@ ul.notes li{padding:10px 16px;border-radius:16px;background:var(--tile)}
 const root=document.documentElement;
 const $=id=>document.getElementById(id);
 /*CODE-START*/
-// Result code. This SAME block is in tools/site-index.html and tools/site-results.html (tools/test_results_code.js checks they match).
-// UA1-<tries>.<helped> for the six agents in the order of AG, then E or A (page language), P or C (phone or computer), then a 4-character check.
-// Only capital letters, digits, "-" and "." are used, so it survives WhatsApp. A code with a wrong check is rejected.
 const AG=['answers','message','wages','rent','repairs','careers'];
 const chk=s=>{let h=0x811c9dc5;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0}return (h%1679616).toString(36).toUpperCase().padStart(4,'0')};
 const clamp=(n,a,b)=>Math.min(b,Math.max(a,n|0));
@@ -109,7 +106,6 @@ function makeCode(counts,lang,device){
 }
 const CODE_RE=/(^|[^A-Z0-9])(UA1(?:-\d{1,2}\.\d{1,2}){6}-[EA][PC]-[0-9A-Z]{4})(?![A-Z0-9])/gi;
 const NOTE_RE=/^\s*(?:Note|ملاحظة)\s*[:：]\s*(.+?)\s*$/i;
-// Finds every valid code in any pasted text. Gives [{counts:{agent:[tries,helped]},lang:'en'|'ar',device:'phone'|'computer',note:''}].
 function readCodes(text){
  const s=String(text||'').replace(/[‐-―−]/g,'-'),out=[];let m;
  CODE_RE.lastIndex=0;
@@ -148,7 +144,6 @@ function text(r){
 }
 function paint(){
  const d=D(),raw=$('paste').value,all=readCodes(raw);
- // The same message pasted twice has the very same code, so an identical code is counted once (the code holds no identifier by design).
  const seen=new Set(),items=all.filter(x=>{const k=JSON.stringify([x.counts,x.lang,x.device]);if(seen.has(k))return false;seen.add(k);return true});
  const loose=(raw.match(/(^|[^A-Za-z0-9])UA\d-[0-9A-Za-z.\-]{6,}/gi)||[]).length,bad=Math.max(0,loose-all.length),dup=all.length-items.length;
  $('bad').hidden=!(bad||dup);$('bad').textContent=[bad?d.bad.replace('{n}',bad):'',dup?d.dup.replace('{n}',dup):''].filter(Boolean).join(' · ');
