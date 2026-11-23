@@ -630,6 +630,9 @@ out.push(SYN_ONE.get(w)||arForm(w))}
 return out}
 function arForm(w){if(!AR_LETTER.test(w)||w.length<4)return w;if(w.endsWith('ي')&&SYN_ONE.has(w.slice(0,-1)))return SYN_ONE.get(w.slice(0,-1));if(w.length>=5&&/^[اينت]/.test(w)&&SYN_ONE.has(w.slice(1)))return SYN_ONE.get(w.slice(1));return w}
 
+const QR_UP=/ايجار|رسوم|سعر|اسعار|مالك/;  
+function qRead(t){t=String(t==null?'':t);return qAbout(QR_UP.test(norm(t))?t.replace(/(^|[^ء-ي])(ي?)زود(وا)?(?![ء-ي])/g,(m,a,b,c)=>a+'يزيد'+(c||'')):t)}
+let AB_ARX=null;function qAbout(t){const s=' '+rawWords(t).join(' ')+' ',ab=(AB_ARX||(AB_ARX=RegExp(AB_AR))).test(s)||s.search(AB_EN)>=0?aboutOf(t):null;return ab&&ab.whole&&!ab.sure?'':t}
 const FW={q:3,ask:2.5,a:1,facts:.7};
 const both=o=>o?[o.en,o.ar].filter(isStr).join(' \n '):'';
 const entryFields=e=>[[both(e.q),FW.q],...arr(e.ask).map(a=>[a,FW.ask]),[both(e.a),FW.a],...arr(e.facts).map(f=>[both(f),FW.facts])];
@@ -641,7 +644,8 @@ return {docs,df,N:docs.length,avg:tot/Math.max(1,docs.length),vocab:[...df.keys(
 function editDist(a,b,max){if(Math.abs(a.length-b.length)>max)return max+1;const m=a.length,n=b.length;let p2=null,p=Array.from({length:n+1},(_,j)=>j);
 for(let i=1;i<=m;i++){const c=[i];let best=i;for(let j=1;j<=n;j++){let v=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));if(p2&&i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1])v=Math.min(v,p2[j-2]+1);c.push(v);if(v<best)best=v}
 if(best>max)return max+1;p2=p;p=c}return p[n]}
-function expandTerm(t,I){if(t.startsWith('~')||/^\d+$/.test(t))return null;
+const XT=new WeakMap();function expandTerm(t,I){let c=XT.get(I.df);if(!c||c.v!==I.vocab||c.m.size>4999){c={v:I.vocab,m:new Map()};XT.set(I.df,c)}if(!c.m.has(t))c.m.set(t,expandTerm0(t,I));return c.m.get(t)}  
+function expandTerm0(t,I){if(t.startsWith('~')||/^\d+$/.test(t))return null;
 if(AR_LETTER.test(t)&&t.length>=4)for(const c of [/^[وفبلك]/.test(t)&&t.slice(1),t.endsWith('ت')&&t.slice(0,-1)]){if(!c)continue;const s=stemAr(c);const k=SYN_ONE.get(s)||s;if(I.df.has(k))return [k,1]}
 const ar=AR_LETTER.test(t),max=t.length>=(ar?9:8)?2:t.length>=(ar?6:4)?1:0;if(!max)return null;let best=null,bd=max+1,bdf=0;const srt=s=>[...s].sort().join(''),a4=t.length<5&&srt(t);
 for(const v of I.vocab){if((v[0]!==t[0]&&max<2)||(a4&&srt(v)!==a4))continue;const d=editDist(t,v,max);const f=I.df.get(v);if(d<bd||(d===bd&&f>bdf)){best=v;bd=d;bdf=f}}
@@ -665,7 +669,7 @@ const res=I.docs.map(d=>{let s=0,cov=0;for(const [t,w,em,fw] of q){const f=d.tf.
 if(opt.topic&&(d.topic===opt.topic||(Array.isArray(d.topic)&&d.topic.includes(opt.topic))))s*=1.2;if(qe.length&&!d.em.includes('all')&&!qe.some(x=>d.em.includes(x)))s*=.6;const cr=covTot?cov/covTot:0;if(COV_W)s*=(1-COV_W)+COV_W*2*cr;return {id:d.id,score:Math.round(s*100)/100,cov:covTot?Math.round(cov/covTot*100)/100:0}});
 return res.filter(r=>r.score>0).sort((a,b)=>b.score-a.score||b.cov-a.cov)}
 const RK={lb:0,wq:2,wa:2.5,wp:1,k1:3,b:.75,topicB:.15,ngW:.3,sentG:.3,sentMin:200,topK:40,emPen:.6};
-let PHRASE={};const RKA={};
+let PHRASE={},SS=null;const RKA={};
 function qWords(text){return (norm(text).match(/[a-z0-9ء-ي]+/g)||[]).map(stem).filter(w=>w.length>=3&&!STOP.has(w)&&!/^\d+$/.test(w))}
 const grams=w=>{const g='#'+w+'#',o=[];for(let i=0;i+3<=g.length;i++)o.push(g.slice(i,i+3));return o};
 function buildEntries(entries){const docs=[],post=new Map(),gpost=new Map(),gsets=[],dfq=new Map();let tot=0;
@@ -678,10 +682,10 @@ const fx=new Map();if(!e._stub){add(fx,both(e.a));for(const f of arr(e.facts))ad
 for(const t of new Set([...fq.keys(),...fa.keys(),...fx.keys()]))dfq.set(t,(dfq.get(t)||0)+1);
 for(const t of new Set([...fq.keys(),...fa.keys(),...fp.keys()])){let l=post.get(t);if(!l)post.set(t,l=[]);l.push(di,RK.wq*(fq.get(t)||0)+RK.wa*(fa.get(t)||0)+RK.wp*(fp.get(t)||0))}
 const gs=new Set();for(const w of qWords(both(e.q)+' '+ask+' '+ph))for(const g of grams(w))gs.add(g);gsets.push(gs);for(const g of gs){let l=gpost.get(g);if(!l)gpost.set(g,l=[]);l.push(di)}});
-const N=docs.length,df=new Map();for(const [t,l] of post)df.set(t,l.length/2);
-const gnorm=new Float64Array(N);gsets.forEach((gs,di)=>{let n=0;for(const g of gs){const i=Math.log(1+N/gpost.get(g).length);n+=i*i}gnorm[di]=Math.sqrt(n)||1});
+const N=SS&&docs.length?SS.n:docs.length,df=new Map();for(const [t,l] of post)df.set(t,l.length/2);
+const gnorm=new Float64Array(docs.length);gsets.forEach((gs,di)=>{let n=0;for(const g of gs){const i=Math.log(1+N/gpost.get(g).length);n+=i*i}gnorm[di]=Math.sqrt(n)||1});
 const vo=m=>[...m.keys()].filter(v=>!v.startsWith('~')&&!/^\d+$/.test(v));
-let tA=0;for(const d of docs)tA+=d.lenA;const avgA=tA/Math.max(1,N),avgE=(tot-tA)/Math.max(1,N);
+let tA=0;for(const d of docs)tA+=d.lenA;if(SS&&docs.length){tot=SS.t;tA=SS.a}const avgA=tA/Math.max(1,N),avgE=(tot-tA)/Math.max(1,N);
 return {docs,post,gpost,gnorm,df,N,avg:tot/Math.max(1,N),avgs:[avgE+RK.lb*avgA,avgA+RK.lb*avgE],vocab:vo(df),dfq,vocabq:vo(dfq)}}
 let XL=null,XMAP=null;const termsE=t=>{if(!XMAP)return terms(t);const o=[];for(const x of terms(t)){const m=XMAP.get(x);if(m){o.push(m);if(XLC.both)o.push(x)}else o.push(x)}return o};const XLC={xt:.3,can:1,oov:0,w:.2,ar:0,en:1,mu:0,n:1,add:.5,dmin:.3};
 function loadXL(x){XL=null;UNIT_SET=null;if(!x||typeof x!=='object')return;const mk=o=>{const m=new Map();if(o&&typeof o==='object')for(const k of Object.keys(o))if(isStr(o[k]))m.set(k,o[k].split(' ').map(p=>{const i=p.lastIndexOf(':');return [p.slice(0,i),(+p.slice(i+1)||0)/100]}));return m};XL={a:mk(x.a),e:mk(x.e)};XMAP=null;if(XLC.xt<=1){XMAP=new Map();for(const [k,l] of XL.a)if(l[0][1]>=XLC.xt){if(XLC.can){const b=XL.e.get(l[0][0]);if(b&&b[0][0]!==k&&AR_LETTER.test(b[0][0])&&b[0][1]>=XLC.xt)XMAP.set(k,b[0][0])}else XMAP.set(k,l[0][0])}}}
@@ -696,7 +700,7 @@ const UW=unitSet(),nUW=qs.filter(t=>!UW.has(t)&&!EMI_KEYS.has(t)&&!/^\d/.test(t)
 for(const t of qs){let term=t,w=1;if(!I.df.has(t)){const x=expandTerm(t,I);if(x){[term,w]=x}else{if(nc(t))covTot+=maxIdf*OOV_W;continue}}
 if(nc(term))covTot+=idf(term);q.push([term,w,EMI_KEYS.has(term),(focus.has(t)?FOCUS_W:1)*(UW.has(t)&&nUW>=UNITC.min?UNITC.w:1),idf(term),nc(term),1,0])}
 if(XL&&!opt.noX&&!opt.qs)for(const [term,m,cw] of crossTerms(text,qs,I,idf,maxIdf))q.push([term,1,false,1,idf(term),false,m,cw]);
-const sc=new Float64Array(N),cv=new Float64Array(N),seen=[],LB=K.lb,dlen=dd=>LB?(arq?dd.lenA+LB*(dd.len-dd.lenA):(dd.len-dd.lenA)+LB*dd.lenA):dd.len;
+const sc=new Float64Array(I.docs.length),cv=new Float64Array(I.docs.length),seen=[],LB=K.lb,dlen=dd=>LB?(arq?dd.lenA+LB*(dd.len-dd.lenA):(dd.len-dd.lenA)+LB*dd.lenA):dd.len;
 for(const [term,w,em,fw,ix,isnc,xm,xc] of q){const l=I.post.get(term);if(!l)continue;
 for(let i=0;i<l.length;i+=2){const d=l[i],f=l[i+1],dd=I.docs[d];if(sc[d]===0&&cv[d]===0)seen.push(d);
 sc[d]+=(w<1?.8:1)*xm*(em?.5:1)*fw*ix*(f*(K.k1+1))/(f+K.k1*(1-K.b+K.b*dlen(dd)/(LB?I.avgs[arq?1:0]:I.avg)));if(isnc)cv[d]+=ix*w;else if(xc)cv[d]+=xc*xm}}
@@ -742,15 +746,18 @@ const DATE_ASK_RX=/\b(?:when|what (?:date|year|day)|which (?:date|year|day)|in w
 const DATE_PHRASE_RX=[[lbNot(/[ء-ي]/),/(?:في )?اي (?:تاريخ|سنه|عام|يوم|شهر)(?![ء-ي])/g],[lbNot(/[ء-ي]/),/(?:وش|شو|كم) تاريخ(?![ء-ي])/g],[null,/\b(?:what (?:date|year|day)|which (?:date|year|day)|on what date|in which year)\b/g]];
 const dateAsk=text=>{const n=norm(text);return DATE_ASK_RX.test(n)&&(n.match(/[a-z0-9ء-ي]+/g)||[]).length<=9}
 const noDatePhrase=text=>DATE_ASK_RX.test(norm(text))?lbReplace(norm(text),DATE_PHRASE_RX,' '):text;  
-function search(text,opt){let r=searchEntries(IDX,noDatePhrase(text),opt);
+let QW=null;function qWritten(text,opt){const tp=opt&&opt.topic;if(!QW||QW.t!==text||QW.i!==IDX||QW.tp!==tp){const r=searchOf(text,opt);QW={t:text,i:IDX,tp,r,v:verdictOf(r,text)}}return QW}
+const qUse=text=>{const t=qRead(text);return t===text||!t||qWritten(text).v.kind==='gap'?t:text};  
+function search(text,opt){const t=qRead(text);if(t===text||!t)return searchOf(t,opt);const w=qWritten(text,opt);return w.v.kind!=='gap'?w.r.slice():searchOf(t,opt)}
+function searchOf(text,opt){let r=searchEntries(IDX,noDatePhrase(text),opt);
 if(MO&&r.length&&amountAsk(text))r=r.map(x=>({...x,score:Math.round(x.score*(MO.has(x.id)?AMT.up:AMT.down)*100)/100})).sort((a,b)=>b.score-a.score||b.cov-a.cov);
 if(DT&&r.length&&dateAsk(text))r=r.map(x=>DT.has(x.id)?{...x,score:Math.round(x.score*DAT.up*100)/100}:x).sort((a,b)=>b.score-a.score||b.cov-a.cov);
 r=generalFirst(r,text);if(r.length&&offTopic(text))r[0].off=true;return r}
-const SPC={w:.8,side:.8,n:10,maxw:30},SPC_C=new Map();
+const SPC={w:.8,side:.8,sideL:.9,n:10,maxw:30},SPC_C=new Map();
 function spcOf(id){const e=BY_ID[id];let c=SPC_C.get(id);if(c&&c.e===e)return c.sp;const lead=s=>String(s||'').split(/,?\s*(?:and )?what about\b|،?\s*(?:و)?ماذا عن|،?\s*وماذا لو/i)[0];
 c={e,sp:e&&e.q?sjSpecial(lead(e.q.en)+' \n '+lead(e.q.ar)):[]};SPC_C.set(id,c);return c.sp}
-function generalFirst(r,text){if(!r.length||rawWords(text).length>SPC.maxw)return r;const qsp=sjSpecial(text);let ch=false;
-const o=r.map((x,i)=>{let f=1;if(i<SPC.n){if(spcOf(x.id).some(g=>!qsp.includes(g)))f*=SPC.w;if(sideClash(text,x.id))f*=SPC.side}if(f<1){ch=true;return {...x,score:Math.round(x.score*f*100)/100,s0:x.score}}return x});
+function generalFirst(r,text){if(!r.length)return r;const lng=rawWords(text).length>SPC.maxw,qsp=sjSpecial(text);let ch=false;
+const o=r.map((x,i)=>{let f=1;if(i<SPC.n){if(!lng&&spcOf(x.id).some(g=>!qsp.includes(g)))f*=SPC.w;if(sideClash(text,x.id))f*=lng?SPC.sideL:SPC.side}if(f<1){ch=true;return {...x,score:Math.round(x.score*f*100)/100,s0:x.score}}return x});
 if(!ch)return r;o.sort((a,b)=>b.score-a.score||b.cov-a.cov);if(o[0].s0!=null)o[0]={...o[0],score:o[0].s0};return o}  
 const GAP_REL=2.25,GAP_COV=.12,GAP_COV2=.3,GAP_NQ=10,GAP_HI=1.9,ALSO_COV=.3,OOV_W=.75;
 const gapMin=()=>GAP_REL*Math.log(1+((IDX?IDX.N:0)+.5)/.5);
@@ -1951,7 +1958,7 @@ if(d.index&&typeof d.index==='object')return loadIndex(d.index,d.auth);d={}}
 return loadData(d,null)}
 function loadIndex(ix,au){ix=ix&&typeof ix==='object'?ix:{};au=au&&typeof au==='object'?au:{};
 const n=loadData({brand:ix.brand,authorities:au.authorities,authChecked:au.checked,journeys:ix.journeys,evalset:ix.evalset,chips:ix.chips},ix);if(LAZY)LAZY.ready=true;return n}
-function loadData(d,ix){PHRASE={};
+function loadData(d,ix){PHRASE={};SS=null;
 KB={topics:arr(d.topics),brand:d.brand&&typeof d.brand==='object'?d.brand:{},authorities:arr(d.authorities),journeys:arr(d.journeys),evalset:arr(d.evalset),chips:arr(d.chips)};
 BRAND=KB.brand;ENTRIES=[];BY_ID={};AUTH={};TOPICS=[];OTHER={tables:[],places:[],directory:[],services:[],laws:[],freezones:[]};OTHER_BY={};OTHER_IDX=null;TOPIC_AUTH={};
 const S=arr(d.str);
@@ -2008,11 +2015,12 @@ AB_HIW=/^(?:hi+|hel+o+|hallo|hey|heya|hiya|hola|sal[a]+m|slm|a?s+alamu?|marhaban
 AB_GW=/^(?:sahlan|wall?ah?|yo|ala[iy]?k[ou]m|alikum|aleikum|wa|ahla|good|morn|afternoon|day|doing|bro|friend|habibi|وعلي|والل|وسهل|خير|نور|سمحت|فضل|اخو|استاذ|تساعدن)$/;
 function abRx(){if(abRx.r)return abRx.r;const Q='(?:ما|ماذا|شو|وش|ايش|شنو|ويش)',N='([بل]?(?:'+AB_AR+'))';
 abRx.no=new RegExp('^(?:[بلوف]?(?:'+AB_AR+')|legal|illegal|allowed?|permit(?:ted)?|forbidden|banned|entitled?|lawful|if|whether|when|اذا|عندما|لما|مسموحه|ممنوعه?|يجوز|يحق|قانونيه?|حلال|حرام|وين)$');
-return (abRx.r=new RegExp('(?: '+Q+' (?:هو|هي|يعني|معني|دور|عمل|(?:يقدر )?(?:يسوي|يفعل|يقدم|يعمل))| (?:كيف|شلون) (?:[يت]عمل|[يت]شتغل|اشتغل علي|(?:اقدر |ممكن )?استخدم|استعمل|استفيد من|يساعدني|يفيدني)| (?:اشرح(?:لي)?|وضح|عرفني|خبرني|اخبرني|حدثني|كلمني|قولي)(?: لي| لنا)?(?: عن| علي)?| (?:ال)?(?:فايده|هدف|غرض)(?: من)?| (?:عن|وظيفه|فكره|قصه|سالفه|تطبيق|برنامج|خدمه|مساعد|اداه|استخدم|استعمل|باستخدام|استخدام|استعمال)| (?:غير|عدا|سوي)(?= انزين)| '+Q+'(?= (?:وريني|انزين) | [بل]?(?:'+AB_AR+') $)) '+N+'(?= )| '+N+' (?:هذا |هذي |اللي (?:في الموقع|بالموقع) )?(?:'+Q+' (?:يسوي|تسوي|يفعل|يقدم|ينفع|هو|هي|يعني|قصته|سالفته)|(?:'+Q+' )?(?:وظيفته|فايدته|فكرته)|(?:كيف|شلون) (?:يعمل|يشتغل|استخدمه|استعمله|اشتغل عليه)|(?:حق|ل|ينفع ل) ?'+Q+'|لشو|لايش|لوش)(?= )(?! '+N+' )','g'))}
-function abSure(s,r){if(r.kind!=='helper'&&s.search(AB_EN)<0&&!RegExp(AB_AR).test(s)&&!AB_SW.test(s.split(AB_S1).join(' ').split(AB_SA).join(' ')))r.sure=1;return r}
+return (abRx.r=new RegExp('(?: '+Q+' (?:هو|هي|يعني|معني|دور|عمل|(?:يقدر )?(?:يسوي|يفعل|يقدم|يعمل))| (?:كيف|شلون) (?:[يت]عمل|[يت]شتغل|اشتغل علي|(?:اقدر |ممكن )?استخدم|استعمل|استفيد من|يساعدني|يفيدني)| (?:اشرح(?:لي)?|وضح|عرفني|خبرني|اخبرني|حدثني|كلمني|قولي)(?: لي| لنا)?(?: عن| علي)?| (?:ال)?(?:فايده|هدف|غرض)(?: من)?| (?:عن|وظيفه|فكره|قصه|سالفه|تطبيق|برنامج|خدمه|(?:ال)?مساعد|اداه|استخدم|استعمل|باستخدام|استخدام|استعمال)| (?:غير|عدا|سوي)(?= انزين)| '+Q+'(?= (?:وريني|انزين) | [بل]?(?:'+AB_AR+') $)) '+N+'(?= )| '+N+' (?:هذا |هذي |اللي (?:في الموقع|بالموقع) )?(?:'+Q+' (?:يسوي|تسوي|يفعل|يقدم|ينفع|هو|هي|يعني|قصته|سالفته)|(?:'+Q+' )?(?:وظيفته|فايدته|فكرته)|(?:كيف|شلون) (?:يعمل|يشتغل|استخدمه|استعمله|اشتغل عليه)|(?:حق|ل|ينفع ل) ?'+Q+'|لشو|لايش|لوش)(?= )(?! '+N+' )','g'))}
+function abSure(s,r,al){if(al&&r.kind==='helper'){r.whole=1;if(r.key==='inzain')r.sure=1}  
+else if(r.kind!=='helper'&&s.search(AB_EN)<0&&!RegExp(AB_AR).test(s)&&!AB_SW.test(s.split(AB_S1).join(' ').split(AB_SA).join(' ')))r.sure=1;return r}
 function aboutOf(raw,loose,cl){const w=rawWords(raw);if(!w.length)return null;const s=(' '+w.join(' ')+' ').replace(/ u (ae|ask) /g,' u$1 ').replace(/ ك(?=(?:برنامج|تطبيق|موقع|مساعد) )/g,' ك '),k=[],nm=AB_AR.split('|');let A=0;
 const t=s.replace(abRx(),(m,a,b,c,o)=>{const g=a||b,i=nm.indexOf(g)<0?nm.indexOf(g.slice(1)):nm.indexOf(g);if(b&&/ تسوي$/.test(m))return m.replace(' '+g,'');  
-if(/^ (?:تطبيق|برنامج|خدمه|مساعد|اداه) /.test(m)&&(/ (?:هل|هذا|هذي|هذه|ذا) /.test(s)||!/ (?:ما|ماذا|شو|وش|ايش|شنو|ويش|كيف|شلون|اشرح|عرفني|وضح|خبرني|اخبرني) /.test(s))||(a?/^ (?:لي|لنا|لك|لكم|لهم|فيه?|فيها) (?!الموقع)/:b&&/^ (?:ال|بال(?!ضبط)|لل)/).test(s.slice(o+m.length)))return m;  
+if(/^ (?:تطبيق|برنامج|خدمه|(?:ال)?مساعد|اداه) /.test(m)&&(/ (?:هل|هذا|هذي|هذه|ذا) /.test(s)||!/ (?:ما|ماذا|شو|وش|ايش|شنو|ويش|كيف|شلون|اشرح|عرفني|وضح|خبرني|اخبرني) /.test(s))||(a?/^ (?:لي|لنا|لك|لكم|لهم|فيه?|فيها) (?!الموقع)/:b&&/^ (?:ال|بال(?!ضبط)|لل)/).test(s.slice(o+m.length)))return m;  
 k.push(AB_K[i>5?1:i]);A=1;return ' '})
 .replace(AB_EN,function(m){const o=arguments[7],v=arguments[8];if(!loose){if(arguments[1]&&!o&&v.length>m.length+1&&!/^ (?:(?:ka[iy]f|k[ie]e?f|shl[ou]+n|how)(?: does it)? (?:b?ye?sht[a-z]*|b?y[ae]?3mal|works?)|(?:sho|shu|shoo|e?i?sh|wesh|what)(?: hu| hy| does it)? (?:y?b?[iy]e?sawi|b?y[ae]?3mal|ya3ni|do)) $/.test(v.slice(m.length)))return ' ';  
 if(/^ (?:is|are|hal|هل) /.test(v)&&(o!==v.indexOf(' ',1)||o+m.length>v.length-2)||/ (?:this|that|it|hatha|hada|haza|hadha|ana|im|am|not|mesh|mish|msh|mu|mo|ghair|everything|all|kilshi|kolshi)$/.test(v.slice(0,o))||/^ (?:or|walla|wala|wla|ola|aw) (?:not|no|la|mamno+3) /.test(v.slice(o+m.length)))return m}  
@@ -2025,10 +2033,11 @@ if(loose)return u.length?r:String(raw).split(/[?!;؟،؛\n]+|[.,:](?=\s|$)| and 
 if(w.length>16||t.some(x=>abRx.no.test(x)||!P&&!u.length&&!/ (?:this|your|ur)(?: [a-z]+){0,3} (?:web ?)?(?:site|website|page) |(?:هال|(?:هذا|هذي|هذه) (?:ال)?)(?:موقع|صفحه) | (?:موقع|تطبيق)كم? /.test(s)&&(AB_RL.test(x)||AB_RL.test(stem(x)))))return null;
 const st=x=>STOP.has(stem(x)),hi=x=>AB_HIW.test(stem(x)),wk=x=>/^(?:عليك|عندكم?)$/.test(d(x));
 if(!r)return (gp||t.some(hi))&&t.every(x=>st(x)||hi(x)||AB_GW.test(stem(x)))?abSure(s,{kind:'greeting'}):null;
-return r.kind==='helper'&&(A||/ (?:what|whats|how|can|could|does|do|use|using|tell|explain|about|who|sho|shu|shoo|esh|wesh|kaif|kef|kif|shlon|ya3ni|mean)(?= )/.test(s))||t.every((x,i)=>{const y=stem(x),z=stem(d(x));return !(A&&/^فيها?$/.test(x))&&((cl||A?AB_F.test(x):st(x))||(AB_WJ.test(y)||AB_WJ.test(z))&&(sa||sb||/^(?:you|u|your|ur|it|this|site|websit|app|page)$/.test(t[i-1])||r.kind==='helper'&&!A&&/^(?:does|do|is|its|the)$/.test(t[i-1]))||[x,y,z].some(v=>AB_W.test(v))||AB_P.test(x)||AB_Q.test(x)||AB_Q.test(d(x))||AB_QW.test(x)||hi(x)||AB_GW.test(y))})?(t.some(wk)&&t.every(x=>wk(x)||!AB_P.test(x)&&(st(x)||/^فكر/.test(x)))?r:abSure(s,r)):null}  
+const al=t.every((x,i)=>{const y=stem(x),z=stem(d(x));return !(A&&/^فيها?$/.test(x))&&((cl||A?AB_F.test(x):st(x))||(AB_WJ.test(y)||AB_WJ.test(z))&&(sa||sb||/^(?:you|u|your|ur|it|this|site|websit|app|page)$/.test(t[i-1])||r.kind==='helper'&&!A&&/^(?:does|do|is|its|the)$/.test(t[i-1]))||[x,y,z].some(v=>AB_W.test(v))||AB_P.test(x)||AB_Q.test(x)||AB_Q.test(d(x))||AB_QW.test(x)||hi(x)||AB_GW.test(y))});
+return r.kind==='helper'&&(A||/ (?:what|whats|how|can|could|does|do|use|using|tell|explain|about|who|sho|shu|shoo|esh|wesh|kaif|kef|kif|shlon|ya3ni|mean)(?= )/.test(s))||al?(t.some(wk)&&t.every(x=>wk(x)||!AB_P.test(x)&&(st(x)||/^فكر/.test(x)))?r:abSure(s,r,al)):null}  
 const BL=o=>L(bi(o));
 const loadingHTML=()=>`<p class="tip" role="status">${T('loading')}</p>`;
-function swapFull(got){if(!got.size)return;for(const list of [ENTRIES,BASE.entries])for(let i=0;i<list.length;i++){const f=got.get(list[i].id);if(f&&list[i]._stub)list[i]=f}for(const [id,f] of got)if(BY_ID[id]&&BY_ID[id]._stub)BY_ID[id]=f}
+function swapFull(got){if(!got.size)return;for(const list of [ENTRIES,BASE.entries])for(let i=0;i<list.length;i++){const f=got.get(list[i].id);if(f&&list[i]._stub)list[i]=f}for(const [id,f] of got)if(BY_ID[id]&&BY_ID[id]._stub)BY_ID[id]=f;QW=null}
 const packEntry=(p,pk)=>cleanEntry(p,{topic:pk.topic,checked:pk.checked},arr(pk.str));
 async function hydrate(ids){if(!LAZY)return true;const need=[...new Set(arr(ids))].filter(id=>hasOwn(BY_ID,id)&&BY_ID[id]._stub);if(!need.length)return true;
 let ok=true;for(const tp of [...new Set(need.map(id=>BY_ID[id].topic))]){const want=need.filter(id=>BY_ID[id].topic===tp),got=new Map(),pre=LAZY.pre[tp];
@@ -2040,7 +2049,7 @@ function needFull(ids,again){if(!LAZY)return false;const miss=arr(ids).filter(id
 function ensureBreadth(){if(!LAZY)return Promise.resolve();if(BREADTH_P)return BREADTH_P;
 BREADTH_P=Promise.all(['services','laws','freezones'].map(k=>!OTHER[k].length?Promise.resolve(null):fetchData((k==='freezones'?'free-zones':k)+'.json').then(o=>arr(o&&o[k])).catch(()=>null))).then(r=>{LAZY.btried=true;if(r.some(Boolean))loadBreadth({services:r[0]||[],laws:r[1]||[],freezones:r[2]||[]})}).catch(()=>{LAZY.btried=true}).then(()=>{BREADTH_P=null});return BREADTH_P}
 let EXTRA_P=null;
-function loadExtra(x){if(!x||typeof x!=='object')return false;PHRASE={};KG=Array.isArray(x.kg)?x.kg.filter(g=>g&&Array.isArray(g.all)).map(g=>({id:String(g.id||''),all:g.all.map(a=>(Array.isArray(a)?a:[]).map(w=>stem(norm(String(w)).trim())).filter(Boolean)),closest:Array.isArray(g.closest)?g.closest.filter(isStr):[]})).filter(g=>g.all.length&&g.all.every(a=>a.length)):[];OWN_T.clear();if(x.ph&&typeof x.ph==='object')for(const k of Object.keys(x.ph))if(isStr(x.ph[k]))PHRASE[k]=x.ph[k];loadXL(x.xl);MO=Array.isArray(x.mo)?new Set(x.mo.filter(isStr)):null;DT=Array.isArray(x.dt)?new Set(x.dt.filter(isStr)):null;if(x.ak&&typeof x.ak==='object')for(const id of Object.keys(x.ak)){const e=BY_ID[id],more=Array.isArray(x.ak[id])?x.ak[id].filter(isStr):[];if(e&&e._stub&&more.length){if(e._n0==null)e._n0=e.ask.length;e.ask=e.ask.slice(0,e._n0).concat(more)}}
+function loadExtra(x){if(!x||typeof x!=='object')return false;PHRASE={};SS=x.ss&&x.ss.n>0&&x.ss.t>0?x.ss:null;KG=Array.isArray(x.kg)?x.kg.filter(g=>g&&Array.isArray(g.all)).map(g=>({id:String(g.id||''),all:g.all.map(a=>(Array.isArray(a)?a:[]).map(w=>stem(norm(String(w)).trim())).filter(Boolean)),closest:Array.isArray(g.closest)?g.closest.filter(isStr):[]})).filter(g=>g.all.length&&g.all.every(a=>a.length)):[];OWN_T.clear();if(x.ph&&typeof x.ph==='object')for(const k of Object.keys(x.ph))if(isStr(x.ph[k]))PHRASE[k]=x.ph[k];loadXL(x.xl);MO=Array.isArray(x.mo)?new Set(x.mo.filter(isStr)):null;DT=Array.isArray(x.dt)?new Set(x.dt.filter(isStr)):null;if(x.ak&&typeof x.ak==='object')for(const id of Object.keys(x.ak)){const e=BY_ID[id],more=Array.isArray(x.ak[id])?x.ak[id].filter(isStr):[];if(e&&e._stub&&more.length){if(e._n0==null)e._n0=e.ask.length;e.ask=e.ask.slice(0,e._n0).concat(more)}}
 if(ENTRIES.length)IDX=buildEntries(ENTRIES);return true}
 function ensureExtra(){if(!LAZY)return Promise.resolve();if(!EXTRA_P)EXTRA_P=fetchData('search-extra.json').then(loadExtra).catch(()=>{DATA_CACHE.delete('search-extra.json')});return EXTRA_P}
 function loadLazy(){EXTRA_P=null;if(LAZY)LAZY.err=false;return Promise.all([fetchData('index.json'),fetchData('authorities.json').catch(()=>null),fetchData('aliases.json').catch(()=>null)]).then(([ix,au,al])=>{DATA_CACHE.delete('index.json');if(al&&typeof al==='object'&&!Array.isArray(al))ALIAS=al;loadIndex(ix,au);try{renderAll()}catch(e){console.error(e)}setTimeout(ensureExtra,0)},()=>{if(LAZY)LAZY.err=true;renderHome()}).catch(e=>{console.error(e)})}
@@ -2473,6 +2482,8 @@ const SJ_ASPECT=new Set(terms('procedure procedures process steps step requireme
 'el al shu sho esh wesh wish fi fe min mn 3la 3ala ala ana enta inta ani abi abgha abga abiy agdar a2dar kam kif keef kaif leh lesh ya wa w ma mu mo b bel bil la li lel 3shan 3ashan ba3d ba3ad 3and 3ndi 3indi 3endi hal hatha hadha hathi hadhi yabi ybi tabi 3an asawi asawe asaweh sawi'));
 const SJ_MUST=new Set(terms('fine fee'));  
 const SJ_GEN=new Set([...GATE_GENERIC].filter(x=>!SJ_MUST.has(x)));
+const SJ_ACT=['cancel deregistration deregister شطب','lost','expired expiry انتهاء منتهية انتهت'].map(g=>terms(g)),SJ_ACTQ=['terminate فسخ','replace duplicate بدل سرقة مسروق سرقت','renew'].map(g=>terms(g));
+function sjActs(set,q){const o=[];SJ_ACT.forEach((g,i)=>{if((q?g.concat(SJ_ACTQ[i]):g).some(k=>set.has(k)))o.push(i)});return o}
 const SJ_CTX=new Set(terms('employer labour job year money expat complaint cancel renew register late unpaid lost find increase notice evict court police lawyer compensation fine fee without my knowledge dubai abu dhabi sharjah ajman umm al quwain ras al khaimah fujairah').filter(x=>x.startsWith('~')));
 const SJ_SPECIAL=['abroad|outside the uae|outside uae|outside the country|overseas|from outside|living outside|خارج الدولة|خارج الإمارات|من الخارج|بالخارج|برا الدولة|من برا',
 'church|churches|non muslim|non muslims|christian|christians|hindu|civil marriage|كنيسة|غير مسلم|غير المسلمين|غير مسلمين|مسيحي|مسيحيين|زواج مدني',
@@ -2503,30 +2514,33 @@ function sjNeg(text){const w=rawWords(text),out=new Set();for(let i=0;i<w.length
 if(neg)for(const t of terms(w[i]))if(sjThing(t))out.add(t)}return out}
 const SJ_PH=new Map();
 function sjPhr(id){const e=BY_ID[id],c=SJ_PH.get(id);if(c&&c.e===e)return c.p;
-const p=[e.q&&e.q.en,e.q&&e.q.ar,...arr(e.ask)].filter(isStr).map(s=>{const set=new Set([...terms(s),...termsE(s)]);return {set,things:[...set].filter(sjThing),neg:sjNeg(s)}});SJ_PH.set(id,{e,p});return p}
+const p=[e.q&&e.q.en,e.q&&e.q.ar,...arr(e.ask)].filter(isStr).map(s=>{const set=new Set([...terms(s),...termsE(s)]);return {set,things:[...set].filter(sjThing),neg:sjNeg(s),act:sjActs(set)}});SJ_PH.set(id,{e,p});return p}
 function sjQ(text){const all=new Set([...terms(text),...termsE(text)]),qt=[];let oov=0;
 for(const t of new Set(terms(noDatePhrase(text)))){if(!sjKeep(t))continue;let ks=[t],k0=t;
 if(!IDX.dfq.has(t)){const x=expandTerm(t,{df:IDX.dfq,N:IDX.N,vocab:IDX.vocabq});if(!x){if(t.length>=4)oov++;continue}ks=[t,x[0]];k0=x[0]}
 const xm=XMAP&&XMAP.get(t);if(xm)ks.push(xm);for(const k of ks)all.add(k);qt.push({t,ks,w:sjIdf(k0)})}
 return {qt,all,oov,sp:sjSpecial(text),neg:sjNeg(text),em:EMIRATES.filter(x=>all.has(EMI_KEY[x])),latin:!AR_LETTER.test(text)}}
-function subjectOf(text,id){const e=BY_ID[id];if(!e||!IDX||!IDX.N)return {ok:false,why:'none'};const Q=sjQ(text),n=Q.qt.length+Q.oov;if(!n)return {ok:false,why:'none'};
+function subjectOf(text,id,act,all,Q0){const e=BY_ID[id];if(!e||!IDX||!IDX.N)return {ok:false,why:'none'};const Q=Q0||sjQ(text),n=Q.qt.length+Q.oov;if(!n)return {ok:false,why:'none'};
 const mI=Math.log(1+(IDX.N+.5)/.5),tot=Q.qt.reduce((s,x)=>s+x.w,0)+Q.oov*mI*OOV_W,top=Q.qt.reduce((a,x)=>!a||x.w>a.w?x:a,null);let cover=false;
-for(const p of sjPhr(id)){const miss=Q.qt.filter(x=>!x.ks.some(k=>p.set.has(k))),got=Q.qt.filter(x=>!miss.includes(x)).reduce((s,x)=>s+x.w,0),nm=miss.length+Q.oov;
+for(const p of sjPhr(id)){if(act&&p.act.length)continue;const miss=Q.qt.filter(x=>!x.ks.some(k=>p.set.has(k))),got=Q.qt.filter(x=>!miss.includes(x)).reduce((s,x)=>s+x.w,0),nm=miss.length+Q.oov;
 if(tot&&got/tot<SJ.q)continue;if(nm&&(nm>Math.floor(n/SJ.div)||Q.oov||miss.includes(top)||miss.some(x=>sjThing(x.t)||SJ_MUST.has(x.t))))continue;
-if(p.things.some(k=>!Q.all.has(k)))continue;if(p.things.some(k=>Q.neg.has(k)!==p.neg.has(k))||[...Q.neg].some(k=>p.set.has(k)&&!p.neg.has(k)))continue;cover=true;break}
-if(!cover)return {ok:false,why:'cover'};
+if(p.things.some(k=>!(all||Q.all).has(k)))continue;if(p.things.some(k=>Q.neg.has(k)!==p.neg.has(k))||[...Q.neg].some(k=>p.set.has(k)&&!p.neg.has(k)))continue;cover=true;break}
+if(!cover&&!all){const ps=String(text).split(/\s*(?:[،,;؟?!]|\.\s)\s*/).filter(x=>/\S/.test(x));if(ps.length>1){let k=0,f=false;for(const x of ps){const q=sjQ(x);if(q.qt.length<2)continue;k++;if(subjectOf(x,id,act,Q.all,q).why==='cover'){f=true;break}}cover=k>1&&!f}}  
+if(!cover)return {ok:false,why:'cover'};if(all)return {ok:true,why:''};  
 const own=new Set([...termsE(both(e.q)),...arr(e.ask).flatMap(a=>termsE(a))]);if([...SJ_MUST].some(k=>Q.qt.some(x=>x.t===k)&&!own.has(k)))return {ok:false,why:'kind'};
 const lead=s=>String(s||'').split(/,?\s*(?:and )?what about\b|،?\s*(?:و)?ماذا عن|،?\s*وماذا لو/i)[0];  
 if(sjSpecial(e.q?lead(e.q.en)+' \n '+lead(e.q.ar):'').some(i=>!Q.sp.includes(i)))return {ok:false,why:'special'};
 if(Q.latin&&e.q&&[...new Set(termsE(e.q.en||''))].some(x=>sjKeep(x)&&!x.startsWith('~')&&!Q.all.has(x)&&sjIdf(x)>=SJ.rare))return {ok:false,why:'rare'};
 const em=arr(e.emirates);if(em.length&&!em.includes('all')&&!Q.em.some(x=>em.includes(x)))return {ok:false,why:'place'};
 if(sideClash(text,id))return {ok:false,why:'side'};return {ok:true,why:''}}
-function verdict(res,text){if(!res||!res.length||res[0].off===true)return {kind:'gap'};const kg=knownGap(text);if(kg)return {kind:'gap',known:kg};
+function subjectTop(res,text){const id=res[0].id,Q=IDX&&IDX.N?sjQ(text):null,sj=subjectOf(text,id,0,0,Q);const rv=sj.ok?res.slice(1,5).filter(r=>r.off!==true&&r.score>=res[0].score*.8):[];if(rv.length&&!sjActs(Q.all,1).length&&!subjectOf(text,id,1,0,Q).ok&&rv.some(r=>subjectOf(text,r.id,1,0,Q).ok))return {ok:false,why:'case'};return sj}
+function verdict(res,text){const t=qRead(text);if(t===text||!t)return verdictOf(res,t);const w=qWritten(text);if(w.v.kind!=='gap')return res.length===w.r.length&&res.every((x,i)=>x===w.r[i])?w.v:verdictOf(res,text);const v=verdictOf(res,t);return v.rescued||res.length&&spcOf(res[0].id).some(g=>!sjSpecial(t).includes(g))?w.v:v.kind==='ok'?{...v,kind:'close'}:v}  
+function verdictOf(res,text){if(!res||!res.length||res[0].off===true)return {kind:'gap'};const kg=knownGap(text);if(kg)return {kind:'gap',known:kg};
 const top=res[0],mc=mainCov(text,top.id),few=mc.n>=1&&mc.n<=VD.maxn,low=isGap(res.slice(0,5));
-if(low){if(few&&mc.cov>=.99&&top.cov>=.5&&top.score>=gapMin()*VD.rescue){const sj=subjectOf(text,top.id);return {kind:sj.ok?'ok':'close',cov:mc.cov,rescued:true,why:sj.why}}return {kind:'gap',cov:mc.cov}}
+if(low){if(few&&mc.cov>=.99&&top.cov>=.5&&top.score>=gapMin()*VD.rescue){const sj=subjectTop(res,text);return {kind:sj.ok?'ok':'close',cov:mc.cov,rescued:true,why:sj.why}}return {kind:'gap',cov:mc.cov}}
 if(mc.n>=2&&few&&mc.hit*2<mc.n)return {kind:'gap',cov:mc.cov,miss:mc.miss};
-const sj=subjectOf(text,top.id);return {kind:sj.ok?'ok':'close',cov:mc.cov,why:sj.why}}
-function gateOf(text,e,figText){if(!e||e._stub)return {ok:true};const kinds=figureKinds(figText==null?text:figText);
+const sj=subjectTop(res,text);return {kind:sj.ok?'ok':'close',cov:mc.cov,why:sj.why}}
+function gateOf(text,e,figText){text=qUse(text);if(!e||e._stub)return {ok:true};const kinds=figureKinds(figText==null?text:figText);
 if(kinds.length){const ft=entryFigureText(e);if(!kinds.some(k=>FIG_HAS[k].test(ft)))return {ok:false,why:'nonum',kind:kinds[0]}}
 const c=conceptCov(text,e);if(c.n&&c.n<=GATE_MAXN&&c.cov<GATE_COV)return {ok:false,why:'concept',cov:c.cov,miss:c.miss.slice(0,4)};
 if((c.n||c.oov)&&c.n+c.oov<=4&&c.covAll<GATE_TOP&&c.top&&(c.topMiss||c.n+c.oov<=3))return {ok:false,why:'concept',cov:c.cov,miss:c.miss.slice(0,4)};return {ok:true}}
@@ -2536,6 +2550,7 @@ function speedOver(text){const s=kmhText(text);const ctx=/\b(?:speed|speeding|li
 if(ctx&&(m=/\bby\s+(\d{1,3})\b/.exec(s)))return +m[1];
 if((m=/\b(\d{1,3})\s*(?:kmh\s*)?(?:over|above|beyond|faster than)\b/.exec(s)))return +m[1];
 const n=normAr(s);if((m=/(?:بمقدار|بزياده|تجاوز(?:ت)?(?: السرعه)?(?: المسموحه)?(?: ب)?)\s*(\d{1,3})/.exec(n)))return +m[1];
+if((m=/تجاوز(?:ت)?(?: السرعه)? (?:المسموحه|المحدده|القانونيه|القصوي) (ب|باكثر من|بمقدار|بزياده) ?(\d{1,3})(?!\d)/.exec(n)))return +m[2]+(m[1]==='باكثر من'?1:0);  
 if((m=/(\d{1,3})\s*(?:kmh\s*)?(?:فوق|زياده عن|اكثر من)\s*(?:ال)?(?:حد|سرعه)/.exec(n)))return +m[1];
 const nums=(s.match(/\b\d{2,3}\b/g)||[]).map(Number).filter(x=>x>=20&&x<=300);
 if(nums.length===2&&/limit|zone|road|حد|منطقه/.test(s+' '+n)&&nums[0]!==nums[1])return Math.max(...nums)-Math.min(...nums);return null}
@@ -2559,7 +2574,10 @@ const rows=arr(tb.rows).filter(r=>r&&r[lk.min_key]!==''&&Number.isFinite(Number(
 const row=rows.find(r=>v>=Number(r[lk.min_key])&&v<=hi(r));if(row)return {kind:'band',row,value:v};
 const lo=Math.min(...rows.map(r=>Number(r[lk.min_key])));return rows.length&&v<lo?{kind:'below',row:null,value:v,from:lo}:null}
 if(!kinds.length)return null;const rows=rowMatch(tb,text);return rows.length?{kind:'rows',rows}:null}
-async function tableLookup(text,nums){if(!OTHER_IDX||!OTHER.tables.length)return null;const kinds=figureKinds(text),amt=amountAsk(text);
+const TBL_ANNUAL=/(?:^|[^a-zء-ي])(?:(?:annual|yearly) (?:paid )?(?:leaves?|vacation)|(?:ال)?اجاز(?:ه|ات|تي|ته|تك|اتي) (?:ال)?سنوي(?:ه)?)(?![a-zء-ي])/i;  
+const TBL_NUMW={عشره:10,عشرين:20,ثلاثين:30,اربعين:40,خمسين:50,ستين:60,سبعين:70,ثمانين:80,تسعين:90},TBL_NUMR=new RegExp('(^| )(ب)?('+Object.keys(TBL_NUMW).join('|')+')(?![ء-ي])','g');
+async function tableLookup(text,nums){if(!OTHER_IDX||!OTHER.tables.length)return null;const rd=normAr(qRead(text));if(TBL_ANNUAL.test(rd)){const s=search(text),e=s.length&&BY_ID[s[0].id];if(e&&e.q&&TBL_ANNUAL.test(normAr(both(e.q)))&&verdict(s,text).kind==='ok')return null}
+text=rd;if(/سرع|رادار/.test(text))text=text.replace(TBL_NUMR,(m,a,b,w,o,s)=>b||/^ (?:كيلو|كم(?![ء-ي])|كلم)/.test(s.slice(o+m.length))?a+(b||'')+TBL_NUMW[w]:m);const kinds=figureKinds(text),amt=amountAsk(text);
 const cr=searchIdx(OTHER_IDX,text,{oov:BR_OOV}).filter(r=>OTHER_BY[r.id]&&OTHER_BY[r.id].type==='table'&&r.score>=BR_MIN&&r.cov>=BR_COV).slice(0,3);
 let cand=cr.filter(r=>r.score>=cr[0].score*.85).map(r=>r.id);
 const spd=speedOver(text)!=null||Object.keys(nums||{}).some(k=>/kmh|speed/.test(k));
